@@ -73,6 +73,9 @@ class SemanticMatchPolicy:
     direct_alias_can_reduce_ambiguity: bool = True
     direct_alias_minimum_weight: float = 0.85
     direct_alias_conflict_requires_clarification: bool = True
+    # ADR-007 hardening — extra guards against decision-policy false ambiguity.
+    multi_need_ambiguity_gap: float = 0.20
+    weak_lexical_extra_headroom: float = 0.10
 
     def __post_init__(self) -> None:
         if self.minimum_auto_select_score < self.minimum_candidate_score:
@@ -105,6 +108,8 @@ class SemanticMatchPolicy:
             "negative_match_threshold",
             "parent_child_collapse_gap",
             "direct_alias_minimum_weight",
+            "multi_need_ambiguity_gap",
+            "weak_lexical_extra_headroom",
         ):
             value = getattr(self, name)
             if not (0.0 <= value <= 1.0):

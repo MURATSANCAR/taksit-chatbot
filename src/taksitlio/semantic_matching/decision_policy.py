@@ -42,6 +42,7 @@ class DecisionPolicy:
         *,
         degraded: bool = False,
         collapsed_pairs: Sequence[tuple[str, str]] = (),
+        multi_need_signal: bool = False,
     ) -> CategoryMatchDecision:
         eligible = [
             c
@@ -75,11 +76,48 @@ class DecisionPolicy:
         if degraded:
             return self._decide_degraded(eligible, top, gap)
 
+        # ADR-007 §G: when the caller explicitly signals "user said two
+        # distinct needs at once" (multi_need_signal) and both are still
+        # in the pool, prefer AMBIGUOUS over auto-select. This never
+        # overrides a direct-alias auto-select — that's handled below.
+        if (
+            multi_need_signal
+            and len(eligible) >= 2
+            and gap is not None
+            and gap <= self._policy.multi_need_ambiguity_gap
+        ):
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.AMBIGUOUS,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="multi-need signal keeps top-2 ambiguous",
+                reason_code="MULTI_NEED_SIGNAL_AMBIGUOUS",
+                missing_concepts=("need_prioritisation",),
+            )
+
         # Direct alias auto-select — reduces false ambiguity on clear intents.
         if self._policy.direct_alias_can_reduce_ambiguity:
             direct_verdict = self._direct_alias_verdict(eligible, top, gap)
             if direct_verdict is not None:
                 return direct_verdict
+
+        # ADR-007 §G: weak-lexical-only top candidate never auto-selects.
+        # If the top score comes purely from lexical / trigram fuzz and
+        # neither alias nor vector nor use-case fired, we require the
+        # gap to be substantial before auto-selecting; otherwise fall
+        # through to the standard gap check (which becomes AMBIGUOUS).
+        if _is_weak_lexical_only(top) and top.score < (
+            self._policy.minimum_auto_select_score
+            + self._policy.weak_lexical_extra_headroom
+        ):
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.AMBIGUOUS,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="weak lexical-only top candidate — refuse auto-select",
+                reason_code="WEAK_LEXICAL_ONLY_TOP",
+                missing_concepts=("product_form",),
+            )
 
         # Parent-child collapse verdict: if hierarchy helper collapsed a
         # pair and the survivor is the top, note it in the reason code so
@@ -234,6 +272,22 @@ class DecisionPolicy:
 def _is_strong_exact_alias(candidate: CategoryCandidate) -> bool:
     mode = (candidate.signals.alias_mode or "").upper()
     return mode == "EXACT" and candidate.signals.alias >= 0.9
+
+
+def _is_weak_lexical_only(candidate: CategoryCandidate) -> bool:
+    """True when only the lexical/trigram channel produced the top score.
+
+    Alias, vector and use-case channels are all zero — that's the
+    "we matched some characters" fallback signal (ADR-007 §G).
+    """
+
+    signals = candidate.signals
+    return (
+        signals.alias <= 0.0
+        and signals.vector <= 0.0
+        and signals.use_case <= 0.0
+        and signals.lexical > 0.0
+    )
 
 
 __all__ = ["DecisionPolicy"]

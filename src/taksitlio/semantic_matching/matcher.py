@@ -363,6 +363,7 @@ class SemanticCategoryMatcher:
             ranked,
             degraded=degraded,
             collapsed_pairs=collapse_result.collapsed_pairs,
+            multi_need_signal=query.multi_need_signal,
         )
 
         # Non-matchable (out-of-scope) nodes stay in pool diagnostics but never

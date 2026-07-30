@@ -38,9 +38,17 @@ from taksitlio.evaluation.domain import (
     CasePrediction,
     EvaluationCase,
     EvaluationDataset,
+    EvaluationInputMode,
     EvaluationMode,
 )
 from taksitlio.evaluation.fixture_catalog import FixtureCatalog
+from taksitlio.semantic_constraints import SemanticConstraintValidator
+from taksitlio.understanding.fast import (
+    DeterministicFastExtractor,
+    FastDeploymentUnavailable,
+    FastExtractionError,
+    FastNeedUnderstanding,
+)
 
 
 @dataclass(frozen=True)
@@ -49,6 +57,7 @@ class RunnerConfig:
     workers: int = 4
     embedding_dim: int = 64
     top_k_limit: int = 3
+    input_mode: EvaluationInputMode = EvaluationInputMode.MATCHER_ORACLE_INPUT
 
 
 def _policy_for_mode(base: SemanticMatchPolicy, mode: EvaluationMode) -> SemanticMatchPolicy:
@@ -173,6 +182,37 @@ class RunOutcome:
     concurrency: ConcurrencySummary
     dependency_failures: int
     degraded_count: int
+    fast_extraction_failures: int = 0
+    input_mode: str = EvaluationInputMode.MATCHER_ORACLE_INPUT.value
+
+
+async def _resolve_constraints(
+    case: EvaluationCase,
+    *,
+    input_mode: EvaluationInputMode,
+    fast: Optional[FastNeedUnderstanding],
+    validator: SemanticConstraintValidator,
+) -> tuple[dict, Optional[str]]:
+    """Return ``(constraints_dict, fast_failure_reason)`` for one case.
+
+    ``fast_failure_reason`` is set only when the FAST extractor raised —
+    the caller then records BLOCKED_DEPENDENCY in the diagnostics bucket.
+    """
+
+    if input_mode is EvaluationInputMode.MATCHER_ONLY:
+        return {}, None
+    if input_mode is EvaluationInputMode.MATCHER_ORACLE_INPUT:
+        return dict(case.semantic_constraints or {}), None
+    if fast is None:
+        return {}, "FAST_EXTRACTOR_NOT_CONFIGURED"
+    try:
+        outcome = await fast.extract(case.utterance, locale=case.locale)
+    except FastDeploymentUnavailable as exc:
+        return {}, exc.reason_code or "FAST_DEPLOYMENT_UNAVAILABLE"
+    except FastExtractionError as exc:
+        return {}, exc.reason_code or "FAST_EXTRACTION_ERROR"
+    validated = validator.validate(outcome.constraints.to_matcher_dict())
+    return validated.to_matcher_dict(), None
 
 
 async def run_matcher_on_dataset(
@@ -181,6 +221,8 @@ async def run_matcher_on_dataset(
     *,
     policy: SemanticMatchPolicy,
     config: RunnerConfig,
+    fast_extractor: Optional[FastNeedUnderstanding] = None,
+    constraint_validator: Optional[SemanticConstraintValidator] = None,
 ) -> RunOutcome:
     policy = _policy_for_mode(policy, config.mode)
     matcher = _build_matcher(
@@ -189,8 +231,44 @@ async def run_matcher_on_dataset(
         mode=config.mode,
         embedding_dim=config.embedding_dim,
     )
+    input_mode = config.input_mode
+    validator = constraint_validator or SemanticConstraintValidator()
+    fast = fast_extractor
+    if input_mode in {
+        EvaluationInputMode.END_TO_END_RUNTIME_INPUT,
+        EvaluationInputMode.FAST_EXTRACTION_ONLY,
+    } and fast is None:
+        # Default to the deterministic offline extractor so evaluation
+        # runs are reproducible without a real FAST deployment. This is
+        # explicit — no silent lexical fallback in the production path.
+        fast = DeterministicFastExtractor(validator=validator)
 
-    async def _run_case(case: EvaluationCase) -> tuple[str, Optional[CasePrediction], bool]:
+    async def _run_case(case: EvaluationCase) -> tuple[str, Optional[CasePrediction], bool, Optional[str]]:
+        constraints_dict, fast_failure = await _resolve_constraints(
+            case,
+            input_mode=input_mode,
+            fast=fast,
+            validator=validator,
+        )
+        if input_mode is EvaluationInputMode.FAST_EXTRACTION_ONLY:
+            # No matcher — synthesise a bare prediction whose top_k / status
+            # are undefined; downstream metrics that require a matcher
+            # result will simply skip these cases.
+            elapsed_ms = 0.0
+            prediction = CasePrediction(
+                case_id=case.case_id,
+                predicted_status="FAST_ONLY",
+                selected_fixture_key=None,
+                top_k=(),
+                latency_ms=elapsed_ms,
+                diagnostics={
+                    "input_mode": input_mode.value,
+                    "extracted_constraints": constraints_dict,
+                    "fast_failure": fast_failure,
+                },
+            )
+            return case.case_id, prediction, False, fast_failure
+
         query = MatchQuery(
             need_description=case.utterance,
             catalog_id=handle.catalog_id,
@@ -198,18 +276,27 @@ async def run_matcher_on_dataset(
             embedding_profile_id=handle.embedding_profile_id,
             catalog_revision=handle.revision,
             extra_hints=case.hints,
-            semantic_constraints=dict(case.semantic_constraints or {}),
+            semantic_constraints=constraints_dict,
         )
         started = time.perf_counter()
         try:
             result = await matcher.match(query)
         except Exception:  # noqa: BLE001 — dependency failure bucket
-            return case.case_id, None, False
+            return case.case_id, None, False, fast_failure
         elapsed_ms = (time.perf_counter() - started) * 1000.0
         prediction = _result_to_prediction(
             case, result, handle, latency_ms=elapsed_ms, top_k_limit=config.top_k_limit
         )
-        return case.case_id, prediction, result.degraded
+        # Enrich diagnostics with input-mode + FAST reason.
+        prediction = replace(
+            prediction,
+            diagnostics={
+                **prediction.diagnostics,
+                "input_mode": input_mode.value,
+                "fast_failure": fast_failure,
+            },
+        )
+        return case.case_id, prediction, result.degraded, fast_failure
 
     wall_started = time.perf_counter()
     outcomes = await bounded_gather(
@@ -222,14 +309,19 @@ async def run_matcher_on_dataset(
     latencies: list[float] = []
     dep_failures = 0
     degraded = 0
-    for case_id, prediction, was_degraded in outcomes:
+    fast_failures = 0
+    for case_id, prediction, was_degraded, fast_failure in outcomes:
         if prediction is None:
             dep_failures += 1
+            if fast_failure is not None:
+                fast_failures += 1
             continue
         predictions[case_id] = prediction
         latencies.append(prediction.latency_ms)
         if was_degraded:
             degraded += 1
+        if fast_failure is not None:
+            fast_failures += 1
 
     throughput = (len(predictions) / (wall_ms / 1000.0)) if wall_ms else 0.0
     queue_wait = 0.0
@@ -249,6 +341,8 @@ async def run_matcher_on_dataset(
         concurrency=concurrency,
         dependency_failures=dep_failures,
         degraded_count=degraded,
+        fast_extraction_failures=fast_failures,
+        input_mode=input_mode.value,
     )
 
 

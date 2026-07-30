@@ -95,6 +95,29 @@ class MatchQuery:
         entries = self.semantic_constraints.get("corrections") if self.semantic_constraints else None
         return tuple(e for e in (entries or ()) if isinstance(e, Mapping))
 
+    @property
+    def multi_need_signal(self) -> bool:
+        """True when the caller signalled a multi-need utterance.
+
+        Either explicit ``signals.multi_need`` key in ``semantic_constraints``,
+        or two-or-more distinct positive concepts without any negation /
+        correction (both survived validator merge) — a signal that the
+        matcher should keep an AMBIGUOUS verdict when two candidates
+        remain in a tie.
+        """
+
+        if not self.semantic_constraints:
+            return False
+        signals = self.semantic_constraints.get("signals")
+        if isinstance(signals, Mapping) and bool(signals.get("multi_need")):
+            return True
+        positives = self.positive_concepts
+        if len(positives) < 2:
+            return False
+        negatives = set(self.negative_concepts)
+        distinct = {p for p in positives if p not in negatives}
+        return len(distinct) >= 2 and not self.correction_entries()
+
 
 @dataclass(frozen=True)
 class SignalBreakdown:

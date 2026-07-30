@@ -39,6 +39,29 @@ class EvaluationMode(str, Enum):
     DEGRADED = "DEGRADED"
 
 
+class EvaluationInputMode(str, Enum):
+    """How semantic constraints reach the matcher (ADR-007 §2).
+
+    * ``MATCHER_ORACLE_INPUT`` — pass the annotated
+      ``case.semantic_constraints`` directly to the matcher (the classic
+      matcher-quality regression path; independent of any FAST model).
+    * ``END_TO_END_RUNTIME_INPUT`` — call the FAST extractor on the raw
+      utterance, run the SemanticConstraintValidator, then feed the
+      resulting constraints to the matcher; annotation constraints are
+      ignored on this path.
+    * ``FAST_EXTRACTION_ONLY`` — run the FAST extractor + validator but
+      do not invoke the matcher; used to score FAST extraction quality
+      in isolation.
+    * ``MATCHER_ONLY`` — alias of MATCHER_ORACLE_INPUT for callers that
+      never had annotation constraints (defaults to empty).
+    """
+
+    MATCHER_ORACLE_INPUT = "MATCHER_ORACLE_INPUT"
+    END_TO_END_RUNTIME_INPUT = "END_TO_END_RUNTIME_INPUT"
+    FAST_EXTRACTION_ONLY = "FAST_EXTRACTION_ONLY"
+    MATCHER_ONLY = "MATCHER_ONLY"
+
+
 class QualityGateStatus(str, Enum):
     ACCEPT = "ACCEPT"
     REJECT = "REJECT"
@@ -136,6 +159,7 @@ __all__ = [
     "DatasetSplit",
     "EvaluationCase",
     "EvaluationDataset",
+    "EvaluationInputMode",
     "EvaluationMode",
     "ExpectedStatus",
     "QualityGateStatus",

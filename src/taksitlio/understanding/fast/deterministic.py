@@ -88,6 +88,14 @@ _STOPWORDS_RAW = (
     "istemem", "istemiyorum", "istemek",
     # "almak" and similar bare infinitives
     "almak", "alma", "almam",
+    # Additional verbs / adverbs used in correction / question forms
+    "demiştim", "dedim", "dediysem", "diyecektim", "diyecek",
+    "yanlış", "yanlis", "anladın", "anladin", "anladım",
+    "kastediyordum", "kastetmiştim", "kastettim", "kastediyor",
+    "bakıyor", "bakıyorlar", "kararlı", "karar", "veremedim",
+    "olabilir", "olamaz",
+    # Common question / discussion words that muddy concept extraction
+    "olsun", "ola",
 )
 # Store both the raw + ascii-fold versions so the check is stable
 _STOPWORDS = frozenset(_STOPWORDS_RAW) | frozenset(
@@ -174,15 +182,6 @@ def _norm_lower(text: str) -> str:
 
 def _tokenize(text: str) -> tuple[str, ...]:
     return tuple(m.group(0) for m in _WORD_RE.finditer(text or ""))
-
-
-def _strip_stopwords(words: Iterable[str]) -> tuple[str, ...]:
-    out: list[str] = []
-    for w in words:
-        if _norm_lower(w) in _STOPWORDS:
-            continue
-        out.append(w)
-    return tuple(out)
 
 
 def _split_clauses(utterance: str) -> tuple[_Clause, ...]:
@@ -447,11 +446,42 @@ class DeterministicFastExtractor:
             if neg_concept or pos_concept:
                 return
 
-        # 3) Fallback — treat clause head noun as positive.
+        # 3) Multi-need "X mi Y mi" / "X yoksa Y" pattern — surface
+        # both as positive candidates (matcher then decides AMBIGUOUS).
+        multi_split = _split_on_multi_need(clause)
+        if multi_split is not None:
+            for span in multi_split:
+                concept = _pick_head_noun(span)
+                if concept:
+                    _add_positive(raw_positive, concept, seen_positive)
+            return
+
+        # 4) Fallback — treat clause head noun as positive.
         head = _pick_head_noun(clause.text)
         if head is None:
             return
         _add_positive(raw_positive, head, seen_positive)
+
+
+def _split_on_multi_need(clause: _Clause) -> Optional[list[str]]:
+    """Return the segments of an ``X mi Y mi`` / ``X mı Y mı`` pattern."""
+
+    words = clause.words
+    lowered = [_norm_lower(w) for w in words]
+    question_particles = {"mi", "mı", "mu", "mü"}
+    hits = [i for i, w in enumerate(lowered) if w in question_particles]
+    if len(hits) < 2:
+        return None
+    segments: list[str] = []
+    prev = 0
+    for idx in hits:
+        seg = " ".join(words[prev:idx]).strip()
+        if seg:
+            segments.append(seg)
+        prev = idx + 1
+    if len(segments) >= 2:
+        return segments
+    return None
 
 
 def _split_on_neg_cue(clause: _Clause) -> Optional[tuple[str, str]]:
