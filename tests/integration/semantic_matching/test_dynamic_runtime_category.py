@@ -51,14 +51,6 @@ class _EmbClient:
         return await LexicalEmbedder(dim=64).embed(list(texts))
 
 
-async def _run_embedding_cycle(service, outbox, worker) -> None:
-    catalog = list((await service._repo.dump_state())["catalogs"].values())[0]
-    snapshot = await service.get_published_snapshot(catalog.id)
-    if snapshot is None:
-        return
-    await outbox.enqueue_for_snapshot(snapshot, embedding_profile_id="p1")
-    await worker.run_once()
-
 
 @pytest.mark.asyncio
 async def test_dynamic_runtime_category_end_to_end():
@@ -71,7 +63,8 @@ async def test_dynamic_runtime_category_end_to_end():
     outbox = CategoryEmbeddingOutbox(embedding_repo)
     worker = CategoryEmbeddingWorker(embedding_repo, _EmbClient())
     policy = SemanticMatchPolicy(
-        minimum_score=0.1,
+        minimum_candidate_score=0.1,
+        minimum_auto_select_score=0.1,
         cache_ttl_seconds=0,
     )
     matcher = SemanticCategoryMatcher(
@@ -118,8 +111,10 @@ async def test_dynamic_runtime_category_end_to_end():
         locale=catalog.primary_locale,
         use_case_text="Kamera odaklı telefon alma",
     )
-    await service.publish_revision(catalog.id)
-    await _run_embedding_cycle(service, outbox, worker)
+    from taksitlio.category_catalog.publish_pipeline import prepare_embed_and_publish
+    await prepare_embed_and_publish(
+        service, catalog.id, outbox, worker, embedding_repo=embedding_repo
+    )
 
     # matcher resolves without any restart
     result = await matcher.match(
@@ -161,8 +156,10 @@ async def test_dynamic_runtime_category_end_to_end():
 
     # --- Step 3: archive category, republish, matcher stops resolving it
     await service.archive_category(category.id)
-    await service.publish_revision(catalog.id)
-    await _run_embedding_cycle(service, outbox, worker)
+    from taksitlio.category_catalog.publish_pipeline import prepare_embed_and_publish
+    await prepare_embed_and_publish(
+        service, catalog.id, outbox, worker, embedding_repo=embedding_repo
+    )
     result_after_archive = await matcher.match(
         MatchQuery(
             text="kamera kalitesi iyi bir telefon arıyorum",

@@ -143,15 +143,14 @@ otomatik doğrulanır (in-memory stack, Postgres gerektirmez).
 
 ## Reddedilen alternatifler
 
-* **Statik enum kategori kodları** — Yeni kategori eklemek deploy gerektirir.
-* **Tek dil / tek revizyon** — Locale ve A/B match politikası bloke olur.
-* **Tek eşik** — Matcher'ın alias/lexical/vector sinyallerini karıştırma imkanı olmaz.
-* **Matcher session state'e yazsın** — ADR-003 §8'i ihlal eder, revision/CAS bozar.
-* **FAST modelin kategori kodu üretmesi** — Kategori değiştiğinde prompt değişir
-  (ADR-001 §5).
-* **In-memory global cache raw input üzerinden** — Kullanıcı metni cache anahtarı
-  olamaz (privacy + collision).
-* **Embedding hatasında hiç match yapma** — Sistem tamamen düşer; degraded mode
-  operasyonel esneklik sağlar.
-* **V003'teki `categories` tablosunu genişletme** — Legacy kod (test_mvp_pipeline)
-  aynı tabloyu farklı sözleşmeyle kullanıyor; migration risk büyür.
+* **Kategori enum'u / sabit liste** — Yeni kategori eklemek deploy gerektirir.
+* **Prompt içine tüm kategori listesini gömmek** — Prompt şişer, privacy ve drift.
+* **Sadece keyword eşleştirme** — Dolaylı ihtiyaçları kaçırır.
+* **Sadece vector similarity** — Alias/exact sinyallerini kaybeder.
+* **LLM'den doğrudan kategori ID istemek** — Katalog değişince prompt değişir (ADR-001).
+* **Her request'te tüm kategorileri LLM'e göndermek** — Latency ve maliyet.
+* **Kategori değişikliğinde uygulama restart** — Dinamik katalog kabul kriterini bozar.
+* **Embedding başarısızken eski/yeni katalog verilerini karıştırmak** — Tutarsız revision.
+* **Matcher session state'e yazsın** — ADR-003 §8 ihlali.
+* **In-memory global cache raw input üzerinden** — Privacy + collision.
+* **V003 `categories` tablosunu genişletme** — Legacy pipeline sözleşmesiyle çakışır.

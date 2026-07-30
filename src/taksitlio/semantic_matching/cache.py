@@ -22,7 +22,7 @@ def _normalize(text: str) -> str:
 
 
 def build_cache_key(query: MatchQuery, policy: SemanticMatchPolicy) -> str:
-    normalized = _normalize(query.text)
+    normalized = _normalize(query.query_text)
     payload = "|".join(
         [
             normalized,

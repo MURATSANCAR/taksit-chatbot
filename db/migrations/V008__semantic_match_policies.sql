@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS semantic_match_policies (
     display_name                VARCHAR(128) NOT NULL,
     minimum_score               NUMERIC(4,3) NOT NULL DEFAULT 0.550
                                 CHECK (minimum_score >= 0.0 AND minimum_score <= 1.0),
+    minimum_auto_select_score   NUMERIC(4,3) NOT NULL DEFAULT 0.720
+                                CHECK (minimum_auto_select_score >= 0.0 AND minimum_auto_select_score <= 1.0),
     clarify_score_gap           NUMERIC(4,3) NOT NULL DEFAULT 0.080
                                 CHECK (clarify_score_gap >= 0.0 AND clarify_score_gap <= 1.0),
     maximum_candidates          INTEGER      NOT NULL DEFAULT 3
@@ -23,6 +25,9 @@ CREATE TABLE IF NOT EXISTS semantic_match_policies (
     hierarchy_weight            NUMERIC(4,3) NOT NULL DEFAULT 0.050
                                 CHECK (hierarchy_weight >= 0.0 AND hierarchy_weight <= 1.0),
     allow_lexical_degraded_mode BOOLEAN      NOT NULL DEFAULT TRUE,
+    exact_alias_can_auto_select BOOLEAN      NOT NULL DEFAULT TRUE,
+    maximum_embedding_timeout_ms INTEGER     NOT NULL DEFAULT 250
+                                CHECK (maximum_embedding_timeout_ms > 0),
     cache_ttl_seconds           INTEGER      NOT NULL DEFAULT 300
                                 CHECK (cache_ttl_seconds >= 0),
     require_semantic_description BOOLEAN     NOT NULL DEFAULT TRUE,
@@ -36,7 +41,9 @@ CREATE TABLE IF NOT EXISTS semantic_match_policies (
                                 CHECK (status IN ('ACTIVE', 'INACTIVE', 'DRAFT')),
     configuration               JSONB        NOT NULL DEFAULT '{}'::jsonb,
     created_at                  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at                  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+    updated_at                  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_auto_select_gte_match
+        CHECK (minimum_auto_select_score >= minimum_score)
 );
 
 INSERT INTO semantic_match_policies (

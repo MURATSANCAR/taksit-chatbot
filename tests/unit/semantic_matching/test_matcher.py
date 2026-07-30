@@ -42,24 +42,22 @@ async def _build_stack(*, policy: SemanticMatchPolicy | None = None):
     embedding_repo = InMemoryCategoryEmbeddingRepository()
     outbox = CategoryEmbeddingOutbox(embedding_repo)
     worker = CategoryEmbeddingWorker(embedding_repo, _EmbClient())
+    default_policy = SemanticMatchPolicy(
+        minimum_candidate_score=0.35,
+        minimum_auto_select_score=0.45,
+        minimum_auto_select_gap=0.08,
+    )
     matcher = SemanticCategoryMatcher(
         snapshot_provider=service,
         embedding_repository=embedding_repo,
         query_gateway=LexicalFallbackGateway(dim=64),
         policy_provider=StaticSemanticMatchPolicyProvider(
-            policy or SemanticMatchPolicy()
+            policy or default_policy
         ),
         cache=InMemoryCategoryMatchCache(),
     )
     return service, catalog, embedding_repo, outbox, worker, matcher
 
-
-async def _publish_and_embed(service, catalog, outbox, worker) -> None:
-    snapshot = await service.get_published_snapshot(catalog.id)
-    if snapshot is None:
-        return
-    await outbox.enqueue_for_snapshot(snapshot, embedding_profile_id="p1")
-    await worker.run_once()
 
 
 @pytest.mark.asyncio
@@ -102,8 +100,10 @@ async def test_match_returns_matched_status_after_publish_and_embed():
         locale=catalog.primary_locale,
         use_case_text="Mobil ürün alma",
     )
-    await service.publish_revision(catalog.id)
-    await _publish_and_embed(service, catalog, outbox, worker)
+    from taksitlio.category_catalog.publish_pipeline import prepare_embed_and_publish
+    await prepare_embed_and_publish(
+        service, catalog.id, outbox, worker, embedding_repo=embedding_repo
+    )
     result = await matcher.match(
         MatchQuery(
             text="Kamera kalitesi iyi bir telefon arıyorum",
@@ -122,7 +122,10 @@ async def test_match_returns_matched_status_after_publish_and_embed():
 @pytest.mark.asyncio
 async def test_ambiguous_detected_when_gap_within_threshold():
     policy = SemanticMatchPolicy(
-        clarify_score_gap=0.35, minimum_score=0.1, maximum_candidates=3
+        minimum_auto_select_gap=0.35,
+        minimum_candidate_score=0.1,
+        minimum_auto_select_score=0.1,
+        maximum_candidates=3,
     )
     service, catalog, embedding_repo, outbox, worker, matcher = await _build_stack(
         policy=policy
@@ -144,8 +147,10 @@ async def test_ambiguous_detected_when_gap_within_threshold():
             locale=catalog.primary_locale,
             alias_text=alias,
         )
-    await service.publish_revision(catalog.id)
-    await _publish_and_embed(service, catalog, outbox, worker)
+    from taksitlio.category_catalog.publish_pipeline import prepare_embed_and_publish
+    await prepare_embed_and_publish(
+        service, catalog.id, outbox, worker, embedding_repo=embedding_repo
+    )
     result = await matcher.match(
         MatchQuery(
             text="telefon bilgisayar ikisi de olur",
@@ -178,10 +183,17 @@ async def test_degraded_mode_when_embedding_gateway_unavailable():
         locale=catalog.primary_locale,
         alias_text="telefon",
     )
-    await service.publish_revision(catalog.id)
-    await _publish_and_embed(service, catalog, outbox, worker)
+    from taksitlio.category_catalog.publish_pipeline import prepare_embed_and_publish
+    await prepare_embed_and_publish(
+        service, catalog.id, outbox, worker, embedding_repo=embedding_repo
+    )
 
-    degraded_policy = SemanticMatchPolicy(minimum_score=0.3)
+    degraded_policy = SemanticMatchPolicy(
+        minimum_candidate_score=0.3,
+        minimum_auto_select_score=0.3,
+        exact_alias_can_auto_select=True,
+        allow_lexical_degraded_mode=True,
+    )
     matcher = SemanticCategoryMatcher(
         snapshot_provider=service,
         embedding_repository=embedding_repo,
@@ -238,8 +250,10 @@ async def test_cache_hit_returns_result_with_flag():
         locale=catalog.primary_locale,
         alias_text="telefon",
     )
-    await service.publish_revision(catalog.id)
-    await _publish_and_embed(service, catalog, outbox, worker)
+    from taksitlio.category_catalog.publish_pipeline import prepare_embed_and_publish
+    await prepare_embed_and_publish(
+        service, catalog.id, outbox, worker, embedding_repo=embedding_repo
+    )
 
     query = MatchQuery(
         text="telefon lazım",

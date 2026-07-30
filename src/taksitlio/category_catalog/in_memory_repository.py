@@ -133,7 +133,25 @@ class InMemoryCategoryCatalogRepository:
 
     async def record_revision(self, revision: CatalogRevisionRecord) -> None:
         async with self._lock:
-            self._revisions.setdefault(revision.catalog_id, []).append(revision)
+            rows = self._revisions.setdefault(revision.catalog_id, [])
+            for idx, existing in enumerate(rows):
+                if existing.revision == revision.revision:
+                    rows[idx] = revision
+                    return
+            rows.append(revision)
+
+    async def get_revision(
+        self, catalog_id: str, revision: int
+    ) -> Optional[CatalogRevisionRecord]:
+        async with self._lock:
+            for row in self._revisions.get(catalog_id, []):
+                if row.revision == revision:
+                    return row
+            return None
+
+    async def list_revisions(self, catalog_id: str) -> list[CatalogRevisionRecord]:
+        async with self._lock:
+            return list(self._revisions.get(catalog_id, []))
 
     async def list_active_snapshot_categories(
         self,

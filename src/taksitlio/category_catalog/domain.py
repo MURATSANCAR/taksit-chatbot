@@ -37,9 +37,15 @@ class MatchMode(str, Enum):
 
 
 class RevisionStatus(str, Enum):
+    """Two-stage publish lifecycle for a catalog revision."""
+
     DRAFT = "DRAFT"
+    PREPARING = "PREPARING"
+    READY_TO_PUBLISH = "READY_TO_PUBLISH"
     PUBLISHED = "PUBLISHED"
-    ARCHIVED = "ARCHIVED"
+    FAILED = "FAILED"
+    SUPERSEDED = "SUPERSEDED"
+    ARCHIVED = "ARCHIVED"  # retained for historical rows
 
 
 def _now() -> datetime:

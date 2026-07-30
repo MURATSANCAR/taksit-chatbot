@@ -51,6 +51,12 @@ class CategoryCatalogRepository(Protocol):
 
     async def record_revision(self, revision: CatalogRevisionRecord) -> None: ...
 
+    async def get_revision(
+        self, catalog_id: str, revision: int
+    ) -> Optional[CatalogRevisionRecord]: ...
+
+    async def list_revisions(self, catalog_id: str) -> list[CatalogRevisionRecord]: ...
+
     async def get_snapshot(
         self,
         catalog_id: str,

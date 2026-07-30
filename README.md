@@ -30,9 +30,11 @@ Redis keys (Cluster hash-tag):
 
 ```text
 taksitlio:chat:{sessionId}:state
-taksitlio:chat:{sessionId}:idem:{idempotencyKey}
+taksitlio:chat:{sessionId}:idem:{sha256(idempotency_key)}
 taksitlio:chat:{sessionId}:events
 ```
+
+Raw idempotency key Redis key / log / metric label içinde bulunmaz.
 
 ### Örnek: session + optimistic update
 
@@ -78,11 +80,17 @@ Conversation state unit tests:
 pytest tests/unit/conversation_state -q
 ```
 
-Redis integration (optional):
+Redis integration (**required** — skip yok; CI Redis service kullanır):
 
 ```bash
-docker run --rm -p 6379:6379 redis:7-alpine
+docker run --rm -d --name taksitlio-test-redis -p 6379:6379 redis:7-alpine
 REDIS_URL=redis://127.0.0.1:6379/15 pytest -m integration tests/integration -q
+```
+
+Dynamic category acceptance (restart yok):
+
+```bash
+pytest tests/integration/semantic_matching -q
 ```
 
 ## Docker / DB

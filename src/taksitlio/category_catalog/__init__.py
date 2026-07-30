@@ -27,13 +27,19 @@ from taksitlio.category_catalog.domain import (
 )
 from taksitlio.category_catalog.errors import (
     CatalogAlreadyExists,
+    CatalogEmbeddingsNotReady,
     CatalogNotFound,
     CatalogPublishRejected,
     CatalogRepositoryUnavailable,
+    CatalogRevisionNotReady,
     CatalogValidationError,
     CategoryCatalogError,
     CategoryNotFound,
     DuplicateAliasError,
+)
+from taksitlio.category_catalog.embedding_gate import (
+    AlwaysReadyEmbeddingChecker,
+    RepositoryEmbeddingReadinessChecker,
 )
 from taksitlio.category_catalog.in_memory_repository import (
     InMemoryCategoryCatalogRepository,
@@ -49,14 +55,14 @@ from taksitlio.category_catalog.publication import (
 from taksitlio.category_catalog.service import CategoryCatalogService
 
 __all__ = [
-    "Alias",
-    "AttributeLink",
-    "Catalog",
+    "AlwaysReadyEmbeddingChecker",
     "CatalogAlreadyExists",
     "CatalogCategory",
+    "CatalogEmbeddingsNotReady",
     "CatalogNotFound",
     "CatalogPublishRejected",
     "CatalogRepositoryUnavailable",
+    "CatalogRevisionNotReady",
     "CatalogRevisionRecord",
     "CatalogStatus",
     "CatalogValidationError",
@@ -74,6 +80,7 @@ __all__ = [
     "PublicationRules",
     "PublicationValidationResult",
     "PublicationView",
+    "RepositoryEmbeddingReadinessChecker",
     "RevisionStatus",
     "UseCase",
     "validate_for_publish",

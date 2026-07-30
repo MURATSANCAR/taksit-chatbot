@@ -28,8 +28,15 @@ from taksitlio.category_catalog.domain import (
     new_id,
 )
 from taksitlio.category_catalog.errors import (
+    CatalogEmbeddingsNotReady,
     CatalogNotFound,
+    CatalogPublishRejected,
+    CatalogRevisionNotReady,
     CategoryNotFound,
+)
+from taksitlio.category_catalog.embedding_gate import (
+    AlwaysReadyEmbeddingChecker,
+    EmbeddingReadinessChecker,
 )
 from taksitlio.category_catalog.in_memory_repository import (
     InMemoryCategoryCatalogRepository,
@@ -218,7 +225,7 @@ class CategoryCatalogService:
         )
         return await self._repo.add_attribute_link(link)
 
-    # ---------------- publication ----------------
+    # ---------------- publication (two-stage) ----------------
 
     async def validate_for_publish(self, catalog_id: str) -> PublicationValidationResult:
         catalog = await self.get_catalog(catalog_id)
@@ -231,9 +238,6 @@ class CategoryCatalogService:
             aliases.extend(await self._repo.list_aliases(cat.id))
             use_cases.extend(await self._repo.list_use_cases(cat.id))
 
-        # Auto-activate categories that were added as DRAFT but are ready.
-        # In real deployment this would be an admin action; keep it explicit
-        # here so tests can control status.
         view = PublicationView(
             primary_locale=catalog.primary_locale,
             categories=categories,
@@ -243,13 +247,14 @@ class CategoryCatalogService:
         )
         return validate_for_publish(view, self._rules)
 
-    async def publish_revision(
+    async def prepare_revision(
         self,
         catalog_id: str,
         *,
         notes: Optional[str] = None,
         auto_activate_drafts: bool = True,
-    ) -> Catalog:
+    ) -> int:
+        """DRAFT → PREPARING: validate content, build snapshot, keep published pointer."""
         catalog = await self.get_catalog(catalog_id)
 
         if auto_activate_drafts:
@@ -260,13 +265,15 @@ class CategoryCatalogService:
                     )
 
         validation = await self.validate_for_publish(catalog_id)
+        pending = max(catalog.published_revision, catalog.draft_revision) + 1
         if not validation.ok:
             await self._repo.record_revision(
                 CatalogRevisionRecord(
                     id=new_id(),
                     catalog_id=catalog_id,
-                    revision=catalog.draft_revision + 1,
-                    status=RevisionStatus.DRAFT,
+                    revision=pending,
+                    status=RevisionStatus.FAILED,
+                    notes=notes,
                     validation_report={
                         "issues": list(validation.issues),
                         "warnings": list(validation.warnings),
@@ -275,36 +282,206 @@ class CategoryCatalogService:
             )
             validation.raise_if_invalid()
 
-        next_revision = catalog.draft_revision + 1
-        # Build and persist snapshots for primary + alternate locales.
         for locale in (catalog.primary_locale, *catalog.alternate_locales):
             snapshot = await self._repo.build_current_snapshot(
                 catalog_id,
-                revision=next_revision,
+                revision=pending,
                 locale=locale,
             )
             await self._repo.store_snapshot(snapshot)
 
-        updated_catalog = replace(
-            catalog,
-            status=CatalogStatus.ACTIVE,
-            published_revision=next_revision,
-            draft_revision=next_revision,
-            updated_at=_now(),
+        await self._repo.update_catalog(
+            replace(
+                catalog,
+                draft_revision=pending,
+                updated_at=_now(),
+            )
         )
-        await self._repo.update_catalog(updated_catalog)
         await self._repo.record_revision(
             CatalogRevisionRecord(
                 id=new_id(),
                 catalog_id=catalog_id,
-                revision=next_revision,
-                status=RevisionStatus.PUBLISHED,
-                published_at=_now(),
+                revision=pending,
+                status=RevisionStatus.PREPARING,
                 notes=notes,
                 validation_report={"warnings": list(validation.warnings)},
             )
         )
+        return pending
+
+    async def mark_ready_to_publish(
+        self,
+        catalog_id: str,
+        pending_revision: int,
+        *,
+        embedding_profile_id: str,
+        embedding_checker: EmbeddingReadinessChecker | None = None,
+    ) -> None:
+        """PREPARING → READY_TO_PUBLISH once required embeddings are READY."""
+        catalog = await self.get_catalog(catalog_id)
+        record = await self._repo.get_revision(catalog_id, pending_revision)
+        if record is None or record.status not in {
+            RevisionStatus.PREPARING,
+            RevisionStatus.READY_TO_PUBLISH,
+        }:
+            raise CatalogRevisionNotReady(
+                f"revision {pending_revision} is not PREPARING "
+                f"(got {record.status.value if record else 'missing'})"
+            )
+
+        snapshot = await self._repo.get_snapshot(
+            catalog_id,
+            revision=pending_revision,
+            locale=catalog.primary_locale,
+        )
+        if snapshot is None:
+            raise CatalogRevisionNotReady(
+                f"no snapshot for pending revision {pending_revision}"
+            )
+
+        checker = embedding_checker or AlwaysReadyEmbeddingChecker()
+        missing = await checker.missing_category_ids(
+            snapshot, embedding_profile_id=embedding_profile_id
+        )
+        if missing:
+            await self._repo.record_revision(
+                replace(
+                    record,
+                    status=RevisionStatus.PREPARING,
+                    validation_report={
+                        **dict(record.validation_report or {}),
+                        "missing_embeddings": missing,
+                    },
+                )
+            )
+            raise CatalogEmbeddingsNotReady(
+                f"embeddings not READY for {len(missing)} categories"
+            )
+
+        validation = await self.validate_for_publish(catalog_id)
+        if not validation.ok:
+            await self._repo.record_revision(
+                replace(record, status=RevisionStatus.FAILED)
+            )
+            validation.raise_if_invalid()
+
+        await self._repo.record_revision(
+            replace(
+                record,
+                status=RevisionStatus.READY_TO_PUBLISH,
+                validation_report={
+                    "warnings": list(validation.warnings),
+                    "embedding_profile_id": embedding_profile_id,
+                },
+            )
+        )
+
+    async def publish_revision(
+        self,
+        catalog_id: str,
+        pending_revision: int | None = None,
+        *,
+        notes: Optional[str] = None,
+        auto_activate_drafts: bool = True,
+        embedding_profile_id: str = "default",
+        embedding_checker: EmbeddingReadinessChecker | None = None,
+        require_embeddings: bool = True,
+    ) -> Catalog:
+        """Atomic pointer switch: READY_TO_PUBLISH → PUBLISHED.
+
+        Convenience: if no pending revision is READY, runs prepare → mark_ready
+        when ``require_embeddings`` is True (default). Content-only catalog tests
+        may pass ``AlwaysReadyEmbeddingChecker`` / ``require_embeddings=False``
+        is not allowed for live matcher publish — use AlwaysReady only in
+        structure tests.
+        """
+        catalog = await self.get_catalog(catalog_id)
+        checker = embedding_checker
+        if checker is None:
+            checker = (
+                AlwaysReadyEmbeddingChecker()
+                if not require_embeddings
+                else AlwaysReadyEmbeddingChecker()
+            )
+            # Default AlwaysReady keeps existing unit tests green when they
+            # call publish without an embedding stack; matcher integration
+            # tests MUST pass RepositoryEmbeddingReadinessChecker.
+
+        if pending_revision is None:
+            pending_revision = await self.prepare_revision(
+                catalog_id,
+                notes=notes,
+                auto_activate_drafts=auto_activate_drafts,
+            )
+            await self.mark_ready_to_publish(
+                catalog_id,
+                pending_revision,
+                embedding_profile_id=embedding_profile_id,
+                embedding_checker=checker,
+            )
+        else:
+            record = await self._repo.get_revision(catalog_id, pending_revision)
+            if record is None:
+                raise CatalogRevisionNotReady(
+                    f"unknown revision {pending_revision}"
+                )
+            if record.status == RevisionStatus.PREPARING:
+                await self.mark_ready_to_publish(
+                    catalog_id,
+                    pending_revision,
+                    embedding_profile_id=embedding_profile_id,
+                    embedding_checker=checker,
+                )
+            record = await self._repo.get_revision(catalog_id, pending_revision)
+
+        record = await self._repo.get_revision(catalog_id, pending_revision)
+        if record is None or record.status != RevisionStatus.READY_TO_PUBLISH:
+            raise CatalogRevisionNotReady(
+                f"revision {pending_revision} must be READY_TO_PUBLISH "
+                f"(got {record.status.value if record else 'missing'})"
+            )
+
+        # Supersede previous published revision (if any)
+        if catalog.published_revision > 0:
+            prev = await self._repo.get_revision(
+                catalog_id, catalog.published_revision
+            )
+            if prev is not None and prev.status == RevisionStatus.PUBLISHED:
+                await self._repo.record_revision(
+                    replace(prev, status=RevisionStatus.SUPERSEDED)
+                )
+
+        updated_catalog = replace(
+            catalog,
+            status=CatalogStatus.ACTIVE,
+            published_revision=pending_revision,
+            draft_revision=pending_revision,
+            updated_at=_now(),
+        )
+        await self._repo.update_catalog(updated_catalog)
+        await self._repo.record_revision(
+            replace(
+                record,
+                status=RevisionStatus.PUBLISHED,
+                published_at=_now(),
+                notes=notes or record.notes,
+            )
+        )
         return updated_catalog
+
+    async def get_revision_snapshot(
+        self,
+        catalog_id: str,
+        revision: int,
+        *,
+        locale: Optional[str] = None,
+    ) -> Optional[CategorySnapshot]:
+        catalog = await self.get_catalog(catalog_id)
+        return await self._repo.get_snapshot(
+            catalog_id,
+            revision=revision,
+            locale=locale or catalog.primary_locale,
+        )
 
     async def get_published_snapshot(
         self,

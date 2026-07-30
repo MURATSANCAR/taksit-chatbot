@@ -30,4 +30,6 @@ jobs:
       - name: Unit + integration (Redis required)
         run: |
           pytest -q
-          pytest -m integration tests/integration -q
+          pytest -m integration tests/integration -q --tb=short
+          # Dynamic catalog acceptance lives under tests/integration/semantic_matching
+          # and is collected by the full suite above (not Redis-gated).

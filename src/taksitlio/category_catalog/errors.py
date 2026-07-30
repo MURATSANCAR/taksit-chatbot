@@ -27,6 +27,14 @@ class CatalogPublishRejected(CategoryCatalogError):
         self.issues: list[str] = list(issues or [])
 
 
+class CatalogRevisionNotReady(CategoryCatalogError):
+    """Publish attempted before READY_TO_PUBLISH."""
+
+
+class CatalogEmbeddingsNotReady(CategoryCatalogError):
+    """Required embeddings are not READY for the pending revision."""
+
+
 class CatalogAlreadyExists(CategoryCatalogError):
     pass
 

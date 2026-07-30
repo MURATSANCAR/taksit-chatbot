@@ -4,7 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
+from typing import Any, Mapping, Optional
+
+from taksitlio.semantic_matching.policy import (
+    SemanticMatchPolicy,
+    SemanticMatchPolicyMapper,
+)
 
 
 class CategoryMatchStatus(str, Enum):
@@ -16,33 +21,43 @@ class CategoryMatchStatus(str, Enum):
 
 
 @dataclass(frozen=True)
-class SemanticMatchPolicy:
-    policy_code: str = "CATEGORY_MATCH_DEFAULT"
-    minimum_score: float = 0.55
-    clarify_score_gap: float = 0.08
-    maximum_candidates: int = 3
-    alias_weight: float = 0.35
-    lexical_weight: float = 0.15
-    vector_weight: float = 0.35
-    use_case_weight: float = 0.10
-    hierarchy_weight: float = 0.05
-    allow_lexical_degraded_mode: bool = True
-    cache_ttl_seconds: int = 300
-    require_semantic_description: bool = True
-    max_depth: int = 4
-    fuzzy_min_similarity: float = 0.78
-    policy_version: int = 1
-
-
-@dataclass(frozen=True)
 class MatchQuery:
-    text: str
+    """Matcher input from ConversationState snapshot — not raw chat transcript."""
+
     catalog_id: str
     locale: str
     embedding_profile_id: str
-    catalog_revision: int
+    need_description: str = ""
+    catalog_revision: int = 0
     session_id: Optional[str] = None
+    preferences: tuple[Mapping[str, Any], ...] = ()
+    usage_context: tuple[str, ...] = ()
+    deadline_ms: Optional[int] = None
     extra_hints: tuple[str, ...] = ()
+    # Legacy constructor alias (tests / early callers)
+    text: str = ""
+
+    def __post_init__(self) -> None:
+        desc = (self.need_description or self.text or "").strip()
+        if not desc:
+            raise ValueError("need_description is required")
+        if not self.need_description:
+            object.__setattr__(self, "need_description", desc)
+        if not self.text:
+            object.__setattr__(self, "text", desc)
+
+    @property
+    def query_text(self) -> str:
+        return self.need_description
+
+    @property
+    def hint_texts(self) -> tuple[str, ...]:
+        prefs = tuple(
+            str(p.get("concept"))
+            for p in self.preferences
+            if isinstance(p, Mapping) and p.get("concept")
+        )
+        return tuple(h for h in (self.extra_hints + prefs + self.usage_context) if h)
 
 
 @dataclass(frozen=True)
@@ -63,7 +78,7 @@ class SignalBreakdown:
             "use_case": self.use_case,
             "hierarchy": self.hierarchy,
             "alias_mode": self.alias_mode,
-            "alias_text": self.alias_text,
+            # alias_text intentionally omitted from default dict (privacy)
         }
 
 
@@ -93,6 +108,8 @@ class CategoryMatchDecision:
     selected_category_id: Optional[str]
     score_gap: Optional[float]
     reason: Optional[str] = None
+    reason_code: Optional[str] = None
+    missing_concepts: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -119,6 +136,12 @@ class CategoryMatchResult:
     def selected_category_id(self) -> Optional[str]:
         return self.decision.selected_category_id
 
+    @property
+    def degraded_reason(self) -> Optional[str]:
+        if not self.degraded_reasons:
+            return None
+        return self.degraded_reasons[0]
+
 
 __all__ = [
     "CategoryCandidate",
@@ -127,5 +150,6 @@ __all__ = [
     "CategoryMatchStatus",
     "MatchQuery",
     "SemanticMatchPolicy",
+    "SemanticMatchPolicyMapper",
     "SignalBreakdown",
 ]

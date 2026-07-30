@@ -136,7 +136,7 @@ class SemanticCategoryMatcher:
         if loaded_embeddings:
             try:
                 query_vector = await self._gateway.embed_query(
-                    normalize_query(query.text, query.extra_hints)
+                    normalize_query(query.query_text, query.hint_texts)
                 )
             except EmbeddingGatewayUnavailable as exc:
                 if not policy.allow_lexical_degraded_mode:
@@ -169,7 +169,7 @@ class SemanticCategoryMatcher:
         lexical_scorer = LexicalOverlapScorer()
         use_case_scorer = UseCaseScorer()
 
-        normalized = normalize_query(query.text, query.extra_hints)
+        normalized = normalize_query(query.query_text, query.hint_texts)
 
         candidates: list[CategoryCandidate] = []
         for node in index.snapshot.nodes:
@@ -194,6 +194,8 @@ class SemanticCategoryMatcher:
                 alias_text=alias_result.text,
             )
             score = scorer.combine(breakdown, degraded=degraded)
+            if score < policy.minimum_candidate_score and score <= 0.0:
+                continue
             if score <= 0.0:
                 continue
             candidates.append(
@@ -221,11 +223,11 @@ class SemanticCategoryMatcher:
             for rank, c in enumerate(limited)
         )
 
-        decision = DecisionPolicy(policy).decide(ranked)
+        decision = DecisionPolicy(policy).decide(ranked, degraded=degraded)
 
         duration_ms = (time.perf_counter() - started) * 1000.0
         result = CategoryMatchResult(
-            query_text_hash=_query_hash(query.text),
+            query_text_hash=_query_hash(query.query_text),
             catalog_id=query.catalog_id,
             catalog_revision=snapshot.revision,
             locale=snapshot.locale,
@@ -265,7 +267,7 @@ class SemanticCategoryMatcher:
     ) -> CategoryMatchResult:
         duration_ms = (time.perf_counter() - started) * 1000.0
         result = CategoryMatchResult(
-            query_text_hash=_query_hash(query.text),
+            query_text_hash=_query_hash(query.query_text),
             catalog_id=query.catalog_id,
             catalog_revision=query.catalog_revision,
             locale=query.locale,
@@ -277,10 +279,15 @@ class SemanticCategoryMatcher:
                 selected_category_id=None,
                 score_gap=None,
                 reason=reason,
+                reason_code=status.value,
             ),
             duration_ms=duration_ms,
-            degraded=(status != CategoryMatchStatus.MATCHED),
-            degraded_reasons=(reason,) if reason else (),
+            degraded=False if status == CategoryMatchStatus.CATALOG_EMPTY else (
+                status == CategoryMatchStatus.CATALOG_UNAVAILABLE
+            ),
+            degraded_reasons=(reason,)
+            if status == CategoryMatchStatus.CATALOG_UNAVAILABLE
+            else (),
             diagnostics={},
         )
         self._metrics.incr(

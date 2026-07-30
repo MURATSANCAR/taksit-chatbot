@@ -14,6 +14,7 @@ from taksitlio.semantic_matching.domain import (
     CategoryMatchStatus,
     MatchQuery,
     SemanticMatchPolicy,
+    SemanticMatchPolicyMapper,
     SignalBreakdown,
 )
 from taksitlio.semantic_matching.embedding_gateway import (
@@ -67,6 +68,7 @@ __all__ = [
     "QueryEmbeddingGateway",
     "SemanticCategoryMatcher",
     "SemanticMatchPolicy",
+    "SemanticMatchPolicyMapper",
     "SemanticMatchPolicyProvider",
     "SemanticMatchingError",
     "SignalBreakdown",
