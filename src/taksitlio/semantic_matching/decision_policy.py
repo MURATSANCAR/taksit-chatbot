@@ -30,6 +30,7 @@ from taksitlio.semantic_matching.domain import (
     CategoryMatchStatus,
     SemanticMatchPolicy,
 )
+from taksitlio.semantic_matching.query_intent import QueryIntentKind
 
 
 class DecisionPolicy:
@@ -43,6 +44,7 @@ class DecisionPolicy:
         degraded: bool = False,
         collapsed_pairs: Sequence[tuple[str, str]] = (),
         multi_need_signal: bool = False,
+        intent_kind: Optional[QueryIntentKind] = None,
     ) -> CategoryMatchDecision:
         eligible = [
             c
@@ -76,10 +78,39 @@ class DecisionPolicy:
         if degraded:
             return self._decide_degraded(eligible, top, gap)
 
+        # ADR-007 §9: non-purchase / OOS / choice never auto-select — even
+        # when a product alias string appears in the utterance.
+        if intent_kind is QueryIntentKind.OUT_OF_SCOPE:
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.NO_MATCH,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="out-of-scope intent refuses category auto-select",
+                reason_code="OUT_OF_SCOPE_INTENT",
+            )
+        if intent_kind is QueryIntentKind.NON_PURCHASE:
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.NO_MATCH,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="non-purchase intent refuses category auto-select",
+                reason_code="NON_PURCHASE_INTENT",
+            )
+        if intent_kind is QueryIntentKind.CHOICE:
+            # Choice questions ("X mi Y mi") always clarify — do not let a
+            # single direct alias collapse the sibling pair.
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.AMBIGUOUS,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="choice / multi-need utterance requires clarification",
+                reason_code="MULTI_NEED_FALSE_MATCH_GUARD",
+                missing_concepts=("need_prioritisation",),
+            )
+
         # ADR-007 §G: when the caller explicitly signals "user said two
         # distinct needs at once" (multi_need_signal) and both are still
-        # in the pool, prefer AMBIGUOUS over auto-select. This never
-        # overrides a direct-alias auto-select — that's handled below.
+        # in the pool, prefer AMBIGUOUS over auto-select.
         if (
             multi_need_signal
             and len(eligible) >= 2

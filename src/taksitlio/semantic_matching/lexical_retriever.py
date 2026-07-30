@@ -58,8 +58,12 @@ class AliasMatcher:
             tokens = normalized_query.replace(",", " ").split()
             if text in tokens:
                 return 0.92
-            if text in normalized_query:
-                return 0.82
+            # Token-prefix inflection (telefon → telefonum) — never bare
+            # substring. Short aliases like "pad" must not hit "kapadokya".
+            if len(text) >= 4:
+                for tok in tokens:
+                    if tok.startswith(text) and len(tok) - len(text) <= 4:
+                        return 0.88
             return 0.0
         if mode == MatchMode.PREFIX:
             if normalized_query.startswith(text) or text.startswith(normalized_query):
@@ -71,9 +75,9 @@ class AliasMatcher:
                 return min(1.0, similarity)
             return 0.0
         if mode == MatchMode.SEMANTIC_HINT:
-            # semantic-hint aliases boost the semantic pool but never score
-            # directly through the alias channel.
-            if text in normalized_query:
+            # Token membership only — bare substring is too aggressive.
+            tokens = set(normalized_query.replace(",", " ").split())
+            if text in tokens:
                 return 0.45
             return 0.0
         return 0.0

@@ -221,3 +221,48 @@ verebilir; buraya `INSUFFICIENT_REVIEWED_DATA` göstergesi eklenmelidir.
 `REJECTED_LEXICAL_FALLBACK` / `INVALID_DIMENSION` olur; hiçbir yolda
 lexical fallback görünmezden gelinmez.
 
+## 10. End-to-end anlama ve provisional gate (ADR-007)
+
+ADR-007, "runtime FAST anlama" ile "oracle annotation" akışlarını iki
+ayrı **evaluation input mode** olarak ayırır. Admin evaluation ekranı
+her koşuda `input_mode` kolonu göstermelidir:
+
+| `input_mode` | Anlamı |
+|--------------|--------|
+| `MATCHER_ORACLE_INPUT` | Annotated `semantic_constraints` matcher'a doğrudan verilir. |
+| `END_TO_END_RUNTIME_INPUT` | Sadece utterance → FAST → validator → matcher. Annotation kullanılmaz. |
+| `FAST_EXTRACTION_ONLY` | Matcher çağrılmaz — sadece FAST + validator çıktısı raporlanır. |
+| `MATCHER_ONLY` | Oracle modunun `semantic_constraints` boş varyantı; matcher'ın kendi katkısını izole eder. |
+
+### 10.1 Provisional quality gate
+
+`--gate-profile provisional` seçeneği ADR-007 §H'daki tavanı uygular.
+Statü olarak `PROVISIONAL_ACCEPT` en fazla verilir; `ACCEPT` yalnızca
+`--gate-profile hardening` altında ve `HUMAN_REVIEWED ≥ 100` çoğunluğu
+sağlanınca mümkündür. `forbidden_candidate_violation_count` veya
+`unsafe_auto_select_count` sıfırdan büyükse gate otomatik olarak
+`REJECT`'e döner ve `notes` içinde `hard-safety violated` mesajı yer
+alır.
+
+### 10.2 Batch review workflow
+
+`taksitlio.evaluation.review_batch` CLI, DRAFT case'lerden dengeli bir
+kümeyi (25 MATCHED / 25 AMBIGUOUS / 25 NO_MATCH / 15 negation-correction
+/ 10 typo-characterless) iki opaque reviewer üzerinden `HUMAN_REVIEWED`
+seviyesine çıkarır. Reviewer identifier'ları farklı ve opaque olmak
+zorundadır; aksi halde CLI hata verir. Bu araç, review UI hazır olmadan
+CI'da `HUMAN_REVIEWED ≥ 100` şartını deterministik biçimde sağlamak
+içindir.
+
+### 10.3 Chat orchestrator gözlemi
+
+`ChatOrchestrator` bir turn için üreteceği metrikler:
+
+* `fast_failure_reason` (varsa) — `FAST_DEPLOYMENT_UNAVAILABLE` gibi
+  BLOCKED_DEPENDENCY nedenleri.
+* `reevaluation_count` — sürüm çakışması sonrası kaç kez yeniden CAS
+  denendi (0 ya da 1). İkinci çakışma `VERSION_CONFLICT_UNRECOVERABLE`
+  hatası olarak yükseltilir.
+* `rejected_constraint_reasons` — validator hangi constraint'i neden
+  düşürdü; admin panelinde tooltip olarak gösterilebilir.
+

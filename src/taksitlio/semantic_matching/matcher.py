@@ -51,6 +51,7 @@ from taksitlio.semantic_matching.lexical_retriever import (
     UseCaseScorer,
     normalize_query,
 )
+from taksitlio.semantic_matching.query_intent import classify_query_intent
 from taksitlio.semantic_matching.observability import (
     MatcherMetricsHook,
     NoOpMatcherMetricsHook,
@@ -364,6 +365,7 @@ class SemanticCategoryMatcher:
             degraded=degraded,
             collapsed_pairs=collapse_result.collapsed_pairs,
             multi_need_signal=query.multi_need_signal,
+            intent_kind=classify_query_intent(query.query_text),
         )
 
         # Non-matchable (out-of-scope) nodes stay in pool diagnostics but never
