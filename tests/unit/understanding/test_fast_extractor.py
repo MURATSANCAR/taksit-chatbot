@@ -84,6 +84,112 @@ async def test_extractor_name_and_diagnostics(
     assert isinstance(outcome.diagnostics, dict)
 
 
+async def test_negation_with_comma_split_still_isolates_negative_side(
+    extractor: DeterministicFastExtractor,
+) -> None:
+    """Regression: comma-split clauses used to leak the negated noun
+    as positive because ``_split_on_neg_cue`` required both sides to be
+    non-empty."""
+
+    outcome = await extractor.extract("telefon istemiyorum, bilgisayar arıyorum")
+    positives = [_normalize(c) for c in _positive_concepts(outcome)]
+    negatives = [_normalize(c) for c in _negative_concepts(outcome)]
+    assert "bilgisayar" in positives
+    assert "telefon" in negatives
+    assert not any(_normalize(c) == "telefon" for c in _positive_concepts(outcome))
+
+
+async def test_trailing_degil_negates_only_the_last_noun(
+    extractor: DeterministicFastExtractor,
+) -> None:
+    """"X lazım Y değil" — Y is the negated noun, X is the positive.
+
+    Also asserts the "yanlış söyledim" prefix does NOT leak into either
+    concept slot.
+    """
+
+    outcome = await extractor.extract(
+        "yanlış söyledim ses sistemi lazım televizyon değil"
+    )
+    positives = [_normalize(c) for c in _positive_concepts(outcome)]
+    negatives = [_normalize(c) for c in _negative_concepts(outcome)]
+    corrections = [
+        (_normalize(c.previous_concept), _normalize(c.replacement_concept))
+        for c in outcome.constraints.corrections
+    ]
+    assert any("ses" in p and "sistem" in p for p in positives)
+    assert "televizyon" in negatives
+    # Correction pair (retracted televizyon → intended ses sistem).
+    assert any(prev == "televizyon" and "ses" in repl for prev, repl in corrections)
+    # No politeness / verb leakage.
+    for c in outcome.constraints.positive + outcome.constraints.negative:
+        low = _normalize(c.concept)
+        assert "söyledim" not in low
+        assert "yanlış" not in low
+        assert "dilerim" not in low
+
+
+async def test_retract_and_replace_pattern_emits_correction(
+    extractor: DeterministicFastExtractor,
+) -> None:
+    """"hayır X demedim Y dedim" — negative X, positive Y, correction pair."""
+
+    outcome = await extractor.extract("hayır telefon demedim tablet dedim")
+    positives = [_normalize(c) for c in _positive_concepts(outcome)]
+    negatives = [_normalize(c) for c in _negative_concepts(outcome)]
+    corrections = [
+        (_normalize(c.previous_concept), _normalize(c.replacement_concept))
+        for c in outcome.constraints.corrections
+    ]
+    assert "tablet" in positives
+    assert "telefon" in negatives
+    assert any(prev == "telefon" and repl == "tablet" for prev, repl in corrections)
+    # Never emit "demedim" or "dedim" as a concept.
+    for c in outcome.constraints.positive + outcome.constraints.negative:
+        low = _normalize(c.concept)
+        assert "demedim" not in low
+        assert low != "dedim"
+
+
+async def test_apology_prefix_is_stripped_from_concepts(
+    extractor: DeterministicFastExtractor,
+) -> None:
+    """"özür dilerim X değil Y" — politeness prefix must not leak."""
+
+    outcome = await extractor.extract("özür dilerim tablet değil telefon")
+    positives = [_normalize(c) for c in _positive_concepts(outcome)]
+    negatives = [_normalize(c) for c in _negative_concepts(outcome)]
+    assert "telefon" in positives
+    assert "tablet" in negatives
+    for c in outcome.constraints.positive + outcome.constraints.negative:
+        low = _normalize(c.concept)
+        assert "özür" not in low
+        assert "dilerim" not in low
+
+
+async def test_never_emits_stopword_only_concepts(
+    extractor: DeterministicFastExtractor,
+) -> None:
+    """Broad sweep: none of the four ADR-007 §1 regression utterances
+    may produce a bare stopword or a `fixture.*` concept.
+    """
+
+    hard = [
+        "telefon istemiyorum, bilgisayar arıyorum",
+        "yanlış söyledim ses sistemi lazım televizyon değil",
+        "hayır telefon demedim tablet dedim",
+        "özür dilerim tablet değil telefon",
+    ]
+    forbidden_bare = {"demedim", "dilerim", "söyledim", "yanlış", "özür"}
+    for utter in hard:
+        outcome = await extractor.extract(utter)
+        for c in outcome.constraints.positive + outcome.constraints.negative:
+            low = _normalize(c.concept)
+            assert low not in forbidden_bare, (utter, c)
+            assert not c.concept.startswith("fixture."), (utter, c)
+            assert not _looks_like_uuid(c.concept), (utter, c)
+
+
 async def test_stub_remote_extractor_raises_deployment_unavailable() -> None:
     stub = StubRemoteFastExtractor()
     with pytest.raises(FastDeploymentUnavailable) as excinfo:

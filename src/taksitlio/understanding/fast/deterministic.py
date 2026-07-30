@@ -69,6 +69,7 @@ _STOPWORDS_RAW = (
     "olsun", "olabilir", "olur", "yeter", "lazım", "gerek",
     "alacağım", "alacağız", "alcağım", "alacak", "alalım",
     "alsam", "alsak", "alsınlar", "aldık",
+    "almalıyım", "almalıyız", "almalı", "almalısın", "almalısınız",
     "aldım", "verir", "verin", "verirsiniz", "önerin", "önerir",
     "önerebilir", "tavsiye", "modelleri", "modellerine",
     "önce", "sonra", "biraz", "çok", "az",
@@ -179,6 +180,23 @@ _MULTI_NEED_CUES: tuple[str, ...] = (
     " ya da ",
 )
 
+# Indecision cues — user asks the assistant to help pick between two
+# concepts without committing. Presence of any of these must turn a
+# resolved "X yerine mi Y" correction back into a multi-need signal so
+# that the matcher lands on AMBIGUOUS instead of auto-selecting Y.
+_INDECISION_CUES: tuple[str, ...] = (
+    "karar veremedim",
+    "karar veremiyorum",
+    "kararsızım",
+    "kararsizim",
+    "emin değilim",
+    "emin degilim",
+    "hangisi daha iyi",
+    "hangisini alacağımı bilmiyorum",
+    "hangisini almalıyım",
+    "yoksa",
+)
+
 
 _WORD_RE = re.compile(r"[\wçğıöşüÇĞİÖŞÜ']+", re.UNICODE)
 
@@ -236,7 +254,7 @@ def _split_contrast(clause: _Clause) -> Optional[tuple[str, str, str]]:
     return None
 
 
-def _pick_head_noun(span: str) -> Optional[str]:
+def _pick_head_noun(span: str, *, head_only: bool = False) -> Optional[str]:
     """Return the primary noun concept in ``span``.
 
     Turkish typically places the head noun *before* the auxiliary verb
@@ -244,6 +262,11 @@ def _pick_head_noun(span: str) -> Optional[str]:
     non-stopword token, plus one preceding adjectival modifier if present.
     Ends up producing "kablosuz kulaklık", "robot süpürge", "kahve
     makinesi", "telefon", etc.
+
+    When ``head_only=True``, return ONLY the last content token — used for
+    the negative slot so the matcher's exact-alias hard-exclude ("telefon"
+    matches the `telefon` alias of `mobile-device`) is not defeated by a
+    trailing adjective like "yeni telefon".
     """
 
     if not span:
@@ -267,17 +290,15 @@ def _pick_head_noun(span: str) -> Optional[str]:
         return tok
 
     cleaned = tuple(_strip_case(t) for t in keep)
-    # Take the last token, plus one preceding modifier when it looks
-    # adjectival (short, alpha). Cap at two tokens.
     tail = cleaned[-1]
-    if len(cleaned) >= 2:
+    if head_only or len(cleaned) < 2:
+        concept = tail
+    else:
         prev = cleaned[-2]
         if len(prev) <= 10 and prev.isalpha():
             concept = f"{prev} {tail}"
         else:
             concept = tail
-    else:
-        concept = tail
     concept = concept.strip()
     if len(concept) < 2:
         return None
@@ -324,6 +345,14 @@ class DeterministicFastExtractor:
                 multi_need = True
                 break
 
+        # Independent indecision signal: "karar veremedim" / "yoksa" / …
+        # means the user is asking us to choose — never a definitive
+        # correction. We defer application until after clause extraction
+        # so we can promote the resolved negative back to a positive.
+        indecisive = any(
+            cue in normalized_full for cue in _INDECISION_CUES
+        )
+
         # Track already-seen concepts to avoid pathological duplicates.
         seen_positive: set[str] = set()
         seen_negative: set[str] = set()
@@ -351,6 +380,35 @@ class DeterministicFastExtractor:
                 seen_positive=seen_positive,
                 seen_negative=seen_negative,
             )
+
+        # Indecision post-processing (ADR-007 §1). The user is asking
+        # for guidance between two options — surface BOTH as positives
+        # so the matcher's multi_need_signal fires and lands on
+        # AMBIGUOUS instead of auto-selecting the resolved replacement.
+        if indecisive:
+            multi_need = True
+            if (
+                len(raw_positive) == 1
+                and len(raw_negative) == 1
+                and not raw_corrections
+            ):
+                neg = raw_negative[0]
+                neg_concept = neg["concept"]
+                if not any(
+                    _norm_lower(p["concept"]) == _norm_lower(neg_concept)
+                    for p in raw_positive
+                ):
+                    raw_positive.append(
+                        {
+                            "concept": neg_concept,
+                            "source": "EXPLICIT",
+                            "confidence": 0.7,
+                        }
+                    )
+                # The user has NOT rejected the alternative — drop the
+                # negative so the matcher does not hard-exclude it.
+                raw_negative.clear()
+                seen_negative.clear()
 
         # Build a schema-valid NeedProfile.
         need_profile = build_empty_need_profile(
@@ -547,23 +605,38 @@ def _split_on_multi_need(clause: _Clause) -> Optional[list[str]]:
 def _split_on_neg_cue(clause: _Clause) -> Optional[tuple[str, str]]:
     """Return ``(before, after)`` when a negation cue appears in the clause.
 
-    Unlike ``_split_contrast``, this helper also succeeds when the cue is
-    at the START (empty ``before``) or END (empty ``after``) of the clause
-    — that's exactly the "telefon istemiyorum" case where the user names
-    what they do NOT want without an explicit positive replacement. The
-    caller then treats the non-empty side as the negative concept and (if
-    a later positive clause exists) surfaces that separately.
+    Prefers a cue whose split leaves *content* (non-stopword tokens) on
+    BOTH sides — that's the "yok telefonu boşver bilgisayar" or the
+    "X demedim Y dedim" shape where the user names both what they don't
+    want and what they do want. Falls back to a one-sided split when
+    only one cue exists (``"telefon istemiyorum"`` → negative-only).
     """
 
     words = clause.words
     lowered = [_norm_lower(w) for w in words]
     cue_set = {ascii_fold(c) for c in _NEG_CUES}
-    for idx, low in enumerate(lowered):
-        if low in cue_set:
-            before = " ".join(words[:idx])
-            after = " ".join(words[idx + 1 :])
-            if before or after:
-                return before, after
+    matches = [i for i, low in enumerate(lowered) if low in cue_set]
+    if not matches:
+        return None
+
+    def _has_content(span: str) -> bool:
+        return any(
+            _norm_lower(w) not in _STOPWORDS for w in _tokenize(span)
+        )
+
+    # First pass: prefer bilateral content splits.
+    for idx in matches:
+        before = " ".join(words[:idx])
+        after = " ".join(words[idx + 1 :])
+        if _has_content(before) and _has_content(after):
+            return before, after
+
+    # Fallback: any non-empty side is enough.
+    for idx in matches:
+        before = " ".join(words[:idx])
+        after = " ".join(words[idx + 1 :])
+        if before or after:
+            return before, after
     return None
 
 
@@ -605,16 +678,33 @@ def _add_positive(bucket: list[dict], concept: str, seen: set[str]) -> None:
 
 def _add_negative(bucket: list[dict], concept: str, seen: set[str]) -> None:
     key = _norm_lower(concept)
-    if key in seen:
-        return
-    seen.add(key)
-    bucket.append(
-        {
-            "concept": concept,
-            "source": "EXPLICIT_NEGATION",
-            "confidence": 0.95,
-        }
-    )
+    if key not in seen:
+        seen.add(key)
+        bucket.append(
+            {
+                "concept": concept,
+                "source": "EXPLICIT_NEGATION",
+                "confidence": 0.95,
+            }
+        )
+    # ADR-007 §1: also emit the head-noun-only variant so the matcher's
+    # exact-alias hard-exclude fires against categories whose alias is
+    # the bare head noun (``telefon`` for ``mobile-device``) even when
+    # the user said something like "yeni telefon almak istemiyorum".
+    tokens = _tokenize(concept)
+    if len(tokens) > 1:
+        head_only = _pick_head_noun(concept, head_only=True)
+        if head_only:
+            head_key = _norm_lower(head_only)
+            if head_key and head_key != key and head_key not in seen:
+                seen.add(head_key)
+                bucket.append(
+                    {
+                        "concept": head_only,
+                        "source": "EXPLICIT_NEGATION",
+                        "confidence": 0.9,
+                    }
+                )
 
 
 def _to_schema_constraints(

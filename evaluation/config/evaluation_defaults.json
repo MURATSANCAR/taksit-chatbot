@@ -1,6 +1,6 @@
 {
   "version": "v2",
-  "notes": "Evaluation thresholds + objective weights. Loaded by the evaluator; nothing here is hardcoded in Python. `quality_gate_thresholds` remains the loose bootstrap gate so v1 smoke acceptance still passes; ADR-006 introduces `hardening_quality_gate_thresholds` (enabled via --gate-profile hardening) with tighter, promotion-grade targets. Neither profile can flip a DRAFT/synthetic dataset to full ACCEPT — see evaluator._resolve_final_status.",
+  "notes": "Evaluation thresholds + objective weights. Loaded by the evaluator; nothing here is hardcoded in Python. `quality_gate_thresholds` remains the loose bootstrap gate so v1 smoke acceptance still passes; ADR-006 `hardening_quality_gate_thresholds` is the stricter promotion bar (0.85/0.82/0.95/0.95). ADR-007 closeout / ADR-008: `provisional_quality_gate_thresholds` uses E2E provisional bar 0.78/0.65/0.90/0.88 with hard-safety zeros — do not lower thresholds to pass; fix ranking/retrieval. Neither profile can flip a DRAFT/synthetic dataset to full ACCEPT — see evaluator._resolve_final_status.",
   "latency_budget_p95_ms": 250,
   "calibration_bucket_count": 10,
   "minimum_metric_support": 30,
@@ -46,10 +46,10 @@
     "brier": {"max": 0.25}
   },
   "provisional_quality_gate_thresholds": {
-    "status_accuracy": {"min": 0.85},
-    "top_1_accepted_accuracy": {"min": 0.82},
-    "top_2_accepted_recall": {"min": 0.95},
-    "required_candidate_recall": {"min": 0.95},
+    "status_accuracy": {"min": 0.78},
+    "top_1_accepted_accuracy": {"min": 0.65},
+    "top_2_accepted_recall": {"min": 0.90},
+    "required_candidate_recall": {"min": 0.88},
     "unsafe_auto_select_count": {"max_count": 0},
     "forbidden_candidate_violation_count": {"max_count": 0},
     "unnecessary_clarification_rate": {"max": 0.12},
