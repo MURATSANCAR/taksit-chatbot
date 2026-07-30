@@ -578,8 +578,7 @@ def generate() -> tuple[dict, dict]:
         "validation_misleading": sum(
             1
             for p in val_payloads
-            if "indirect_match" in (p.get("dimensions") or {}).get("tags", [])
-            or "colloquial" in (p.get("dimensions") or {}).get("tags", [])
+            if str(p.get("semantic_group_id") or "").startswith("acc.v3.mis.")
         ),
         "validation_exclusion": sum(
             1
@@ -612,7 +611,7 @@ def main() -> int:
         and counts["validation_no_match"] >= 100
         and counts["validation_oos"] >= 25
         and counts["validation_multi_need"] >= 15
-        and counts["validation_misleading"] >= 10
+        and counts["validation_misleading"] >= 15
         and counts["validation_exclusion"] >= 25
     )
     if not ok:
