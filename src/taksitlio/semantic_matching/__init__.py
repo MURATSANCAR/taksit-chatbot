@@ -7,6 +7,11 @@ from taksitlio.semantic_matching.cache import (
     build_cache_key,
 )
 from taksitlio.semantic_matching.decision_policy import DecisionPolicy
+from taksitlio.semantic_matching.diagnostics import (
+    RetrievalDiagnostic,
+    RetrievalReasonCode,
+    build_from_match_result,
+)
 from taksitlio.semantic_matching.domain import (
     CategoryCandidate,
     CategoryMatchDecision,
@@ -66,6 +71,8 @@ __all__ = [
     "NoOpCategoryMatchCache",
     "NoOpMatcherMetricsHook",
     "QueryEmbeddingGateway",
+    "RetrievalDiagnostic",
+    "RetrievalReasonCode",
     "SemanticCategoryMatcher",
     "SemanticMatchPolicy",
     "SemanticMatchPolicyMapper",
@@ -74,4 +81,5 @@ __all__ = [
     "SignalBreakdown",
     "StaticSemanticMatchPolicyProvider",
     "build_cache_key",
+    "build_from_match_result",
 ]

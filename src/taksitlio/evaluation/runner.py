@@ -31,6 +31,7 @@ from taksitlio.semantic_matching import (
     SemanticCategoryMatcher,
     SemanticMatchPolicy,
     StaticSemanticMatchPolicyProvider,
+    build_from_match_result,
 )
 from taksitlio.evaluation.concurrency import ConcurrencySummary, bounded_gather
 from taksitlio.evaluation.domain import (
@@ -158,8 +159,34 @@ def _result_to_prediction(
             "top_vector": top_signals.vector,
             "top_direct_alias_match": top_signals.direct_alias_match,
             "top_hierarchy_collapsed": top_signals.hierarchy_collapsed,
+            # ADR-008: per-channel breakdown of the top candidate.
+            "top_surface_exact_alias": top_signals.surface_exact_alias,
+            "top_normalized_exact_alias": top_signals.normalized_exact_alias,
+            "top_token_set_alias": top_signals.token_set_alias,
+            "top_prefix_safe_alias": top_signals.prefix_safe_alias,
+            "top_character_ngram": top_signals.character_ngram,
+            "top_morphological_variant": top_signals.morphological_variant,
+            "top_negative_penalty": top_signals.negative_penalty,
         }
     diagnostics["decision_reason_code"] = result.decision.reason_code
+    # ADR-008 P0: enrich prediction diagnostics with the typed retrieval
+    # diagnostic (surface / normalized / variants / channels / reason
+    # codes). We only add ``CORRECT_CANDIDATE_RANKED_LOW`` when the case
+    # declares a single acceptable fixture key that resolves to a known
+    # category id.
+    expected_cat_id: Optional[str] = None
+    accepted = getattr(case.expected, "acceptable_fixture_keys", ())
+    if isinstance(accepted, (tuple, list)) and len(accepted) == 1:
+        key = accepted[0]
+        if isinstance(key, str) and key:
+            try:
+                expected_cat_id = handle.resolve(key)
+            except Exception:
+                expected_cat_id = None
+    retrieval_diag = build_from_match_result(
+        result, expected_category_id=expected_cat_id
+    )
+    diagnostics["retrieval_diagnostic"] = retrieval_diag.to_dict()
     return CasePrediction(
         case_id=case.case_id,
         predicted_status=result.status.value,
