@@ -67,6 +67,10 @@ class QualityGateStatus(str, Enum):
     REJECT = "REJECT"
     PROVISIONAL_ACCEPT = "PROVISIONAL_ACCEPT"
     INSUFFICIENT_REVIEWED_DATA = "INSUFFICIENT_REVIEWED_DATA"
+    # ADR-008 P0 — quality bar met but real FAST/embedding/pgvector/Redis
+    # not measured yet; never treat LexicalFallback as production runtime.
+    QUALITY_READY_RUNTIME_BLOCKED = "QUALITY_READY_RUNTIME_BLOCKED"
+    QUALITY_REJECT = "QUALITY_REJECT"
 
 
 @dataclass(frozen=True)

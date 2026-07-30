@@ -256,12 +256,16 @@ def _resolve_final_status(
 
     if gate_ok:
         if has_reviewed_majority:
-            # ADR-007 §H — PROVISIONAL_ACCEPT is the sprint-level ceiling
-            # when the reviewer count clears the gate. Only the classic
-            # "hardening" profile continues to gate full ACCEPT; the new
-            # "provisional" profile explicitly stops at PROVISIONAL_ACCEPT.
+            # ADR-008 P0: provisional profile cannot claim PROVISIONAL_ACCEPT
+            # until real FAST + embedding + pgvector + Redis are measured.
+            # Quality-ready-but-runtime-blocked is the honest sprint ceiling.
             if gate_profile == "provisional":
-                return QualityGateStatus.PROVISIONAL_ACCEPT, notes
+                notes.append(
+                    "ADR-008 P0: quality thresholds met but runtime "
+                    "dependency gate is BLOCKED_DEPENDENCY — "
+                    "PROVISIONAL_ACCEPT deferred to P1"
+                )
+                return QualityGateStatus.QUALITY_READY_RUNTIME_BLOCKED, notes
             return QualityGateStatus.ACCEPT, notes
         # No HUMAN_REVIEWED majority — cannot promote to full ACCEPT.
         notes.append(
@@ -272,6 +276,11 @@ def _resolve_final_status(
             notes.append("dataset fully synthetic")
         if reviewed < MIN_HUMAN_REVIEWED_FOR_ACCEPT:
             return QualityGateStatus.INSUFFICIENT_REVIEWED_DATA, notes
+        if gate_profile == "provisional":
+            notes.append(
+                "ADR-008 P0: runtime dependency still BLOCKED_DEPENDENCY"
+            )
+            return QualityGateStatus.QUALITY_READY_RUNTIME_BLOCKED, notes
         return QualityGateStatus.PROVISIONAL_ACCEPT, notes
 
     # Gate failed. Distinguish "we don't have enough reviewed data" from
@@ -281,6 +290,8 @@ def _resolve_final_status(
             f"HUMAN_REVIEWED={reviewed} < {MIN_HUMAN_REVIEWED_FOR_ACCEPT}"
         )
         return QualityGateStatus.INSUFFICIENT_REVIEWED_DATA, notes
+    if gate_profile == "provisional":
+        return QualityGateStatus.QUALITY_REJECT, notes
     return QualityGateStatus.REJECT, notes
 
 
