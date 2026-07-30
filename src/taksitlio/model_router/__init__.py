@@ -1,15 +1,15 @@
+from taksitlio.model_gateway.health import (
+    CircuitState,
+    HealthState,
+    InMemoryRuntimeHealthRegistry,
+    RuntimeSnapshot,
+)
 from taksitlio.model_router.confidence import (
     NeutralSemanticSignalProvider,
     SemanticSignals,
     SystemConfidenceEvaluator,
 )
 from taksitlio.model_router.deadline import Deadline
-from taksitlio.model_router.health import (
-    CircuitState,
-    HealthState,
-    InMemoryRuntimeHealthRegistry,
-    RuntimeSnapshot,
-)
 from taksitlio.model_router.route_selector import (
     RouteContext,
     RouteVersion,

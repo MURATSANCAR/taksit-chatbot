@@ -17,9 +17,9 @@ from taksitlio.model_gateway.types import (
     ModelGatewayError,
     ProviderUnavailableError,
 )
+from taksitlio.model_gateway.health import RuntimeHealthRegistry
 from taksitlio.model_router.confidence import SystemConfidenceEvaluator
 from taksitlio.model_router.deadline import Deadline
-from taksitlio.model_router.health import RuntimeHealthRegistry
 from taksitlio.model_router.route_selector import (
     RouteContext,
     RouteVersion,

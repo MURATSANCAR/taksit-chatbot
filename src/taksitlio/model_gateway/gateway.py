@@ -23,7 +23,7 @@ from taksitlio.model_gateway.types import (
     ProviderUnavailableError,
     ResponseTooLargeError,
 )
-from taksitlio.model_router.health import RuntimeHealthRegistry
+from taksitlio.model_gateway.health import RuntimeHealthRegistry
 
 
 DEFAULT_MAX_RESPONSE_BYTES = 256_000

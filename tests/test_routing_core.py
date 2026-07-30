@@ -10,6 +10,11 @@ import pytest
 
 from taksitlio.audit import AuditService, InMemoryAuditStore
 from taksitlio.conversation.patch import ConversationPatchError, apply_conversation_patch
+from taksitlio.model_gateway.health import (
+    CircuitState,
+    HealthState,
+    InMemoryRuntimeHealthRegistry,
+)
 from taksitlio.model_gateway.gateway import ModelGateway
 from taksitlio.model_gateway.repository import make_connection, make_deployment, make_profile
 from taksitlio.model_gateway.types import (
@@ -20,11 +25,6 @@ from taksitlio.model_gateway.types import (
 )
 from taksitlio.model_router.confidence import SystemConfidenceEvaluator
 from taksitlio.model_router.deadline import Deadline
-from taksitlio.model_router.health import (
-    CircuitState,
-    HealthState,
-    InMemoryRuntimeHealthRegistry,
-)
 from taksitlio.model_router.route_selector import (
     RouteContext,
     RouteVersion,

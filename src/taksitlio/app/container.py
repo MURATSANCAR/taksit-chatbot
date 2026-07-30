@@ -25,8 +25,8 @@ from taksitlio.conversation.session import (
     InMemorySessionStore,
 )
 from taksitlio.embeddings.client import LexicalEmbedder
+from taksitlio.model_gateway.health import InMemoryRuntimeHealthRegistry
 from taksitlio.model_gateway.gateway import ModelGateway
-from taksitlio.model_router.health import InMemoryRuntimeHealthRegistry
 from taksitlio.pipeline.orchestrator import ChatPipeline
 from taksitlio.response.grounded import (
     GroundedResponseGenerator,

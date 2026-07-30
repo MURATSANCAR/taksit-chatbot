@@ -81,7 +81,11 @@ class ChatPipeline:
                 [],
                 [],
                 started,
-                extra={"reason": understanding.reason},
+                extra={
+                    "reason": understanding.reason_code.value
+                    if hasattr(understanding, "reason_code")
+                    else getattr(understanding, "reason", None)
+                },
             )
 
         intent_type = (need_profile.get("intent") or {}).get("type")
@@ -219,8 +223,13 @@ class ChatPipeline:
             campaigns=campaigns,
             cta=cta,
             diagnostics={
-                "understanding_reason": turn.understanding.reason,
+                "understanding_reason": turn.understanding.reason_code.value
+                if hasattr(turn.understanding, "reason_code")
+                else getattr(turn.understanding, "reason", None),
                 "understanding_latency_ms": turn.understanding.latency_ms,
+                "system_confidence": getattr(
+                    turn.understanding, "system_confidence", None
+                ),
                 "reply_template": reply.template_used,
                 **(extra or {}),
             },
