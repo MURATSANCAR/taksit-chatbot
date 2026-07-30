@@ -486,11 +486,40 @@ async def test_orchestrator_bridge_conflict_requires_reevaluation():
 
 
 def test_redis_key_hash_tags():
+    from taksitlio.conversation_state.redis_repository import idempotency_key_digest
+
     sid = uuid4()
+    raw = "abc-raw-external-key"
     sk = state_key(sid)
-    ik = idem_key(sid, "abc")
+    ik = idem_key(sid, raw)
     assert f"{{{sid}}}" in sk
     assert f"{{{sid}}}" in ik
+    assert raw not in ik
+    assert idempotency_key_digest(raw) in ik
+
+
+@pytest.mark.asyncio
+async def test_reset_need_rejects_arbitrary_profile_fields():
+    mgr = _mgr()
+    state = await mgr.create_session()
+    with pytest.raises(ConversationPatchRejected):
+        await mgr.apply_model_update(
+            state.session_id,
+            expected_revision=0,
+            patch={
+                "operation": "RESET_NEED",
+                "path": "/active_need",
+                "confidence": 0.9,
+                "need_profile": {
+                    "need_description": "ok",
+                    "need_id": "attacker-chosen",
+                    "status": "COMPLETED",
+                    "metadata": {"transcript": "secret"},
+                },
+            },
+            idempotency_key="rn1",
+            client_message_id="m-rn1",
+        )
 
 
 @pytest.mark.asyncio

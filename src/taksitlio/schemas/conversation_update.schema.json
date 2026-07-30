@@ -28,9 +28,24 @@
       "maximum": 1
     },
     "need_profile": {
-      "description": "Optional seed object for RESET_NEED (need_id assigned by backend)",
-      "type": "object",
-      "additionalProperties": true
+      "$ref": "need_seed.schema.json",
+      "description": "Optional typed seed for RESET_NEED (need_id assigned by backend; no platform/category fields)"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "operation": { "const": "RESET_NEED" } },
+        "required": ["operation"]
+      },
+      "then": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "enum": ["/", "/active_need"]
+          }
+        }
+      }
+    }
+  ]
 }

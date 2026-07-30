@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -25,8 +26,14 @@ def state_key(session_id: UUID, *, prefix: str = "taksitlio") -> str:
     return f"{prefix}:chat:{{{session_id}}}:state"
 
 
+def idempotency_key_digest(idempotency_key: str) -> str:
+    """SHA-256 digest for Redis key material — never store raw external keys."""
+    return hashlib.sha256(idempotency_key.encode("utf-8")).hexdigest()
+
+
 def idem_key(session_id: UUID, idempotency_key: str, *, prefix: str = "taksitlio") -> str:
-    return f"{prefix}:chat:{{{session_id}}}:idem:{idempotency_key}"
+    digest = idempotency_key_digest(idempotency_key)
+    return f"{prefix}:chat:{{{session_id}}}:idem:{digest}"
 
 
 def events_key(session_id: UUID, *, prefix: str = "taksitlio") -> str:

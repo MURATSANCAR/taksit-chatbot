@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taksitlio.local/schemas/need_seed.schema.json",
+  "title": "NeedSeed",
+  "description": "Optional RESET_NEED seed. need_id, category selection, platform fields, actor, status, revision, metadata are forbidden — backend assigns need_id.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "confidence"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_PURCHASE",
+            "COMPARE_OPTIONS",
+            "BUDGET_INQUIRY",
+            "INSTALLMENT_INQUIRY",
+            "OUT_OF_SCOPE",
+            "CLARIFICATION_RESPONSE",
+            "OTHER"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "need_description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "EXACT",
+            "APPROXIMATE",
+            "RANGE",
+            "MONTHLY_PAYMENT",
+            "MAXIMUM",
+            "UNKNOWN"
+          ]
+        },
+        "value": { "type": ["number", "null"] },
+        "minimum": { "type": ["number", "null"] },
+        "maximum": { "type": ["number", "null"] },
+        "monthly_payment": { "type": ["number", "null"] },
+        "currency": {
+          "type": "string",
+          "enum": ["TRY"]
+        }
+      }
+    },
+    "preferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["concept", "importance"],
+        "properties": {
+          "concept": { "type": "string", "minLength": 1 },
+          "importance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "usage_context": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "value"],
+        "properties": {
+          "type": { "type": "string" },
+          "value": { "type": "string" },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "ambiguities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "description"],
+        "properties": {
+          "code": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiple_needs": { "type": "boolean" },
+        "budget_payment_confusion": { "type": "boolean" },
+        "conflicts_with_session": { "type": "boolean" },
+        "indirect_or_complex": { "type": "boolean" }
+      }
+    }
+  }
+}

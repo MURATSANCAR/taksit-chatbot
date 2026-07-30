@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from copy import deepcopy
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, Mapping
 from uuid import uuid4
+
+from jsonschema import Draft202012Validator
 
 from taksitlio.conversation_state.domain import (
     ActiveNeed,
@@ -21,6 +26,48 @@ from taksitlio.conversation_state.errors import (
 )
 from taksitlio.conversation_state.policies import ConversationStatePolicy
 from taksitlio.conversation_state.serialization import dumps_canonical
+
+_FORBIDDEN_NEED_SEED_KEYS = frozenset(
+    {
+        "need_id",
+        "category_resolution",
+        "selected_category_id",
+        "session_id",
+        "revision",
+        "schema_version",
+        "created_at",
+        "updated_at",
+        "expires_at",
+        "absolute_expires_at",
+        "actor",
+        "status",
+        "metadata",
+        "last_client_message_id",
+        "last_client_sequence",
+        "clarification",
+    }
+)
+
+
+@lru_cache(maxsize=1)
+def _need_seed_validator() -> Draft202012Validator:
+    path = (
+        Path(__file__).resolve().parents[1] / "schemas" / "need_seed.schema.json"
+    )
+    schema = json.loads(path.read_text(encoding="utf-8"))
+    return Draft202012Validator(schema)
+
+
+def _validate_need_seed(seed: Mapping[str, Any]) -> None:
+    forbidden = _FORBIDDEN_NEED_SEED_KEYS.intersection(seed.keys())
+    if forbidden:
+        raise ConversationPatchRejected(
+            f"need_profile forbids platform/category fields: {sorted(forbidden)}"
+        )
+    errors = sorted(_need_seed_validator().iter_errors(dict(seed)), key=lambda e: e.path)
+    if errors:
+        messages = "; ".join(e.message for e in errors[:5])
+        raise ConversationPatchRejected(f"need_profile schema invalid: {messages}")
 
 ALLOWED_OPERATIONS = frozenset(
     {"SET", "REMOVE", "APPEND", "REPLACE_COLLECTION", "RESET_NEED"}
@@ -88,9 +135,17 @@ class PatchEngine:
 
         if operation == "RESET_NEED":
             working.active_need = ActiveNeed.empty()
-            seed = patch.get("need_profile") or patch.get("value")
-            if isinstance(seed, Mapping):
-                seeded = ActiveNeed.from_dict({**seed, "need_id": working.active_need.need_id})
+            seed = patch.get("need_profile")
+            if seed is None and isinstance(patch.get("value"), Mapping):
+                # value may carry typed seed only when it validates as need_seed
+                seed = patch.get("value")
+            if seed is not None:
+                if not isinstance(seed, Mapping):
+                    raise ConversationPatchRejected("need_profile must be an object")
+                _validate_need_seed(seed)
+                seeded = ActiveNeed.from_dict(
+                    {**dict(seed), "need_id": working.active_need.need_id}
+                )
                 working.active_need = seeded
             working.clarification = ClarificationState()
             working.status = SessionStatus.ACTIVE

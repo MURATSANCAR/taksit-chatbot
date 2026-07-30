@@ -10,3 +10,5 @@ build/
 src/*.egg-info/
 .env
 .DS_Store
+.tools/
+*.rdb

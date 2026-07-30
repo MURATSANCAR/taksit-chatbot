@@ -14,7 +14,7 @@ Chat oturumu yapılandırılmış ihtiyaç profilini tutar. Aynı `session_id`�
 2. Her state bir **`revision`** taşır; başarılı mutasyonda `revision = revision + 1`.
 3. Güncellemeler **atomic compare-and-set** ile uygulanır; Redis tarafında **Lua script** tek slotta çalışır.
 4. Redis Cluster uyumu için hash-tag: `taksitlio:chat:{sessionId}:state` (ve aynı tag altında idempotency / events).
-5. **Idempotency key** ile duplicate mobil istekler ikinci kez patch uygulamaz; aynı resulting revision döner.
+5. **Idempotency key** ile duplicate mobil istekler ikinci kez patch uygulamaz; aynı resulting revision döner. Redis anahtarında **raw key değil** `SHA-256(idempotency_key)` digest kullanılır.
 6. Aynı `idempotency_key` ile **farklı payload** → `IDEMPOTENT_REPLAY` kabul edilmez; `ConversationDuplicateRequest` (payload mismatch) üretilir. Aynı payload → `IDEMPOTENT_REPLAY`.
 7. Eski `expected_revision` zorla uygulanmaz → `VERSION_CONFLICT`.
 8. **ModelRouter state yazmaz.** Mutation yalnızca `ConversationStateManager` üzerinden yapılır.
@@ -28,7 +28,7 @@ Chat oturumu yapılandırılmış ihtiyaç profilini tutar. Aynı `session_id`�
 | Anahtar | Amaç |
 |---------|------|
 | `taksitlio:chat:{sessionId}:state` | Hash: payload, revision, schema_version, status, timestamps, last_client_* |
-| `taksitlio:chat:{sessionId}:idem:{idempotencyKey}` | Idempotency sonucu (TTL ≥ session gereksinimi) |
+| `taksitlio:chat:{sessionId}:idem:{sha256}` | Idempotency sonucu; `{sha256}` = digest(raw key). Raw key Redis’te/logda yok |
 | `taksitlio:chat:{sessionId}:events` | Opsiyonel kısa event ring (MVP NoOp sink ile) |
 
 ## Lua CAS sonuçları
