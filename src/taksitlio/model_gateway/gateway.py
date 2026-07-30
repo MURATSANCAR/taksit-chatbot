@@ -9,8 +9,6 @@ from typing import Any, Mapping, Protocol
 
 import httpx
 
-from taksitlio.providers.llama_cpp import LlamaCppProvider
-
 
 @dataclass(frozen=True)
 class ModelProfile:
@@ -73,7 +71,14 @@ class ModelGateway:
     ) -> None:
         self._profiles = profiles
         self._client = client or httpx.AsyncClient()
-        self._llama = LlamaCppProvider(self._client)
+        self._llama = None
+
+    def _llama_provider(self):
+        if self._llama is None:
+            from taksitlio.providers.llama_cpp import LlamaCppProvider
+
+            self._llama = LlamaCppProvider(self._client)
+        return self._llama
 
     async def complete(
         self,
@@ -93,7 +98,7 @@ class ModelGateway:
             )
 
         if resolved.provider_type in {"LLAMA_CPP", "OPENAI_COMPAT", "VLLM"}:
-            return await self._llama.chat_completion(resolved, request)
+            return await self._llama_provider().chat_completion(resolved, request)
 
         payload = self._build_openai_compat_payload(resolved, request)
         timeout_s = (request.timeout_ms or resolved.timeout_ms) / 1000.0

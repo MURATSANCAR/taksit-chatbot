@@ -1,0 +1,20 @@
+{"id": "g001", "bucket": "open_product", "message": "Telefon bakıyoruz, 40 bin civarı.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"type": "APPROXIMATE", "value": 40000}, "category_hint": "MOBILE_PHONE"}}
+{"id": "g002", "bucket": "open_product", "message": "Kamerası sağlam bir telefon arıyorum, 35'i geçmesin.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"type": "RANGE", "maximum": 35000}, "preferences": ["camera_quality"], "category_hint": "MOBILE_PHONE"}}
+{"id": "g003", "bucket": "typo_daily", "message": "tlfn alıcaz 40 bin fln bütçe var", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"type": "APPROXIMATE", "value": 40000}, "category_hint": "MOBILE_PHONE"}}
+{"id": "g004", "bucket": "indirect", "message": "Kızım üniversiteye başlayacak, hafif bir şey olsun, 35’i geçmesin.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"maximum": 35000}, "preferences": ["weight_light"]}}
+{"id": "g005", "bucket": "ambiguous_category", "message": "okul için hafif bişey lazım bilgisayar gibi ama tablet de olabilir", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "clarify": true}}
+{"id": "g006", "bucket": "installment", "message": "Peşin zor olur, aylık ödemesi düşük olsun. Telefon bakıyorum.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "preferences": ["installment"], "category_hint": "MOBILE_PHONE"}}
+{"id": "g007", "bucket": "monthly_payment", "message": "peşin 30 var kalanını aylık ödesek, telefon", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "signals": {"budget_payment_confusion": true}}}
+{"id": "g008", "bucket": "compare", "message": "samsung düşünüyordum ama iphone kampanyası iyiyse o da olur", "expected": {"intent": {"type": "COMPARE_OPTIONS"}, "category_hint": "MOBILE_PHONE"}}
+{"id": "g009", "bucket": "topic_change", "message": "yok telefonu boşver bilgisayar bakalım", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "category_hint": "LAPTOP"}}
+{"id": "g010", "bucket": "out_of_scope", "message": "Bugün hava nasıl?", "expected": {"intent": {"type": "OUT_OF_SCOPE"}}}
+{"id": "g011", "bucket": "budget_range", "message": "30 ile 45 arası bir laptop istiyorum", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"type": "RANGE", "minimum": 30000, "maximum": 45000}, "category_hint": "LAPTOP"}}
+{"id": "g012", "bucket": "open_product", "message": "Çok pahalı olmayan, kamerası sağlam bir telefon arıyorum.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "preferences": ["camera_quality"], "category_hint": "MOBILE_PHONE"}}
+{"id": "g013", "bucket": "installment", "message": "12 taksitli tablet kampanyası var mı?", "expected": {"intent": {"type": "INSTALLMENT_INQUIRY"}, "category_hint": "TABLET"}}
+{"id": "g014", "bucket": "indirect", "message": "Bilgisayar mı tablet mi karar veremedim; okulda kullanacağım.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "clarify": true}}
+{"id": "g015", "bucket": "typo_daily", "message": "bi telefn lazım bütçe 25 civarı işte", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"value": 25000}, "category_hint": "MOBILE_PHONE"}}
+{"id": "g016", "bucket": "multiple_needs", "message": "Hem telefon hem de laptop bakıyorum ikisi de lazım", "expected": {"signals": {"multiple_needs": true}}}
+{"id": "g017", "bucket": "furniture", "message": "Oturma grubu bakıyoruz taksitle", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "category_hint": "FURNITURE"}}
+{"id": "g018", "bucket": "home_appliance", "message": "Buzdolabı lazım, aylık ödemesi düşük olsun", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "preferences": ["installment"], "category_hint": "HOME_APPLIANCE"}}
+{"id": "g019", "bucket": "exact_budget", "message": "Tam 39999 TL bütçem var telefon için", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"type": "EXACT", "value": 39999}, "category_hint": "MOBILE_PHONE"}}
+{"id": "g020", "bucket": "open_product", "message": "Telefon bakıyoruz, 40 civarına çıkabiliriz.", "expected": {"intent": {"type": "PRODUCT_PURCHASE"}, "budget": {"value": 40000}, "category_hint": "MOBILE_PHONE"}}

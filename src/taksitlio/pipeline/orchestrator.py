@@ -120,11 +120,19 @@ class ChatPipeline:
             )
 
         category_codes = [m.category.category_code for m in match_result.matches]
-        await self._understanding._sessions.apply_need_profile(
-            request.session_id,
-            need_profile,
-            category_codes=category_codes,
-        )
+        sessions = getattr(self._understanding, "sessions", None)
+        if sessions is not None:
+            await sessions.apply_need_profile(
+                request.session_id,
+                need_profile,
+                category_codes=category_codes,
+            )
+        else:
+            await self._understanding._sessions.apply_need_profile(
+                request.session_id,
+                need_profile,
+                category_codes=category_codes,
+            )
 
         # Retrieve → eligibility → rank
         candidates = await self._retriever.retrieve(category_codes)

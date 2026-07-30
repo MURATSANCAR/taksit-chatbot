@@ -71,6 +71,10 @@ class UnderstandingService:
         self._prompts = prompts
         self._update_schema = update_schema or _load_update_schema()
 
+    @property
+    def sessions(self) -> ConversationStateManager:
+        return self._sessions
+
     async def process_message(
         self,
         *,

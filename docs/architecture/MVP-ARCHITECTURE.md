@@ -539,9 +539,11 @@ Böylece model tercihi varsayıma değil, Taksitlio’nun gerçek Türkçe kulla
 
 ## Sonraki teknik adımlar
 
-1. Dinamik `ModelGateway`, `ModelRouter` ve model profil tabloları (bu sürümde iskelet oluşturuldu)
-2. Conversation State Manager (Redis session state)
-3. Semantic category matcher
-4. Kampanya retrieval + uygunluk + ranking
-5. Grounded cevap oluşturma
-6. Türkçe golden dataset (1.000+ cümle) ve benchmark
+1. ~~Dinamik `ModelGateway`, `ModelRouter` ve model profil tabloları~~
+2. ~~Conversation State Manager (Redis session state)~~
+3. ~~Semantic category matcher~~
+4. ~~Kampanya retrieval + uygunluk + ranking~~
+5. ~~Grounded cevap oluşturma~~
+6. Türkçe golden dataset’i 1.000+ cümleye genişletme ve canlı model benchmark
+7. Admin UI (React) — API yüzeyi hazır (`/v1/admin/*`)
+8. llama.cpp FAST/DEEP endpoint’lerini ortama bağlama + P50/P95 doğrulama
