@@ -34,6 +34,8 @@ class MatchQuery:
     usage_context: tuple[str, ...] = ()
     deadline_ms: Optional[int] = None
     extra_hints: tuple[str, ...] = ()
+    # ADR-006 semantic constraints (positive/negative/corrections).
+    semantic_constraints: dict = field(default_factory=dict)
     # Legacy constructor alias (tests / early callers)
     text: str = ""
 
@@ -59,6 +61,40 @@ class MatchQuery:
         )
         return tuple(h for h in (self.extra_hints + prefs + self.usage_context) if h)
 
+    def _constraint_concepts(self, key: str) -> tuple[str, ...]:
+        entries = self.semantic_constraints.get(key) if self.semantic_constraints else None
+        if not entries:
+            return ()
+        out: list[str] = []
+        for entry in entries:
+            if isinstance(entry, Mapping):
+                concept = entry.get("concept")
+                if concept:
+                    out.append(str(concept))
+            elif entry:
+                out.append(str(entry))
+        return tuple(out)
+
+    @property
+    def positive_concepts(self) -> tuple[str, ...]:
+        return self._constraint_concepts("positive")
+
+    @property
+    def negative_concepts(self) -> tuple[str, ...]:
+        return self._constraint_concepts("negative")
+
+    @property
+    def corrections(self) -> tuple[str, ...]:
+        return self._constraint_concepts("corrections")
+
+    def negative_entries(self) -> tuple[Mapping[str, Any], ...]:
+        entries = self.semantic_constraints.get("negative") if self.semantic_constraints else None
+        return tuple(e for e in (entries or ()) if isinstance(e, Mapping))
+
+    def correction_entries(self) -> tuple[Mapping[str, Any], ...]:
+        entries = self.semantic_constraints.get("corrections") if self.semantic_constraints else None
+        return tuple(e for e in (entries or ()) if isinstance(e, Mapping))
+
 
 @dataclass(frozen=True)
 class SignalBreakdown:
@@ -69,8 +105,16 @@ class SignalBreakdown:
     hierarchy: float = 0.0
     alias_mode: Optional[str] = None
     alias_text: Optional[str] = None
+    # ADR-006 hardening signals.
+    positive_vector_score: float = 0.0
+    negative_vector_score: float = 0.0
+    exact_negative_alias: bool = False
+    explicit_correction_penalty: float = 0.0
+    direct_alias_match: bool = False
+    hierarchy_collapsed: bool = False
 
     def to_dict(self) -> dict:
+        # alias_text intentionally omitted from default dict (privacy).
         return {
             "alias": self.alias,
             "lexical": self.lexical,
@@ -78,7 +122,12 @@ class SignalBreakdown:
             "use_case": self.use_case,
             "hierarchy": self.hierarchy,
             "alias_mode": self.alias_mode,
-            # alias_text intentionally omitted from default dict (privacy)
+            "positive_vector_score": self.positive_vector_score,
+            "negative_vector_score": self.negative_vector_score,
+            "exact_negative_alias": self.exact_negative_alias,
+            "explicit_correction_penalty": self.explicit_correction_penalty,
+            "direct_alias_match": self.direct_alias_match,
+            "hierarchy_collapsed": self.hierarchy_collapsed,
         }
 
 

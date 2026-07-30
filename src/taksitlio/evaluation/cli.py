@@ -33,6 +33,10 @@ from taksitlio.evaluation.dataset import (
 )
 from taksitlio.evaluation.dataset_repository import FilesystemDatasetRepository
 from taksitlio.evaluation.domain import DatasetSplit, EvaluationMode
+from taksitlio.evaluation.embedding_challenger import (
+    ChallengerStatus,
+    run_embedding_challenger,
+)
 from taksitlio.evaluation.errors import (
     DatasetValidationError,
     EvaluationError,
@@ -51,6 +55,11 @@ from taksitlio.evaluation.fixture_catalog import (
 )
 from taksitlio.evaluation.privacy import PRIVATE_DIR, REPORTS_DIR
 from taksitlio.evaluation.reports import load_report, write_debug_log, write_report
+from taksitlio.evaluation.review import (
+    HUMAN_REVIEWED_TARGET,
+    next_cases_for_review,
+    summarise_progress,
+)
 from taksitlio.evaluation.runner import RunnerConfig, run_matcher_on_dataset
 from taksitlio.semantic_matching import SemanticMatchPolicy
 
@@ -132,6 +141,7 @@ async def _run_eval(
     write_debug: bool,
     config_path: Path,
     fixture_path: Path,
+    gate_profile: str = "default",
 ) -> EvaluationReport:
     dataset = load_jsonl(dataset_path)
     handle = await build_fixture_catalog(fixture_path=fixture_path)
@@ -155,6 +165,7 @@ async def _run_eval(
         config=config,
         latency_values=outcome.latencies_ms,
         concurrency=outcome.concurrency.to_dict(),
+        gate_profile=gate_profile,
     )
     if write_debug:
         debug_path = write_debug_log(
@@ -177,6 +188,7 @@ def cmd_run_category_eval(args: argparse.Namespace) -> int:
             write_debug=bool(args.debug_utterances),
             config_path=Path(args.config or DEFAULT_CONFIG_PATH),
             fixture_path=Path(args.fixture or DEFAULT_FIXTURE_PATH),
+            gate_profile=str(getattr(args, "gate_profile", "default")),
         )
     )
     out = write_report(report)
@@ -234,13 +246,29 @@ def cmd_compare_runs(args: argparse.Namespace) -> int:
     return 0 if not result.regressions else 2
 
 
+def _default_audit_hook(payload: dict) -> None:
+    """Audit hook invoked before *any* challenger candidate is emitted.
+
+    The default implementation is a no-op — it exists so integration tests
+    can inject a spy or so production callers can wire in a "requires
+    admin approval" hook. The stub is guaranteed to be called with a JSON-
+    serialisable payload that never contains raw utterance text.
+    """
+
+    # Intentionally no-op; see ADR-006 §K.
+    return None
+
+
 def cmd_tune_policy(args: argparse.Namespace) -> int:
     dataset_path = Path(args.dataset)
     split = split_from_path(dataset_path)
     if split is DatasetSplit.HOLDOUT:
         raise HoldoutTuningRefused(
-            "tune-policy refuses to run on the holdout split (ADR-005 §6)"
+            "tune-policy refuses to run on the holdout split (ADR-005 §6, ADR-006 §K)"
         )
+    _default_audit_hook(
+        {"event": "tune_policy_start", "dataset": dataset_path.name, "split": split.value}
+    )
     if split is DatasetSplit.DEVELOPMENT:
         print(
             "warning: development split — final challenger must be verified on validation",
@@ -305,6 +333,61 @@ def cmd_tune_policy(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_review_status(args: argparse.Namespace) -> int:
+    """Report how many HUMAN_REVIEWED cases remain toward the promotion target."""
+
+    dataset = load_jsonl(Path(args.dataset))
+    progress = summarise_progress(dataset)
+    queue = next_cases_for_review(dataset, limit=int(args.limit))
+    payload = progress.to_dict()
+    payload["queue"] = [
+        {
+            "case_id": case.case_id,
+            "annotation_status": case.annotation.status.value,
+            "expected_status": case.expected.status.value,
+            "difficulty": case.dimensions.difficulty,
+        }
+        for case in queue
+    ]
+    payload["human_reviewed_target"] = HUMAN_REVIEWED_TARGET
+    _print_json(payload)
+    return 0
+
+
+def cmd_compare_embeddings(args: argparse.Namespace) -> int:
+    """Probe a real embedding challenger — never silently falls back to lexical."""
+
+    from taksitlio.semantic_matching.embedding_gateway import (
+        AlwaysFailingGateway,
+        LexicalFallbackGateway,
+    )
+
+    factory_key = (args.gateway or "unavailable").strip().lower()
+    if factory_key == "lexical":
+        async def factory() -> object:
+            return LexicalFallbackGateway()
+    elif factory_key == "unavailable":
+        async def factory() -> object:
+            return AlwaysFailingGateway()
+    else:
+        print(
+            f"unknown gateway '{args.gateway}'. Choose from: lexical, unavailable.",
+            file=sys.stderr,
+        )
+        return 1
+
+    samples = tuple(args.sample or ("test",))
+    expected_dim = int(args.expected_dim) if args.expected_dim else None
+    report = asyncio.run(
+        run_embedding_challenger(
+            factory, samples=samples, expected_dimension=expected_dim
+        )
+    )
+    _print_json(report.to_dict())
+    # Non-zero exit if the challenger could not verify a real deployment.
+    return 0 if report.status is ChallengerStatus.OK else 2
+
+
 def _linspace(start: float, stop: float, count: int) -> list[float]:
     if count <= 1:
         return [start]
@@ -329,6 +412,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument("--debug-utterances", action="store_true")
     p_run.add_argument("--config", default=None)
     p_run.add_argument("--fixture", default=None)
+    p_run.add_argument(
+        "--gate-profile",
+        default="default",
+        choices=("default", "hardening"),
+        help="Which quality-gate profile from evaluation_defaults.json to apply.",
+    )
     p_run.set_defaults(func=cmd_run_category_eval)
 
     p_bench = sub.add_parser("benchmark-category-match")
@@ -355,6 +444,29 @@ def build_parser() -> argparse.ArgumentParser:
     p_tune.add_argument("--config", default=None)
     p_tune.add_argument("--fixture", default=None)
     p_tune.set_defaults(func=cmd_tune_policy)
+
+    p_review = sub.add_parser("review-status")
+    p_review.add_argument("--dataset", required=True)
+    p_review.add_argument("--limit", default=25, type=int)
+    p_review.set_defaults(func=cmd_review_status)
+
+    p_embed = sub.add_parser("compare-embeddings")
+    p_embed.add_argument(
+        "--gateway",
+        default="unavailable",
+        help=(
+            "Which real gateway factory to invoke. "
+            "'lexical' is intentionally rejected — the challenger refuses "
+            "to silently fall back to a lexical embedder."
+        ),
+    )
+    p_embed.add_argument(
+        "--sample",
+        action="append",
+        help="Sample text(s) to embed. Repeat --sample for multiple probes.",
+    )
+    p_embed.add_argument("--expected-dim", default=None, type=int)
+    p_embed.set_defaults(func=cmd_compare_embeddings)
 
     return parser
 

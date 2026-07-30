@@ -33,7 +33,7 @@ jobs:
           pytest -m integration tests/integration -q --tb=short
           # Dynamic catalog acceptance lives under tests/integration/semantic_matching
           # and is collected by the full suite above (not Redis-gated).
-      - name: Validate evaluation datasets
+      - name: Validate evaluation datasets (v1 + v2)
         run: |
           python -m taksitlio.evaluation.cli validate-dataset \
             --dataset evaluation/datasets/development/tr-category-dev.v1.jsonl \
@@ -42,7 +42,42 @@ jobs:
             --dataset evaluation/datasets/golden/tr-category-validation.v1.jsonl
           python -m taksitlio.evaluation.cli validate-dataset \
             --dataset evaluation/datasets/golden/tr-category-holdout.v1.jsonl
+          # ADR-006 hardening datasets (DRAFT / synthetic; used with --gate-profile hardening).
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/development/tr-category-dev.v2.jsonl
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/validation/tr-category-validation.v2.jsonl
       - name: Smoke evaluation (tiny subset — non-blocking gate)
         run: |
           # Uses validation split, small sample; asserts report structure only.
           pytest tests/acceptance/evaluation -q --tb=short
+      - name: Real embedding challenger dry-run (must reject lexical fallback)
+        run: |
+          # Challenger exits non-zero when no real deployment is available;
+          # we accept that here — the point is that it *never silently* passes
+          # via a lexical fallback.
+          set +e
+          python -m taksitlio.evaluation.cli compare-embeddings --gateway lexical
+          rc_lex=$?
+          python -m taksitlio.evaluation.cli compare-embeddings --gateway unavailable
+          rc_unavail=$?
+          if [ "$rc_lex" = "0" ] || [ "$rc_unavail" = "0" ]; then
+            echo "compare-embeddings must NOT return OK for lexical/unavailable gateways" >&2
+            exit 1
+          fi
+      - name: pgvector integration (env-gated, non-blocking when unset)
+        env:
+          # Fail explicitly only when a maintainer opts in with PGVECTOR_URL.
+          INTEGRATION_REQUIRE_PG: ${{ env.PGVECTOR_URL && '1' || '' }}
+          PGVECTOR_URL: ${{ env.PGVECTOR_URL || '' }}
+        run: |
+          if [ -z "$PGVECTOR_URL" ]; then
+            echo "::warning ::PGVECTOR_URL not set — pgvector integration is skipped, NOT green"
+          fi
+          pytest -m integration tests/integration/category_embedding -q --tb=short || {
+            if [ -z "$PGVECTOR_URL" ]; then
+              echo "pgvector job skipped without a database; treating as informational"
+              exit 0
+            fi
+            exit 1
+          }

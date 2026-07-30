@@ -125,6 +125,32 @@ def _result_to_prediction(
     selected: Optional[str] = None
     if result.selected_category_id is not None:
         selected = handle.reverse(result.selected_category_id)
+
+    diagnostics = dict(result.diagnostics or {})
+    pool_ids = diagnostics.get("candidate_pool_ids") or ()
+    retrieved_raw = diagnostics.get("retrieved_by") or {}
+
+    pool_fixture_keys: list[str] = []
+    for cat_id in pool_ids:
+        key = handle.reverse(cat_id)
+        if key:
+            pool_fixture_keys.append(key)
+    retrieved_by: dict[str, str] = {}
+    for cat_id, channel in retrieved_raw.items():
+        key = handle.reverse(cat_id)
+        if key:
+            retrieved_by[key] = str(channel)
+
+    signals_summary: dict = {}
+    if result.candidates:
+        top_signals = result.candidates[0].signals
+        signals_summary = {
+            "top_alias": top_signals.alias,
+            "top_vector": top_signals.vector,
+            "top_direct_alias_match": top_signals.direct_alias_match,
+            "top_hierarchy_collapsed": top_signals.hierarchy_collapsed,
+        }
+    diagnostics["decision_reason_code"] = result.decision.reason_code
     return CasePrediction(
         case_id=case.case_id,
         predicted_status=result.status.value,
@@ -132,7 +158,11 @@ def _result_to_prediction(
         top_k=tuple(top_k),
         latency_ms=latency_ms,
         degraded=result.degraded,
-        diagnostics={"decision_reason_code": result.decision.reason_code},
+        diagnostics=diagnostics,
+        pool_fixture_keys=tuple(pool_fixture_keys),
+        retrieved_by=retrieved_by,
+        decision_reason_code=result.decision.reason_code,
+        signals_summary=signals_summary,
     )
 
 

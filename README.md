@@ -18,6 +18,32 @@ Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 * [`docs/adr/ADR-003-conversation-state-and-optimistic-locking.md`](docs/adr/ADR-003-conversation-state-and-optimistic-locking.md)
 * [`docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md`](docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md)
 * [`docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md`](docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md)
+* [`docs/adr/ADR-006-semantic-matcher-quality-hardening.md`](docs/adr/ADR-006-semantic-matcher-quality-hardening.md)
+
+### Hardening CLI (ADR-006)
+
+```bash
+# Every rate metric now materialises as a ProportionMetric with Wilson CI.
+python -m taksitlio.evaluation.cli run-category-eval \
+  --dataset evaluation/datasets/validation/tr-category-validation.v2.jsonl \
+  --fixture evaluation/fixtures/catalogs/category-fixture.v2.json \
+  --gate-profile hardening
+
+# How many HUMAN_REVIEWED cases are still needed to promote a dataset.
+python -m taksitlio.evaluation.cli review-status \
+  --dataset evaluation/datasets/validation/tr-category-validation.v2.jsonl
+
+# Verify that the embedding challenger never silently falls back to lexical.
+python -m taksitlio.evaluation.cli compare-embeddings --gateway lexical      # exits 2
+python -m taksitlio.evaluation.cli compare-embeddings --gateway unavailable  # exits 2
+```
+
+`--gate-profile hardening` picks up the tighter targets from
+`evaluation/config/evaluation_defaults.json::hardening_quality_gate_thresholds`.
+DRAFT / synthetic bootstrap datasets can only ever reach
+`PROVISIONAL_ACCEPT` / `REJECT` / `INSUFFICIENT_REVIEWED_DATA` — no matter
+how good the metrics look, promotion always requires enough
+HUMAN_REVIEWED cases.
 
 ## Conversation State Manager
 

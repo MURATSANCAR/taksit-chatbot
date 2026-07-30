@@ -1,8 +1,11 @@
 {
-  "version": "v1",
-  "notes": "Evaluation thresholds + objective weights. Loaded by the evaluator; nothing here is hardcoded in Python. Bootstrap thresholds are intentionally loose so the first real run may still land in ACCEPT; tighten iteratively as the dataset matures.",
+  "version": "v2",
+  "notes": "Evaluation thresholds + objective weights. Loaded by the evaluator; nothing here is hardcoded in Python. `quality_gate_thresholds` remains the loose bootstrap gate so v1 smoke acceptance still passes; ADR-006 introduces `hardening_quality_gate_thresholds` (enabled via --gate-profile hardening) with tighter, promotion-grade targets. Neither profile can flip a DRAFT/synthetic dataset to full ACCEPT — see evaluator._resolve_final_status.",
   "latency_budget_p95_ms": 250,
   "calibration_bucket_count": 10,
+  "minimum_metric_support": 30,
+  "low_support_warning_threshold": 100,
+  "minimum_segment_support": 20,
   "objective_weights": {
     "status_accuracy": 1.0,
     "top_1_accepted_accuracy": 0.6,
@@ -28,6 +31,19 @@
     "missed_clarification_rate": {"max": 0.35},
     "ece": {"max": 0.35},
     "brier": {"max": 0.35}
+  },
+  "hardening_quality_gate_thresholds": {
+    "status_accuracy": {"min": 0.85},
+    "top_1_accepted_accuracy": {"min": 0.82},
+    "top_2_accepted_recall": {"min": 0.95},
+    "required_candidate_recall": {"min": 0.95},
+    "unsafe_auto_select_rate": {"max": 0.0},
+    "unsafe_auto_select_count": {"max_count": 0},
+    "forbidden_candidate_violation_count": {"max_count": 0},
+    "unnecessary_clarification_rate": {"max": 0.12},
+    "missed_clarification_rate": {"max": 0.15},
+    "ece": {"max": 0.25},
+    "brier": {"max": 0.25}
   },
   "comparison_tolerances": {
     "status_accuracy": {"tolerance": 0.02, "direction": "higher_is_better"},

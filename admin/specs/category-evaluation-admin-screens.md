@@ -5,6 +5,7 @@ kapısıyla korunmasını sağlar. Referanslar:
 
 * [ADR-005: Türkçe Golden Set ve Semantic Evaluation](../../docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md)
 * [ADR-004: Dynamic Category Catalog & Semantic Matching](../../docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md)
+* [ADR-006: Semantic Matcher Quality Hardening](../../docs/adr/ADR-006-semantic-matcher-quality-hardening.md)
 
 Evaluation yalnızca ölçer. **Model, policy veya katalog değişikliğini asla
 otomatik ACTIVE yapmaz** — challenger olarak kaydeder, AuditService +
@@ -173,3 +174,49 @@ Publish akışı, iki aşamalı publish helper (`prepare_embed_and_publish`)
 ile izole bir catalog + revision + embedding stack'i kurar. Test
 sonunda tüm fixture kayıtları temizlenir (integration test ile
 doğrulanır).
+
+---
+
+## 9. Hardening ekranları (ADR-006)
+
+Aşağıdaki ADR-006 bölümleri MVP admin akışına eklenmek üzere
+tasarlandı. Alanlar mevcut listelere ek kolon olarak eklenebilir;
+metrics panel `ProportionMetric` nesnesinin (`value`, `numerator`,
+`denominator`, `support`, `support_status`, `confidence_interval_95`)
+tamamını göstermelidir.
+
+### 9.1 Retrieval diagnostics paneli
+
+Her koşu için:
+
+* `candidate_recall_at_pool` / `_at_5` / `_at_3` / `_at_2`
+* `ranking_error_rate`, `decision_policy_error_rate`
+* Retriever payı — alias / lexical / vector / use_case (case başına
+  `retrieved_by` alanı üzerinden).
+* Yeni error bucket'lar: `RETRIEVAL_MISS`, `RANKING_MISS`,
+  `DECISION_FALSE_AMBIGUITY`, `DECISION_UNSAFE_MATCH`,
+  `NEGATIVE_CONSTRAINT_VIOLATION`, `HIERARCHY_DUPLICATE_AMBIGUITY`.
+
+### 9.2 Metric support göstergesi
+
+Her rate metric için: `support_status` (`OK` / `LOW_SUPPORT` /
+`NOT_APPLICABLE`) ve `%95 Wilson CI`. `LOW_SUPPORT` badge'i turuncu,
+`NOT_APPLICABLE` gri gösterilir. `forbidden_candidate_violation_count`
+alanı ayrı bir tam sayı olarak gösterilir — 1 dahi olsa promosyon
+engellenir.
+
+### 9.3 Negation / correction review kuyruğu
+
+`review-status` CLI'nın döndürdüğü kuyruk admin'de sırayla açılır.
+Reviewer, blind second review + adjudication akışıyla case'i
+`HUMAN_REVIEWED` seviyesine çıkarır. Toplam `HUMAN_REVIEWED` sayısı
+100'e ulaşana kadar quality gate en fazla `PROVISIONAL_ACCEPT`
+verebilir; buraya `INSUFFICIENT_REVIEWED_DATA` göstergesi eklenmelidir.
+
+### 9.4 Embedding challenger
+
+`compare-embeddings` çıktısı yeni bir sekmede tutulur. Statü
+`OK` / `EMBEDDING_DEPLOYMENT_UNAVAILABLE` /
+`REJECTED_LEXICAL_FALLBACK` / `INVALID_DIMENSION` olur; hiçbir yolda
+lexical fallback görünmezden gelinmez.
+

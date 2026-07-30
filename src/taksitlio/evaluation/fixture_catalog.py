@@ -92,6 +92,41 @@ def _load_fixture_document(path: Path) -> dict:
     return data
 
 
+def _topo_sort_by_parent(entries: list[dict]) -> list[dict]:
+    """Sort fixture entries so parents come before children.
+
+    Falls back to source order for entries with no parent.
+    """
+
+    by_key = {entry["fixture_key"]: entry for entry in entries}
+    visited: set[str] = set()
+    ordered: list[dict] = []
+
+    def _visit(key: str, stack: set[str]) -> None:
+        if key in visited:
+            return
+        if key in stack:
+            raise FixtureCatalogError(
+                f"parent-child cycle in fixture catalog at '{key}'"
+            )
+        stack.add(key)
+        entry = by_key[key]
+        parent = entry.get("parent_fixture_key")
+        if parent:
+            if parent not in by_key:
+                raise FixtureCatalogError(
+                    f"unknown parent '{parent}' for fixture '{key}'"
+                )
+            _visit(parent, stack)
+        stack.discard(key)
+        visited.add(key)
+        ordered.append(entry)
+
+    for entry in entries:
+        _visit(entry["fixture_key"], set())
+    return ordered
+
+
 async def build_fixture_catalog(
     *,
     fixture_path: Path = DEFAULT_FIXTURE_PATH,
@@ -122,16 +157,29 @@ async def build_fixture_catalog(
     key_to_uuid: dict[str, str] = {}
     uuid_to_key: dict[str, str] = {}
 
-    for entry in document["categories"]:
+    # Order: parents first, then children. Topological sort by parent_fixture_key.
+    ordered_entries: list[dict] = _topo_sort_by_parent(document["categories"])
+
+    for entry in ordered_entries:
         fixture_key = entry["fixture_key"]
         if not fixture_key.startswith("fixture."):
             raise FixtureCatalogError(
                 f"fixture key must start with 'fixture.': {fixture_key}"
             )
+        parent_fixture_key = entry.get("parent_fixture_key")
+        parent_id: str | None = None
+        if parent_fixture_key:
+            parent_id = key_to_uuid.get(parent_fixture_key)
+            if parent_id is None:
+                raise FixtureCatalogError(
+                    f"parent fixture key '{parent_fixture_key}' not found before "
+                    f"'{fixture_key}'"
+                )
         cat = await service.add_category(
             catalog_id=catalog.id,
             slug=entry["slug"],
             semantic_description=entry.get("semantic_description", ""),
+            parent_id=parent_id,
         )
         key_to_uuid[fixture_key] = cat.id
         uuid_to_key[cat.id] = fixture_key

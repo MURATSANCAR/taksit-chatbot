@@ -1,0 +1,347 @@
+{
+  "catalog_id": "fixture.category-catalog",
+  "version": "v2",
+  "notes": "Evaluation-only fixture catalog v2 for ADR-006 hardening — introduces parent-child relationships (fixture.computer-devices) without touching v1.",
+  "primary_locale": "tr-TR",
+  "match_policy_code": "CATEGORY_MATCH_FIXTURE",
+  "categories": [
+    {
+      "fixture_key": "fixture.mobile-device",
+      "slug": "mobile-device",
+      "semantic_description": "Cep telefonu ve akıllı telefon ihtiyaçları; mobil cihazlar, mobil kamera odaklı kullanım.",
+      "localization": {
+        "display_name": "Mobil Cihaz",
+        "description": "Cep telefonu ve akıllı telefon kategorisi.",
+        "synonyms": ["telefon", "cep telefonu", "akıllı telefon", "mobil"]
+      },
+      "aliases": [
+        {"text": "telefon", "type": "EXACT"},
+        {"text": "cep telefonu", "type": "EXACT"},
+        {"text": "akıllı telefon", "type": "EXACT"},
+        {"text": "iphone", "type": "EXACT"},
+        {"text": "android telefon", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Kamera kalitesi iyi telefon almak",
+        "Uzun pil ömürlü mobil cihaz istemek",
+        "Oyun için performanslı telefon"
+      ]
+    },
+    {
+      "fixture_key": "fixture.computer-devices",
+      "slug": "computer-devices",
+      "semantic_description": "Bilgisayar ihtiyaçları genel çatısı — dizüstü ve masaüstü kategorilerinin üst düğümü.",
+      "localization": {
+        "display_name": "Bilgisayar",
+        "description": "Bilgisayar üst kategorisi.",
+        "synonyms": ["bilgisayar", "pc", "kompüter"]
+      },
+      "aliases": [
+        {"text": "bilgisayar", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Yeni bir bilgisayar almak"
+      ]
+    },
+    {
+      "fixture_key": "fixture.portable-computer",
+      "slug": "portable-computer",
+      "parent_fixture_key": "fixture.computer-devices",
+      "semantic_description": "Dizüstü bilgisayar, laptop, notebook ihtiyaçları; taşınabilir bilgisayar.",
+      "localization": {
+        "display_name": "Taşınabilir Bilgisayar",
+        "description": "Laptop ve dizüstü bilgisayar kategorisi.",
+        "synonyms": ["laptop", "dizüstü", "notebook", "taşınabilir bilgisayar"]
+      },
+      "aliases": [
+        {"text": "laptop", "type": "EXACT"},
+        {"text": "dizüstü", "type": "EXACT"},
+        {"text": "notebook", "type": "EXACT"},
+        {"text": "macbook", "type": "EXACT"},
+        {"text": "ultrabook", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Yazılım geliştirme için laptop",
+        "Öğrenci dizüstü bilgisayarı",
+        "Ofis işleri için taşınabilir bilgisayar"
+      ]
+    },
+    {
+      "fixture_key": "fixture.desktop-computer",
+      "slug": "desktop-computer",
+      "parent_fixture_key": "fixture.computer-devices",
+      "semantic_description": "Masaüstü bilgisayar, kasa, all-in-one bilgisayar ihtiyaçları.",
+      "localization": {
+        "display_name": "Masaüstü Bilgisayar",
+        "description": "Masaüstü PC kategorisi.",
+        "synonyms": ["masaüstü", "masaüstü bilgisayar", "kasa", "all-in-one"]
+      },
+      "aliases": [
+        {"text": "masaüstü", "type": "EXACT"},
+        {"text": "masaüstü bilgisayar", "type": "EXACT"},
+        {"text": "all-in-one", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Oyun için masaüstü toplama",
+        "Ofis için hazır masaüstü"
+      ]
+    },
+    {
+      "fixture_key": "fixture.tablet-device",
+      "slug": "tablet-device",
+      "semantic_description": "Tablet ve pad ihtiyaçları; not alma, çizim, medya tüketimi için tablet.",
+      "localization": {
+        "display_name": "Tablet",
+        "description": "Tablet ve pad kategorisi.",
+        "synonyms": ["tablet", "pad", "ipad"]
+      },
+      "aliases": [
+        {"text": "tablet", "type": "EXACT"},
+        {"text": "ipad", "type": "EXACT"},
+        {"text": "pad", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Çocuğuma tablet almak",
+        "Çizim için tablet"
+      ]
+    },
+    {
+      "fixture_key": "fixture.home-appliance",
+      "slug": "home-appliance",
+      "semantic_description": "Beyaz eşya, ev aletleri; buzdolabı, çamaşır makinesi, bulaşık makinesi, fırın ihtiyaçları.",
+      "localization": {
+        "display_name": "Ev Aleti",
+        "description": "Beyaz eşya ve ev aletleri kategorisi.",
+        "synonyms": ["beyaz eşya", "ev aleti", "buzdolabı", "çamaşır makinesi"]
+      },
+      "aliases": [
+        {"text": "buzdolabı", "type": "EXACT"},
+        {"text": "çamaşır makinesi", "type": "EXACT"},
+        {"text": "bulaşık makinesi", "type": "EXACT"},
+        {"text": "fırın", "type": "EXACT"},
+        {"text": "beyaz eşya", "type": "EXACT"},
+        {"text": "buzdolabi", "type": "FUZZY"}
+      ],
+      "use_cases": [
+        "Yeni ev için beyaz eşya seti",
+        "Enerji tasarruflu buzdolabı",
+        "Çamaşır makinesi yenilemek"
+      ]
+    },
+    {
+      "fixture_key": "fixture.furniture",
+      "slug": "furniture",
+      "semantic_description": "Mobilya ihtiyaçları; kanepe, koltuk, yatak, gardırop, masa, sandalye.",
+      "localization": {
+        "display_name": "Mobilya",
+        "description": "Ev mobilyası kategorisi.",
+        "synonyms": ["mobilya", "koltuk", "kanepe", "yatak", "gardırop"]
+      },
+      "aliases": [
+        {"text": "koltuk", "type": "EXACT"},
+        {"text": "kanepe", "type": "EXACT"},
+        {"text": "yatak", "type": "EXACT"},
+        {"text": "gardırop", "type": "EXACT"},
+        {"text": "mobilya", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Oturma odası için kanepe",
+        "Yeni evime yatak odası takımı"
+      ]
+    },
+    {
+      "fixture_key": "fixture.camera",
+      "slug": "camera",
+      "semantic_description": "Fotoğraf makinesi ve kamera ihtiyaçları; DSLR, aynasız, aksiyon kamerası.",
+      "localization": {
+        "display_name": "Kamera",
+        "description": "Fotoğraf makinesi ve kamera kategorisi.",
+        "synonyms": ["fotoğraf makinesi", "kamera", "dslr", "aynasız"]
+      },
+      "aliases": [
+        {"text": "fotoğraf makinesi", "type": "EXACT"},
+        {"text": "dslr", "type": "EXACT"},
+        {"text": "aynasız", "type": "EXACT"},
+        {"text": "aksiyon kamerası", "type": "EXACT"},
+        {"text": "gopro", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Profesyonel fotoğrafçılık için makine",
+        "Seyahatte kullanacak kompakt kamera"
+      ]
+    },
+    {
+      "fixture_key": "fixture.wearable",
+      "slug": "wearable",
+      "semantic_description": "Akıllı saat ve giyilebilir cihazlar; smartwatch, fitness bileklik.",
+      "localization": {
+        "display_name": "Giyilebilir Cihaz",
+        "description": "Akıllı saat ve wearable kategorisi.",
+        "synonyms": ["akıllı saat", "smartwatch", "fitness bileklik"]
+      },
+      "aliases": [
+        {"text": "akıllı saat", "type": "EXACT"},
+        {"text": "smartwatch", "type": "EXACT"},
+        {"text": "apple watch", "type": "EXACT"},
+        {"text": "fitness bileklik", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Spor takibi için akıllı saat",
+        "Kalp ritmi ölçen bileklik"
+      ]
+    },
+    {
+      "fixture_key": "fixture.audio",
+      "slug": "audio",
+      "semantic_description": "Ses sistemleri, kulaklık, hoparlör, kablosuz kulaklık ihtiyaçları.",
+      "localization": {
+        "display_name": "Ses",
+        "description": "Kulaklık ve hoparlör kategorisi.",
+        "synonyms": ["kulaklık", "hoparlör", "ses sistemi"]
+      },
+      "aliases": [
+        {"text": "kulaklık", "type": "EXACT"},
+        {"text": "hoparlör", "type": "EXACT"},
+        {"text": "airpods", "type": "EXACT"},
+        {"text": "kablosuz kulaklık", "type": "EXACT"},
+        {"text": "bluetooth kulaklık", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Koşarken kullanacak kablosuz kulaklık",
+        "Ev sinema hoparlör sistemi"
+      ]
+    },
+    {
+      "fixture_key": "fixture.television",
+      "slug": "television",
+      "semantic_description": "Televizyon, akıllı TV, smart TV ihtiyaçları.",
+      "localization": {
+        "display_name": "Televizyon",
+        "description": "TV ve smart TV kategorisi.",
+        "synonyms": ["televizyon", "tv", "smart tv", "akıllı televizyon"]
+      },
+      "aliases": [
+        {"text": "televizyon", "type": "EXACT"},
+        {"text": "tv", "type": "EXACT"},
+        {"text": "smart tv", "type": "EXACT"},
+        {"text": "akıllı tv", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Salon için büyük ekran televizyon",
+        "4K smart TV"
+      ]
+    },
+    {
+      "fixture_key": "fixture.gaming-console",
+      "slug": "gaming-console",
+      "semantic_description": "Oyun konsolu, playstation, xbox, nintendo cihazları.",
+      "localization": {
+        "display_name": "Oyun Konsolu",
+        "description": "Oyun konsolu kategorisi.",
+        "synonyms": ["oyun konsolu", "konsol", "playstation", "xbox"]
+      },
+      "aliases": [
+        {"text": "playstation", "type": "EXACT"},
+        {"text": "ps5", "type": "EXACT"},
+        {"text": "xbox", "type": "EXACT"},
+        {"text": "nintendo", "type": "EXACT"},
+        {"text": "konsol", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Çocuğuma oyun konsolu almak",
+        "Yeni nesil playstation"
+      ]
+    },
+    {
+      "fixture_key": "fixture.small-kitchen-appliance",
+      "slug": "small-kitchen-appliance",
+      "semantic_description": "Küçük mutfak aletleri; blender, tost makinesi, kahve makinesi, airfryer.",
+      "localization": {
+        "display_name": "Küçük Ev Aleti",
+        "description": "Küçük mutfak ve ev aletleri kategorisi.",
+        "synonyms": ["blender", "tost makinesi", "kahve makinesi", "airfryer"]
+      },
+      "aliases": [
+        {"text": "blender", "type": "EXACT"},
+        {"text": "tost makinesi", "type": "EXACT"},
+        {"text": "kahve makinesi", "type": "EXACT"},
+        {"text": "airfryer", "type": "EXACT"},
+        {"text": "hava fritözü", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Kahve makinesi almak",
+        "Sağlıklı yemek için airfryer"
+      ]
+    },
+    {
+      "fixture_key": "fixture.vacuum-cleaner",
+      "slug": "vacuum-cleaner",
+      "semantic_description": "Süpürge, robot süpürge, dikey süpürge ihtiyaçları.",
+      "localization": {
+        "display_name": "Süpürge",
+        "description": "Süpürge kategorisi.",
+        "synonyms": ["süpürge", "robot süpürge", "dikey süpürge"]
+      },
+      "aliases": [
+        {"text": "süpürge", "type": "EXACT"},
+        {"text": "robot süpürge", "type": "EXACT"},
+        {"text": "dikey süpürge", "type": "EXACT"},
+        {"text": "supurge", "type": "FUZZY"}
+      ],
+      "use_cases": [
+        "Robot süpürge almak istiyorum",
+        "Kablosuz dikey süpürge"
+      ]
+    },
+    {
+      "fixture_key": "fixture.air-conditioner",
+      "slug": "air-conditioner",
+      "semantic_description": "Klima ve iklimlendirme ürünleri; split klima, inverter klima.",
+      "localization": {
+        "display_name": "Klima",
+        "description": "Klima kategorisi.",
+        "synonyms": ["klima", "inverter klima"]
+      },
+      "aliases": [
+        {"text": "klima", "type": "EXACT"},
+        {"text": "inverter klima", "type": "EXACT"},
+        {"text": "split klima", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Salon için inverter klima",
+        "12000 btu klima"
+      ]
+    },
+    {
+      "fixture_key": "fixture.bicycle",
+      "slug": "bicycle",
+      "semantic_description": "Bisiklet, elektrikli bisiklet ihtiyaçları.",
+      "localization": {
+        "display_name": "Bisiklet",
+        "description": "Bisiklet kategorisi.",
+        "synonyms": ["bisiklet", "e-bike", "elektrikli bisiklet"]
+      },
+      "aliases": [
+        {"text": "bisiklet", "type": "EXACT"},
+        {"text": "elektrikli bisiklet", "type": "EXACT"},
+        {"text": "e-bike", "type": "EXACT"}
+      ],
+      "use_cases": [
+        "Şehir içi ulaşım için bisiklet",
+        "Elektrikli bisiklet almak"
+      ]
+    },
+    {
+      "fixture_key": "fixture.out-of-scope-travel",
+      "slug": "out-of-scope-travel",
+      "semantic_description": "Seyahat ve tatil hizmetleri; MVP kapsam dışıdır ve NO_MATCH beklenir.",
+      "localization": {
+        "display_name": "Seyahat (Kapsam Dışı)",
+        "description": "Seyahat kategorisi — MVP kapsam dışı.",
+        "synonyms": ["seyahat", "tatil", "uçak bileti"]
+      },
+      "aliases": [],
+      "use_cases": []
+    }
+  ]
+}

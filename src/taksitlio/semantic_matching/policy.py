@@ -58,6 +58,21 @@ class SemanticMatchPolicy:
     max_depth: int = 4
     fuzzy_min_similarity: float = 0.78
     policy_version: int = 1
+    # ADR-006 hardening fields.
+    candidate_pool_size: int = 25
+    direct_alias_boost: float = 0.15
+    exact_alias_boost: float = 0.20
+    negative_semantic_weight: float = 0.35
+    explicit_negative_penalty: float = 0.90
+    correction_penalty: float = 0.95
+    hard_exclude_exact_negative_alias: bool = True
+    hard_exclude_user_correction: bool = True
+    negative_match_threshold: float = 0.75
+    parent_child_collapse_enabled: bool = True
+    parent_child_collapse_gap: float = 0.12
+    direct_alias_can_reduce_ambiguity: bool = True
+    direct_alias_minimum_weight: float = 0.85
+    direct_alias_conflict_requires_clarification: bool = True
 
     def __post_init__(self) -> None:
         if self.minimum_auto_select_score < self.minimum_candidate_score:
@@ -68,26 +83,48 @@ class SemanticMatchPolicy:
             raise ValueError("minimum_auto_select_gap must be in [0, 1]")
         if self.maximum_candidates < 1:
             raise ValueError("maximum_candidates must be positive")
+        if self.candidate_pool_size < self.maximum_candidates:
+            raise ValueError(
+                "candidate_pool_size must be >= maximum_candidates"
+            )
         for name in (
             "alias_weight",
             "lexical_weight",
             "vector_weight",
             "use_case_weight",
             "hierarchy_weight",
+            "negative_semantic_weight",
         ):
             if getattr(self, name) < 0:
                 raise ValueError(f"{name} cannot be negative")
+        for name in (
+            "direct_alias_boost",
+            "exact_alias_boost",
+            "explicit_negative_penalty",
+            "correction_penalty",
+            "negative_match_threshold",
+            "parent_child_collapse_gap",
+            "direct_alias_minimum_weight",
+        ):
+            value = getattr(self, name)
+            if not (0.0 <= value <= 1.0):
+                raise ValueError(f"{name} must be in [0, 1]")
 
 
 class SemanticMatchPolicyMapper:
-    """Map storage / admin payloads ↔ canonical SemanticMatchPolicy."""
+    """Map storage / admin payloads ↔ canonical SemanticMatchPolicy.
+
+    The mapper also reads/writes ADR-006 hardening fields — for those,
+    the storage layer may keep them as dedicated columns (V011) or as
+    entries inside the ``configuration`` JSONB blob. Reading prefers
+    column values but falls back to configuration entries.
+    """
 
     @classmethod
     def canonicalize_keys(cls, raw: Mapping[str, Any]) -> dict[str, Any]:
         out: dict[str, Any] = {}
         for key, value in raw.items():
             canon = _LEGACY_TO_CANONICAL.get(key, key)
-            # Prefer already-canonical if both present
             if canon in out and key in _LEGACY_TO_CANONICAL:
                 continue
             out[canon] = value
@@ -96,6 +133,11 @@ class SemanticMatchPolicyMapper:
     @classmethod
     def from_storage(cls, row: Mapping[str, Any]) -> SemanticMatchPolicy:
         data = cls.canonicalize_keys(dict(row))
+        configuration = data.pop("configuration", None) or {}
+        if isinstance(configuration, Mapping):
+            for key, value in configuration.items():
+                # Column values win over configuration overrides.
+                data.setdefault(key, value)
         allowed = {f.name for f in fields(SemanticMatchPolicy)}
         kwargs = {k: v for k, v in data.items() if k in allowed}
         return SemanticMatchPolicy(**kwargs)

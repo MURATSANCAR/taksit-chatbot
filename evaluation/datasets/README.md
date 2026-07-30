@@ -15,6 +15,8 @@ JSONL sürümlerini barındırır. Content ve şema referansları:
 | `development` | [`development/tr-category-dev.v1.jsonl`](development/tr-category-dev.v1.jsonl) | Geliştirme, keşifsel analiz, error bucket incelemesi | ≥ 150 |
 | `validation` | [`golden/tr-category-validation.v1.jsonl`](golden/tr-category-validation.v1.jsonl) | Policy tuning, karşılaştırmalı A/B | ≥ 50 |
 | `holdout` | [`golden/tr-category-holdout.v1.jsonl`](golden/tr-category-holdout.v1.jsonl) | Salt-okunur nihai kalite kapısı; tuning yasak (ADR-005 §6) | ≥ 50 |
+| `development` (ADR-006 v2) | [`development/tr-category-dev.v2.jsonl`](development/tr-category-dev.v2.jsonl) | Hardening keşif seti — semantic constraints, parent/child, direct alias, sibling ambiguity, typo | ≥ 120 |
+| `validation` (ADR-006 v2) | [`validation/tr-category-validation.v2.jsonl`](validation/tr-category-validation.v2.jsonl) | Hardening gate hedef seti; ≥ 50 case `forbidden_fixture_keys` taşır | ≥ 80 |
 
 `semantic_group_id` değerleri split'ler arasında **kesişmez** — böylece
 "yakın kopya" hiçbir zaman ayrı split'e sızmaz. Bu kural
@@ -30,6 +32,22 @@ gerçek HUMAN_REVIEWED golden set MVP+1'de büyütülür.
 ```bash
 python evaluation/datasets/_generate_bootstrap.py
 ```
+
+### Hardening v2 generator (ADR-006)
+
+The v2 dev + validation JSONL files are produced by
+`_generate_hardening_v2.py`. It emits DRAFT/synthetic cases only and
+enforces coverage floors (≥ 50 explicit negation, ≥ 30 correction,
+≥ 30 parent-child, ≥ 30 direct alias, ≥ 30 sibling ambiguity,
+≥ 30 typo / characterless Turkish).
+
+```bash
+python evaluation/datasets/_generate_hardening_v2.py
+```
+
+The v2 datasets reference `evaluation/fixtures/catalogs/category-fixture.v2.json`
+which adds hierarchical categories (parent/child) that ADR-006's
+matcher hardening depends on.
 
 ## Alan sözlüğü
 

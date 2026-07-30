@@ -84,7 +84,13 @@
               "negation",
               "multi_need",
               "category_change",
-              "out_of_scope"
+              "out_of_scope",
+              "explicit_negation",
+              "user_correction",
+              "parent_child_ambiguity",
+              "direct_alias",
+              "sibling_ambiguity",
+              "characterless_turkish"
             ]
           },
           "uniqueItems": true
