@@ -45,6 +45,17 @@
     "ece": {"max": 0.25},
     "brier": {"max": 0.25}
   },
+  "provisional_quality_gate_thresholds": {
+    "status_accuracy": {"min": 0.78},
+    "top_1_accepted_accuracy": {"min": 0.72},
+    "top_2_accepted_recall": {"min": 0.90},
+    "required_candidate_recall": {"min": 0.90},
+    "unsafe_auto_select_count": {"max_count": 0},
+    "forbidden_candidate_violation_count": {"max_count": 0},
+    "unnecessary_clarification_rate": {"max": 0.20},
+    "missed_clarification_rate": {"max": 0.20},
+    "decision_policy_error_rate": {"max": 0.18}
+  },
   "comparison_tolerances": {
     "status_accuracy": {"tolerance": 0.02, "direction": "higher_is_better"},
     "top_1_accepted_accuracy": {"tolerance": 0.02, "direction": "higher_is_better"},
