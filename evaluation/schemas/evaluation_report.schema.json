@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://taksitlio.dev/schemas/evaluation/evaluation_report.schema.json",
+  "title": "CategoryMatchEvaluationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "dataset_ref",
+    "mode",
+    "quality_gate",
+    "metrics",
+    "latency",
+    "error_buckets"
+  ],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "dataset_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataset_id", "version", "split", "case_count"],
+      "properties": {
+        "dataset_id": {"type": "string"},
+        "version": {"type": "string"},
+        "split": {
+          "type": "string",
+          "enum": ["development", "validation", "holdout"]
+        },
+        "case_count": {"type": "integer", "minimum": 0},
+        "immutable_hash": {"type": "string"}
+      }
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["FULL", "LEXICAL_ONLY", "VECTOR_ONLY", "ALIAS_ONLY", "DEGRADED"]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "policy_code": {"type": "string"},
+        "policy_version": {"type": "integer"}
+      }
+    },
+    "quality_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "objective_score", "violations"],
+      "properties": {
+        "status": {"type": "string", "enum": ["ACCEPT", "REJECT"]},
+        "objective_score": {"type": "number"},
+        "objective_weights": {"type": "object"},
+        "thresholds": {"type": "object"},
+        "violations": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["status_accuracy"],
+      "properties": {
+        "status_accuracy": {"type": "number"},
+        "matched": {"$ref": "#/definitions/prf1"},
+        "ambiguous": {"$ref": "#/definitions/prf1"},
+        "no_match": {"$ref": "#/definitions/prf1"},
+        "top_1_accepted_accuracy": {"type": "number"},
+        "top_2_accepted_recall": {"type": "number"},
+        "required_candidate_recall": {"type": "number"},
+        "forbidden_candidate_violation_rate": {"type": "number"},
+        "unsafe_auto_select_rate": {"type": "number"},
+        "unnecessary_clarification_rate": {"type": "number"},
+        "missed_clarification_rate": {"type": "number"},
+        "mrr": {"type": "number"},
+        "hit_rate_at_1": {"type": "number"},
+        "hit_rate_at_2": {"type": "number"},
+        "hit_rate_at_3": {"type": "number"},
+        "ndcg_at_3": {"type": "number"},
+        "brier": {"type": "number"},
+        "ece": {"type": "number"}
+      }
+    },
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p50_ms", "p95_ms", "p99_ms", "mean_ms"],
+      "properties": {
+        "p50_ms": {"type": "number"},
+        "p95_ms": {"type": "number"},
+        "p99_ms": {"type": "number"},
+        "mean_ms": {"type": "number"},
+        "budget_p95_ms": {"type": "number"}
+      }
+    },
+    "concurrency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workers": {"type": "integer"},
+        "queue_wait_p95_ms": {"type": "number"},
+        "throughput_qps": {"type": "number"}
+      }
+    },
+    "error_buckets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["count"],
+        "properties": {
+          "count": {"type": "integer", "minimum": 0},
+          "example_case_ids": {
+            "type": "array",
+            "items": {"type": "string"},
+            "maxItems": 10
+          }
+        }
+      }
+    },
+    "debug_log_path": {"type": "string"}
+  },
+  "definitions": {
+    "prf1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "recall", "f1", "support"],
+      "properties": {
+        "precision": {"type": "number"},
+        "recall": {"type": "number"},
+        "f1": {"type": "number"},
+        "support": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

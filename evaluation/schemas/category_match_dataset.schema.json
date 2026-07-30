@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://taksitlio.dev/schemas/evaluation/category_match_dataset.schema.json",
+  "title": "CategoryMatchEvaluationDataset",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset_id",
+    "version",
+    "split",
+    "fixture_catalog_ref",
+    "cases"
+  ],
+  "properties": {
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9._-]{2,80}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "split": {
+      "type": "string",
+      "enum": ["development", "validation", "holdout"]
+    },
+    "fixture_catalog_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalog_id", "version"],
+      "properties": {
+        "catalog_id": {"type": "string"},
+        "version": {"type": "string", "pattern": "^v[0-9]+$"}
+      }
+    },
+    "immutable_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "notes_hash": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "$ref": "category_match_case.schema.json"
+      }
+    }
+  }
+}

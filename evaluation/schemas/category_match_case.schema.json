@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://taksitlio.dev/schemas/evaluation/category_match_case.schema.json",
+  "title": "CategoryMatchEvaluationCase",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "utterance",
+    "locale",
+    "expected",
+    "dimensions",
+    "privacy",
+    "annotation"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9._-]{4,80}$"
+    },
+    "semantic_group_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9._-]{2,80}$"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}-[A-Z]{2}$"
+    },
+    "utterance": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "hints": {
+      "type": "array",
+      "items": {"type": "string", "maxLength": 200},
+      "maxItems": 10
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["MATCHED", "AMBIGUOUS", "NO_MATCH"]
+        },
+        "acceptable_fixture_keys": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/fixture_key"},
+          "maxItems": 10
+        },
+        "required_fixture_keys": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/fixture_key"},
+          "maxItems": 10
+        },
+        "forbidden_fixture_keys": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/fixture_key"},
+          "maxItems": 10
+        },
+        "expected_confidence_bucket": {
+          "type": "string",
+          "enum": ["HIGH", "MEDIUM", "LOW"]
+        }
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "direct_match",
+              "indirect_match",
+              "typo",
+              "colloquial",
+              "ambiguous",
+              "no_match",
+              "negation",
+              "multi_need",
+              "category_change",
+              "out_of_scope"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["EASY", "MEDIUM", "HARD"]
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["synthetic"],
+      "properties": {
+        "synthetic": {"type": "boolean"},
+        "contains_pii": {"type": "boolean"},
+        "source": {"type": "string", "maxLength": 200}
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["DRAFT", "SINGLE_REVIEWED", "HUMAN_REVIEWED"]
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {"type": "string", "maxLength": 80},
+          "maxItems": 10
+        },
+        "notes_hash": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    }
+  },
+  "definitions": {
+    "fixture_key": {
+      "type": "string",
+      "pattern": "^fixture\\.[a-z0-9-]{2,60}$"
+    }
+  }
+}
