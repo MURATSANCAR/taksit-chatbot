@@ -51,15 +51,25 @@ gereksinimleri ortaya çıkıyor. Ayrıca:
 
 ### 2) Semantic match policy
 
-* Yeni tablo `semantic_match_policies` — V003'ün `category_match_policies` ile
+* Yeni tablo `semantic_match_policies` — V003’ün `category_match_policies` ile
   **isim çakışmasını önlemek için ayrı**.
-* Alanlar: `minimum_score`, `clarify_score_gap`, `maximum_candidates`,
-  `alias_weight`, `lexical_weight`, `vector_weight`, `use_case_weight`,
-  `hierarchy_weight`, `allow_lexical_degraded_mode`, `cache_ttl_seconds`,
-  `require_semantic_description`.
+* Canonical domain alanları (ADR-005): `minimum_candidate_score`,
+  `minimum_auto_select_score`, `minimum_auto_select_gap`, `maximum_candidates`,
+  ağırlıklar, `allow_lexical_degraded_mode`, `exact_alias_can_auto_select`,
+  `maximum_embedding_timeout_ms`, `policy_version`.
+* V008 storage sütunları `minimum_score` / `clarify_score_gap` mapper ile okunur
+  (`SemanticMatchPolicyMapper`); destructive rename yok.
 * Tek seed: `CATEGORY_MATCH_DEFAULT` (kategori seed yok).
 
-### 3) Embedding jobs
+### 3) Embedding jobs + iki aşamalı publish
+
+Publish sırası:
+
+`DRAFT → PREPARING → embedding READY → READY_TO_PUBLISH → PUBLISHED`
+
+Published revision oluşturulduktan sonra embedding üretilmez. Hazır olmayan
+revision canlı matcher’a açılmaz. Eski published, yeni draft PREPARING iken
+çalışmaya devam eder.
 
 * `catalog_category_embeddings` — kategori × revision × locale × profile başına
   vektör; boyut `embedding_dimension`; taşınabilirlik için `DOUBLE PRECISION[]`

@@ -6,6 +6,8 @@ from taksitlio.conversation_state.domain import (
     ClarificationState,
     CompareAndSetResult,
     ConversationState,
+    SemanticConstraint,
+    SemanticConstraints,
     SessionStatus,
 )
 from taksitlio.conversation_state.errors import (
@@ -51,6 +53,8 @@ __all__ = [
     "OrchestrationConflict",
     "PatchEngine",
     "RedisConversationStateRepository",
+    "SemanticConstraint",
+    "SemanticConstraints",
     "SessionStatus",
     "StaticPolicyProvider",
 ]

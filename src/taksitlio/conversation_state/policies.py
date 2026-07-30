@@ -23,6 +23,9 @@ class ConversationStatePolicy:
     max_category_candidates: int = 8
     max_metadata_bytes: int = 4096
     max_string_length: int = 500
+    max_positive_constraints: int = 16
+    max_negative_constraints: int = 16
+    max_corrections: int = 8
     status: str = "ACTIVE"
 
 

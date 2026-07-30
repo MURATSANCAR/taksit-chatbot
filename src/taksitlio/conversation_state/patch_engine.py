@@ -17,6 +17,7 @@ from taksitlio.conversation_state.domain import (
     CategoryResolution,
     ClarificationState,
     ConversationState,
+    SemanticConstraints,
     SessionStatus,
 )
 from taksitlio.conversation_state.errors import (
@@ -85,6 +86,7 @@ ALLOWED_PATH_PREFIXES = (
     "/active_need/category_resolution",
     "/active_need/confidence",
     "/active_need/signals",
+    "/active_need/semantic_constraints",
     "/clarification",
     "/resolved_context",
 )
@@ -162,6 +164,7 @@ class PatchEngine:
                     category_resolution=CategoryResolution(),
                     confidence=working.active_need.confidence,
                     signals=working.active_need.signals,
+                    semantic_constraints=SemanticConstraints(),
                 )
             self._maybe_store_evidence_ref(working, patch, source_message_id)
             self.validate_state(working, policy)
@@ -247,6 +250,20 @@ class PatchEngine:
             raise ConversationStateTooLarge("ambiguities exceed max_ambiguities")
         if len(need.category_resolution.candidates) > policy.max_category_candidates:
             raise ConversationStateTooLarge("category candidates exceed limit")
+
+        constraints = need.semantic_constraints
+        if len(constraints.positive) > policy.max_positive_constraints:
+            raise ConversationStateTooLarge(
+                "positive constraints exceed max_positive_constraints"
+            )
+        if len(constraints.negative) > policy.max_negative_constraints:
+            raise ConversationStateTooLarge(
+                "negative constraints exceed max_negative_constraints"
+            )
+        if len(constraints.corrections) > policy.max_corrections:
+            raise ConversationStateTooLarge(
+                "corrections exceed max_corrections"
+            )
 
         budget = need.budget or {}
         if budget:

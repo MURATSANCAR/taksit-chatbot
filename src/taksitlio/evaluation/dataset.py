@@ -93,7 +93,8 @@ def _case_from_payload(payload: dict) -> EvaluationCase:
 
 
 def split_from_path(path: Path) -> DatasetSplit:
-    parts = path.resolve().parts
+    resolved = path.resolve()
+    parts = resolved.parts
     for part in reversed(parts):
         if part == "development":
             return DatasetSplit.DEVELOPMENT
@@ -101,9 +102,21 @@ def split_from_path(path: Path) -> DatasetSplit:
             return DatasetSplit.VALIDATION
         if part == "holdout":
             return DatasetSplit.HOLDOUT
+    # Fallback: filenames carry the split when the directory is
+    # `golden/` (validation + holdout share the same golden folder).
+    name = resolved.name.lower()
+    if "validation" in name or "-val" in name:
+        return DatasetSplit.VALIDATION
+    if "holdout" in name or "-hold" in name:
+        return DatasetSplit.HOLDOUT
+    if "dev" in name:
+        return DatasetSplit.DEVELOPMENT
     raise DatasetValidationError(
         f"cannot infer split from path {path}",
-        issues=[f"path {path} not under development/, validation/, or holdout/"],
+        issues=[
+            f"path {path} not under development/validation/holdout dir "
+            "and filename does not encode a split"
+        ],
     )
 
 

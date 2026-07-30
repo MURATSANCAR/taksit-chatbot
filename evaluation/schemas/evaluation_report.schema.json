@@ -37,22 +37,31 @@
     },
     "policy": {
       "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "policy_code": {"type": "string"},
-        "policy_version": {"type": "integer"}
-      }
+      "additionalProperties": true
     },
     "quality_gate": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "required": ["status", "objective_score", "violations"],
       "properties": {
-        "status": {"type": "string", "enum": ["ACCEPT", "REJECT"]},
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACCEPT",
+            "REJECT",
+            "PROVISIONAL_ACCEPT",
+            "INSUFFICIENT_REVIEWED_DATA"
+          ]
+        },
         "objective_score": {"type": "number"},
         "objective_weights": {"type": "object"},
         "thresholds": {"type": "object"},
+        "gate_profile": {"type": "string"},
         "violations": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "notes": {
           "type": "array",
           "items": {"type": "string"}
         }
@@ -63,24 +72,35 @@
       "additionalProperties": true,
       "required": ["status_accuracy"],
       "properties": {
-        "status_accuracy": {"type": "number"},
+        "status_accuracy": {"$ref": "#/definitions/rate_or_number"},
         "matched": {"$ref": "#/definitions/prf1"},
         "ambiguous": {"$ref": "#/definitions/prf1"},
         "no_match": {"$ref": "#/definitions/prf1"},
-        "top_1_accepted_accuracy": {"type": "number"},
-        "top_2_accepted_recall": {"type": "number"},
-        "required_candidate_recall": {"type": "number"},
-        "forbidden_candidate_violation_rate": {"type": "number"},
-        "unsafe_auto_select_rate": {"type": "number"},
-        "unnecessary_clarification_rate": {"type": "number"},
-        "missed_clarification_rate": {"type": "number"},
+        "top_1_accepted_accuracy": {"$ref": "#/definitions/rate_or_number"},
+        "top_2_accepted_recall": {"$ref": "#/definitions/rate_or_number"},
+        "required_candidate_recall": {"$ref": "#/definitions/rate_or_number"},
+        "forbidden_candidate_violation_rate": {"$ref": "#/definitions/rate_or_number"},
+        "forbidden_candidate_violation_count": {"type": "integer"},
+        "unsafe_auto_select_rate": {"$ref": "#/definitions/rate_or_number"},
+        "unsafe_auto_select_count": {"type": "integer"},
+        "no_match_false_positive_rate": {"$ref": "#/definitions/rate_or_number"},
+        "unnecessary_clarification_rate": {"$ref": "#/definitions/rate_or_number"},
+        "missed_clarification_rate": {"$ref": "#/definitions/rate_or_number"},
+        "ambiguous_recall": {"$ref": "#/definitions/rate_or_number"},
+        "candidate_recall_at_pool": {"$ref": "#/definitions/rate_or_number"},
+        "candidate_recall_at_5": {"$ref": "#/definitions/rate_or_number"},
+        "candidate_recall_at_3": {"$ref": "#/definitions/rate_or_number"},
+        "candidate_recall_at_2": {"$ref": "#/definitions/rate_or_number"},
+        "ranking_error_rate": {"$ref": "#/definitions/rate_or_number"},
+        "decision_policy_error_rate": {"$ref": "#/definitions/rate_or_number"},
         "mrr": {"type": "number"},
-        "hit_rate_at_1": {"type": "number"},
-        "hit_rate_at_2": {"type": "number"},
-        "hit_rate_at_3": {"type": "number"},
+        "hit_rate_at_1": {"$ref": "#/definitions/rate_or_number"},
+        "hit_rate_at_2": {"$ref": "#/definitions/rate_or_number"},
+        "hit_rate_at_3": {"$ref": "#/definitions/rate_or_number"},
         "ndcg_at_3": {"type": "number"},
         "brier": {"type": "number"},
-        "ece": {"type": "number"}
+        "ece": {"type": "number"},
+        "annotation_mix": {"type": "object", "additionalProperties": true}
       }
     },
     "latency": {
@@ -101,7 +121,8 @@
       "properties": {
         "workers": {"type": "integer"},
         "queue_wait_p95_ms": {"type": "number"},
-        "throughput_qps": {"type": "number"}
+        "throughput_qps": {"type": "number"},
+        "total_wall_ms": {"type": "number"}
       }
     },
     "error_buckets": {
@@ -133,6 +154,42 @@
         "f1": {"type": "number"},
         "support": {"type": "integer", "minimum": 0}
       }
+    },
+    "rate_or_number": {
+      "oneOf": [
+        {"type": "number"},
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["metric", "numerator", "denominator", "support_status"],
+          "properties": {
+            "metric": {"type": "string"},
+            "value": {"type": ["number", "null"]},
+            "numerator": {"type": "integer", "minimum": 0},
+            "denominator": {"type": "integer", "minimum": 0},
+            "support": {"type": "integer", "minimum": 0},
+            "support_status": {
+              "type": "string",
+              "enum": ["OK", "LOW_SUPPORT", "NOT_APPLICABLE"]
+            },
+            "confidence_interval_95": {
+              "anyOf": [
+                {"type": "null"},
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["lower", "upper"],
+                  "properties": {
+                    "lower": {"type": "number"},
+                    "upper": {"type": "number"}
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   }
 }

@@ -123,6 +123,61 @@
         "conflicts_with_session": { "type": "boolean" },
         "indirect_or_complex": { "type": "boolean" }
       }
+    },
+    "semantic_constraints": { "$ref": "#/definitions/semantic_constraints" }
+  },
+  "definitions": {
+    "constraint_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concept", "provenance"],
+      "properties": {
+        "concept": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "provenance": {
+          "type": "string",
+          "enum": [
+            "EXPLICIT",
+            "INFERRED",
+            "EXPLICIT_NEGATION",
+            "USER_CORRECTION",
+            "SESSION_CONTEXT"
+          ]
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "note_hash": {
+          "type": "string",
+          "maxLength": 128
+        }
+      }
+    },
+    "semantic_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positive": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/constraint_item" },
+          "maxItems": 16
+        },
+        "negative": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/constraint_item" },
+          "maxItems": 16
+        },
+        "corrections": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/constraint_item" },
+          "maxItems": 8
+        }
+      }
     }
   }
 }

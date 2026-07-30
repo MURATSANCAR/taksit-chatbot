@@ -42,6 +42,8 @@ class EvaluationMode(str, Enum):
 class QualityGateStatus(str, Enum):
     ACCEPT = "ACCEPT"
     REJECT = "REJECT"
+    PROVISIONAL_ACCEPT = "PROVISIONAL_ACCEPT"
+    INSUFFICIENT_REVIEWED_DATA = "INSUFFICIENT_REVIEWED_DATA"
 
 
 @dataclass(frozen=True)
@@ -113,6 +115,12 @@ class CasePrediction:
     latency_ms: float
     degraded: bool = False
     diagnostics: dict = field(default_factory=dict)
+    # ADR-006: retrieval / ranking / decision diagnostics.
+    pool_fixture_keys: tuple[str, ...] = ()
+    retrieved_by: dict = field(default_factory=dict)
+    failure_stage: Optional[str] = None
+    decision_reason_code: Optional[str] = None
+    signals_summary: dict = field(default_factory=dict)
 
 
 __all__ = [

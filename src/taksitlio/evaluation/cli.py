@@ -63,6 +63,19 @@ def _print_json(payload) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True))
 
 
+def _metric_value(payload) -> float | None:
+    """Read the ``value`` from a ProportionMetric-shaped dict, else scalar."""
+
+    if isinstance(payload, dict) and "value" in payload:
+        return payload.get("value")
+    if payload is None:
+        return None
+    try:
+        return float(payload)
+    except (TypeError, ValueError):
+        return None
+
+
 def cmd_validate_dataset(args: argparse.Namespace) -> int:
     path = Path(args.dataset)
     try:
@@ -173,13 +186,22 @@ def cmd_run_category_eval(args: argparse.Namespace) -> int:
             "report_path": str(out.relative_to(REPO_ROOT)),
             "quality_gate": report.quality_gate,
             "metrics": {
-                "status_accuracy": report.metrics["status_accuracy"],
-                "unsafe_auto_select_rate": report.metrics["unsafe_auto_select_rate"],
-                "required_candidate_recall": report.metrics["required_candidate_recall"],
-                "top_2_accepted_recall": report.metrics["top_2_accepted_recall"],
-                "hit_rate_at_3": report.metrics["hit_rate_at_3"],
-                "brier": report.metrics["brier"],
-                "ece": report.metrics["ece"],
+                "status_accuracy": _metric_value(report.metrics.get("status_accuracy")),
+                "unsafe_auto_select_rate": _metric_value(
+                    report.metrics.get("unsafe_auto_select_rate")
+                ),
+                "required_candidate_recall": _metric_value(
+                    report.metrics.get("required_candidate_recall")
+                ),
+                "top_2_accepted_recall": _metric_value(
+                    report.metrics.get("top_2_accepted_recall")
+                ),
+                "hit_rate_at_3": _metric_value(report.metrics.get("hit_rate_at_3")),
+                "brier": report.metrics.get("brier"),
+                "ece": report.metrics.get("ece"),
+                "forbidden_candidate_violation_count": report.metrics.get(
+                    "forbidden_candidate_violation_count"
+                ),
             },
             "latency": report.latency,
             "case_count": report.dataset_ref["case_count"],

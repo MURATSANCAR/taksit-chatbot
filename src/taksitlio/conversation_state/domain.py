@@ -143,6 +143,82 @@ class CategoryResolution:
 
 
 @dataclass(frozen=True)
+class SemanticConstraint:
+    """Single positive/negative/correction concept on the active need.
+
+    The concept is a free-form Turkish/English string; the domain never
+    stores a category id or enum (ADR-006). Provenance drives penalty
+    weights inside the matcher.
+    """
+
+    concept: str
+    provenance: str
+    weight: float | None = None
+    note_hash: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "concept": self.concept,
+            "provenance": self.provenance,
+        }
+        if self.weight is not None:
+            payload["weight"] = float(self.weight)
+        if self.note_hash:
+            payload["note_hash"] = self.note_hash
+        return payload
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any]) -> "SemanticConstraint":
+        weight = data.get("weight")
+        return cls(
+            concept=str(data.get("concept") or "").strip(),
+            provenance=str(data.get("provenance") or "INFERRED"),
+            weight=float(weight) if weight is not None else None,
+            note_hash=(
+                str(data["note_hash"]) if data.get("note_hash") is not None else None
+            ),
+        )
+
+
+@dataclass(frozen=True)
+class SemanticConstraints:
+    """Positive / negative / correction constraint buckets for the active need."""
+
+    positive: tuple[SemanticConstraint, ...] = ()
+    negative: tuple[SemanticConstraint, ...] = ()
+    corrections: tuple[SemanticConstraint, ...] = ()
+
+    def is_empty(self) -> bool:
+        return not (self.positive or self.negative or self.corrections)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "positive": [c.to_dict() for c in self.positive],
+            "negative": [c.to_dict() for c in self.negative],
+            "corrections": [c.to_dict() for c in self.corrections],
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, Any] | None) -> "SemanticConstraints":
+        if not data:
+            return cls()
+
+        def _tuple(key: str) -> tuple[SemanticConstraint, ...]:
+            items = data.get(key) or ()
+            return tuple(
+                SemanticConstraint.from_dict(item)
+                for item in items
+                if isinstance(item, Mapping)
+            )
+
+        return cls(
+            positive=_tuple("positive"),
+            negative=_tuple("negative"),
+            corrections=_tuple("corrections"),
+        )
+
+
+@dataclass(frozen=True)
 class ActiveNeed:
     need_id: str
     intent: dict[str, Any] = field(default_factory=dict)
@@ -155,6 +231,9 @@ class ActiveNeed:
     category_resolution: CategoryResolution = field(default_factory=CategoryResolution)
     confidence: float | None = None
     signals: dict[str, Any] = field(default_factory=dict)
+    semantic_constraints: SemanticConstraints = field(
+        default_factory=SemanticConstraints
+    )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -169,6 +248,7 @@ class ActiveNeed:
             "category_resolution": self.category_resolution.to_dict(),
             "confidence": self.confidence,
             "signals": dict(self.signals),
+            "semantic_constraints": self.semantic_constraints.to_dict(),
         }
 
     @classmethod
@@ -191,6 +271,9 @@ class ActiveNeed:
                 float(data["confidence"]) if data.get("confidence") is not None else None
             ),
             signals=dict(data.get("signals") or {}),
+            semantic_constraints=SemanticConstraints.from_dict(
+                data.get("semantic_constraints")
+            ),
         )
 
     @classmethod

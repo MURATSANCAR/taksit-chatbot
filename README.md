@@ -17,6 +17,7 @@ Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 * [`docs/adr/ADR-002-model-deployment-runtime-separation.md`](docs/adr/ADR-002-model-deployment-runtime-separation.md)
 * [`docs/adr/ADR-003-conversation-state-and-optimistic-locking.md`](docs/adr/ADR-003-conversation-state-and-optimistic-locking.md)
 * [`docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md`](docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md)
+* [`docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md`](docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md)
 
 ## Conversation State Manager
 
@@ -215,6 +216,66 @@ Redis integration (opsiyonel):
 REDIS_URL=redis://127.0.0.1:6379/15 pytest -m integration tests/integration -q
 ```
 
+## Category-match evaluation (ADR-005)
+
+Türkçe kategori eşleme kalitesi kampanya katmanına geçmeden önce
+ölçülür. Değerlendirme paketi fixture key temelli izole bir katalog
+oluşturur (iki aşamalı publish — `prepare_embed_and_publish`), matcher
+üzerinde çalıştırır ve config'ten okunan eşiklere göre ACCEPT / REJECT
+kalite kapısı raporu üretir. **Kalite kapısı geçmeden kampanya
+geliştirmesine geçiş yoktur.**
+
+Detay dokümanlar:
+
+* [ADR-005](docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md)
+* [`admin/specs/category-evaluation-admin-screens.md`](admin/specs/category-evaluation-admin-screens.md)
+* [`evaluation/datasets/README.md`](evaluation/datasets/README.md)
+
+Paket ve dosya düzeni:
+
+| Bileşen | Konum |
+|---------|-------|
+| Domain + runner + evaluator + CLI | `src/taksitlio/evaluation/` |
+| Fixture katalog | `evaluation/fixtures/catalogs/category-fixture.v1.json` |
+| Dataset splitleri | `evaluation/datasets/{development,golden}/` |
+| Şemalar | `evaluation/schemas/` |
+| Config + baseline | `evaluation/config/`, `evaluation/baselines/` |
+| Raporlar (gitignored) | `evaluation/reports/`, `evaluation/private/` |
+
+CLI komutları:
+
+```bash
+python -m taksitlio.evaluation.cli validate-dataset \
+    --dataset evaluation/datasets/development/tr-category-dev.v1.jsonl \
+    --check-split-integrity
+
+python -m taksitlio.evaluation.cli run-category-eval \
+    --dataset evaluation/datasets/golden/tr-category-validation.v1.jsonl \
+    --mode FULL --workers 4
+
+python -m taksitlio.evaluation.cli benchmark-category-match \
+    --dataset evaluation/datasets/development/tr-category-dev.v1.jsonl \
+    --workers 8
+
+python -m taksitlio.evaluation.cli compare-runs \
+    --baseline evaluation/reports/<older>.json \
+    --candidate evaluation/reports/<newer>.json
+
+python -m taksitlio.evaluation.cli tune-policy \
+    --dataset evaluation/datasets/golden/tr-category-validation.v1.jsonl \
+    --grid-steps 4    # HOLDOUT üzerinde çalıştırmaz — reddeder (ADR-005 §6)
+```
+
+Kalite kapısı:
+
+* Config: [`evaluation/config/evaluation_defaults.json`](evaluation/config/evaluation_defaults.json)
+* Bootstrap baseline: [`evaluation/baselines/category-match-baseline.v1.json`](evaluation/baselines/category-match-baseline.v1.json)
+* Standart raporlar **ham utterance içermez** (`privacy.py`). Debug modu
+  (`--debug-utterances`) yalnızca `evaluation/private/` altına yazar ve
+  bu klasör `.gitignore` ile hariç tutulur.
+* Evaluation **hiçbir zaman** policy'yi otomatik ACTIVE yapmaz;
+  challenger olarak kaydedilir, AuditService + admin onayı gerekir.
+
 ## Sıradaki katman
 
-Postgres repository implementasyonu + admin API + eval seti Türkçe genişletmesi.
+Postgres repository implementasyonu + admin API + HUMAN_REVIEWED (≥ 2 reviewer) golden set büyütmesi.

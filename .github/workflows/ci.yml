@@ -33,3 +33,16 @@ jobs:
           pytest -m integration tests/integration -q --tb=short
           # Dynamic catalog acceptance lives under tests/integration/semantic_matching
           # and is collected by the full suite above (not Redis-gated).
+      - name: Validate evaluation datasets
+        run: |
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/development/tr-category-dev.v1.jsonl \
+            --check-split-integrity
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/golden/tr-category-validation.v1.jsonl
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/golden/tr-category-holdout.v1.jsonl
+      - name: Smoke evaluation (tiny subset — non-blocking gate)
+        run: |
+          # Uses validation split, small sample; asserts report structure only.
+          pytest tests/acceptance/evaluation -q --tb=short
