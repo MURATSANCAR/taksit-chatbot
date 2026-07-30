@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taksitlio.local/schemas/need_profile.schema.json",
+  "title": "NeedProfile",
+  "description": "FAST/FALLBACK Türkçe anlama çıktı sözleşmesi. Kategori kodu üretmez.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intent",
+    "need_description",
+    "budget",
+    "preferences",
+    "usage_context",
+    "entities",
+    "ambiguities",
+    "clarification",
+    "confidence"
+  ],
+  "properties": {
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "confidence"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_PURCHASE",
+            "COMPARE_OPTIONS",
+            "BUDGET_INQUIRY",
+            "INSTALLMENT_INQUIRY",
+            "OUT_OF_SCOPE",
+            "CLARIFICATION_RESPONSE",
+            "OTHER"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "need_description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "value",
+        "minimum",
+        "maximum",
+        "monthly_payment",
+        "currency"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "EXACT",
+            "APPROXIMATE",
+            "RANGE",
+            "MONTHLY_PAYMENT",
+            "UNKNOWN"
+          ]
+        },
+        "value": { "type": ["number", "null"] },
+        "minimum": { "type": ["number", "null"] },
+        "maximum": { "type": ["number", "null"] },
+        "monthly_payment": { "type": ["number", "null"] },
+        "currency": {
+          "type": "string",
+          "enum": ["TRY"]
+        }
+      }
+    },
+    "preferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["concept", "importance"],
+        "properties": {
+          "concept": { "type": "string", "minLength": 1 },
+          "importance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "usage_context": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "value"],
+        "properties": {
+          "type": { "type": "string" },
+          "value": { "type": "string" },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "ambiguities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "description"],
+        "properties": {
+          "code": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "question_intent"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "question_intent": { "type": ["string", "null"] }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "signals": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "multiple_needs": { "type": "boolean" },
+        "budget_payment_confusion": { "type": "boolean" },
+        "conflicts_with_session": { "type": "boolean" },
+        "indirect_or_complex": { "type": "boolean" }
+      }
+    }
+  }
+}

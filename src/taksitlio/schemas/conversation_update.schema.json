@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taksitlio.local/schemas/conversation_update.schema.json",
+  "title": "ConversationUpdate",
+  "description": "Mevcut session ihtiyacına uygulanacak konuşma güncellemesi. Yeni bağımsız ihtiyaç oluşturmaz.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["operation", "updates", "preserve", "confidence"],
+  "properties": {
+    "operation": {
+      "type": "string",
+      "enum": ["UPDATE", "REPLACE", "CLARIFY", "RESET"]
+    },
+    "updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "old_value", "new_value"],
+        "properties": {
+          "field": { "type": "string", "minLength": 1 },
+          "old_value": {},
+          "new_value": {}
+        }
+      }
+    },
+    "preserve": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "need_profile": {
+      "description": "REPLACE veya RESET durumunda tam ihtiyaç profili",
+      "$ref": "need_profile.schema.json"
+    }
+  }
+}
