@@ -477,7 +477,29 @@ class DeterministicFastExtractor:
             # 1a) Trailing contrast marker ("... televizyon değil"). The
             # marker only negates the immediately preceding noun; the
             # earlier tokens form a separate positive proposition.
+            # Special case: "X dedim Y değil" / "X dedim Y Z değil" —
+            # positive is the head before ``dedim``, negative is the full
+            # span after ``dedim`` (surface-preserving multi-token).
             if prev and not repl:
+                dedim_split = _split_dedim_before_degil(before)
+                if dedim_split is not None:
+                    pos_span, neg_span = dedim_split
+                    pos_concept = _pick_head_noun(pos_span)
+                    neg_concept = _pick_head_noun(neg_span) or _surface_phrase(neg_span)
+                    if pos_concept and neg_concept and pos_concept != neg_concept:
+                        if is_correction:
+                            raw_corrections.append(
+                                {
+                                    "previous_concept": neg_concept,
+                                    "replacement_concept": pos_concept,
+                                    "confidence": 0.95,
+                                    "previous_surface_form": neg_concept,
+                                    "replacement_surface_form": pos_concept,
+                                }
+                            )
+                        _add_positive(raw_positive, pos_concept, seen_positive)
+                        _add_negative(raw_negative, neg_concept, seen_negative)
+                        return
                 split = _split_left_at_last_noun(before)
                 if split is not None:
                     rest_span, last_noun_span = split
@@ -634,6 +656,46 @@ def _split_left_at_last_noun(left_span: str) -> Optional[tuple[str, str]]:
     last_noun_span = words[last_idx]
     rest_span = " ".join(words[:last_idx])
     return rest_span.strip(), last_noun_span.strip()
+
+
+_DEDIM_CUES = frozenset(
+    {
+        "dedim",
+        "dedik",
+        "dediysem",
+        "soyledim",
+        "söyledim",
+        "diyorum",
+    }
+)
+
+
+def _split_dedim_before_degil(before: str) -> Optional[tuple[str, str]]:
+    """``X dedim Y`` → (X, Y) for trailing-değil correction clauses."""
+
+    words = _tokenize(before)
+    if not words:
+        return None
+    lowered = [_norm_lower(w) for w in words]
+    for idx, low in enumerate(lowered):
+        if low not in _DEDIM_CUES:
+            continue
+        left = " ".join(words[:idx]).strip()
+        right = " ".join(words[idx + 1 :]).strip()
+        if left and right:
+            return left, right
+    return None
+
+
+def _surface_phrase(span: str) -> Optional[str]:
+    """Keep a multi-token surface phrase after dropping stopwords only."""
+
+    words = _tokenize(span)
+    keep = [w for w in words if _norm_lower(w) not in _STOPWORDS]
+    if not keep:
+        return None
+    phrase = " ".join(keep).strip()
+    return phrase if len(phrase) >= 2 else None
 
 
 def _add_positive(bucket: list[dict], concept: str, seen: set[str]) -> None:

@@ -263,17 +263,30 @@ class TokenSetAliasRetriever:
         concept_variants: Sequence[str],
         node: CategorySnapshotNode,
     ) -> bool:
-        """Hard-exclude only on surface / normalized / exact token-set.
+        """Hard-exclude on surface / normalized / exact token-set / token membership.
 
         Character n-gram and weak morphology never hard-exclude alone.
+        Token membership: a single-token negative that is an *exact token*
+        of a multi-token alias (``saat`` ∈ ``akıllı saat``) hard-excludes —
+        this is token-boundary safe, not substring (``masa`` ∉ ``masaüstü``).
         """
 
         score = self.score(concept_variants, node)
-        return (
+        if (
             score.surface_exact >= 0.9
             or score.normalized_exact >= 0.9
             or score.token_set >= 0.9
-        )
+        ):
+            return True
+        alias_texts = self._alias_texts(node)
+        alias_tokens: set[str] = set()
+        for alias in alias_texts:
+            alias_tokens.update(_tokens(alias))
+        for concept in concept_variants:
+            c_tokens = _tokens(concept)
+            if len(c_tokens) == 1 and c_tokens[0] in alias_tokens:
+                return True
+        return False
 
     @staticmethod
     def _alias_texts(node: CategorySnapshotNode) -> list[str]:

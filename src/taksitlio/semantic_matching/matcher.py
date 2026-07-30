@@ -324,6 +324,17 @@ class SemanticCategoryMatcher:
             neg_correction_hit = token_set_retriever.matches_negative_hard_exclude(
                 correction_variants, node
             )
+            # ADR-008: if a positive surface also hits the same node
+            # (sibling aliases like kulaklık/hoparlör on audio), do NOT
+            # hard-exclude — soft-penalise and refuse direct-alias auto-select.
+            pos_alias_hit = False
+            if negative_variants or correction_variants:
+                pos_alias_hit = token_set_retriever.matches_negative_hard_exclude(
+                    positive_variants or (query.query_text,), node
+                )
+            conflict_same_node = bool(
+                (neg_alias_hit or neg_correction_hit) and pos_alias_hit
+            )
             negative_vector_score = 0.0
             if negative_vector and not degraded:
                 record = loaded_embeddings.get(node.id)
@@ -345,18 +356,39 @@ class SemanticCategoryMatcher:
             if neg_correction_hit:
                 correction_penalty_val = policy.correction_penalty
 
-            # Hard-exclude — never surface these to the ranker.
+            # Hard-exclude — never surface these to the ranker, unless the
+            # positive channel also hits the same node (sibling-alias conflict).
             if (
                 neg_alias_hit
                 and policy.hard_exclude_exact_negative_alias
+                and not conflict_same_node
             ):
                 continue
             if (
                 neg_correction_hit
                 and policy.hard_exclude_user_correction
+                and not conflict_same_node
             ):
                 continue
 
+            if conflict_same_node:
+                # Sibling aliases share a category (kulaklık/hoparlör → audio).
+                # Keep the candidate. Allow DIRECT_ALIAS only when the
+                # *positive* channel still has a surface/normalized exact hit
+                # on this node — otherwise refuse auto-select.
+                pos_surface = token_set_retriever.score(
+                    positive_variants or (query.query_text,), node
+                )
+                if not (
+                    pos_surface.surface_exact >= 0.9
+                    or pos_surface.normalized_exact >= 0.9
+                ):
+                    direct_alias_match = False
+                    alias_boost = 0.0
+                explicit_negation_penalty = max(
+                    explicit_negation_penalty,
+                    policy.explicit_negative_penalty * 0.35,
+                )
             breakdown = SignalBreakdown(
                 alias=alias_aggregate,
                 lexical=lexical,
@@ -655,26 +687,34 @@ def _dedupe_case_insensitive(values: Sequence[str]) -> tuple[str, ...]:
 def _summarise_constraints(
     query: MatchQuery,
 ) -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
-    """Return (surface_concepts, normalized_concepts, variant_values)."""
+    """Return (surface_concepts, normalized_concepts, variant_values).
+
+    Walks the semantic_constraints dict directly (surface / normalized /
+    variant values). Never surfaces the raw utterance.
+    """
 
     surface: list[str] = []
     normalized: list[str] = []
     variants: list[str] = []
-    for slot in ("positive", "negative", "corrections"):
-        for entry in query._entries(slot):
-            s = entry.get("surface_form")
-            if isinstance(s, str) and s.strip():
-                surface.append(s.strip())
-            n = entry.get("normalized_form")
-            if isinstance(n, str) and n.strip():
-                normalized.append(n.strip())
-            vs = entry.get("variants") or ()
-            if isinstance(vs, (list, tuple)):
-                for v in vs:
-                    if isinstance(v, dict):
-                        val = v.get("value")
-                        if isinstance(val, str) and val.strip():
-                            variants.append(val.strip())
+    if query.semantic_constraints:
+        for slot in ("positive", "negative", "corrections"):
+            entries = query.semantic_constraints.get(slot) or ()
+            for entry in entries:
+                if not isinstance(entry, Mapping):
+                    continue
+                s = entry.get("surface_form")
+                if isinstance(s, str) and s.strip():
+                    surface.append(s.strip())
+                n = entry.get("normalized_form")
+                if isinstance(n, str) and n.strip():
+                    normalized.append(n.strip())
+                vs = entry.get("variants") or ()
+                if isinstance(vs, (list, tuple)):
+                    for v in vs:
+                        if isinstance(v, Mapping):
+                            val = v.get("value")
+                            if isinstance(val, str) and val.strip():
+                                variants.append(val.strip())
     return (
         _dedupe_case_insensitive(surface),
         _dedupe_case_insensitive(normalized),
