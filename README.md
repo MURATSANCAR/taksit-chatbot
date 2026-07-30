@@ -16,6 +16,7 @@ Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 * [`docs/adr/ADR-001-dynamic-model-routing.md`](docs/adr/ADR-001-dynamic-model-routing.md)
 * [`docs/adr/ADR-002-model-deployment-runtime-separation.md`](docs/adr/ADR-002-model-deployment-runtime-separation.md)
 * [`docs/adr/ADR-003-conversation-state-and-optimistic-locking.md`](docs/adr/ADR-003-conversation-state-and-optimistic-locking.md)
+* [`docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md`](docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md)
 
 ## Conversation State Manager
 

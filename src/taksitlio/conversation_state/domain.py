@@ -92,13 +92,27 @@ class ClarificationState:
 
 @dataclass(frozen=True)
 class CategoryResolution:
-    selected_category_id: int | None = None
+    """Category resolution slot inside active_need.
+
+    `selected_category_id` accepts int (legacy int-id catalog) or str (UUID
+    catalog from the dynamic category-catalog package). Optional catalog_id /
+    catalog_revision / match_status track the dynamic catalog provenance and
+    default to None so legacy tests remain compatible.
+    """
+
+    selected_category_id: Any = None
     candidates: tuple[dict[str, Any], ...] = ()
+    catalog_id: str | None = None
+    catalog_revision: int | None = None
+    match_status: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "selected_category_id": self.selected_category_id,
             "candidates": [dict(c) for c in self.candidates],
+            "catalog_id": self.catalog_id,
+            "catalog_revision": self.catalog_revision,
+            "match_status": self.match_status,
         }
 
     @classmethod
@@ -106,9 +120,25 @@ class CategoryResolution:
         if not data:
             return cls()
         candidates = data.get("candidates") or []
+        revision_raw = data.get("catalog_revision")
+        try:
+            catalog_revision = (
+                int(revision_raw) if revision_raw is not None else None
+            )
+        except (TypeError, ValueError):
+            catalog_revision = None
         return cls(
             selected_category_id=data.get("selected_category_id"),
             candidates=tuple(dict(c) for c in candidates if isinstance(c, Mapping)),
+            catalog_id=(
+                str(data["catalog_id"]) if data.get("catalog_id") is not None else None
+            ),
+            catalog_revision=catalog_revision,
+            match_status=(
+                str(data["match_status"])
+                if data.get("match_status") is not None
+                else None
+            ),
         )
 
 

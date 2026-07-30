@@ -8,10 +8,19 @@ from typing import Any, Mapping, Protocol, Sequence
 
 @dataclass(frozen=True)
 class SemanticSignals:
-    """Optional category-matcher signals. Neutral when matcher not yet wired."""
+    """Optional category-matcher signals. Neutral when matcher not yet wired.
+
+    The three status fields (``semantic_match_status``, ``semantic_degraded``,
+    ``catalog_consistent``) are populated by the dynamic category-catalog
+    matcher (ADR-004). Older providers only supply score / gap; the neutral
+    provider leaves the extras as None to preserve legacy confidence output.
+    """
 
     semantic_match_score: float = 0.5
     semantic_score_gap: float = 1.0
+    semantic_match_status: str | None = None
+    semantic_degraded: bool = False
+    catalog_consistent: bool = True
 
 
 class SemanticSignalProvider(Protocol):
@@ -40,6 +49,9 @@ class ConfidenceSignals:
     multiple_independent_needs: bool = False
     budget_ambiguity: bool = False
     comprehension_failure: bool = False
+    semantic_match_status: str | None = None
+    semantic_degraded: bool = False
+    catalog_consistent: bool = True
 
 
 @dataclass(frozen=True)
@@ -129,6 +141,15 @@ class SystemConfidenceEvaluator:
         if semantic.semantic_score_gap < 0.08:
             structural *= 0.9
 
+        # ADR-004: soft penalty for ambiguous / no-match / degraded matcher output.
+        status = (semantic.semantic_match_status or "").upper()
+        if status in {"AMBIGUOUS", "NO_MATCH", "CATALOG_UNAVAILABLE"}:
+            structural *= 0.85
+        if semantic.semantic_degraded:
+            structural *= 0.9
+        if not semantic.catalog_consistent:
+            structural *= 0.85
+
         system = (1.0 - self._model_weight) * structural + self._model_weight * model_conf
         system = max(0.0, min(1.0, system))
 
@@ -151,6 +172,9 @@ class SystemConfidenceEvaluator:
             multiple_independent_needs=multiple_needs,
             budget_ambiguity=budget_ambiguity,
             comprehension_failure=bool(signals_obj.get("indirect_or_complex")) and system < 0.78,
+            semantic_match_status=semantic.semantic_match_status,
+            semantic_degraded=semantic.semantic_degraded,
+            catalog_consistent=semantic.catalog_consistent,
         )
         return SystemConfidenceResult(
             model_reported_confidence=model_conf,
