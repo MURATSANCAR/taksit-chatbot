@@ -343,42 +343,6 @@ class SemanticConstraintValidator:
             ),
         )
 
-
-def _parse_variants_safe(raw: Any) -> tuple[ConceptVariant, ...]:
-    if not isinstance(raw, (list, tuple)):
-        return ()
-    out: list[ConceptVariant] = []
-    seen: set[str] = set()
-    for entry in raw:
-        if not isinstance(entry, Mapping):
-            continue
-        value = str(entry.get("value") or "").strip()
-        if not value:
-            continue
-        key = _normalize_concept(value)
-        if not key or key in seen:
-            continue
-        seen.add(key)
-        try:
-            vtype = VariantType(str(entry.get("type") or "SURFACE"))
-        except ValueError:
-            continue
-        try:
-            conf = float(entry.get("confidence", 1.0) or 1.0)
-        except (TypeError, ValueError):
-            conf = 1.0
-        out.append(ConceptVariant(value=value, type=vtype, confidence=conf))
-    return tuple(out)
-
-
-def _parse_norm_source(raw: Any) -> Optional[NormalizationSource]:
-    if not raw:
-        return None
-    try:
-        return NormalizationSource(str(raw))
-    except ValueError:
-        return NormalizationSource.LEGACY_CONCEPT
-
     def _cross_check(
         self,
         positive: list[ConstraintItem],
@@ -463,6 +427,42 @@ def _parse_norm_source(raw: Any) -> Optional[NormalizationSource]:
                 continue
             out.append(item)
         return out
+
+
+def _parse_variants_safe(raw: Any) -> tuple[ConceptVariant, ...]:
+    if not isinstance(raw, (list, tuple)):
+        return ()
+    out: list[ConceptVariant] = []
+    seen: set[str] = set()
+    for entry in raw:
+        if not isinstance(entry, Mapping):
+            continue
+        value = str(entry.get("value") or "").strip()
+        if not value:
+            continue
+        key = _normalize_concept(value)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        try:
+            vtype = VariantType(str(entry.get("type") or "SURFACE"))
+        except ValueError:
+            continue
+        try:
+            conf = float(entry.get("confidence", 1.0) or 1.0)
+        except (TypeError, ValueError):
+            conf = 1.0
+        out.append(ConceptVariant(value=value, type=vtype, confidence=conf))
+    return tuple(out)
+
+
+def _parse_norm_source(raw: Any) -> Optional[NormalizationSource]:
+    if not raw:
+        return None
+    try:
+        return NormalizationSource(str(raw))
+    except ValueError:
+        return NormalizationSource.LEGACY_CONCEPT
 
 
 __all__ = [

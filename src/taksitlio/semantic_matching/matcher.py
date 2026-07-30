@@ -56,9 +56,12 @@ from taksitlio.semantic_matching.observability import (
     MatcherMetricsHook,
     NoOpMatcherMetricsHook,
 )
+from taksitlio.semantic_matching.token_set_alias_retriever import (
+    TokenSetAliasRetriever,
+    TokenSetAliasScore,
+)
 from taksitlio.semantic_matching.turkish_normalize import (
     normalize_turkish,
-    trigram_similarity,
 )
 from taksitlio.semantic_matching.vector_retriever import VectorRetriever
 
@@ -199,13 +202,43 @@ class SemanticCategoryMatcher:
         lexical_scorer = LexicalOverlapScorer()
         use_case_scorer = UseCaseScorer()
 
+        # ADR-008 P0: token-set alias retriever — surface / normalized /
+        # token-set / prefix-safe / n-gram / morphological. Never uses
+        # substring containment.
+        token_set_retriever = TokenSetAliasRetriever(
+            character_ngram_min_similarity=policy.character_ngram_min_similarity,
+            character_ngram_min_token_length=policy.character_ngram_min_token_length,
+            morphological_variant_min_length=policy.morphological_variant_min_length,
+        )
+
         # Legacy normalization for use-case + lexical scorers.
         normalized_legacy = normalize_query(query.query_text, query.hint_texts)
+
+        # ADR-008: build the query variant list once — the token-set
+        # retriever scores each node against every surface / normalized /
+        # concept / declared variant string. Morphological variants are
+        # a separate list so they never fire direct_alias_match alone.
+        positive_variants = query.positive_query_variants()
+        morphological_query_variants = query.morphological_positive_variants()
+        query_variants: tuple[str, ...] = _dedupe_case_insensitive(
+            (query.query_text, *positive_variants)
+        )
+        negative_variants = query.negative_query_variants()
+        correction_variants = query.correction_query_variants()
 
         # ---- Retrieve a candidate pool of size ≈ candidate_pool_size,
         # unioning alias / lexical / vector / use-case scans. Each retriever
         # emits its own top-N; we union + dedupe before ranking.
-        raw_scored: list[tuple[CategorySnapshotNode, AliasScore, float, float, float]] = []
+        raw_scored: list[
+            tuple[
+                CategorySnapshotNode,
+                AliasScore,
+                float,
+                float,
+                float,
+                TokenSetAliasScore,
+            ]
+        ] = []
         for node in index.snapshot.nodes:
             alias_result = alias_matcher.score(normalized_legacy, node)
             lexical = lexical_scorer.score(normalized_legacy, node)
@@ -214,12 +247,26 @@ class SemanticCategoryMatcher:
             if not degraded and query_vector:
                 record = loaded_embeddings.get(node.id)
                 vector = vector_retriever.cosine(query_vector, record)
-            raw_scored.append((node, alias_result, lexical, use_case, vector))
+            token_score = token_set_retriever.score(
+                query_variants,
+                node,
+                morphological_query_variants=morphological_query_variants,
+            )
+            raw_scored.append(
+                (node, alias_result, lexical, use_case, vector, token_score)
+            )
 
-        # Build the pool: keep any node that scored above zero on any signal,
-        # then sort/trim to candidate_pool_size.
+        # Build the pool: keep any node that scored above zero on any signal
+        # (token-set channels included), then sort/trim to candidate_pool_size.
         pool_universe: list[
-            tuple[CategorySnapshotNode, AliasScore, float, float, float]
+            tuple[
+                CategorySnapshotNode,
+                AliasScore,
+                float,
+                float,
+                float,
+                TokenSetAliasScore,
+            ]
         ] = [
             entry
             for entry in raw_scored
@@ -227,40 +274,55 @@ class SemanticCategoryMatcher:
             or entry[2] > 0
             or entry[3] > 0
             or entry[4] > 0
+            or entry[5].aggregate_alias > 0
         ]
         pool_universe.sort(
-            key=lambda e: (e[1].score, e[4], e[2], e[3]),
+            key=lambda e: (
+                max(e[1].score, e[5].aggregate_alias),
+                e[4],
+                e[2],
+                e[3],
+            ),
             reverse=True,
         )
         pool_universe = pool_universe[: max(1, policy.candidate_pool_size)]
         retrieved_by: dict[str, str] = {}
-        for node, alias_res, lexical, use_case, vector in pool_universe:
-            channel: str
-            if alias_res.score > 0:
-                channel = "alias"
-            elif vector > 0 and vector >= max(lexical, use_case):
-                channel = "vector"
-            elif lexical > 0:
-                channel = "lexical"
-            elif use_case > 0:
-                channel = "use_case"
-            else:
-                channel = "unknown"
-            retrieved_by[node.id] = channel
+        for node, alias_res, lexical, use_case, vector, token_score in pool_universe:
+            retrieved_by[node.id] = _classify_retrieval_channel(
+                alias_res, lexical, use_case, vector, token_score
+            )
 
         candidates: list[CategoryCandidate] = []
-        for node, alias_result, lexical, use_case, vector in pool_universe:
+        for (
+            node,
+            alias_result,
+            lexical,
+            use_case,
+            vector,
+            token_score,
+        ) in pool_universe:
             hierarchy = _hierarchy_boost(node, index, alias_result)
 
-            # Direct alias / exact alias policy boost.
-            direct_alias_match, alias_boost = _direct_alias_bonus(
-                alias_result, policy
+            # ADR-008: merge the token-set aggregate into the legacy alias
+            # score so the hybrid scorer sees the stronger surface / token
+            # signal. Legacy alias EXACT mode still contributes for
+            # display-name fallback.
+            alias_aggregate = max(alias_result.score, token_score.aggregate_alias)
+
+            # ADR-008: direct_alias_match is set ONLY when the surface or
+            # normalized exact channel fired above threshold. Token-set /
+            # prefix-safe / n-gram / morphological alone must NOT drive
+            # DIRECT_ALIAS_AUTO_SELECT.
+            direct_alias_match, alias_boost = _adr008_direct_alias_bonus(
+                token_score, alias_result, policy
             )
 
             # Negative penalties.
-            neg_alias_hit = _has_exact_negative_alias(node, negative_concepts)
-            neg_correction_hit = _has_exact_negative_alias(
-                node, correction_concepts
+            neg_alias_hit = token_set_retriever.matches_negative_hard_exclude(
+                negative_variants, node
+            )
+            neg_correction_hit = token_set_retriever.matches_negative_hard_exclude(
+                correction_variants, node
             )
             negative_vector_score = 0.0
             if negative_vector and not degraded:
@@ -296,7 +358,7 @@ class SemanticCategoryMatcher:
                 continue
 
             breakdown = SignalBreakdown(
-                alias=alias_result.score,
+                alias=alias_aggregate,
                 lexical=lexical,
                 vector=vector,
                 use_case=use_case,
@@ -311,6 +373,15 @@ class SemanticCategoryMatcher:
                 explicit_correction_penalty=correction_penalty_val,
                 direct_alias_match=direct_alias_match,
                 hierarchy_collapsed=False,
+                surface_exact_alias=token_score.surface_exact,
+                normalized_exact_alias=token_score.normalized_exact,
+                token_set_alias=token_score.token_set,
+                prefix_safe_alias=token_score.prefix_safe,
+                character_ngram=token_score.character_ngram,
+                morphological_variant=token_score.morphological_variant,
+                negative_penalty=max(
+                    explicit_negation_penalty, correction_penalty_val
+                ),
             )
             base_score = scorer.combine(breakdown, degraded=degraded)
             score = base_score + alias_boost
@@ -387,6 +458,11 @@ class SemanticCategoryMatcher:
         pool_snapshot_keys = tuple(
             e[0].id for e in pool_universe
         )
+        # ADR-008 diagnostics: surface / normalized / variants + retrieval
+        # channels. Raw utterance is NEVER placed here.
+        surface_concepts, normalized_concepts, variant_values = _summarise_constraints(
+            query
+        )
         result = CategoryMatchResult(
             query_text_hash=_query_hash(query.query_text),
             catalog_id=query.catalog_id,
@@ -414,6 +490,15 @@ class SemanticCategoryMatcher:
                     for kept, dropped in collapse_result.collapsed_pairs
                 ],
                 "retrieved_by": dict(retrieved_by),
+                "surface_concepts": list(surface_concepts),
+                "normalized_concepts": list(normalized_concepts),
+                "variants": list(variant_values),
+                "positive_query_variants": list(query.positive_query_variants()),
+                "morphological_query_variants": list(
+                    query.morphological_positive_variants()
+                ),
+                "negative_query_variants": list(negative_variants),
+                "correction_query_variants": list(correction_variants),
             },
         )
 
@@ -481,50 +566,120 @@ def _hierarchy_boost(
     return min(0.3, 0.05 * len(node.ancestor_ids))
 
 
-def _direct_alias_bonus(
+def _adr008_direct_alias_bonus(
+    token_score: TokenSetAliasScore,
     alias_result: AliasScore,
     policy: SemanticMatchPolicy,
 ) -> tuple[bool, float]:
-    """Return (is_direct_alias, additive_score_bonus).
+    """Return (is_direct_alias, additive_score_bonus) — ADR-008.
 
-    * EXACT alias with weight ≥ minimum → exact_alias_boost.
-    * Any alias hit ≥ 0.9 → direct_alias_boost (softer bonus).
+    Only surface / normalized exact channels may set ``direct_alias_match``.
+    Token-set / prefix-safe / character n-gram / morphological signals
+    contribute to ranking via the alias aggregate, but they can NEVER
+    fire the DIRECT_ALIAS_AUTO_SELECT decision path.
+
+    Legacy AliasMatcher EXACT hits with weight ≥ direct_alias_minimum_weight
+    still count as a direct alias — the legacy channel remains for
+    display-name fallback in seed catalogs.
     """
 
-    if not alias_result.mode or alias_result.score <= 0:
-        return False, 0.0
-    mode = alias_result.mode.value.upper() if alias_result.mode else ""
-    if mode == "EXACT" and alias_result.score >= policy.direct_alias_minimum_weight:
-        return True, policy.exact_alias_boost
-    if alias_result.score >= 0.9:
-        return True, policy.direct_alias_boost
+    # ADR-008 primary path: surface / normalized exact via token-set.
+    if token_score.surface_exact >= policy.direct_alias_minimum_weight:
+        if policy.surface_exact_can_auto_select:
+            return True, policy.exact_alias_boost
+    if token_score.normalized_exact >= policy.direct_alias_minimum_weight:
+        if policy.surface_exact_can_auto_select:
+            return True, policy.exact_alias_boost
+
+    # Legacy fallback: EXACT alias mode with high weight (unchanged from
+    # ADR-006 behaviour). Keeps display-name driven auto-select working.
+    if alias_result.mode is not None and alias_result.score > 0:
+        mode = alias_result.mode.value.upper() if alias_result.mode else ""
+        if mode == "EXACT" and alias_result.score >= policy.direct_alias_minimum_weight:
+            return True, policy.exact_alias_boost
+
+    # Token-set / prefix-safe / n-gram / morphological — apply the softer
+    # direct_alias_boost so ranking still rewards them, but do NOT flip
+    # direct_alias_match.
+    if token_score.aggregate_alias >= 0.9:
+        return False, policy.direct_alias_boost
     return False, 0.0
 
 
-def _has_exact_negative_alias(
-    node: CategorySnapshotNode,
-    concepts: Sequence[str],
-) -> bool:
-    """True when any of the concepts trigger an exact/near-exact alias hit
-    on ``node``. Uses ascii-fold + trigram similarity so users typing
-    "telefon" trigger the hit even if the alias is stored as "cep telefonu"."""
+def _classify_retrieval_channel(
+    alias_res: AliasScore,
+    lexical: float,
+    use_case: float,
+    vector: float,
+    token_score: TokenSetAliasScore,
+) -> str:
+    """Assign a single retrieval channel label per node for diagnostics."""
 
-    if not concepts:
-        return False
-    haystack: list[str] = []
-    haystack.append(node.display_name)
-    haystack.extend(node.synonyms)
-    for alias in node.aliases:
-        haystack.append(alias.alias_text)
-    for concept in concepts:
-        for text in haystack:
-            if not text:
-                continue
-            if trigram_similarity(concept, text) >= 0.85:
-                return True
-            if concept.strip().casefold() in text.casefold():
-                return True
-    return False
+    if token_score.surface_exact > 0:
+        return "SURFACE_EXACT_ALIAS"
+    if token_score.normalized_exact > 0:
+        return "NORMALIZED_EXACT_ALIAS"
+    if token_score.token_set > 0:
+        return "TOKEN_SET_ALIAS"
+    if token_score.prefix_safe > 0:
+        return "PREFIX_SAFE_ALIAS"
+    if token_score.morphological_variant > 0:
+        return "MORPHOLOGICAL_VARIANT"
+    if token_score.character_ngram > 0:
+        return "CHARACTER_NGRAM"
+    if alias_res.score > 0:
+        return "alias"
+    if vector > 0 and vector >= max(lexical, use_case):
+        return "vector"
+    if lexical > 0:
+        return "lexical"
+    if use_case > 0:
+        return "use_case"
+    return "unknown"
+
+
+def _dedupe_case_insensitive(values: Sequence[str]) -> tuple[str, ...]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for v in values:
+        if not isinstance(v, str):
+            continue
+        key = v.casefold().strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(v)
+    return tuple(out)
+
+
+def _summarise_constraints(
+    query: MatchQuery,
+) -> tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]]:
+    """Return (surface_concepts, normalized_concepts, variant_values)."""
+
+    surface: list[str] = []
+    normalized: list[str] = []
+    variants: list[str] = []
+    for slot in ("positive", "negative", "corrections"):
+        for entry in query._entries(slot):
+            s = entry.get("surface_form")
+            if isinstance(s, str) and s.strip():
+                surface.append(s.strip())
+            n = entry.get("normalized_form")
+            if isinstance(n, str) and n.strip():
+                normalized.append(n.strip())
+            vs = entry.get("variants") or ()
+            if isinstance(vs, (list, tuple)):
+                for v in vs:
+                    if isinstance(v, dict):
+                        val = v.get("value")
+                        if isinstance(val, str) and val.strip():
+                            variants.append(val.strip())
+    return (
+        _dedupe_case_insensitive(surface),
+        _dedupe_case_insensitive(normalized),
+        _dedupe_case_insensitive(variants),
+    )
 
 
 def _query_hash(text: str) -> str:

@@ -76,6 +76,20 @@ class SemanticMatchPolicy:
     # ADR-007 hardening — extra guards against decision-policy false ambiguity.
     multi_need_ambiguity_gap: float = 0.20
     weak_lexical_extra_headroom: float = 0.10
+    # ADR-008 P0 — morphology-safe token-set retrieval weights + thresholds.
+    surface_exact_alias_weight: float = 1.0
+    normalized_exact_alias_weight: float = 0.95
+    token_set_alias_weight: float = 0.85
+    prefix_safe_alias_weight: float = 0.75
+    character_ngram_weight: float = 0.45
+    morphological_variant_weight: float = 0.55
+    character_ngram_min_similarity: float = 0.78
+    character_ngram_min_token_length: int = 4
+    morphological_variant_min_length: int = 4
+    token_set_min_overlap: float = 1.0
+    surface_exact_can_auto_select: bool = True
+    token_set_can_auto_select: bool = False
+    morphological_variant_can_auto_select: bool = False
 
     def __post_init__(self) -> None:
         if self.minimum_auto_select_score < self.minimum_candidate_score:
@@ -114,6 +128,37 @@ class SemanticMatchPolicy:
             value = getattr(self, name)
             if not (0.0 <= value <= 1.0):
                 raise ValueError(f"{name} must be in [0, 1]")
+        # ADR-008 P0 validation — weights ≥ 0, similarities in [0,1],
+        # morph / n-gram weights bounded above by surface, min lengths > 0.
+        for name in (
+            "surface_exact_alias_weight",
+            "normalized_exact_alias_weight",
+            "token_set_alias_weight",
+            "prefix_safe_alias_weight",
+            "character_ngram_weight",
+            "morphological_variant_weight",
+        ):
+            if getattr(self, name) < 0:
+                raise ValueError(f"{name} must be >= 0")
+        for name in (
+            "character_ngram_min_similarity",
+            "token_set_min_overlap",
+        ):
+            value = getattr(self, name)
+            if not (0.0 <= value <= 1.0):
+                raise ValueError(f"{name} must be in [0, 1]")
+        if self.morphological_variant_weight > self.surface_exact_alias_weight:
+            raise ValueError(
+                "morphological_variant_weight must be <= surface_exact_alias_weight"
+            )
+        if self.character_ngram_weight > self.surface_exact_alias_weight:
+            raise ValueError(
+                "character_ngram_weight must be <= surface_exact_alias_weight"
+            )
+        if self.character_ngram_min_token_length < 1:
+            raise ValueError("character_ngram_min_token_length must be > 0")
+        if self.morphological_variant_min_length < 1:
+            raise ValueError("morphological_variant_min_length must be > 0")
 
 
 class SemanticMatchPolicyMapper:

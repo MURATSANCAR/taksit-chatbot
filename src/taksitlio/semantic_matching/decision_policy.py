@@ -225,6 +225,24 @@ class DecisionPolicy:
     ) -> Optional[CategoryMatchDecision]:
         if not top.signals.direct_alias_match:
             return None
+        # ADR-008 guard: if the top signal is ONLY morphological / token-set /
+        # n-gram, refuse DIRECT_ALIAS_AUTO_SELECT — direct_alias_match must
+        # rest on surface or normalized exact. This is defensive: the matcher
+        # already only flips direct_alias_match for surface / normalized
+        # exact channels, but we double-check here so a future retriever
+        # cannot bypass the guard by setting the boolean prematurely.
+        signals = top.signals
+        legacy_direct_alias = (
+            (signals.alias_mode or "").upper() == "EXACT"
+            and signals.alias >= self._policy.direct_alias_minimum_weight
+        )
+        if not (
+            signals.surface_exact_alias >= self._policy.direct_alias_minimum_weight
+            or signals.normalized_exact_alias
+            >= self._policy.direct_alias_minimum_weight
+            or legacy_direct_alias
+        ):
+            return None
 
         second_direct = (
             len(eligible) >= 2 and eligible[1].signals.direct_alias_match

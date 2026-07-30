@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Mapping, Optional
+from typing import Any, Iterable, Mapping, Optional
 
 from taksitlio.semantic_matching.policy import (
     SemanticMatchPolicy,
@@ -95,6 +95,102 @@ class MatchQuery:
         entries = self.semantic_constraints.get("corrections") if self.semantic_constraints else None
         return tuple(e for e in (entries or ()) if isinstance(e, Mapping))
 
+    # ------------------------------------------------------------------
+    # ADR-008: constraint → query variant expansion.
+    # ------------------------------------------------------------------
+
+    def _entries(self, key: str) -> tuple[Mapping[str, Any], ...]:
+        entries = self.semantic_constraints.get(key) if self.semantic_constraints else None
+        return tuple(e for e in (entries or ()) if isinstance(e, Mapping))
+
+    @staticmethod
+    def _variants_from_entry(entry: Mapping[str, Any]) -> tuple[str, ...]:
+        """Return surface / normalized / concept / variants[].value as strings."""
+
+        out: list[str] = []
+        for candidate in (
+            entry.get("surface_form"),
+            entry.get("normalized_form"),
+            entry.get("concept"),
+        ):
+            if isinstance(candidate, str):
+                s = candidate.strip()
+                if s:
+                    out.append(s)
+        variants = entry.get("variants") or ()
+        if isinstance(variants, (list, tuple)):
+            for variant in variants:
+                if isinstance(variant, Mapping):
+                    value = variant.get("value")
+                    if isinstance(value, str) and value.strip():
+                        out.append(value.strip())
+        return tuple(out)
+
+    @staticmethod
+    def _morph_variants_from_entry(entry: Mapping[str, Any]) -> tuple[str, ...]:
+        variants = entry.get("variants") or ()
+        if not isinstance(variants, (list, tuple)):
+            return ()
+        out: list[str] = []
+        for variant in variants:
+            if not isinstance(variant, Mapping):
+                continue
+            if str(variant.get("type") or "") != "MORPHOLOGICAL_VARIANT":
+                continue
+            value = variant.get("value")
+            if isinstance(value, str) and value.strip():
+                out.append(value.strip())
+        return tuple(out)
+
+    @staticmethod
+    def _dedupe_preserve_case(values: Iterable[str]) -> tuple[str, ...]:
+        seen: set[str] = set()
+        out: list[str] = []
+        for v in values:
+            if not v:
+                continue
+            key = v.casefold().strip()
+            if not key or key in seen:
+                continue
+            seen.add(key)
+            out.append(v)
+        return tuple(out)
+
+    def positive_query_variants(self) -> tuple[str, ...]:
+        """All positive-side surface / normalized / concept / variants strings."""
+
+        collected: list[str] = []
+        for entry in self._entries("positive"):
+            collected.extend(self._variants_from_entry(entry))
+        return self._dedupe_preserve_case(collected)
+
+    def negative_query_variants(self) -> tuple[str, ...]:
+        collected: list[str] = []
+        for entry in self._entries("negative"):
+            collected.extend(self._variants_from_entry(entry))
+        return self._dedupe_preserve_case(collected)
+
+    def correction_query_variants(self) -> tuple[str, ...]:
+        """Return every correction ``previous_concept`` + ``previous_surface``."""
+
+        collected: list[str] = []
+        for entry in self._entries("corrections"):
+            prev_concept = entry.get("previous_concept") or entry.get("concept")
+            if isinstance(prev_concept, str) and prev_concept.strip():
+                collected.append(prev_concept.strip())
+            prev_surface = entry.get("previous_surface_form") or entry.get(
+                "surface_form"
+            )
+            if isinstance(prev_surface, str) and prev_surface.strip():
+                collected.append(prev_surface.strip())
+        return self._dedupe_preserve_case(collected)
+
+    def morphological_positive_variants(self) -> tuple[str, ...]:
+        collected: list[str] = []
+        for entry in self._entries("positive"):
+            collected.extend(self._morph_variants_from_entry(entry))
+        return self._dedupe_preserve_case(collected)
+
     @property
     def multi_need_signal(self) -> bool:
         """True when the caller signalled a multi-need utterance.
@@ -135,6 +231,16 @@ class SignalBreakdown:
     explicit_correction_penalty: float = 0.0
     direct_alias_match: bool = False
     hierarchy_collapsed: bool = False
+    # ADR-008 per-channel alias signals — populated by TokenSetAliasRetriever.
+    # Kept as separate fields so decision policy can distinguish a strong
+    # surface_exact hit from a weak character_ngram / morphological hit.
+    surface_exact_alias: float = 0.0
+    normalized_exact_alias: float = 0.0
+    token_set_alias: float = 0.0
+    prefix_safe_alias: float = 0.0
+    character_ngram: float = 0.0
+    morphological_variant: float = 0.0
+    negative_penalty: float = 0.0
 
     def to_dict(self) -> dict:
         # alias_text intentionally omitted from default dict (privacy).
@@ -151,6 +257,13 @@ class SignalBreakdown:
             "explicit_correction_penalty": self.explicit_correction_penalty,
             "direct_alias_match": self.direct_alias_match,
             "hierarchy_collapsed": self.hierarchy_collapsed,
+            "surface_exact_alias": self.surface_exact_alias,
+            "normalized_exact_alias": self.normalized_exact_alias,
+            "token_set_alias": self.token_set_alias,
+            "prefix_safe_alias": self.prefix_safe_alias,
+            "character_ngram": self.character_ngram,
+            "morphological_variant": self.morphological_variant,
+            "negative_penalty": self.negative_penalty,
         }
 
 
