@@ -63,7 +63,7 @@ _STOPWORDS_RAW = (
     "de", "da", "ki", "ise", "ama", "fakat", "ancak", "veya",
     "ya", "yah", "yani", "sadece", "artık", "hala", "yine",
     # Verb / auxiliary noise
-    "arıyorum", "arıyoruz", "bakıyorum", "bakıyoruz", "bakayım",
+    "arıyorum", "arıyoruz", "arıyor", "bakıyorum", "bakıyoruz", "bakayım",
     "istiyorum", "istiyoruz", "istemiyorum", "istemem",
     "istemiyor", "istemedim", "istemedik", "gerekiyor", "gerekmiyor",
     "olsun", "olabilir", "olur", "yeter", "lazım", "gerek",
@@ -75,8 +75,9 @@ _STOPWORDS_RAW = (
     # Pronouns
     "ben", "sen", "biz", "siz", "onlar", "kendi", "kendim",
     "hepsi", "birbirimize",
-    # Politeness
-    "lütfen", "teşekkürler", "sağolun",
+    # Politeness / apology / affirmation — never a category concept.
+    "lütfen", "teşekkürler", "sağolun", "özür", "dilerim", "üzgünüm",
+    "pardon", "evet", "tamam", "tabi", "tabii",
     # Locatives / time
     "bugün", "yarın", "şimdi", "hafta", "ay",
     # Small numbers / counters
@@ -88,10 +89,16 @@ _STOPWORDS_RAW = (
     "istemem", "istemiyorum", "istemek",
     # "almak" and similar bare infinitives
     "almak", "alma", "almam",
-    # Additional verbs / adverbs used in correction / question forms
-    "demiştim", "dedim", "dediysem", "diyecektim", "diyecek",
+    # Additional verbs / adverbs used in correction / question forms.
+    # "demedim" / "demiyorum" ALSO participate in _NEG_CUES so they split
+    # a clause, but even when they don't split they must never leak as a
+    # concept.
+    "demedim", "demiyorum", "demiştim", "dedim", "dediysem", "diyecektim",
+    "diyecek", "diyeceğim",
+    "söyledim", "söylüyorum", "söyledin", "söyleyeceğim", "söyler",
     "yanlış", "yanlis", "anladın", "anladin", "anladım",
     "kastediyordum", "kastetmiştim", "kastettim", "kastediyor",
+    "kastetmedim", "kastetmiyorum",
     "bakıyor", "bakıyorlar", "kararlı", "karar", "veremedim",
     "olabilir", "olamaz",
     # Common question / discussion words that muddy concept extraction
@@ -104,6 +111,9 @@ _STOPWORDS = frozenset(_STOPWORDS_RAW) | frozenset(
 
 # Explicit-negation cue words / phrases (Turkish). Presence of any of
 # these near a noun span turns the span into an EXPLICIT_NEGATION.
+# Also includes "retract-and-replace" cues ("demedim" = "I didn't say
+# [that]") so that ``X demedim Y dedim`` splits cleanly into negative X
+# + positive Y (+ correction pair when a correction cue is present).
 _NEG_CUES: tuple[str, ...] = (
     "istemiyorum",
     "istemem",
@@ -120,6 +130,10 @@ _NEG_CUES: tuple[str, ...] = (
     "almam",
     "değil",
     "degil",
+    "demedim",
+    "demiyorum",
+    "kastetmedim",
+    "kastetmiyorum",
 )
 
 # Correction cue words that indicate a user is retracting an earlier claim.
@@ -432,21 +446,59 @@ class DeterministicFastExtractor:
                 _add_positive(raw_positive, repl, seen_positive)
                 _add_negative(raw_negative, prev, seen_negative)
                 return
+            # 1a) Trailing contrast marker ("... televizyon değil"). The
+            # marker only negates the immediately preceding noun; the
+            # earlier tokens form a separate positive proposition.
             if prev and not repl:
+                split = _split_left_at_last_noun(before)
+                if split is not None:
+                    rest_span, last_noun_span = split
+                    pos_concept = _pick_head_noun(rest_span)
+                    neg_concept = _pick_head_noun(last_noun_span)
+                    if pos_concept and neg_concept and pos_concept != neg_concept:
+                        if is_correction:
+                            raw_corrections.append(
+                                {
+                                    "previous_concept": neg_concept,
+                                    "replacement_concept": pos_concept,
+                                    "confidence": 0.95,
+                                }
+                            )
+                        _add_positive(raw_positive, pos_concept, seen_positive)
+                        _add_negative(raw_negative, neg_concept, seen_negative)
+                        return
                 _add_negative(raw_negative, prev, seen_negative)
                 return
+            # 1b) Leading contrast marker ("değil X" — atypical but
+            # possible in fragments). Treat right side as positive.
             if repl and not prev:
                 _add_positive(raw_positive, repl, seen_positive)
                 return
 
         # 2) Explicit-negation cue within a single clause. Split on the
         # cue: everything before → negative concept; everything after →
-        # positive concept ("telefon istemiyorum tablet bakıyorum").
+        # positive concept ("telefon istemiyorum tablet bakıyorum" or
+        # "telefon istemiyorum" as a standalone clause).
         neg_split = _split_on_neg_cue(clause)
         if neg_split is not None:
             before, after = neg_split
-            neg_concept = _pick_head_noun(before)
-            pos_concept = _pick_head_noun(after)
+            neg_concept = _pick_head_noun(before) if before else None
+            pos_concept = _pick_head_noun(after) if after else None
+            # Retract-and-replace ("X demedim Y dedim") + explicit
+            # correction cue → also emit a correction pair.
+            if (
+                is_correction
+                and neg_concept
+                and pos_concept
+                and neg_concept != pos_concept
+            ):
+                raw_corrections.append(
+                    {
+                        "previous_concept": neg_concept,
+                        "replacement_concept": pos_concept,
+                        "confidence": 0.95,
+                    }
+                )
             if neg_concept:
                 _add_negative(raw_negative, neg_concept, seen_negative)
             if pos_concept:
@@ -493,7 +545,15 @@ def _split_on_multi_need(clause: _Clause) -> Optional[list[str]]:
 
 
 def _split_on_neg_cue(clause: _Clause) -> Optional[tuple[str, str]]:
-    """Return ``(before, after)`` when a negation cue appears mid-clause."""
+    """Return ``(before, after)`` when a negation cue appears in the clause.
+
+    Unlike ``_split_contrast``, this helper also succeeds when the cue is
+    at the START (empty ``before``) or END (empty ``after``) of the clause
+    — that's exactly the "telefon istemiyorum" case where the user names
+    what they do NOT want without an explicit positive replacement. The
+    caller then treats the non-empty side as the negative concept and (if
+    a later positive clause exists) surfaces that separately.
+    """
 
     words = clause.words
     lowered = [_norm_lower(w) for w in words]
@@ -502,9 +562,35 @@ def _split_on_neg_cue(clause: _Clause) -> Optional[tuple[str, str]]:
         if low in cue_set:
             before = " ".join(words[:idx])
             after = " ".join(words[idx + 1 :])
-            if before and after:
+            if before or after:
                 return before, after
     return None
+
+
+def _split_left_at_last_noun(left_span: str) -> Optional[tuple[str, str]]:
+    """Split ``left_span`` into ``(rest, last_noun_span)``.
+
+    Used when a contrast marker ("değil" / "yerine") sits at the END of
+    the clause (``"ses sistemi lazım televizyon değil"``) — the marker
+    then negates ONLY the immediately preceding noun, and everything
+    before that noun is a separate positive proposition.
+
+    Returns None when ``left_span`` does not contain at least two
+    non-stopword tokens.
+    """
+
+    if not left_span:
+        return None
+    words = _tokenize(left_span)
+    if not words:
+        return None
+    content_idxs = [i for i, w in enumerate(words) if _norm_lower(w) not in _STOPWORDS]
+    if len(content_idxs) < 2:
+        return None
+    last_idx = content_idxs[-1]
+    last_noun_span = words[last_idx]
+    rest_span = " ".join(words[:last_idx])
+    return rest_span.strip(), last_noun_span.strip()
 
 
 def _add_positive(bucket: list[dict], concept: str, seen: set[str]) -> None:
