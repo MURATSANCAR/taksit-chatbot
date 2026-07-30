@@ -207,7 +207,7 @@ class ChatOrchestrator:
 
         summary_patch = {
             "operation": "SET",
-            "path": "/active_need/understanding_summary",
+            "path": "/active_need/signals/understanding_summary",
             "value": {
                 "extractor": fast_outcome.extractor,
                 "intent": fast_outcome.need_profile.get("intent", {}).get("type"),
@@ -246,23 +246,25 @@ class ChatOrchestrator:
                 correlation_id=inputs.correlation_id,
             )
         except ConversationVersionConflict:
-            # Retry ONCE with refreshed snapshot.
+            # Retry ONCE with refreshed snapshot. A second conflict is
+            # unrecoverable and is surfaced as a typed error.
             reevaluations += 1
-            if reevaluations > 1:
+            snapshot = await self._state.get_session(snapshot.session_id)
+            try:
+                result = await self._state.apply_model_update(
+                    snapshot.session_id,
+                    expected_revision=snapshot.revision,
+                    patch=summary_patch,
+                    idempotency_key=idem + ":retry",
+                    client_message_id=client_msg + ":retry",
+                    client_sequence=inputs.client_sequence,
+                    correlation_id=inputs.correlation_id,
+                )
+            except ConversationVersionConflict as exc:
                 raise OrchestratorRuntimeError(
                     "second version conflict during need-profile CAS",
                     reason_code="VERSION_CONFLICT_UNRECOVERABLE",
-                )
-            snapshot = await self._state.get_session(snapshot.session_id)
-            result = await self._state.apply_model_update(
-                snapshot.session_id,
-                expected_revision=snapshot.revision,
-                patch=summary_patch,
-                idempotency_key=idem + ":retry",
-                client_message_id=client_msg + ":retry",
-                client_sequence=inputs.client_sequence,
-                correlation_id=inputs.correlation_id,
-            )
+                ) from exc
         revision = result.revision if result.revision is not None else snapshot.revision
         # Refresh so the caller sees the new revision.
         snapshot = await self._state.get_session(snapshot.session_id)
@@ -290,21 +292,22 @@ class ChatOrchestrator:
             )
         except ConversationVersionConflict:
             reevaluations += 1
-            if reevaluations > 1:
+            snapshot = await self._state.get_session(snapshot.session_id)
+            try:
+                outcome = await self._applier.apply(
+                    session_id=snapshot.session_id,
+                    expected_revision=snapshot.revision,
+                    match_result=match_result,
+                    idempotency_key=idem + ":retry",
+                    client_message_id=client_msg + ":retry",
+                    client_sequence=inputs.client_sequence,
+                    correlation_id=inputs.correlation_id,
+                )
+            except ConversationVersionConflict as exc:
                 raise OrchestratorRuntimeError(
                     "second version conflict during category CAS",
                     reason_code="VERSION_CONFLICT_UNRECOVERABLE",
-                )
-            snapshot = await self._state.get_session(snapshot.session_id)
-            outcome = await self._applier.apply(
-                session_id=snapshot.session_id,
-                expected_revision=snapshot.revision,
-                match_result=match_result,
-                idempotency_key=idem + ":retry",
-                client_message_id=client_msg + ":retry",
-                client_sequence=inputs.client_sequence,
-                correlation_id=inputs.correlation_id,
-            )
+                ) from exc
         if outcome.result is None or outcome.result.status is not CasStatus.APPLIED:
             # IDEMPOTENT_REPLAY / other non-terminal states: refresh + fall through.
             snapshot = await self._state.get_session(snapshot.session_id)

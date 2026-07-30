@@ -19,6 +19,52 @@ Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 * [`docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md`](docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md)
 * [`docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md`](docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md)
 * [`docs/adr/ADR-006-semantic-matcher-quality-hardening.md`](docs/adr/ADR-006-semantic-matcher-quality-hardening.md)
+* [`docs/adr/ADR-007-end-to-end-understanding-and-provisional-acceptance.md`](docs/adr/ADR-007-end-to-end-understanding-and-provisional-acceptance.md)
+
+### End-to-end understanding + provisional gate (ADR-007)
+
+The v3 sprint introduces four evaluation input lanes (see
+[`src/taksitlio/evaluation/domain.py::EvaluationInputMode`](src/taksitlio/evaluation/domain.py)):
+
+* `MATCHER_ORACLE_INPUT` — legacy oracle path, passes annotated
+  `case.semantic_constraints` straight into the matcher.
+* `END_TO_END_RUNTIME_INPUT` — utterance only → `DeterministicFastExtractor`
+  (or a real remote FAST client) → `SemanticConstraintValidator` → matcher.
+  Annotated constraints are **not** consulted.
+* `FAST_EXTRACTION_ONLY` — runs FAST + validator and stops (no matcher).
+* `MATCHER_ONLY` — alias of the oracle mode with empty constraints, useful
+  for isolating the matcher's own contribution to failures.
+
+Runtime wiring lives in
+[`src/taksitlio/application/chat_orchestrator.py`](src/taksitlio/application/chat_orchestrator.py):
+one turn = snapshot → FAST → validator → CAS (need summary) → matcher →
+CAS (category resolution). Router / matcher repositories never write state
+directly; the orchestrator retries at most once on
+`ConversationVersionConflict` and raises typed
+`OrchestratorRuntimeError("VERSION_CONFLICT_UNRECOVERABLE")` on a second
+conflict.
+
+Provisional gate CLI (ADR-007 §H):
+
+```bash
+# HUMAN_REVIEWED ≥ 100 + provisional thresholds + forbidden=0 unsafe=0
+# → PROVISIONAL_ACCEPT (never full ACCEPT until v3 exits provisional).
+python -m taksitlio.evaluation.cli run-category-eval \
+  --dataset evaluation/datasets/validation/tr-category-validation.v3.jsonl \
+  --fixture evaluation/fixtures/catalogs/category-fixture.v3.json \
+  --gate-profile provisional
+
+# Promote a balanced batch (25 MATCHED / 25 AMBIGUOUS / 25 NO_MATCH /
+# 15 negation-or-correction / 10 typo-or-characterless) through the
+# two-reviewer workflow. Reviewer identifiers must be opaque + distinct.
+python -m taksitlio.evaluation.review_batch \
+  --dataset evaluation/datasets/validation/tr-category-validation.v3.jsonl \
+  --reviewer-a R-blind-a1 --reviewer-b R-blind-b1 --limit 100
+
+# Diagnose decision-policy failures from a report JSON.
+python -m taksitlio.evaluation.decision_audit \
+  --report evaluation/reports/<run-id>.json --top 20
+```
 
 ### Hardening CLI (ADR-006)
 

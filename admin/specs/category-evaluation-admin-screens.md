@@ -6,6 +6,7 @@ kapısıyla korunmasını sağlar. Referanslar:
 * [ADR-005: Türkçe Golden Set ve Semantic Evaluation](../../docs/adr/ADR-005-turkish-golden-set-and-semantic-evaluation.md)
 * [ADR-004: Dynamic Category Catalog & Semantic Matching](../../docs/adr/ADR-004-dynamic-category-catalog-and-semantic-matching.md)
 * [ADR-006: Semantic Matcher Quality Hardening](../../docs/adr/ADR-006-semantic-matcher-quality-hardening.md)
+* [ADR-007: End-to-End Understanding & Provisional Acceptance](../../docs/adr/ADR-007-end-to-end-understanding-and-provisional-acceptance.md)
 
 Evaluation yalnızca ölçer. **Model, policy veya katalog değişikliğini asla
 otomatik ACTIVE yapmaz** — challenger olarak kaydeder, AuditService +

@@ -33,7 +33,7 @@ jobs:
           pytest -m integration tests/integration -q --tb=short
           # Dynamic catalog acceptance lives under tests/integration/semantic_matching
           # and is collected by the full suite above (not Redis-gated).
-      - name: Validate evaluation datasets (v1 + v2)
+      - name: Validate evaluation datasets (v1 + v2 + v3)
         run: |
           python -m taksitlio.evaluation.cli validate-dataset \
             --dataset evaluation/datasets/development/tr-category-dev.v1.jsonl \
@@ -47,6 +47,11 @@ jobs:
             --dataset evaluation/datasets/development/tr-category-dev.v2.jsonl
           python -m taksitlio.evaluation.cli validate-dataset \
             --dataset evaluation/datasets/validation/tr-category-validation.v2.jsonl
+          # ADR-007 v3 acceptance datasets (contain ≥100 HUMAN_REVIEWED cases).
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/development/tr-category-dev.v3.jsonl
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/validation/tr-category-validation.v3.jsonl
       - name: Smoke evaluation (tiny subset — non-blocking gate)
         run: |
           # Uses validation split, small sample; asserts report structure only.
@@ -65,19 +70,47 @@ jobs:
             echo "compare-embeddings must NOT return OK for lexical/unavailable gateways" >&2
             exit 1
           fi
-      - name: pgvector integration (env-gated, non-blocking when unset)
+      - name: pgvector integration (legacy env-gated smoke — informational)
         env:
-          # Fail explicitly only when a maintainer opts in with PGVECTOR_URL.
-          INTEGRATION_REQUIRE_PG: ${{ env.PGVECTOR_URL && '1' || '' }}
-          PGVECTOR_URL: ${{ env.PGVECTOR_URL || '' }}
+          INTEGRATION_REQUIRE_PG: ""
+          PGVECTOR_URL: ""
         run: |
-          if [ -z "$PGVECTOR_URL" ]; then
-            echo "::warning ::PGVECTOR_URL not set — pgvector integration is skipped, NOT green"
-          fi
+          echo "::notice ::main test job runs against the pgvector service in the pgvector-integration job below"
           pytest -m integration tests/integration/category_embedding -q --tb=short || {
-            if [ -z "$PGVECTOR_URL" ]; then
-              echo "pgvector job skipped without a database; treating as informational"
-              exit 0
-            fi
-            exit 1
+            echo "pgvector job skipped without a database in main job; treating as informational"
+            exit 0
           }
+
+  pgvector-integration:
+    runs-on: ubuntu-latest
+    services:
+      pgvector:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: taksitlio
+          POSTGRES_PASSWORD: taksitlio
+          POSTGRES_DB: taksitlio
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U taksitlio -d taksitlio"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      PGVECTOR_URL: postgres://taksitlio:taksitlio@127.0.0.1:5432/taksitlio
+      INTEGRATION_REQUIRE_PG: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dev deps (with psycopg for pgvector integration)
+        run: pip install -e ".[dev]"
+      - name: Bootstrap pgvector extension + poc embedding model
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          psql "$PGVECTOR_URL" -f db/bootstrap/poc-embedding-model.sql
+      - name: pgvector integration (REQUIRED — must not skip)
+        run: |
+          pytest -m integration tests/integration/category_embedding -q --tb=short

@@ -30,6 +30,7 @@ dev = [
   "pydantic>=2.7",
   "asyncpg>=0.29",
   "redis>=5.0",
+  "psycopg[binary]>=3.2",
   "eval_type_backport>=0.2; python_version<'3.10'",
 ]
 

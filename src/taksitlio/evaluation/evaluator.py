@@ -218,11 +218,19 @@ def _annotation_mix(cases: Sequence[EvaluationCase]) -> dict[str, int]:
 def _resolve_final_status(
     gate_ok: bool,
     annotation_mix: dict[str, int],
+    *,
+    forbidden_count: int = 0,
+    unsafe_count: int = 0,
+    gate_profile: str = "default",
 ) -> tuple[QualityGateStatus, list[str]]:
     """Guardrail: DRAFT-only / synthetic-only datasets cannot ACCEPT.
 
-    ADR-006 §7: no matter how good the metrics look, a synthetic bootstrap
-    where every case is DRAFT is not a licence to promote a matcher.
+    ADR-006 §7 + ADR-007 §H:
+    * A synthetic bootstrap where every case is DRAFT is not a licence
+      to promote a matcher — DRAFT-only never emits ACCEPT.
+    * Even PROVISIONAL_ACCEPT requires ``forbidden_count == 0`` and
+      ``unsafe_auto_select_count == 0`` — otherwise the gate is REJECT
+      or INSUFFICIENT_REVIEWED_DATA depending on the reviewed count.
     """
 
     notes: list[str] = []
@@ -233,8 +241,27 @@ def _resolve_final_status(
         total <= 0 or reviewed * 2 >= total
     )
 
+    hard_safety_violated = forbidden_count > 0 or unsafe_count > 0
+    if hard_safety_violated:
+        notes.append(
+            f"hard-safety violated: forbidden_count={forbidden_count}, "
+            f"unsafe_count={unsafe_count} — no ACCEPT of any kind"
+        )
+        if reviewed < MIN_HUMAN_REVIEWED_FOR_ACCEPT:
+            notes.append(
+                f"HUMAN_REVIEWED={reviewed} < {MIN_HUMAN_REVIEWED_FOR_ACCEPT}"
+            )
+            return QualityGateStatus.INSUFFICIENT_REVIEWED_DATA, notes
+        return QualityGateStatus.REJECT, notes
+
     if gate_ok:
         if has_reviewed_majority:
+            # ADR-007 §H — PROVISIONAL_ACCEPT is the sprint-level ceiling
+            # when the reviewer count clears the gate. Only the classic
+            # "hardening" profile continues to gate full ACCEPT; the new
+            # "provisional" profile explicitly stops at PROVISIONAL_ACCEPT.
+            if gate_profile == "provisional":
+                return QualityGateStatus.PROVISIONAL_ACCEPT, notes
             return QualityGateStatus.ACCEPT, notes
         # No HUMAN_REVIEWED majority — cannot promote to full ACCEPT.
         notes.append(
@@ -243,6 +270,8 @@ def _resolve_final_status(
         )
         if synthetic == total and total > 0:
             notes.append("dataset fully synthetic")
+        if reviewed < MIN_HUMAN_REVIEWED_FOR_ACCEPT:
+            return QualityGateStatus.INSUFFICIENT_REVIEWED_DATA, notes
         return QualityGateStatus.PROVISIONAL_ACCEPT, notes
 
     # Gate failed. Distinguish "we don't have enough reviewed data" from
@@ -322,8 +351,13 @@ def evaluate(
     hardening_thresholds = (
         config.get("hardening_quality_gate_thresholds", {}) or {}
     )
+    provisional_thresholds = (
+        config.get("provisional_quality_gate_thresholds", {}) or {}
+    )
     if gate_profile == "hardening":
         thresholds = hardening_thresholds or default_thresholds
+    elif gate_profile == "provisional":
+        thresholds = provisional_thresholds or default_thresholds
     else:
         thresholds = default_thresholds
 
@@ -350,7 +384,13 @@ def evaluate(
     )
 
     annotation_mix = _annotation_mix(cases)
-    gate_status, gate_notes = _resolve_final_status(gate_ok, annotation_mix)
+    gate_status, gate_notes = _resolve_final_status(
+        gate_ok,
+        annotation_mix,
+        forbidden_count=int(metric_values["forbidden_candidate_violation_count"]),
+        unsafe_count=int(metric_values["unsafe_auto_select_count"]),
+        gate_profile=gate_profile,
+    )
 
     # Objective score uses float() coercion — ProportionMetric.__float__.
     objective_weights = config.get("objective_weights", {})

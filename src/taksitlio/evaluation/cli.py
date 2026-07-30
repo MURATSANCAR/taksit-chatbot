@@ -425,7 +425,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_run.add_argument(
         "--gate-profile",
         default="default",
-        choices=("default", "hardening"),
+        choices=("default", "hardening", "provisional"),
         help="Which quality-gate profile from evaluation_defaults.json to apply.",
     )
     p_run.set_defaults(func=cmd_run_category_eval)
