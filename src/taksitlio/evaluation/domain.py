@@ -86,6 +86,8 @@ class EvaluationCase:
     annotation: CaseAnnotation
     semantic_group_id: Optional[str] = None
     hints: tuple[str, ...] = ()
+    # Annotated extraction for matcher eval (concepts only — never category IDs).
+    semantic_constraints: dict = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

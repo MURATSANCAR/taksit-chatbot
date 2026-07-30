@@ -198,6 +198,7 @@ async def run_matcher_on_dataset(
             embedding_profile_id=handle.embedding_profile_id,
             catalog_revision=handle.revision,
             extra_hints=case.hints,
+            semantic_constraints=dict(case.semantic_constraints or {}),
         )
         started = time.perf_counter()
         try:

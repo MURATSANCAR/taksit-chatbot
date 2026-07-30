@@ -65,6 +65,27 @@ FK = {
     "travel": "fixture.out-of-scope-travel",
 }
 
+# Primary natural-language concept per fixture (NOT category IDs).
+CONCEPT = {
+    FK["mobile"]: "telefon",
+    FK["laptop"]: "laptop",
+    FK["desktop"]: "masaüstü",
+    FK["computer"]: "bilgisayar",
+    FK["tablet"]: "tablet",
+    FK["appliance"]: "beyaz eşya",
+    FK["furniture"]: "mobilya",
+    FK["camera"]: "kamera",
+    FK["wearable"]: "akıllı saat",
+    FK["audio"]: "kulaklık",
+    FK["tv"]: "televizyon",
+    FK["console"]: "oyun konsolu",
+    FK["small_kitchen"]: "kahve makinesi",
+    FK["vacuum"]: "süpürge",
+    FK["ac"]: "klima",
+    FK["bicycle"]: "bisiklet",
+    FK["travel"]: "seyahat",
+}
+
 
 @dataclass
 class GenCase:
@@ -102,7 +123,67 @@ class GenCase:
             payload["expected"]["required_fixture_keys"] = list(self.required)
         if self.forbidden:
             payload["expected"]["forbidden_fixture_keys"] = list(self.forbidden)
+
+        constraints = _constraints_for_case(self)
+        if constraints:
+            payload["semantic_constraints"] = constraints
         return payload
+
+
+def _constraints_for_case(case: GenCase) -> dict | None:
+    """Annotate concept-level constraints for matcher eval (no category IDs)."""
+    tags = set(case.tags)
+    positive: list[dict] = []
+    negative: list[dict] = []
+    corrections: list[dict] = []
+
+    for key in case.required or case.acceptable:
+        concept = CONCEPT.get(key)
+        if concept:
+            positive.append(
+                {"concept": concept, "source": "EXPLICIT", "confidence": 0.95}
+            )
+
+    if "explicit_negation" in tags or "negation" in tags:
+        for key in case.forbidden:
+            concept = CONCEPT.get(key)
+            if concept:
+                negative.append(
+                    {
+                        "concept": concept,
+                        "source": "EXPLICIT_NEGATION",
+                        "confidence": 0.99,
+                    }
+                )
+
+    if "user_correction" in tags or "category_change" in tags:
+        if case.forbidden and (case.required or case.acceptable):
+            prev = CONCEPT.get(case.forbidden[0])
+            repl = CONCEPT.get((case.required or case.acceptable)[0])
+            if prev and repl:
+                corrections.append(
+                    {
+                        "previous_concept": prev,
+                        "replacement_concept": repl,
+                        "confidence": 0.98,
+                    }
+                )
+                if not any(n["concept"] == prev for n in negative):
+                    negative.append(
+                        {
+                            "concept": prev,
+                            "source": "USER_CORRECTION",
+                            "confidence": 0.98,
+                        }
+                    )
+
+    if not positive and not negative and not corrections:
+        return None
+    return {
+        "positive": positive,
+        "negative": negative,
+        "corrections": corrections,
+    }
 
 
 def _cid(bucket: str, split: str, index: int) -> str:

@@ -130,12 +130,63 @@
           "maxLength": 128
         }
       }
+    },
+    "semantic_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Annotated concept-level constraints for matcher eval (never category IDs).",
+      "properties": {
+        "positive": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/constraint_entry"},
+          "maxItems": 16
+        },
+        "negative": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/constraint_entry"},
+          "maxItems": 16
+        },
+        "corrections": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/correction_entry"},
+          "maxItems": 8
+        }
+      }
     }
   },
   "definitions": {
     "fixture_key": {
       "type": "string",
       "pattern": "^fixture\\.[a-z0-9-]{2,60}$"
+    },
+    "constraint_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concept", "source", "confidence"],
+      "properties": {
+        "concept": {"type": "string", "minLength": 1, "maxLength": 200},
+        "source": {
+          "type": "string",
+          "enum": [
+            "EXPLICIT",
+            "INFERRED",
+            "EXPLICIT_NEGATION",
+            "USER_CORRECTION",
+            "SESSION_CONTEXT"
+          ]
+        },
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "correction_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["previous_concept", "replacement_concept", "confidence"],
+      "properties": {
+        "previous_concept": {"type": "string", "minLength": 1, "maxLength": 200},
+        "replacement_concept": {"type": "string", "minLength": 1, "maxLength": 200},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+      }
     }
   }
 }

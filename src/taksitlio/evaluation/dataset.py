@@ -89,6 +89,7 @@ def _case_from_payload(payload: dict) -> EvaluationCase:
             reviewers=tuple(annotation.get("reviewers") or ()),
             notes_hash=annotation.get("notes_hash"),
         ),
+        semantic_constraints=dict(payload.get("semantic_constraints") or {}),
     )
 
 
@@ -181,7 +182,8 @@ def load_jsonl(
 
     dataset_ref = fixture_catalog_ref or {
         "catalog_id": "fixture.category-catalog",
-        "version": "v1",
+        "version": version,
+        "path": f"evaluation/fixtures/catalogs/category-fixture.{version}.json",
     }
     return EvaluationDataset(
         dataset_id=dataset_id,
@@ -244,6 +246,8 @@ def _case_to_payload(case: EvaluationCase) -> dict:
         payload["annotation"]["reviewers"] = list(case.annotation.reviewers)
     if case.annotation.notes_hash:
         payload["annotation"]["notes_hash"] = case.annotation.notes_hash
+    if case.semantic_constraints:
+        payload["semantic_constraints"] = dict(case.semantic_constraints)
     return payload
 
 

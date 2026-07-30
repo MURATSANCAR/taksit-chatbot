@@ -177,18 +177,28 @@ async def _run_eval(
 
 
 def cmd_run_category_eval(args: argparse.Namespace) -> int:
+    dataset_path = Path(args.dataset)
+    dataset_preview = load_jsonl(dataset_path)
+    fixture_default = DEFAULT_FIXTURE_PATH
+    ref_path = (dataset_preview.fixture_catalog_ref or {}).get("path")
+    if ref_path:
+        candidate = Path(ref_path)
+        if not candidate.is_absolute():
+            candidate = Path(__file__).resolve().parents[3] / candidate
+        if candidate.exists():
+            fixture_default = candidate
     mode = EvaluationMode(args.mode)
     policy = _resolve_policy(args.policy_json)
     report = asyncio.run(
         _run_eval(
-            Path(args.dataset),
+            dataset_path,
             mode=mode,
             policy=policy,
             workers=int(args.workers),
             write_debug=bool(args.debug_utterances),
             config_path=Path(args.config or DEFAULT_CONFIG_PATH),
-            fixture_path=Path(args.fixture or DEFAULT_FIXTURE_PATH),
-            gate_profile=str(getattr(args, "gate_profile", "default")),
+            fixture_path=Path(args.fixture) if args.fixture else fixture_default,
+            gate_profile=str(getattr(args, "gate_profile", "default") or "default"),
         )
     )
     out = write_report(report)
