@@ -1,91 +1,85 @@
 # Taksitlio Chatbot
 
-Fibabanka bağlı Taksitlio mobil chatbotu — üretim seviyesinde MVP.
+Fibabanka bağlı Taksitlio mobil chatbotu — production-grade MVP routing çekirdeği.
 
 ```text
-Chat API → Conversation State (Redis) → ModelRouter (FAST / FALLBACK)
-         → Semantic category match → Kampanya retrieval
-         → Deterministik uygunluk → Dinamik ranking
-         → Grounded cevap + üyelik CTA
+Chat API → Conversation State → ModelRouter (FAST / FALLBACK / CLARIFY / SAFE_FAILURE)
+         → system_confidence + reason codes
+         → Semantic category match → Kampanya → Ranking → Grounded cevap
 ```
 
-Model adları, kategori listeleri, kampanyalar, promptlar ve confidence eşikleri **kodda sabitlenmez**; PostgreSQL + yönetim API’sinden yönetilir.
+Model adı, IP ve port **uygulama kodunda yoktur**. Profile ≠ connection ≠ deployment (ADR-002).
 
-## Mimari
+## Mimari / ADR
 
 * [`docs/architecture/MVP-ARCHITECTURE.md`](docs/architecture/MVP-ARCHITECTURE.md)
 * [`docs/adr/ADR-001-dynamic-model-routing.md`](docs/adr/ADR-001-dynamic-model-routing.md)
+* [`docs/adr/ADR-002-model-deployment-runtime-separation.md`](docs/adr/ADR-002-model-deployment-runtime-separation.md)
 
-## Bileşenler
+## Routing çekirdeği
 
-| Katman | Konum |
-|--------|--------|
-| Chat + Admin API | `src/taksitlio/api/` |
-| Pipeline orchestrator | `src/taksitlio/pipeline/` |
-| ModelGateway / ModelRouter | `src/taksitlio/model_gateway/`, `model_router/` |
-| Redis Conversation State | `src/taksitlio/conversation/` |
-| Semantic category matcher | `src/taksitlio/category/` |
-| Kampanya / uygunluk / ranking | `src/taksitlio/campaign/` |
-| Grounded response | `src/taksitlio/response/` |
-| DB migrations | `db/migrations/V001`–`V004` |
-| Türkçe golden set | `eval/golden/` |
-| Admin ekran spesifikasyonları | `admin/specs/ai-admin-screens.md` |
+| Bileşen | Konum |
+|---------|--------|
+| ModelGateway (deployment-resolved) | `src/taksitlio/model_gateway/` |
+| ModelRouter + reason codes | `src/taksitlio/model_router/router.py` |
+| SystemConfidenceEvaluator | `src/taksitlio/model_router/confidence.py` |
+| RuntimeHealthRegistry (in-memory) | `src/taksitlio/model_router/health.py` |
+| Absolute Deadline | `src/taksitlio/model_router/deadline.py` |
+| Route version selector | `src/taksitlio/model_router/route_selector.py` |
+| Typed conversation patch | `src/taksitlio/conversation/patch.py` |
+| AuditService | `src/taksitlio/audit/` |
 
-## Hızlı başlangıç (in-memory demo)
+## DB
 
-LLM sunucusu olmadan kategori → kampanya → grounded template akışını test etmek için:
+| Dosya | İçerik |
+|-------|--------|
+| `db/migrations/V001__ai_model_management.sql` | Şema only (profiles, connections, deployments, route_versions, audit, logs) |
+| `db/migrations/V002__ai_default_policies.sql` | Teknik default politikalar (host yok) |
+| `db/migrations/V003+` | Kategori / kampanya / prompt |
+| `db/bootstrap/dev-models.sql` | Dev bağlantıları (docker DNS) |
+| `db/bootstrap/poc-models.sql` | POC A/B route’ları |
+
+`endpoint_url` on `ai_model_profiles` is **DEPRECATED** — gateway ignores it.
+
+## Local test
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-export ALLOW_IN_MEMORY=true
-pytest
+pytest -q
 ```
 
-API (in-memory; anlama katmanı gerçek llama.cpp ister):
+Routing-core suite:
+
+```bash
+pytest tests/test_routing_core.py -q
+```
+
+In-memory API (no LLM):
 
 ```bash
 export ALLOW_IN_MEMORY=true
 uvicorn taksitlio.main:app --reload --port 8000
 ```
 
-## Docker (Postgres + Redis + API)
+## Docker
 
 ```bash
 cp .env.example .env
 docker compose -f docker/docker-compose.yml up --build
+# after migrations, apply bootstrap explicitly:
+# psql "$DATABASE_URL" -f db/bootstrap/dev-models.sql
 ```
 
-Migration’lar Postgres ilk açılışta `/docker-entrypoint-initdb.d` üzerinden uygulanır. Sonra `ai_model_profiles.endpoint_url` alanlarını gerçek llama.cpp sunucularına admin API veya SQL ile bağlayın.
+## Kabul özeti (bu aşama)
 
-## API
+* Routing model self-confidence’a tek başına bağlı değil (`system_confidence`)
+* Eksik bilgi → `CLARIFY`; invalid/comprehension → `FALLBACK`
+* Profile / connection / deployment ayrıldı
+* Absolute deadline; süre yetmezse fallback yok → `SAFE_FAILURE`
+* Uygulama kodunda vendor model adı / loopback IP yok
 
-* `GET /health`
-* `POST /v1/chat` — `{ "session_id", "message", "user_id?" }`
-* `DELETE /v1/sessions/{session_id}`
-* `GET /v1/admin/models`
-* `PATCH /v1/admin/models/{profile_code}`
-* `POST /v1/admin/models/compare`
-* `GET /v1/admin/prompts/{prompt_code}`
-* `POST /v1/admin/prompts/{prompt_code}/activate`
+## Sıradaki adım
 
-## POC FAST adayları
-
-* Aday A: `Qwen3.5-4B` Q4_K_M → `FAST_UNDERSTANDING`
-* Aday B: `Qwen3-4B-Instruct-2507` Q4_K_M → `FAST_UNDERSTANDING_CHALLENGER`
-* Fallback: `DEEP_UNDERSTANDING`
-* Cevap: `RESPONSE_GENERATION`
-* Embedding: `EMBEDDING_DEFAULT`
-
-Kesin FAST seçimi `eval/golden` + eşzamanlı benchmark sonrası verilir.
-
-## Ortam değişkenleri
-
-Yalnızca altyapı — model/kategori içeriği değil:
-
-* `DATABASE_URL`
-* `REDIS_URL`
-* `REDIS_KEY_PREFIX`
-* `SESSION_TTL_SECONDS`
-* `ALLOW_IN_MEMORY` (lokal demo)
+Conversation State Manager + Redis optimistic locking.

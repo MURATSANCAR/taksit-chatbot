@@ -11,7 +11,7 @@ from urllib.parse import urljoin, urlparse, urlunparse
 
 import httpx
 
-from taksitlio.model_gateway.gateway import (
+from taksitlio.model_gateway.types import (
     CompletionRequest,
     CompletionResult,
     ModelGatewayError,

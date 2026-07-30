@@ -1,300 +1,503 @@
-"""ModelRouter — FAST → validate → confidence policy → clarify / FALLBACK."""
+"""ModelRouter — deployment-based FAST/FALLBACK with system confidence + deadline."""
 
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
-from enum import Enum
+import uuid
 from pathlib import Path
-from typing import Any, Mapping, Protocol
+from typing import Any, Mapping
 
 from jsonschema import Draft202012Validator
 
-from taksitlio.model_gateway.gateway import (
+from taksitlio.model_gateway.gateway import ModelGateway
+from taksitlio.model_gateway.types import (
     CompletionRequest,
-    ModelGateway,
+    DeadlineExhaustedError,
+    JsonParseError,
     ModelGatewayError,
-    ModelProfile,
+    ProviderUnavailableError,
+)
+from taksitlio.model_router.confidence import SystemConfidenceEvaluator
+from taksitlio.model_router.deadline import Deadline
+from taksitlio.model_router.health import RuntimeHealthRegistry
+from taksitlio.model_router.route_selector import (
+    RouteContext,
+    RouteVersion,
+    RouteVersionRepository,
+    select_route_version,
+)
+from taksitlio.model_router.router_types import (
+    ReasonCode,
+    RouteDecision,
+    UnderstandingRequest,
+    UnderstandingResult,
 )
 
 
-class RouteDecision(str, Enum):
-    CONTINUE = "CONTINUE"
-    CLARIFY = "CLARIFY"
-    FALLBACK = "FALLBACK"
-
-
-@dataclass(frozen=True)
-class ConfidencePolicy:
-    policy_code: str
-    minimum_confidence: float = 0.78
-    maximum_category_score_gap_for_clarification: float = 0.08
-    fallback_on_invalid_schema: bool = True
-    fallback_on_conflict: bool = True
-    fallback_on_multiple_needs: bool = True
-    fallback_on_budget_confusion: bool = True
-    fallback_on_low_confidence: bool = True
-    prefer_clarification_when_ambiguous: bool = True
-
-
-@dataclass(frozen=True)
-class TimeoutPolicy:
-    policy_code: str
-    primary_timeout_ms: int = 3000
-    fallback_timeout_ms: int = 8000
-    total_budget_ms: int = 10000
-    retry_same_model: bool = False
-
-
-@dataclass(frozen=True)
-class TaskRoute:
-    task_code: str
-    primary: ModelProfile
-    fallback: ModelProfile | None
-    confidence_policy: ConfidencePolicy
-    timeout_policy: TimeoutPolicy
-
-
-@dataclass(frozen=True)
-class UnderstandingRequest:
-    message: str
-    session_summary: Mapping[str, Any] | None = None
-    system_prompt: str = ""
-    json_schema: Mapping[str, Any] | None = None
-
-
-@dataclass(frozen=True)
-class UnderstandingResult:
-    decision: RouteDecision
-    need_profile: dict[str, Any] | None
-    used_profile_code: str
-    latency_ms: float
-    clarification_question_intent: str | None = None
-    reason: str | None = None
-    fallback_used: bool = False
-    raw_content: str | None = None
-    diagnostics: dict[str, Any] = field(default_factory=dict)
-
-
-class TaskRouteRepository(Protocol):
-    def get_route(self, task_code: str) -> TaskRoute: ...
-
-
 class ModelRouter:
-    """
-    Routes NEED_UNDERSTANDING through FAST primary, then policy-driven fallback.
-
-    Never embeds model names; resolves everything from TaskRoute / DB profiles.
-    """
-
     TASK_NEED_UNDERSTANDING = "NEED_UNDERSTANDING"
 
     def __init__(
         self,
         gateway: ModelGateway,
-        routes: TaskRouteRepository,
+        routes: RouteVersionRepository,
         *,
+        health: RuntimeHealthRegistry | None = None,
+        confidence_evaluator: SystemConfidenceEvaluator | None = None,
         default_schema: Mapping[str, Any] | None = None,
     ) -> None:
         self._gateway = gateway
         self._routes = routes
+        self._health = health
+        self._evaluator = confidence_evaluator or SystemConfidenceEvaluator()
         self._default_schema = default_schema or _load_default_need_profile_schema()
 
     async def understand(self, request: UnderstandingRequest) -> UnderstandingResult:
-        route = self._routes.get_route(self.TASK_NEED_UNDERSTANDING)
+        correlation_id = request.correlation_id or str(uuid.uuid4())
+        route = self._select_route(request)
+        deadline = Deadline.from_budget_ms(route.timeout_policy.total_budget_ms)
         schema = request.json_schema or self._default_schema
         messages = _build_messages(request)
 
+        primary = route.primary
+        if self._health is not None and not self._health.get(primary.id).is_callable():
+            return await self._maybe_fallback(
+                route,
+                messages,
+                deadline=deadline,
+                schema=schema,
+                request=request,
+                correlation_id=correlation_id,
+                reason=ReasonCode.PRIMARY_UNAVAILABLE,
+                prior_latency_ms=0.0,
+            )
+
         try:
-            primary_payload, primary_result = await self._gateway.complete_json(
-                route.primary,
+            primary_timeout = deadline.clamp_timeout_ms(
+                route.timeout_policy.primary_timeout_ms
+            )
+            if primary_timeout <= 0:
+                return _safe_failure(
+                    ReasonCode.DEADLINE_EXHAUSTED,
+                    correlation_id=correlation_id,
+                    deployment=primary.deployment_code,
+                    profile=primary.profile.profile_code,
+                )
+
+            payload, result = await self._gateway.complete_json(
+                primary,
                 CompletionRequest(
                     messages=messages,
                     response_format={"type": "json_object"},
-                    timeout_ms=route.timeout_policy.primary_timeout_ms,
-                    temperature=float(route.primary.temperature),
-                    max_tokens=route.primary.max_output_tokens,
+                    timeout_ms=primary_timeout,
+                    temperature=float(primary.profile.temperature),
+                    max_tokens=primary.profile.max_output_tokens,
+                    correlation_id=correlation_id,
                 ),
             )
-        except ModelGatewayError as exc:
-            if route.confidence_policy.fallback_on_invalid_schema and route.fallback:
-                return await self._run_fallback(
-                    route,
-                    messages,
-                    reason=f"primary_error:{exc}",
+        except (JsonParseError, ModelGatewayError) as exc:
+            if isinstance(exc, DeadlineExhaustedError):
+                return _safe_failure(
+                    ReasonCode.DEADLINE_EXHAUSTED,
+                    correlation_id=correlation_id,
+                    deployment=primary.deployment_code,
+                    profile=primary.profile.profile_code,
                 )
-            return UnderstandingResult(
-                decision=RouteDecision.FALLBACK,
-                need_profile=None,
-                used_profile_code=route.primary.profile_code,
-                latency_ms=0.0,
-                reason=str(exc),
-                fallback_used=False,
+            return await self._maybe_fallback(
+                route,
+                messages,
+                deadline=deadline,
+                schema=schema,
+                request=request,
+                correlation_id=correlation_id,
+                reason=(
+                    ReasonCode.INVALID_SCHEMA
+                    if isinstance(exc, JsonParseError)
+                    else ReasonCode.COMPREHENSION_FAILURE
+                ),
+                prior_latency_ms=0.0,
+                diagnostics={"primary_error_class": getattr(exc, "error_class", "ERROR")},
             )
 
-        valid, schema_errors = _validate_schema(primary_payload, schema)
+        valid, schema_errors = _validate_schema(payload, schema)
+        evaluated = self._evaluator.evaluate(
+            payload if valid else None,
+            schema_valid=valid,
+            schema_errors=schema_errors,
+            session_summary=request.session_summary,
+        )
+
         if not valid:
-            if route.confidence_policy.fallback_on_invalid_schema and route.fallback:
-                return await self._run_fallback(
-                    route,
-                    messages,
-                    reason="invalid_schema",
-                    diagnostics={"schema_errors": schema_errors},
-                )
-            return UnderstandingResult(
-                decision=RouteDecision.FALLBACK,
-                need_profile=None,
-                used_profile_code=primary_result.profile_code,
-                latency_ms=primary_result.latency_ms,
-                reason="invalid_schema",
-                raw_content=primary_result.content,
+            return await self._maybe_fallback(
+                route,
+                messages,
+                deadline=deadline,
+                schema=schema,
+                request=request,
+                correlation_id=correlation_id,
+                reason=ReasonCode.INVALID_SCHEMA,
+                prior_latency_ms=result.latency_ms,
                 diagnostics={"schema_errors": schema_errors},
             )
 
-        decision, reason = self._apply_confidence_policy(
-            primary_payload, route.confidence_policy
-        )
-
-        if decision == RouteDecision.CLARIFY:
-            clarification = primary_payload.get("clarification") or {}
+        decision = self._decide_from_system_confidence(evaluated, route)
+        if decision.decision == RouteDecision.CLARIFY:
             return UnderstandingResult(
                 decision=RouteDecision.CLARIFY,
-                need_profile=primary_payload,
-                used_profile_code=primary_result.profile_code,
-                latency_ms=primary_result.latency_ms,
-                clarification_question_intent=clarification.get("question_intent"),
-                reason=reason,
-                raw_content=primary_result.content,
+                reason_code=decision.reason_code,
+                need_profile=payload,
+                used_deployment_code=result.deployment_code,
+                used_profile_code=result.profile_code,
+                latency_ms=result.latency_ms,
+                system_confidence=evaluated.system_confidence,
+                model_reported_confidence=evaluated.model_reported_confidence,
+                clarification_question_intent=_question_intent(payload, decision.reason_code),
+                missing_concepts=decision.missing_concepts,
+                raw_content=result.content,
+                diagnostics={
+                    "signals": evaluated.signals.__dict__,
+                    "details": evaluated.details,
+                },
+                correlation_id=correlation_id,
             )
 
-        if decision == RouteDecision.FALLBACK and route.fallback:
-            return await self._run_fallback(
+        if decision.decision == RouteDecision.FALLBACK:
+            return await self._maybe_fallback(
                 route,
                 messages,
-                reason=reason or "policy_fallback",
-                prior_latency_ms=primary_result.latency_ms,
+                deadline=deadline,
+                schema=schema,
+                request=request,
+                correlation_id=correlation_id,
+                reason=decision.reason_code,
+                prior_latency_ms=result.latency_ms,
+                diagnostics={
+                    "signals": evaluated.signals.__dict__,
+                    "system_confidence": evaluated.system_confidence,
+                    "model_reported_confidence": evaluated.model_reported_confidence,
+                },
             )
 
         return UnderstandingResult(
             decision=RouteDecision.CONTINUE,
-            need_profile=primary_payload,
-            used_profile_code=primary_result.profile_code,
-            latency_ms=primary_result.latency_ms,
-            reason=reason,
-            raw_content=primary_result.content,
+            reason_code=ReasonCode.OK,
+            need_profile=payload,
+            used_deployment_code=result.deployment_code,
+            used_profile_code=result.profile_code,
+            latency_ms=result.latency_ms,
+            system_confidence=evaluated.system_confidence,
+            model_reported_confidence=evaluated.model_reported_confidence,
+            raw_content=result.content,
+            diagnostics={
+                "signals": evaluated.signals.__dict__,
+                "details": evaluated.details,
+            },
+            correlation_id=correlation_id,
         )
 
-    async def _run_fallback(
+    def _select_route(self, request: UnderstandingRequest) -> RouteVersion:
+        ctx_data = dict(request.route_context or {})
+        context = RouteContext(
+            locale=ctx_data.get("locale"),
+            client=ctx_data.get("client"),
+            experiment=ctx_data.get("experiment"),
+            user_segment=ctx_data.get("user_segment"),
+            app_version=ctx_data.get("app_version"),
+            tenant=ctx_data.get("tenant"),
+            session_id=request.session_id,
+            extra={
+                k: v
+                for k, v in ctx_data.items()
+                if k
+                not in {
+                    "locale",
+                    "client",
+                    "experiment",
+                    "user_segment",
+                    "app_version",
+                    "tenant",
+                }
+            },
+        )
+        return select_route_version(
+            self._routes.list_active(self.TASK_NEED_UNDERSTANDING),
+            context,
+            seed=request.session_id or request.correlation_id,
+        )
+
+    def _decide_from_system_confidence(
         self,
-        route: TaskRoute,
+        evaluated,
+        route: RouteVersion,
+    ) -> "_Decision":
+        policy = route.confidence_policy
+        signals = evaluated.signals
+
+        if signals.multiple_independent_needs and policy.clarify_on_multiple_needs:
+            return _Decision(
+                RouteDecision.CLARIFY,
+                ReasonCode.MULTIPLE_INDEPENDENT_NEEDS,
+                missing_concepts=("need_priority",),
+            )
+
+        if not signals.session_consistent and policy.clarify_on_session_conflict:
+            return _Decision(
+                RouteDecision.CLARIFY,
+                ReasonCode.SESSION_CONFLICT,
+                missing_concepts=("session_resolution",),
+            )
+
+        if signals.missing_information and policy.prefer_clarification_when_ambiguous:
+            missing = _missing_concepts_from_payload_signals(signals)
+            reason = (
+                ReasonCode.MISSING_PRODUCT_FORM
+                if "device_type" in missing
+                else ReasonCode.MISSING_INFORMATION
+            )
+            return _Decision(RouteDecision.CLARIFY, reason, missing_concepts=missing)
+
+        if (
+            signals.semantic_score_gap
+            <= policy.maximum_category_score_gap_for_clarification
+            and policy.prefer_clarification_when_ambiguous
+            and signals.semantic_match_score > 0.0
+            and signals.semantic_score_gap < 1.0
+        ):
+            return _Decision(
+                RouteDecision.CLARIFY,
+                ReasonCode.MISSING_PRODUCT_FORM,
+                missing_concepts=("device_type",),
+            )
+
+        if signals.budget_ambiguity and not signals.budget_consistent:
+            if policy.fallback_on_low_confidence:
+                return _Decision(RouteDecision.FALLBACK, ReasonCode.BUDGET_AMBIGUITY)
+            return _Decision(
+                RouteDecision.CLARIFY,
+                ReasonCode.BUDGET_AMBIGUITY,
+                missing_concepts=("budget",),
+            )
+
+        if signals.budget_ambiguity and policy.prefer_clarification_when_ambiguous:
+            return _Decision(
+                RouteDecision.CLARIFY,
+                ReasonCode.BUDGET_AMBIGUITY,
+                missing_concepts=("budget",),
+            )
+
+        if evaluated.system_confidence < policy.min_confidence:
+            if signals.comprehension_failure or policy.fallback_on_low_confidence:
+                return _Decision(
+                    RouteDecision.FALLBACK,
+                    ReasonCode.LOW_SYSTEM_CONFIDENCE
+                    if not signals.comprehension_failure
+                    else ReasonCode.COMPREHENSION_FAILURE,
+                )
+
+        return _Decision(RouteDecision.CONTINUE, ReasonCode.OK)
+
+    async def _maybe_fallback(
+        self,
+        route: RouteVersion,
         messages: list[dict[str, str]],
         *,
-        reason: str,
+        deadline: Deadline,
+        schema: Mapping[str, Any],
+        request: UnderstandingRequest,
+        correlation_id: str,
+        reason: ReasonCode,
+        prior_latency_ms: float,
         diagnostics: dict[str, Any] | None = None,
-        prior_latency_ms: float = 0.0,
     ) -> UnderstandingResult:
-        assert route.fallback is not None
+        if route.fallback is None:
+            return _safe_failure(
+                reason if reason != ReasonCode.OK else ReasonCode.FALLBACK_FAILED,
+                correlation_id=correlation_id,
+                latency_ms=prior_latency_ms,
+                diagnostics=diagnostics,
+            )
+
+        remaining_needed = route.timeout_policy.min_fallback_remaining_ms
+        if deadline.is_exhausted(min_remaining_ms=remaining_needed):
+            return _safe_failure(
+                ReasonCode.DEADLINE_EXHAUSTED,
+                correlation_id=correlation_id,
+                latency_ms=prior_latency_ms,
+                diagnostics=diagnostics,
+            )
+
+        fallback = route.fallback
+        if self._health is not None and not self._health.get(fallback.id).is_callable():
+            return _safe_failure(
+                ReasonCode.FALLBACK_FAILED,
+                correlation_id=correlation_id,
+                latency_ms=prior_latency_ms,
+                deployment=fallback.deployment_code,
+                profile=fallback.profile.profile_code,
+                diagnostics=diagnostics,
+            )
+
+        fb_timeout = deadline.clamp_timeout_ms(
+            route.timeout_policy.fallback_timeout_ms,
+            min_remaining_ms=remaining_needed,
+        )
+        if fb_timeout <= 0:
+            return _safe_failure(
+                ReasonCode.DEADLINE_EXHAUSTED,
+                correlation_id=correlation_id,
+                latency_ms=prior_latency_ms,
+                diagnostics=diagnostics,
+            )
+
         try:
             payload, result = await self._gateway.complete_json(
-                route.fallback,
+                fallback,
                 CompletionRequest(
                     messages=messages,
                     response_format={"type": "json_object"},
-                    timeout_ms=route.timeout_policy.fallback_timeout_ms,
-                    temperature=float(route.fallback.temperature),
-                    max_tokens=route.fallback.max_output_tokens,
+                    timeout_ms=fb_timeout,
+                    temperature=float(fallback.profile.temperature),
+                    max_tokens=fallback.profile.max_output_tokens,
+                    correlation_id=correlation_id,
                 ),
             )
-        except ModelGatewayError as exc:
-            return UnderstandingResult(
-                decision=RouteDecision.FALLBACK,
-                need_profile=None,
-                used_profile_code=route.fallback.profile_code,
+        except (JsonParseError, ModelGatewayError, ProviderUnavailableError):
+            return _safe_failure(
+                ReasonCode.FALLBACK_FAILED,
+                correlation_id=correlation_id,
                 latency_ms=prior_latency_ms,
-                reason=f"fallback_error:{exc}",
+                deployment=fallback.deployment_code,
+                profile=fallback.profile.profile_code,
                 fallback_used=True,
-                diagnostics=diagnostics or {},
+                diagnostics=diagnostics,
             )
 
-        valid, schema_errors = _validate_schema(payload, self._default_schema)
+        valid, schema_errors = _validate_schema(payload, schema)
+        evaluated = self._evaluator.evaluate(
+            payload if valid else None,
+            schema_valid=valid,
+            schema_errors=schema_errors,
+            session_summary=request.session_summary,
+        )
         if not valid:
-            return UnderstandingResult(
-                decision=RouteDecision.FALLBACK,
-                need_profile=None,
-                used_profile_code=result.profile_code,
+            return _safe_failure(
+                ReasonCode.FALLBACK_FAILED,
+                correlation_id=correlation_id,
                 latency_ms=prior_latency_ms + result.latency_ms,
-                reason="fallback_invalid_schema",
+                deployment=result.deployment_code,
+                profile=result.profile_code,
                 fallback_used=True,
-                raw_content=result.content,
                 diagnostics={"schema_errors": schema_errors, **(diagnostics or {})},
             )
 
-        clarification = payload.get("clarification") or {}
-        if clarification.get("required") and route.confidence_policy.prefer_clarification_when_ambiguous:
+        decision = self._decide_from_system_confidence(evaluated, route)
+        if decision.decision == RouteDecision.CLARIFY:
             return UnderstandingResult(
                 decision=RouteDecision.CLARIFY,
+                reason_code=decision.reason_code,
                 need_profile=payload,
+                used_deployment_code=result.deployment_code,
                 used_profile_code=result.profile_code,
                 latency_ms=prior_latency_ms + result.latency_ms,
-                clarification_question_intent=clarification.get("question_intent"),
-                reason=reason,
+                system_confidence=evaluated.system_confidence,
+                model_reported_confidence=evaluated.model_reported_confidence,
+                clarification_question_intent=_question_intent(payload, decision.reason_code),
+                missing_concepts=decision.missing_concepts,
                 fallback_used=True,
                 raw_content=result.content,
+                diagnostics={"signals": evaluated.signals.__dict__, **(diagnostics or {})},
+                correlation_id=correlation_id,
+            )
+
+        if decision.decision == RouteDecision.FALLBACK:
+            return _safe_failure(
+                decision.reason_code,
+                correlation_id=correlation_id,
+                latency_ms=prior_latency_ms + result.latency_ms,
+                deployment=result.deployment_code,
+                profile=result.profile_code,
+                fallback_used=True,
+                need_profile=payload,
+                system_confidence=evaluated.system_confidence,
+                model_reported_confidence=evaluated.model_reported_confidence,
+                diagnostics={"signals": evaluated.signals.__dict__, **(diagnostics or {})},
             )
 
         return UnderstandingResult(
             decision=RouteDecision.CONTINUE,
+            reason_code=reason,
             need_profile=payload,
+            used_deployment_code=result.deployment_code,
             used_profile_code=result.profile_code,
             latency_ms=prior_latency_ms + result.latency_ms,
-            reason=reason,
+            system_confidence=evaluated.system_confidence,
+            model_reported_confidence=evaluated.model_reported_confidence,
             fallback_used=True,
             raw_content=result.content,
-            diagnostics=diagnostics or {},
+            diagnostics={"signals": evaluated.signals.__dict__, **(diagnostics or {})},
+            correlation_id=correlation_id,
         )
 
-    @staticmethod
-    def _apply_confidence_policy(
-        payload: Mapping[str, Any],
-        policy: ConfidencePolicy,
-    ) -> tuple[RouteDecision, str | None]:
-        signals = payload.get("signals") or {}
-        clarification = payload.get("clarification") or {}
-        confidence = float(payload.get("confidence") or 0.0)
-        ambiguities = payload.get("ambiguities") or []
 
-        if signals.get("multiple_needs") and policy.fallback_on_multiple_needs:
-            return RouteDecision.FALLBACK, "multiple_needs"
+class _Decision:
+    def __init__(
+        self,
+        decision: RouteDecision,
+        reason_code: ReasonCode,
+        *,
+        missing_concepts: tuple[str, ...] = (),
+    ) -> None:
+        self.decision = decision
+        self.reason_code = reason_code
+        self.missing_concepts = missing_concepts
 
-        if signals.get("budget_payment_confusion") and policy.fallback_on_budget_confusion:
-            return RouteDecision.FALLBACK, "budget_payment_confusion"
 
-        if signals.get("conflicts_with_session") and policy.fallback_on_conflict:
-            return RouteDecision.FALLBACK, "session_conflict"
+def _missing_concepts_from_payload_signals(signals) -> tuple[str, ...]:
+    if signals.missing_information:
+        return ("device_type",)
+    return ()
 
-        if signals.get("indirect_or_complex") and confidence < policy.minimum_confidence:
-            return RouteDecision.FALLBACK, "indirect_or_complex"
 
-        if (
-            clarification.get("required")
-            and policy.prefer_clarification_when_ambiguous
-            and confidence >= policy.minimum_confidence
-        ):
-            return RouteDecision.CLARIFY, "clarification_required"
+def _question_intent(payload: Mapping[str, Any], reason: ReasonCode) -> str | None:
+    clarification = payload.get("clarification") or {}
+    intent = clarification.get("question_intent")
+    if intent:
+        return str(intent)
+    if reason in {ReasonCode.MISSING_PRODUCT_FORM}:
+        return "device_type"
+    if reason == ReasonCode.BUDGET_AMBIGUITY:
+        return "budget"
+    if reason == ReasonCode.MULTIPLE_INDEPENDENT_NEEDS:
+        return "need_priority"
+    return "usage"
 
-        if ambiguities and policy.prefer_clarification_when_ambiguous:
-            category_gap = signals.get("category_score_gap")
-            if (
-                isinstance(category_gap, (int, float))
-                and category_gap
-                <= policy.maximum_category_score_gap_for_clarification
-            ):
-                return RouteDecision.CLARIFY, "close_category_candidates"
 
-        if confidence < policy.minimum_confidence and policy.fallback_on_low_confidence:
-            return RouteDecision.FALLBACK, "low_confidence"
-
-        return RouteDecision.CONTINUE, None
+def _safe_failure(
+    reason: ReasonCode,
+    *,
+    correlation_id: str,
+    latency_ms: float = 0.0,
+    deployment: str | None = None,
+    profile: str | None = None,
+    fallback_used: bool = False,
+    diagnostics: dict[str, Any] | None = None,
+    need_profile: dict[str, Any] | None = None,
+    system_confidence: float | None = None,
+    model_reported_confidence: float | None = None,
+) -> UnderstandingResult:
+    return UnderstandingResult(
+        decision=RouteDecision.SAFE_FAILURE,
+        reason_code=reason,
+        need_profile=need_profile,
+        used_deployment_code=deployment,
+        used_profile_code=profile,
+        latency_ms=latency_ms,
+        system_confidence=system_confidence,
+        model_reported_confidence=model_reported_confidence,
+        fallback_used=fallback_used,
+        diagnostics=diagnostics or {},
+        correlation_id=correlation_id,
+    )
 
 
 def _build_messages(request: UnderstandingRequest) -> list[dict[str, str]]:

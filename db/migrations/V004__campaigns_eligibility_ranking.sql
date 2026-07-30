@@ -111,45 +111,7 @@ INSERT INTO ranking_policies (policy_code, display_name) VALUES (
     'Varsayılan kampanya sıralama politikası'
 ) ON CONFLICT (policy_code) DO NOTHING;
 
-INSERT INTO ai_model_profiles (
-    profile_code, display_name, provider_type, endpoint_url, model_reference,
-    task_type, context_limit, max_output_tokens, temperature, timeout_ms,
-    parallel_slots, status, configuration
-) VALUES (
-    'RESPONSE_GENERATION',
-    'Grounded Cevap Üretimi',
-    'LLAMA_CPP',
-    'http://127.0.0.1:8082/v1/chat/completions',
-    'local-deep-understanding',
-    'RESPONSE',
-    4096,
-    512,
-    0.200,
-    5000,
-    2,
-    'ACTIVE',
-    '{"thinking_enabled":false,"streaming_enabled":false,"json_schema_required":false,"grounded":true}'::jsonb
-)
-ON CONFLICT (profile_code) DO NOTHING;
-
-INSERT INTO ai_task_routes (
-    task_code,
-    primary_model_profile_id,
-    fallback_model_profile_id,
-    confidence_policy_id,
-    timeout_policy_id,
-    status
-)
-SELECT
-    'RESPONSE_GENERATION',
-    resp.id,
-    NULL,
-    NULL,
-    NULL,
-    'ACTIVE'
-FROM ai_model_profiles resp
-WHERE resp.profile_code = 'RESPONSE_GENERATION'
-ON CONFLICT (task_code) DO NOTHING;
+-- Response model deployment bootstrap: db/bootstrap/*.sql
 
 -- Demo merchant + kampanyalar
 INSERT INTO merchants (merchant_code, display_name) VALUES

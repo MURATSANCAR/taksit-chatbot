@@ -12,6 +12,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ../db/migrations:/docker-entrypoint-initdb.d:ro
+    # Apply db/bootstrap/dev-models.sql manually after first boot (not auto-seeded).
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U taksitlio -d taksitlio"]
       interval: 5s

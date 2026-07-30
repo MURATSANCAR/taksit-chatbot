@@ -1,4 +1,4 @@
-"""Comprehensive MVP pipeline and domain tests."""
+"""MVP pipeline domain tests (post-understanding path)."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from taksitlio.category.matcher import (
     SemanticCategoryMatcher,
 )
 from taksitlio.conversation.session import ConversationStateManager, InMemorySessionStore
-from taksitlio.conversation.state import apply_conversation_update
+from taksitlio.conversation.patch import apply_conversation_patch
 from taksitlio.embeddings.client import LexicalEmbedder
 from taksitlio.eval.golden import (
     intent_accuracy,
@@ -28,9 +28,8 @@ from taksitlio.eval.golden import (
     summarize_buckets,
     valid_json_rate,
 )
-from taksitlio.model_router.router import (
-    ConfidencePolicy,
-    ModelRouter,
+from taksitlio.model_router.router_types import (
+    ReasonCode,
     RouteDecision,
     UnderstandingResult,
 )
@@ -42,47 +41,24 @@ from taksitlio.response.grounded import (
 )
 
 
-def test_apply_budget_update_preserves_need():
+def test_apply_budget_patch_preserves_need():
     current = {
         "need_description": "telefon",
         "budget": {"type": "APPROXIMATE", "value": 40000, "currency": "TRY"},
         "preferences": [{"concept": "camera_quality", "importance": 0.88}],
     }
-    update = {
-        "operation": "UPDATE",
-        "updates": [
-            {"field": "budget.value", "old_value": 40000, "new_value": 50000}
-        ],
-        "preserve": ["need_description", "preferences.camera_quality"],
-        "confidence": 0.98,
-    }
-    result = apply_conversation_update(current, update)
+    result = apply_conversation_patch(
+        current,
+        {
+            "operation": "SET",
+            "path": "/budget/value",
+            "value": 50000,
+            "evidence_text": "bütçeyi 50'ye çıkarabiliriz",
+            "confidence": 0.98,
+        },
+    )
     assert result["budget"]["value"] == 50000
     assert result["need_description"] == "telefon"
-
-
-def test_confidence_policy_routes_low_confidence_to_fallback():
-    policy = ConfidencePolicy(policy_code="t")
-    decision, reason = ModelRouter._apply_confidence_policy(
-        {"confidence": 0.4, "clarification": {"required": False}, "ambiguities": []},
-        policy,
-    )
-    assert decision == RouteDecision.FALLBACK
-    assert reason == "low_confidence"
-
-
-def test_confidence_policy_prefers_clarification():
-    policy = ConfidencePolicy(policy_code="t")
-    decision, reason = ModelRouter._apply_confidence_policy(
-        {
-            "confidence": 0.9,
-            "clarification": {"required": True, "question_intent": "device_type"},
-            "ambiguities": [],
-        },
-        policy,
-    )
-    assert decision == RouteDecision.CLARIFY
-    assert reason == "clarification_required"
 
 
 @pytest.mark.asyncio
@@ -204,9 +180,16 @@ class _StubUnderstanding:
                 "session": session,
                 "understanding": UnderstandingResult(
                     decision=self.decision,
+                    reason_code=ReasonCode.OK
+                    if self.decision == RouteDecision.CONTINUE
+                    else ReasonCode.MISSING_INFORMATION,
                     need_profile=self.profile,
+                    used_deployment_code="STUB",
                     used_profile_code="STUB",
                     latency_ms=1.0,
+                    clarification_question_intent="budget"
+                    if self.decision == RouteDecision.CLARIFY
+                    else None,
                 ),
                 "need_profile": self.profile,
                 "was_update": False,
@@ -253,27 +236,6 @@ async def test_pipeline_clarification_path():
         profile=_phone_need_profile(),
         decision=RouteDecision.CLARIFY,
     )
-    # Override understanding result clarification
-    async def process_message(*, session_id: str, message: str, user_id: str | None = None):
-        session = await sessions.get_or_create(session_id)
-        return type(
-            "Turn",
-            (),
-            {
-                "session": session,
-                "understanding": UnderstandingResult(
-                    decision=RouteDecision.CLARIFY,
-                    need_profile=_phone_need_profile(),
-                    used_profile_code="STUB",
-                    latency_ms=1.0,
-                    clarification_question_intent="budget",
-                ),
-                "need_profile": _phone_need_profile(),
-                "was_update": False,
-            },
-        )()
-
-    understanding.process_message = process_message  # type: ignore[method-assign]
     categories = InMemoryCategoryRepository(build_demo_categories())
     matcher = SemanticCategoryMatcher(categories, LexicalEmbedder())
     campaign_repo = InMemoryCampaignRepository(build_demo_campaigns())
@@ -328,5 +290,4 @@ async def test_api_health_in_memory():
         assert res.json()["status"] == "ok"
         models = await client.get("/v1/admin/models")
         assert models.status_code == 200
-        assert models.json()["profiles"]
     await container.aclose()

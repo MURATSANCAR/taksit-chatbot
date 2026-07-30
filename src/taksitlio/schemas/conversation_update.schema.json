@@ -1,32 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://taksitlio.local/schemas/conversation_update.schema.json",
-  "title": "ConversationUpdate",
-  "description": "Mevcut session ihtiyacına uygulanacak konuşma güncellemesi. Yeni bağımsız ihtiyaç oluşturmaz.",
+  "title": "ConversationPatch",
+  "description": "Typed session patch. Backend owns current values; model must not supply old_value.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["operation", "updates", "preserve", "confidence"],
+  "required": ["operation", "path", "confidence"],
   "properties": {
     "operation": {
       "type": "string",
-      "enum": ["UPDATE", "REPLACE", "CLARIFY", "RESET"]
+      "enum": ["SET", "REMOVE", "APPEND", "REPLACE_COLLECTION", "RESET_NEED"]
     },
-    "updates": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["field", "old_value", "new_value"],
-        "properties": {
-          "field": { "type": "string", "minLength": 1 },
-          "old_value": {},
-          "new_value": {}
-        }
-      }
+    "path": {
+      "type": "string",
+      "description": "JSON Pointer under allowlisted need-profile paths, e.g. /budget/value",
+      "minLength": 1
     },
-    "preserve": {
-      "type": "array",
-      "items": { "type": "string" }
+    "value": {},
+    "evidence_text": {
+      "type": ["string", "null"],
+      "maxLength": 500
     },
     "confidence": {
       "type": "number",
@@ -34,7 +27,7 @@
       "maximum": 1
     },
     "need_profile": {
-      "description": "REPLACE veya RESET durumunda tam ihtiyaç profili",
+      "description": "Only for RESET_NEED — full replacement validated by backend schema",
       "$ref": "need_profile.schema.json"
     }
   }

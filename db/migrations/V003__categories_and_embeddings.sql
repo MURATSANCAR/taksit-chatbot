@@ -47,46 +47,7 @@ CREATE TABLE IF NOT EXISTS category_match_policies (
     updated_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
--- Embedding model profili (endpoint yönetim panelinden güncellenir)
-INSERT INTO ai_model_profiles (
-    profile_code, display_name, provider_type, endpoint_url, model_reference,
-    task_type, context_limit, max_output_tokens, temperature, timeout_ms,
-    parallel_slots, status, configuration
-) VALUES (
-    'EMBEDDING_DEFAULT',
-    'Varsayılan Embedding Modeli',
-    'EMBEDDING',
-    'http://127.0.0.1:8083/v1/embeddings',
-    'local-embedding',
-    'EMBEDDING',
-    512,
-    0,
-    0.000,
-    2000,
-    8,
-    'ACTIVE',
-    '{"embedding_dim":768,"normalize":true}'::jsonb
-)
-ON CONFLICT (profile_code) DO NOTHING;
-
-INSERT INTO ai_task_routes (
-    task_code,
-    primary_model_profile_id,
-    fallback_model_profile_id,
-    confidence_policy_id,
-    timeout_policy_id,
-    status
-)
-SELECT
-    'EMBEDDING',
-    emb.id,
-    NULL,
-    NULL,
-    NULL,
-    'ACTIVE'
-FROM ai_model_profiles emb
-WHERE emb.profile_code = 'EMBEDDING_DEFAULT'
-ON CONFLICT (task_code) DO NOTHING;
+-- Embedding model + deployment bootstrap: db/bootstrap/*.sql (not in schema migrations).
 
 INSERT INTO category_match_policies (policy_code, display_name)
 VALUES ('DEFAULT', 'Varsayılan kategori eşleştirme politikası')

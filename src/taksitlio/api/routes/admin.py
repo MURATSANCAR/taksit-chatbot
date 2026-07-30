@@ -8,13 +8,13 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from taksitlio.api.deps import container_from
-from taksitlio.model_gateway.gateway import CompletionRequest, ModelGatewayError
+from taksitlio.model_gateway.types import CompletionRequest
+from taksitlio.model_gateway.types import ModelGatewayError
 
 router = APIRouter(tags=["admin-ai"])
 
 
 class ProfileUpdateIn(BaseModel):
-    endpoint_url: Optional[str] = None
     timeout_ms: Optional[int] = Field(default=None, ge=100, le=120000)
     parallel_slots: Optional[int] = Field(default=None, ge=1, le=64)
     temperature: Optional[float] = Field(default=None, ge=0, le=2)
@@ -39,30 +39,26 @@ async def list_models(request: Request) -> Dict[str, Any]:
     profile_repo = container.extras.get("profile_repo")
     if profile_repo is not None:
         profiles = await profile_repo.list_profiles()
-    else:
-        codes = ["FAST_UNDERSTANDING", "DEEP_UNDERSTANDING", "RESPONSE_GENERATION"]
-        profiles = []
-        for code in codes:
-            try:
-                profiles.append(container.profiles.get_by_code(code))
-            except KeyError:
-                continue
+        return {
+            "profiles": [
+                {
+                    "profile_code": p.profile_code,
+                    "display_name": p.display_name,
+                    "provider_type": p.provider_type,
+                    "model_reference": p.model_reference,
+                    "timeout_ms": p.timeout_ms,
+                    "parallel_slots": p.parallel_slots,
+                    "temperature": p.temperature,
+                    "status": p.status,
+                    "configuration": dict(p.configuration),
+                }
+                for p in profiles
+            ]
+        }
     return {
-        "profiles": [
-            {
-                "profile_code": p.profile_code,
-                "display_name": p.display_name,
-                "provider_type": p.provider_type,
-                "endpoint_url": p.endpoint_url,
-                "model_reference": p.model_reference,
-                "timeout_ms": p.timeout_ms,
-                "parallel_slots": p.parallel_slots,
-                "temperature": p.temperature,
-                "status": p.status,
-                "configuration": dict(p.configuration),
-            }
-            for p in profiles
-        ]
+        "profiles": [],
+        "mode": "in_memory",
+        "note": "Model profiles are loaded from Postgres after bootstrap",
     }
 
 
@@ -82,7 +78,6 @@ async def update_model(
     try:
         profile = await profile_repo.update_profile(
             profile_code,
-            endpoint_url=payload.endpoint_url,
             timeout_ms=payload.timeout_ms,
             parallel_slots=payload.parallel_slots,
             temperature=payload.temperature,

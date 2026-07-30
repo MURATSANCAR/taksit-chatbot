@@ -6,8 +6,8 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping, Protocol, Sequence
 
 from taksitlio.campaign.ranking import RankedCampaign
-from taksitlio.model_gateway.gateway import CompletionRequest, ModelGateway, ModelGatewayError
-from taksitlio.model_gateway.gateway import ModelProfile
+from taksitlio.model_gateway.gateway import ModelGateway, ModelGatewayError
+from taksitlio.model_gateway.types import CompletionRequest, ModelProfile
 
 
 @dataclass(frozen=True)

@@ -44,8 +44,8 @@ class InfraSettings:
                 raise ValueError("REDIS_URL is required (session state).")
 
         return cls(
-            database_url=database_url or "postgresql://localhost/taksitlio",
-            redis_url=redis_url or "redis://localhost:6379/0",
+            database_url=database_url or "postgresql://taksitlio:taksitlio@postgres:5432/taksitlio",
+            redis_url=redis_url or "redis://redis:6379/0",
             redis_key_prefix=_env("REDIS_KEY_PREFIX", "taksitlio") or "taksitlio",
             session_ttl_seconds=int(_env("SESSION_TTL_SECONDS", "86400")),
             http_timeout_seconds=float(_env("HTTP_TIMEOUT_SECONDS", "30")),

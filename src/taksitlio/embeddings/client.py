@@ -7,7 +7,7 @@ from typing import Protocol, Sequence
 import httpx
 
 from taksitlio.embeddings.vectors import bag_of_chars_embedding, l2_normalize
-from taksitlio.model_gateway.gateway import ModelProfile
+from taksitlio.model_gateway.types import ModelProfile
 from taksitlio.providers.llama_cpp import LlamaCppProvider
 
 

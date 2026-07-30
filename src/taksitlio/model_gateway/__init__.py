@@ -1,17 +1,26 @@
-from taksitlio.model_gateway.gateway import (
+from taksitlio.model_gateway.gateway import ModelGateway, resolve_chat_url
+from taksitlio.model_gateway.types import (
     CompletionRequest,
     CompletionResult,
-    ModelGateway,
+    JsonParseError,
+    ModelDeployment,
     ModelGatewayError,
     ModelProfile,
+    ProviderConnection,
+    ProviderTimeoutError,
+    ProviderUnavailableError,
 )
-from taksitlio.model_gateway.repository import InMemoryProfileRepository
 
 __all__ = [
     "CompletionRequest",
     "CompletionResult",
-    "InMemoryProfileRepository",
+    "JsonParseError",
+    "ModelDeployment",
     "ModelGateway",
     "ModelGatewayError",
     "ModelProfile",
+    "ProviderConnection",
+    "ProviderTimeoutError",
+    "ProviderUnavailableError",
+    "resolve_chat_url",
 ]

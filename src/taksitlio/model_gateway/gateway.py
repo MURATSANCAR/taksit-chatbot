@@ -1,193 +1,206 @@
-"""Dynamic ModelGateway — provider-agnostic inference against DB-backed profiles."""
+"""Deployment-resolved ModelGateway (OpenAI-compatible)."""
 
 from __future__ import annotations
 
 import json
 import time
-from dataclasses import dataclass, field
-from typing import Any, Mapping, Protocol
+import uuid
+from typing import Any, Mapping
+from urllib.parse import urljoin
 
 import httpx
 
-
-@dataclass(frozen=True)
-class ModelProfile:
-    id: int
-    profile_code: str
-    display_name: str
-    provider_type: str
-    endpoint_url: str
-    model_reference: str
-    task_type: str
-    context_limit: int
-    max_output_tokens: int
-    temperature: float
-    timeout_ms: int
-    parallel_slots: int
-    status: str
-    configuration: Mapping[str, Any] = field(default_factory=dict)
+from taksitlio.model_gateway.types import (
+    CompletionRequest,
+    CompletionResult,
+    DeadlineExhaustedError,
+    DeploymentNotCallableError,
+    JsonParseError,
+    ModelDeployment,
+    ModelGatewayError,
+    ProviderHttpError,
+    ProviderTimeoutError,
+    ProviderUnavailableError,
+    ResponseTooLargeError,
+)
+from taksitlio.model_router.health import RuntimeHealthRegistry
 
 
-@dataclass(frozen=True)
-class CompletionRequest:
-    messages: list[dict[str, str]]
-    response_format: Mapping[str, Any] | None = None
-    temperature: float | None = None
-    max_tokens: int | None = None
-    timeout_ms: int | None = None
-
-
-@dataclass(frozen=True)
-class CompletionResult:
-    profile_code: str
-    content: str
-    latency_ms: float
-    raw: Mapping[str, Any] = field(default_factory=dict)
-
-
-class ProfileRepository(Protocol):
-    def get_by_code(self, profile_code: str) -> ModelProfile: ...
-
-    def get_by_id(self, profile_id: int) -> ModelProfile: ...
-
-
-class ModelGatewayError(Exception):
-    """Raised when a provider call fails or returns an unusable payload."""
+DEFAULT_MAX_RESPONSE_BYTES = 256_000
 
 
 class ModelGateway:
     """
-    Executes inference using a ModelProfile loaded from ai_model_profiles.
+    Calls a concrete ModelDeployment via its ProviderConnection.
 
-    Application code must never hardcode model names; always resolve via profile_code
-    or profile id from ai_task_routes.
+    Never reads deprecated ModelProfile.endpoint_url.
+    Never logs raw user message content.
+    Caller (ModelRouter) must clamp timeout_ms against the absolute deadline.
     """
 
     def __init__(
         self,
-        profiles: ProfileRepository,
         *,
         client: httpx.AsyncClient | None = None,
+        health: RuntimeHealthRegistry | None = None,
+        max_response_bytes: int = DEFAULT_MAX_RESPONSE_BYTES,
     ) -> None:
-        self._profiles = profiles
         self._client = client or httpx.AsyncClient()
-        self._llama = None
-
-    def _llama_provider(self):
-        if self._llama is None:
-            from taksitlio.providers.llama_cpp import LlamaCppProvider
-
-            self._llama = LlamaCppProvider(self._client)
-        return self._llama
+        self._health = health
+        self._max_response_bytes = max_response_bytes
 
     async def complete(
         self,
-        profile: ModelProfile | str | int,
+        deployment: ModelDeployment,
         request: CompletionRequest,
     ) -> CompletionResult:
-        resolved = self._resolve(profile)
-        if resolved.status not in {"ACTIVE", "CHALLENGER"}:
+        if deployment.status not in {"ACTIVE", "DRAINING"}:
+            raise DeploymentNotCallableError(
+                f"Deployment '{deployment.deployment_code}' status={deployment.status}"
+            )
+        if deployment.connection.status != "ACTIVE":
+            raise ProviderUnavailableError(
+                f"Connection '{deployment.connection.connection_code}' is not ACTIVE"
+            )
+        if deployment.profile.configuration.get("thinking_enabled") is True:
             raise ModelGatewayError(
-                f"Profile '{resolved.profile_code}' is not callable (status={resolved.status})"
+                f"Deployment '{deployment.deployment_code}' has thinking enabled",
+                error_class="INVALID_CONFIGURATION",
             )
 
-        thinking = bool(resolved.configuration.get("thinking_enabled", False))
-        if thinking:
-            raise ModelGatewayError(
-                f"Profile '{resolved.profile_code}' has thinking enabled; FAST path requires thinking off"
-            )
+        correlation_id = request.correlation_id or str(uuid.uuid4())
+        timeout_ms = int(request.timeout_ms or deployment.profile.timeout_ms)
+        if timeout_ms <= 0:
+            raise DeadlineExhaustedError("Request deadline exhausted before provider call")
 
-        if resolved.provider_type in {"LLAMA_CPP", "OPENAI_COMPAT", "VLLM"}:
-            return await self._llama_provider().chat_completion(resolved, request)
+        if self._health is not None:
+            snap = self._health.get(deployment.id)
+            if not snap.is_callable():
+                raise ProviderUnavailableError(
+                    f"Deployment '{deployment.deployment_code}' runtime not callable"
+                )
+            self._health.begin_request(deployment.id)
 
-        payload = self._build_openai_compat_payload(resolved, request)
-        timeout_s = (request.timeout_ms or resolved.timeout_ms) / 1000.0
+        url = resolve_chat_url(deployment)
+        payload = build_openai_compat_payload(deployment, request)
         started = time.perf_counter()
-
         try:
             response = await self._client.post(
-                resolved.endpoint_url,
+                url,
                 json=payload,
-                timeout=timeout_s,
+                timeout=timeout_ms / 1000.0,
+                headers={"X-Correlation-ID": correlation_id},
             )
+            raw_bytes = response.content
+            if len(raw_bytes) > self._max_response_bytes:
+                raise ResponseTooLargeError(
+                    f"Provider response exceeds {self._max_response_bytes} bytes"
+                )
             response.raise_for_status()
             body = response.json()
+            content = extract_content(body)
+            latency_ms = (time.perf_counter() - started) * 1000.0
+            if self._health is not None:
+                self._health.end_request(deployment.id, success=True, latency_ms=latency_ms)
+            return CompletionResult(
+                deployment_code=deployment.deployment_code,
+                profile_code=deployment.profile.profile_code,
+                content=content,
+                latency_ms=latency_ms,
+                correlation_id=correlation_id,
+                raw=body if isinstance(body, dict) else {"body": body},
+            )
+        except DeadlineExhaustedError:
+            raise
+        except ResponseTooLargeError:
+            if self._health is not None:
+                self._health.end_request(deployment.id, success=False, latency_ms=0.0)
+            raise
         except httpx.TimeoutException as exc:
-            raise ModelGatewayError(
-                f"Timeout calling '{resolved.profile_code}' after {resolved.timeout_ms}ms"
+            if self._health is not None:
+                self._health.end_request(deployment.id, success=False, latency_ms=0.0)
+            raise ProviderTimeoutError(
+                f"Timeout calling deployment '{deployment.deployment_code}'"
+            ) from exc
+        except httpx.HTTPStatusError as exc:
+            if self._health is not None:
+                self._health.end_request(deployment.id, success=False, latency_ms=0.0)
+            raise ProviderHttpError(
+                f"HTTP {exc.response.status_code} from '{deployment.deployment_code}'"
             ) from exc
         except httpx.HTTPError as exc:
-            raise ModelGatewayError(
-                f"HTTP error calling '{resolved.profile_code}': {exc}"
+            if self._health is not None:
+                self._health.end_request(deployment.id, success=False, latency_ms=0.0)
+            raise ProviderUnavailableError(
+                f"Provider error on '{deployment.deployment_code}'"
             ) from exc
-
-        content = self._extract_content(body)
-        latency_ms = (time.perf_counter() - started) * 1000.0
-        return CompletionResult(
-            profile_code=resolved.profile_code,
-            content=content,
-            latency_ms=latency_ms,
-            raw=body if isinstance(body, dict) else {"body": body},
-        )
+        except ModelGatewayError:
+            if self._health is not None:
+                self._health.end_request(deployment.id, success=False, latency_ms=0.0)
+            raise
 
     async def complete_json(
         self,
-        profile: ModelProfile | str | int,
+        deployment: ModelDeployment,
         request: CompletionRequest,
     ) -> tuple[dict[str, Any], CompletionResult]:
-        result = await self.complete(profile, request)
+        result = await self.complete(deployment, request)
         try:
             parsed = json.loads(result.content)
         except json.JSONDecodeError as exc:
-            raise ModelGatewayError(
-                f"Profile '{result.profile_code}' returned non-JSON content"
+            raise JsonParseError(
+                f"Deployment '{result.deployment_code}' returned non-JSON content"
             ) from exc
         if not isinstance(parsed, dict):
-            raise ModelGatewayError(
-                f"Profile '{result.profile_code}' returned JSON that is not an object"
+            raise JsonParseError(
+                f"Deployment '{result.deployment_code}' returned JSON that is not an object"
             )
         return parsed, result
 
-    def _resolve(self, profile: ModelProfile | str | int) -> ModelProfile:
-        if isinstance(profile, ModelProfile):
-            return profile
-        if isinstance(profile, str):
-            return self._profiles.get_by_code(profile)
-        return self._profiles.get_by_id(profile)
 
-    @staticmethod
-    def _build_openai_compat_payload(
-        profile: ModelProfile,
-        request: CompletionRequest,
-    ) -> dict[str, Any]:
-        payload: dict[str, Any] = {
-            "model": profile.model_reference,
-            "messages": request.messages,
-            "temperature": (
-                request.temperature
-                if request.temperature is not None
-                else float(profile.temperature)
-            ),
-            "max_tokens": request.max_tokens or profile.max_output_tokens,
-            "stream": False,
-        }
-        if request.response_format is not None:
-            payload["response_format"] = dict(request.response_format)
-        elif profile.configuration.get("json_schema_required"):
-            payload["response_format"] = {"type": "json_object"}
-        return payload
+def resolve_chat_url(deployment: ModelDeployment) -> str:
+    cfg = deployment.connection.configuration or {}
+    path = str(cfg.get("chat_path") or "/v1/chat/completions")
+    base = deployment.connection.base_url.rstrip("/") + "/"
+    return urljoin(base, path.lstrip("/"))
 
-    @staticmethod
-    def _extract_content(body: Any) -> str:
-        if not isinstance(body, dict):
-            raise ModelGatewayError("Provider response is not a JSON object")
-        choices = body.get("choices")
-        if not isinstance(choices, list) or not choices:
-            raise ModelGatewayError("Provider response has no choices")
-        message = choices[0].get("message") if isinstance(choices[0], dict) else None
-        if not isinstance(message, dict):
-            raise ModelGatewayError("Provider response missing message")
-        content = message.get("content")
-        if not isinstance(content, str) or not content.strip():
-            raise ModelGatewayError("Provider response content is empty")
-        return content.strip()
+
+def build_openai_compat_payload(
+    deployment: ModelDeployment,
+    request: CompletionRequest,
+) -> dict[str, Any]:
+    profile = deployment.profile
+    cfg = profile.configuration or {}
+    payload: dict[str, Any] = {
+        "model": deployment.runtime_alias or profile.model_reference,
+        "messages": request.messages,
+        "temperature": (
+            request.temperature
+            if request.temperature is not None
+            else float(profile.temperature)
+        ),
+        "max_tokens": request.max_tokens or profile.max_output_tokens,
+        "stream": False,
+    }
+    if cfg.get("thinking_enabled") is False:
+        payload["chat_template_kwargs"] = {"enable_thinking": False}
+    if request.response_format is not None:
+        payload["response_format"] = dict(request.response_format)
+    elif cfg.get("json_schema_required"):
+        payload["response_format"] = {"type": "json_object"}
+    return payload
+
+
+def extract_content(body: Any) -> str:
+    if not isinstance(body, dict):
+        raise ModelGatewayError("Provider response is not a JSON object")
+    choices = body.get("choices")
+    if not isinstance(choices, list) or not choices:
+        raise ModelGatewayError("Provider response has no choices")
+    message = choices[0].get("message") if isinstance(choices[0], dict) else None
+    if not isinstance(message, dict):
+        raise ModelGatewayError("Provider response missing message")
+    content = message.get("content")
+    if not isinstance(content, str) or not content.strip():
+        raise ModelGatewayError("Provider response content is empty")
+    return content.strip()
