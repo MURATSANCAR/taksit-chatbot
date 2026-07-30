@@ -1,44 +1,45 @@
-# TODO — post ADR-007 hardening
+# TODO — post ADR-007 / ADR-008
 
 Status date: 2026-07-31
 
-## Closed (ADR-007 safety)
+## Closed — ADR-007 safety
 
-- [x] FAST positive / negative / correction extraction
-- [x] Negation, correction, indecision cues; bilateral + trailing-değil
-- [x] Bare negative head-noun; stopword-only concept block
-- [x] Category ID / fixture key forbidden
-- [x] SemanticConstraintValidator
-- [x] Oracle vs E2E evaluation lanes
-- [x] forbidden=0, unsafe=0 (oracle + E2E)
-- [x] ≥100 HUMAN_REVIEWED validation cases
-- [x] Decision policy error reduction (~0.23 → ~0.09)
-- [x] Substring alias guardrail held; NON_PURCHASE intent held
-- [x] Regression tests for OOS / unsafe utterances
+- [x] FAST pos/neg/correction extraction + validator
+- [x] Oracle vs E2E lanes; forbidden=0, unsafe=0
+- [x] ≥100 HUMAN_REVIEWED; decision_policy_error ↓
+- [x] Substring alias guardrail; NON_PURCHASE intent
 
-## Open — P0 (ADR-008 quality)
+## Closed — ADR-008 P0 quality retrieval
 
-- [ ] Morphology-safe concept variants (surface preserved; strip as alternate)
-- [ ] Token-set alias retrieval (no substring)
-- [ ] E2E retrieval diagnostics + failure stage codes
-- [ ] E2E: status≥0.78, top_1≥0.65, top_2≥0.90, required≥0.88
+- [x] Morphology-safe concept variants (surface preserved)
+- [x] Token-set alias retrieval (no substring)
+- [x] E2E retrieval diagnostics + failure stage codes
+- [x] Sibling-alias conflict soft-exclude
+- [x] V013 morphology-safe retrieval policy migration
+- [x] validation/dev v4 datasets
+- [x] Gate statuses: QUALITY_READY_RUNTIME_BLOCKED / QUALITY_REJECT
 
-## Open — P1
+## Open — P0 residual (quality)
 
-- [ ] Oracle top_1 ≥ 0.65 without lowering threshold
+- [ ] E2E top_1 ≥ 0.65 (now 0.649 — one case)
+- [ ] E2E top_2 ≥ 0.90 (now 0.882)
+- [ ] E2E required_recall ≥ 0.88 (now 0.860)
+
+## Open — P1 runtime
+
 - [ ] Real FAST deployment + measured latency / recall
 - [ ] Real CATEGORY_EMBEDDING (else BLOCKED_DEPENDENCY)
 - [ ] pgvector integration skip=0 + scale benchmarks
-- [ ] Redis integration skip=0 in CI/local release candidate
+- [ ] Redis integration skip=0 in CI/local RC
+- [ ] PROVISIONAL_ACCEPT after runtime green
 
 ## Gates
 
 | Gate | Status |
 |---|---|
 | Safety | PASS |
-| Oracle Quality | NEAR_PASS |
-| E2E Quality | REJECT |
+| Oracle Quality | PASS (near/above provisional bar) |
+| E2E Quality | REJECT (top_1/top_2/req slightly under) |
 | Runtime Dependency | BLOCKED_DEPENDENCY |
 | Campaign | CLOSED |
-
-Campaign layer opens only after PROVISIONAL_ACCEPT (see ADR-008).
+| Sprint gate | QUALITY_REJECT (E2E) — not PROVISIONAL_ACCEPT |

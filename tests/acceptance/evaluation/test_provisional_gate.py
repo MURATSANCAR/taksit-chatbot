@@ -89,6 +89,8 @@ async def test_provisional_gate_ceiling_is_provisional_accept():
     )
     assert status in {
         "PROVISIONAL_ACCEPT",
+        "QUALITY_READY_RUNTIME_BLOCKED",
+        "QUALITY_REJECT",
         "REJECT",
         "INSUFFICIENT_REVIEWED_DATA",
     }
