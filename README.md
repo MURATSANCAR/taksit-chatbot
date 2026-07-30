@@ -22,7 +22,9 @@ Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 * [`docs/adr/ADR-007-end-to-end-understanding-and-provisional-acceptance.md`](docs/adr/ADR-007-end-to-end-understanding-and-provisional-acceptance.md)
 * [`docs/adr/ADR-008-morphology-safe-retrieval-and-runtime-verification.md`](docs/adr/ADR-008-morphology-safe-retrieval-and-runtime-verification.md)
 
-**ADR-007 closeout:** Safety Gate PASS (`forbidden=0`, `unsafe=0`). Quality Gate REJECT (E2E ranking/retrieval). Campaign layer CLOSED. Next: ADR-008.
+**ADR-007 closeout:** Safety Gate PASS (`forbidden=0`, `unsafe=0`). Quality Gate REJECT (E2E ranking/retrieval). Campaign layer CLOSED.
+
+**ADR-008 P0:** Morphology-safe surface concepts + token-set alias (no substring). E2E top_1 0.439→0.649; safety still 0. Gate: `QUALITY_REJECT` / `QUALITY_READY_RUNTIME_BLOCKED` — not PROVISIONAL_ACCEPT until P1 runtime. See [`ADR-008`](docs/adr/ADR-008-morphology-safe-retrieval-and-runtime-verification.md).
 
 ### End-to-end understanding + provisional gate (ADR-007)
 

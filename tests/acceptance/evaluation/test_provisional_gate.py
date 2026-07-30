@@ -150,10 +150,13 @@ async def test_full_provisional_dataset_gate_reflects_hard_safety():
             f"gate notes must record the hard-safety violation: {notes}"
         )
     else:
-        # Both counters clean — the provisional profile allows at most
-        # PROVISIONAL_ACCEPT, never full ACCEPT.
+        # Both counters clean — ADR-008 P0 provisional profile emits
+        # QUALITY_READY_RUNTIME_BLOCKED (not PROVISIONAL_ACCEPT) until P1
+        # runtime is measured; quality shortfalls → QUALITY_REJECT.
         assert status in {
             "PROVISIONAL_ACCEPT",
+            "QUALITY_READY_RUNTIME_BLOCKED",
+            "QUALITY_REJECT",
             "REJECT",
             "INSUFFICIENT_REVIEWED_DATA",
         }
