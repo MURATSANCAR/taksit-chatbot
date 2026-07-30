@@ -40,6 +40,11 @@ from taksitlio.semantic_matching.turkish_normalize import (
     ascii_fold,
     turkish_lower,
 )
+from taksitlio.understanding.normalization.morphology_safe import (
+    ConceptVariant,
+    NormalizationSource,
+    VariantType,
+)
 
 
 UUID_RE = re.compile(
@@ -242,6 +247,18 @@ class SemanticConstraintValidator:
             concept=concept,
             provenance=provenance,
             confidence=confidence,
+            surface_form=(
+                str(entry["surface_form"]).strip()
+                if entry.get("surface_form")
+                else None
+            ),
+            normalized_form=(
+                str(entry["normalized_form"]).strip()
+                if entry.get("normalized_form")
+                else None
+            ),
+            variants=_parse_variants_safe(entry.get("variants")),
+            normalization_source=_parse_norm_source(entry.get("normalization_source")),
         )
 
     def _validate_corrections(
@@ -314,7 +331,53 @@ class SemanticConstraintValidator:
             previous_concept=prev,
             replacement_concept=repl,
             confidence=confidence,
+            previous_surface_form=(
+                str(entry["previous_surface_form"]).strip()
+                if entry.get("previous_surface_form")
+                else None
+            ),
+            replacement_surface_form=(
+                str(entry["replacement_surface_form"]).strip()
+                if entry.get("replacement_surface_form")
+                else None
+            ),
         )
+
+
+def _parse_variants_safe(raw: Any) -> tuple[ConceptVariant, ...]:
+    if not isinstance(raw, (list, tuple)):
+        return ()
+    out: list[ConceptVariant] = []
+    seen: set[str] = set()
+    for entry in raw:
+        if not isinstance(entry, Mapping):
+            continue
+        value = str(entry.get("value") or "").strip()
+        if not value:
+            continue
+        key = _normalize_concept(value)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        try:
+            vtype = VariantType(str(entry.get("type") or "SURFACE"))
+        except ValueError:
+            continue
+        try:
+            conf = float(entry.get("confidence", 1.0) or 1.0)
+        except (TypeError, ValueError):
+            conf = 1.0
+        out.append(ConceptVariant(value=value, type=vtype, confidence=conf))
+    return tuple(out)
+
+
+def _parse_norm_source(raw: Any) -> Optional[NormalizationSource]:
+    if not raw:
+        return None
+    try:
+        return NormalizationSource(str(raw))
+    except ValueError:
+        return NormalizationSource.LEGACY_CONCEPT
 
     def _cross_check(
         self,

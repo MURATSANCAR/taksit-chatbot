@@ -49,6 +49,10 @@ from taksitlio.understanding.fast.schema_utils import (
     build_empty_need_profile,
     validate_need_profile,
 )
+from taksitlio.understanding.normalization.morphology_safe import (
+    TurkishMorphologySafeNormalizer,
+    pick_surface_head_noun,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -255,54 +259,20 @@ def _split_contrast(clause: _Clause) -> Optional[tuple[str, str, str]]:
 
 
 def _pick_head_noun(span: str, *, head_only: bool = False) -> Optional[str]:
-    """Return the primary noun concept in ``span``.
+    """Return the primary *surface* noun concept in ``span`` (ADR-008).
 
-    Turkish typically places the head noun *before* the auxiliary verb
-    ("kablosuz kulaklık lazım" — kulaklık is the head). We keep the last
-    non-stopword token, plus one preceding adjectival modifier if present.
-    Ends up producing "kablosuz kulaklık", "robot süpürge", "kahve
-    makinesi", "telefon", etc.
-
-    When ``head_only=True``, return ONLY the last content token — used for
-    the negative slot so the matcher's exact-alias hard-exclude ("telefon"
-    matches the `telefon` alias of `mobile-device`) is not defeated by a
-    trailing adjective like "yeni telefon".
+    Aggressive suffix stripping is intentionally NOT applied here — that
+    would turn ``masaüstü`` into ``masaüst`` and destroy exact-alias
+    signals. Morphological alternatives are attached later via
+    ``TurkishMorphologySafeNormalizer`` as variants only.
     """
 
-    if not span:
-        return None
-    words = _tokenize(span)
-    if not words:
-        return None
-    keep = tuple(w for w in words if _norm_lower(w) not in _STOPWORDS)
-    if not keep:
-        return None
-    # Strip trailing possessive / accusative suffixes that would make
-    # "telefonu" fail to align with "telefon" later. Simple heuristic:
-    # drop a trailing "u"/"ü"/"ı"/"i" from tokens ≥5 chars where the
-    # preceding char is a consonant (very rough — but content-blind).
-    def _strip_case(tok: str) -> str:
-        if len(tok) < 5:
-            return tok
-        last = tok[-1]
-        if last in "uüıi" and tok[-2] not in "aeıioöuü":
-            return tok[:-1]
-        return tok
+    return pick_surface_head_noun(
+        span, stopwords=_STOPWORDS, head_only=head_only
+    )
 
-    cleaned = tuple(_strip_case(t) for t in keep)
-    tail = cleaned[-1]
-    if head_only or len(cleaned) < 2:
-        concept = tail
-    else:
-        prev = cleaned[-2]
-        if len(prev) <= 10 and prev.isalpha():
-            concept = f"{prev} {tail}"
-        else:
-            concept = tail
-    concept = concept.strip()
-    if len(concept) < 2:
-        return None
-    return concept
+
+_MORPH = TurkishMorphologySafeNormalizer()
 
 
 class DeterministicFastExtractor:
@@ -667,44 +637,55 @@ def _split_left_at_last_noun(left_span: str) -> Optional[tuple[str, str]]:
 
 
 def _add_positive(bucket: list[dict], concept: str, seen: set[str]) -> None:
-    key = _norm_lower(concept)
-    if key in seen:
-        return
-    seen.add(key)
-    bucket.append(
-        {"concept": concept, "source": "EXPLICIT", "confidence": 0.9}
-    )
+    _emit_constraint(bucket, concept, seen, source="EXPLICIT", confidence=0.9)
 
 
 def _add_negative(bucket: list[dict], concept: str, seen: set[str]) -> None:
-    key = _norm_lower(concept)
-    if key not in seen:
-        seen.add(key)
-        bucket.append(
-            {
-                "concept": concept,
-                "source": "EXPLICIT_NEGATION",
-                "confidence": 0.95,
-            }
-        )
-    # ADR-007 §1: also emit the head-noun-only variant so the matcher's
-    # exact-alias hard-exclude fires against categories whose alias is
-    # the bare head noun (``telefon`` for ``mobile-device``) even when
-    # the user said something like "yeni telefon almak istemiyorum".
+    _emit_constraint(
+        bucket, concept, seen, source="EXPLICIT_NEGATION", confidence=0.95
+    )
+    # Also emit the bare head-noun surface as a sibling negative so aliases
+    # like ``telefon`` still hard-exclude when the user said "yeni telefon".
     tokens = _tokenize(concept)
     if len(tokens) > 1:
         head_only = _pick_head_noun(concept, head_only=True)
         if head_only:
-            head_key = _norm_lower(head_only)
-            if head_key and head_key != key and head_key not in seen:
-                seen.add(head_key)
-                bucket.append(
-                    {
-                        "concept": head_only,
-                        "source": "EXPLICIT_NEGATION",
-                        "confidence": 0.9,
-                    }
-                )
+            _emit_constraint(
+                bucket,
+                head_only,
+                seen,
+                source="EXPLICIT_NEGATION",
+                confidence=0.9,
+            )
+
+
+def _emit_constraint(
+    bucket: list[dict],
+    concept: str,
+    seen: set[str],
+    *,
+    source: str,
+    confidence: float,
+) -> None:
+    normalized = _MORPH.normalize_concept(concept)
+    primary = normalized.primary
+    if not primary:
+        return
+    key = _norm_lower(primary)
+    if key in seen:
+        return
+    seen.add(key)
+    payload = {
+        "concept": primary,
+        "source": source,
+        "confidence": confidence,
+        **normalized.to_constraint_fields(),
+    }
+    # to_constraint_fields already has concept — keep source for validator.
+    payload["concept"] = primary
+    payload["source"] = source
+    payload["confidence"] = confidence
+    bucket.append(payload)
 
 
 def _to_schema_constraints(
@@ -714,27 +695,28 @@ def _to_schema_constraints(
 ) -> dict:
     """Convert the FAST-side dicts into the NeedProfile schema shape."""
 
-    def _prov_from_source(entry: Mapping[str, Any]) -> str:
-        return str(entry.get("source") or entry.get("provenance") or "EXPLICIT")
+    def _item(entry: Mapping[str, Any], *, default_prov: str, default_w: float) -> dict:
+        item = {
+            "concept": entry["concept"],
+            "provenance": str(entry.get("source") or entry.get("provenance") or default_prov),
+            "weight": float(entry.get("confidence", default_w)),
+        }
+        for key in (
+            "surface_form",
+            "normalized_form",
+            "variants",
+            "normalization_source",
+        ):
+            if entry.get(key):
+                item[key] = entry[key]
+        return item
 
     out: dict = {}
     if positive:
-        out["positive"] = [
-            {
-                "concept": p["concept"],
-                "provenance": _prov_from_source(p),
-                "weight": float(p.get("confidence", 0.9)),
-            }
-            for p in positive
-        ]
+        out["positive"] = [_item(p, default_prov="EXPLICIT", default_w=0.9) for p in positive]
     if negative:
         out["negative"] = [
-            {
-                "concept": n["concept"],
-                "provenance": _prov_from_source(n),
-                "weight": float(n.get("confidence", 0.95)),
-            }
-            for n in negative
+            _item(n, default_prov="EXPLICIT_NEGATION", default_w=0.95) for n in negative
         ]
     if corrections:
         # The NeedProfile schema stores corrections as constraint_items
@@ -747,8 +729,14 @@ def _to_schema_constraints(
                 "concept": c["replacement_concept"],
                 "provenance": "USER_CORRECTION",
                 "weight": float(c.get("confidence", 0.95)),
+                **(
+                    {"surface_form": c["replacement_surface_form"]}
+                    if c.get("replacement_surface_form")
+                    else {}
+                ),
             }
             for c in corrections
+            if c.get("replacement_concept")
         ]
     return out
 
