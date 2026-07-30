@@ -180,6 +180,7 @@ async def build_fixture_catalog(
             slug=entry["slug"],
             semantic_description=entry.get("semantic_description", ""),
             parent_id=parent_id,
+            metadata=dict(entry.get("metadata") or {}),
         )
         key_to_uuid[fixture_key] = cat.id
         uuid_to_key[cat.id] = fixture_key

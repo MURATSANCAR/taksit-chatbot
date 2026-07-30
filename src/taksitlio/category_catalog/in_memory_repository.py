@@ -252,6 +252,8 @@ class InMemoryCategoryCatalogRepository:
                     use_cases=tuple(use_cases_by_cat.get(cat.id, [])),
                     locale=locale,
                     ancestor_ids=ancestors,
+                    matchable=bool(cat.metadata.get("matchable", True)),
+                    metadata=dict(cat.metadata or {}),
                 )
             )
 

@@ -333,6 +333,7 @@ class SemanticCategoryMatcher:
                     score=score,
                     rank=0,
                     signals=breakdown,
+                    matchable=bool(getattr(node, "matchable", True)),
                 )
             )
 
@@ -353,6 +354,7 @@ class SemanticCategoryMatcher:
                 score=c.score,
                 rank=rank + 1,
                 signals=c.signals,
+                matchable=c.matchable,
             )
             for rank, c in enumerate(limited)
         )
@@ -361,6 +363,21 @@ class SemanticCategoryMatcher:
             ranked,
             degraded=degraded,
             collapsed_pairs=collapse_result.collapsed_pairs,
+        )
+
+        # Non-matchable (out-of-scope) nodes stay in pool diagnostics but never
+        # appear in the final Top-K returned to callers / evaluation.
+        final_candidates = tuple(
+            CategoryCandidate(
+                category_id=c.category_id,
+                slug=c.slug,
+                display_name=c.display_name,
+                score=c.score,
+                rank=rank + 1,
+                signals=c.signals,
+                matchable=c.matchable,
+            )
+            for rank, c in enumerate(c for c in ranked if c.matchable)
         )
 
         duration_ms = (time.perf_counter() - started) * 1000.0
@@ -374,7 +391,7 @@ class SemanticCategoryMatcher:
             locale=snapshot.locale,
             embedding_profile_id=query.embedding_profile_id,
             policy_code=policy.policy_code,
-            candidates=ranked,
+            candidates=final_candidates,
             decision=decision,
             duration_ms=duration_ms,
             degraded=degraded,
@@ -382,10 +399,13 @@ class SemanticCategoryMatcher:
             cache_hit=False,
             diagnostics={
                 "considered": len(candidates),
-                "returned": len(ranked),
+                "returned": len(final_candidates),
                 "loaded_embeddings": len(loaded_embeddings),
                 "pool_size": len(pool_universe),
                 "candidate_pool_ids": list(pool_snapshot_keys),
+                "non_matchable_excluded": [
+                    c.category_id for c in ranked if not c.matchable
+                ],
                 "collapsed_pairs": [
                     {"kept": kept, "dropped": dropped}
                     for kept, dropped in collapse_result.collapsed_pairs

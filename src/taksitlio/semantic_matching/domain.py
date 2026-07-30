@@ -139,6 +139,7 @@ class CategoryCandidate:
     score: float
     rank: int
     signals: SignalBreakdown
+    matchable: bool = True
 
     def to_dict(self) -> dict:
         return {
@@ -148,6 +149,7 @@ class CategoryCandidate:
             "score": self.score,
             "rank": self.rank,
             "signals": self.signals.to_dict(),
+            "matchable": self.matchable,
         }
 
 

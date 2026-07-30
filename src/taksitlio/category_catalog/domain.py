@@ -157,6 +157,9 @@ class CategorySnapshotNode:
     use_cases: tuple[UseCase, ...]
     locale: str
     ancestor_ids: tuple[str, ...]
+    # False for out-of-scope / non-product nodes — may retrieve but never MATCHED.
+    matchable: bool = True
+    metadata: dict = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

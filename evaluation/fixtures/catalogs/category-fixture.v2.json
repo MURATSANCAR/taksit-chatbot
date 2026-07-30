@@ -335,6 +335,7 @@
       "fixture_key": "fixture.out-of-scope-travel",
       "slug": "out-of-scope-travel",
       "semantic_description": "Seyahat ve tatil hizmetleri; MVP kapsam dışıdır ve NO_MATCH beklenir.",
+      "metadata": {"matchable": false, "scope": "OUT_OF_SCOPE"},
       "localization": {
         "display_name": "Seyahat (Kapsam Dışı)",
         "description": "Seyahat kategorisi — MVP kapsam dışı.",

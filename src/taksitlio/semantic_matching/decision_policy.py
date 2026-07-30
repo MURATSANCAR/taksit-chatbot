@@ -62,6 +62,16 @@ class DecisionPolicy:
         if len(eligible) >= 2:
             gap = top.score - eligible[1].score
 
+        # Out-of-scope / non-matchable nodes may retrieve but never MATCHED.
+        if not top.matchable:
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.NO_MATCH,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="top candidate is non-matchable / out-of-scope",
+                reason_code="OUT_OF_SCOPE_TOP_CANDIDATE",
+            )
+
         if degraded:
             return self._decide_degraded(eligible, top, gap)
 
@@ -161,7 +171,15 @@ class DecisionPolicy:
                 reason_code="DIRECT_ALIAS_CONFLICT",
                 missing_concepts=("product_form",),
             )
-        # Single direct alias — safe to auto-select even when gap is tight.
+        # Single direct alias — never auto-select non-matchable / OOS.
+        if not top.matchable:
+            return CategoryMatchDecision(
+                status=CategoryMatchStatus.NO_MATCH,
+                selected_category_id=None,
+                score_gap=gap,
+                reason="direct alias hits non-matchable category",
+                reason_code="OUT_OF_SCOPE_TOP_CANDIDATE",
+            )
         if top.score >= self._policy.minimum_candidate_score:
             return CategoryMatchDecision(
                 status=CategoryMatchStatus.MATCHED,

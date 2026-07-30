@@ -118,7 +118,6 @@ def collapse_parent_child(
 
 def _flag_collapsed(cand: CategoryCandidate) -> CategoryCandidate:
     signals = cand.signals
-    # SignalBreakdown is frozen; use dataclass replace via constructor.
     from dataclasses import replace
 
     new_signals = replace(signals, hierarchy_collapsed=True)
@@ -129,6 +128,7 @@ def _flag_collapsed(cand: CategoryCandidate) -> CategoryCandidate:
         score=cand.score,
         rank=cand.rank,
         signals=new_signals,
+        matchable=cand.matchable,
     )
 
 
@@ -140,6 +140,7 @@ def _renumber(cand: CategoryCandidate, rank: int) -> CategoryCandidate:
         score=cand.score,
         rank=rank,
         signals=cand.signals,
+        matchable=cand.matchable,
     )
 
 
