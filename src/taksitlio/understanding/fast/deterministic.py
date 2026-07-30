@@ -457,6 +457,33 @@ class DeterministicFastExtractor:
         is_correction = _has_any_cue(norm, [ascii_fold(c) for c in _CORRECTION_CUES])
         contrast = _split_contrast(clause)
 
+        # 0) Final "hayır X" / "yok X" retraction — the span AFTER the last
+        # hayır/yok is the surviving positive; earlier product mentions become
+        # negatives ("laptop dedim … hayır masaüstü").
+        hayir_split = _split_final_hayir(clause)
+        if hayir_split is not None:
+            before, after = hayir_split
+            pos = _pick_head_noun(after) or _surface_phrase(after)
+            if pos:
+                if before:
+                    # All earlier head nouns become negatives / previous.
+                    for span in _content_noun_spans(before):
+                        neg = _pick_head_noun(span) or span
+                        if neg and _norm_lower(neg) != _norm_lower(pos):
+                            _add_negative(raw_negative, neg, seen_negative)
+                            if is_correction:
+                                raw_corrections.append(
+                                    {
+                                        "previous_concept": neg,
+                                        "replacement_concept": pos,
+                                        "confidence": 0.95,
+                                        "previous_surface_form": neg,
+                                        "replacement_surface_form": pos,
+                                    }
+                                )
+                _add_positive(raw_positive, pos, seen_positive)
+                return
+
         # 1) "X değil Y" / "X yerine Y" — hard contrast marker splits the clause.
         if contrast is not None:
             before, _marker, after = contrast
@@ -696,6 +723,46 @@ def _surface_phrase(span: str) -> Optional[str]:
         return None
     phrase = " ".join(keep).strip()
     return phrase if len(phrase) >= 2 else None
+
+
+_HAYIR_CUES = frozenset({"hayir", "hayır"})
+
+
+def _split_final_hayir(clause: _Clause) -> Optional[tuple[str, str]]:
+    """Split on the last ``hayır`` / ``yok`` cue → (before, after)."""
+
+    words = clause.words
+    if not words:
+        return None
+    lowered = [_norm_lower(w) for w in words]
+    last_idx = None
+    for idx, low in enumerate(lowered):
+        if low in _HAYIR_CUES:
+            last_idx = idx
+    if last_idx is None:
+        return None
+    before = " ".join(words[:last_idx]).strip()
+    after = " ".join(words[last_idx + 1 :]).strip()
+    if not after or not before:
+        # Leading ``hayır …`` is handled by demedim/contrast paths.
+        return None
+    return before, after
+
+
+def _content_noun_spans(span: str) -> list[str]:
+    """Rough content-noun spans separated by soft punctuation / conjunctions."""
+
+    parts = re.split(r"[,;/]| ama | fakat | aslinda | aslında ", span or "")
+    out: list[str] = []
+    for part in parts:
+        phrase = _surface_phrase(part)
+        if phrase:
+            out.append(phrase)
+    if not out and span.strip():
+        head = _pick_head_noun(span)
+        if head:
+            out.append(head)
+    return out
 
 
 def _add_positive(bucket: list[dict], concept: str, seen: set[str]) -> None:

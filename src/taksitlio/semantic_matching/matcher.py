@@ -326,11 +326,18 @@ class SemanticCategoryMatcher:
             )
             # ADR-008: if a positive surface also hits the same node
             # (sibling aliases like kulaklık/hoparlör on audio), do NOT
-            # hard-exclude — soft-penalise and refuse direct-alias auto-select.
+            # hard-exclude. Positive conflict uses *strong* channels only
+            # (surface / normalized / exact token-set) — not single-token
+            # membership — so "bilgisayar" does not rescue "masaüstü bilgisayar".
             pos_alias_hit = False
             if negative_variants or correction_variants:
-                pos_alias_hit = token_set_retriever.matches_negative_hard_exclude(
+                pos_score = token_set_retriever.score(
                     positive_variants or (query.query_text,), node
+                )
+                pos_alias_hit = (
+                    pos_score.surface_exact >= 0.9
+                    or pos_score.normalized_exact >= 0.9
+                    or pos_score.token_set >= 0.9
                 )
             conflict_same_node = bool(
                 (neg_alias_hit or neg_correction_hit) and pos_alias_hit
@@ -385,10 +392,16 @@ class SemanticCategoryMatcher:
                 ):
                     direct_alias_match = False
                     alias_boost = 0.0
-                explicit_negation_penalty = max(
+                # Soften the negation penalty — hard 0.9 would wipe the score.
+                explicit_negation_penalty = min(
                     explicit_negation_penalty,
-                    policy.explicit_negative_penalty * 0.35,
+                    policy.explicit_negative_penalty * 0.25,
                 )
+                if neg_correction_hit:
+                    correction_penalty_val = min(
+                        correction_penalty_val,
+                        policy.correction_penalty * 0.25,
+                    )
             breakdown = SignalBreakdown(
                 alias=alias_aggregate,
                 lexical=lexical,
