@@ -1,85 +1,98 @@
 # Taksitlio Chatbot
 
-Fibabanka bağlı Taksitlio mobil chatbotu — production-grade MVP routing çekirdeği.
+Fibabanka bağlı Taksitlio mobil chatbotu — production-grade MVP.
 
 ```text
-Chat API → Conversation State → ModelRouter (FAST / FALLBACK / CLARIFY / SAFE_FAILURE)
-         → system_confidence + reason codes
+Chat API → ConversationStateManager (Redis CAS + idempotency)
+         → ModelRouter (FAST / FALLBACK / CLARIFY / SAFE_FAILURE)
+         → apply_model_update(expected_revision=…)
          → Semantic category match → Kampanya → Ranking → Grounded cevap
 ```
 
-Model adı, IP ve port **uygulama kodunda yoktur**. Profile ≠ connection ≠ deployment (ADR-002).
+Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 
-## Mimari / ADR
+## ADR
 
-* [`docs/architecture/MVP-ARCHITECTURE.md`](docs/architecture/MVP-ARCHITECTURE.md)
 * [`docs/adr/ADR-001-dynamic-model-routing.md`](docs/adr/ADR-001-dynamic-model-routing.md)
 * [`docs/adr/ADR-002-model-deployment-runtime-separation.md`](docs/adr/ADR-002-model-deployment-runtime-separation.md)
+* [`docs/adr/ADR-003-conversation-state-and-optimistic-locking.md`](docs/adr/ADR-003-conversation-state-and-optimistic-locking.md)
 
-## Routing çekirdeği
+## Conversation State Manager
 
 | Bileşen | Konum |
 |---------|--------|
-| ModelGateway (deployment-resolved) | `src/taksitlio/model_gateway/` |
-| ModelRouter + reason codes | `src/taksitlio/model_router/router.py` |
-| SystemConfidenceEvaluator | `src/taksitlio/model_router/confidence.py` |
-| RuntimeHealthRegistry (in-memory) | `src/taksitlio/model_router/health.py` |
-| Absolute Deadline | `src/taksitlio/model_router/deadline.py` |
-| Route version selector | `src/taksitlio/model_router/route_selector.py` |
-| Typed conversation patch | `src/taksitlio/conversation/patch.py` |
-| AuditService | `src/taksitlio/audit/` |
+| Domain + CAS sonuçları | `src/taksitlio/conversation_state/` |
+| Lua compare-and-set | `src/taksitlio/conversation_state/lua/compare_and_set.lua` |
+| Policy migration | `db/migrations/V006__conversation_state_policies.sql` |
 
-## DB
+Redis keys (Cluster hash-tag):
 
-| Dosya | İçerik |
-|-------|--------|
-| `db/migrations/V001__ai_model_management.sql` | Şema only (profiles, connections, deployments, route_versions, audit, logs) |
-| `db/migrations/V002__ai_default_policies.sql` | Teknik default politikalar (host yok) |
-| `db/migrations/V003+` | Kategori / kampanya / prompt |
-| `db/bootstrap/dev-models.sql` | Dev bağlantıları (docker DNS) |
-| `db/bootstrap/poc-models.sql` | POC A/B route’ları |
+```text
+taksitlio:chat:{sessionId}:state
+taksitlio:chat:{sessionId}:idem:{idempotencyKey}
+taksitlio:chat:{sessionId}:events
+```
 
-`endpoint_url` on `ai_model_profiles` is **DEPRECATED** — gateway ignores it.
+### Örnek: session + optimistic update
 
-## Local test
+```python
+from uuid import uuid4
+from taksitlio.conversation_state import (
+    ConversationStateManager,
+    InMemoryConversationStateRepository,
+)
+
+mgr = ConversationStateManager(InMemoryConversationStateRepository())
+state = await mgr.create_session()
+result = await mgr.apply_model_update(
+    state.session_id,
+    expected_revision=state.revision,  # 0
+    patch={
+        "operation": "SET",
+        "path": "/active_need/budget/value",
+        "value": 50000,
+        "confidence": 0.97,
+        "evidence_text": "bütçeyi 50'ye çıkarabiliriz",
+    },
+    idempotency_key=str(uuid4()),
+    client_message_id=str(uuid4()),
+    client_sequence=1,
+)
+# result.status == APPLIED, result.revision == 1
+
+# Stale revision → ConversationVersionConflict (state unchanged)
+```
+
+## Local tests
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest -q
 ```
 
-Routing-core suite:
+Conversation state unit tests:
 
 ```bash
-pytest tests/test_routing_core.py -q
+pytest tests/unit/conversation_state -q
 ```
 
-In-memory API (no LLM):
+Redis integration (optional):
 
 ```bash
-export ALLOW_IN_MEMORY=true
-uvicorn taksitlio.main:app --reload --port 8000
+docker run --rm -p 6379:6379 redis:7-alpine
+REDIS_URL=redis://127.0.0.1:6379/15 pytest -m integration tests/integration -q
 ```
 
-## Docker
+## Docker / DB
 
 ```bash
 cp .env.example .env
 docker compose -f docker/docker-compose.yml up --build
-# after migrations, apply bootstrap explicitly:
+# migrations auto; bootstrap models manually:
 # psql "$DATABASE_URL" -f db/bootstrap/dev-models.sql
 ```
 
-## Kabul özeti (bu aşama)
+## Sıradaki katman
 
-* Routing model self-confidence’a tek başına bağlı değil (`system_confidence`)
-* Eksik bilgi → `CLARIFY`; invalid/comprehension → `FALLBACK`
-* Profile / connection / deployment ayrıldı
-* Absolute deadline; süre yetmezse fallback yok → `SAFE_FAILURE`
-* Uygulama kodunda vendor model adı / loopback IP yok
-
-## Sıradaki adım
-
-Conversation State Manager + Redis optimistic locking.
+Dinamik kategori kataloğu + semantic category matcher (kategori kodu sabitlemeden).

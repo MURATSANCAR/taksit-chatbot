@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://taksitlio.local/schemas/conversation_update.schema.json",
   "title": "ConversationPatch",
-  "description": "Typed session patch. Backend owns current values; model must not supply old_value.",
+  "description": "Typed session patch against ConversationState. Backend owns platform fields and current values; model must not supply old_value.",
   "type": "object",
   "additionalProperties": false,
   "required": ["operation", "path", "confidence"],
@@ -13,13 +13,14 @@
     },
     "path": {
       "type": "string",
-      "description": "JSON Pointer under allowlisted need-profile paths, e.g. /budget/value",
+      "description": "JSON Pointer under allowlisted families, e.g. /active_need/budget/value",
       "minLength": 1
     },
     "value": {},
     "evidence_text": {
       "type": ["string", "null"],
-      "maxLength": 500
+      "maxLength": 500,
+      "description": "Optional evidence; stored as hash reference only, never required in Redis payload"
     },
     "confidence": {
       "type": "number",
@@ -27,8 +28,9 @@
       "maximum": 1
     },
     "need_profile": {
-      "description": "Only for RESET_NEED — full replacement validated by backend schema",
-      "$ref": "need_profile.schema.json"
+      "description": "Optional seed object for RESET_NEED (need_id assigned by backend)",
+      "type": "object",
+      "additionalProperties": true
     }
   }
 }

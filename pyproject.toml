@@ -43,9 +43,12 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-taksitlio = ["schemas/*.json"]
+taksitlio = ["schemas/*.json", "conversation_state/lua/*.lua"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 pythonpath = ["src"]
 testpaths = ["tests"]
+markers = [
+  "integration: requires external Redis (set REDIS_URL)",
+]
