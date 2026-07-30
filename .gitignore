@@ -12,3 +12,6 @@ src/*.egg-info/
 .DS_Store
 .tools/
 *.rdb
+evaluation/reports/*
+!evaluation/reports/.gitkeep
+evaluation/private/*

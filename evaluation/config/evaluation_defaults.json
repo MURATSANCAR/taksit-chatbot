@@ -1,0 +1,49 @@
+{
+  "version": "v1",
+  "notes": "Evaluation thresholds + objective weights. Loaded by the evaluator; nothing here is hardcoded in Python. Bootstrap thresholds are intentionally loose so the first real run may still land in ACCEPT; tighten iteratively as the dataset matures.",
+  "latency_budget_p95_ms": 250,
+  "calibration_bucket_count": 10,
+  "objective_weights": {
+    "status_accuracy": 1.0,
+    "top_1_accepted_accuracy": 0.6,
+    "top_2_accepted_recall": 0.2,
+    "required_candidate_recall": 0.4,
+    "mrr": 0.2,
+    "ndcg_at_3": 0.2,
+    "unsafe_auto_select_rate": -1.5,
+    "forbidden_candidate_violation_rate": -1.0,
+    "unnecessary_clarification_rate": -0.5,
+    "missed_clarification_rate": -0.8,
+    "brier": -0.3,
+    "ece": -0.3
+  },
+  "quality_gate_thresholds": {
+    "status_accuracy": {"min": 0.55},
+    "top_1_accepted_accuracy": {"min": 0.50},
+    "top_2_accepted_recall": {"min": 0.60},
+    "required_candidate_recall": {"min": 0.50},
+    "unsafe_auto_select_rate": {"max": 0.15},
+    "forbidden_candidate_violation_rate": {"max": 0.10},
+    "unnecessary_clarification_rate": {"max": 0.40},
+    "missed_clarification_rate": {"max": 0.35},
+    "ece": {"max": 0.35},
+    "brier": {"max": 0.35}
+  },
+  "comparison_tolerances": {
+    "status_accuracy": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "top_1_accepted_accuracy": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "top_2_accepted_recall": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "required_candidate_recall": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "unsafe_auto_select_rate": {"tolerance": 0.02, "direction": "lower_is_better"},
+    "forbidden_candidate_violation_rate": {"tolerance": 0.02, "direction": "lower_is_better"},
+    "unnecessary_clarification_rate": {"tolerance": 0.03, "direction": "lower_is_better"},
+    "missed_clarification_rate": {"tolerance": 0.03, "direction": "lower_is_better"},
+    "mrr": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "hit_rate_at_1": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "hit_rate_at_2": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "hit_rate_at_3": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "ndcg_at_3": {"tolerance": 0.02, "direction": "higher_is_better"},
+    "brier": {"tolerance": 0.03, "direction": "lower_is_better"},
+    "ece": {"tolerance": 0.03, "direction": "lower_is_better"}
+  }
+}
