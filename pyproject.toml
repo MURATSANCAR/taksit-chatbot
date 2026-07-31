@@ -41,6 +41,7 @@ media = [
 
 [project.scripts]
 taksitlio-api = "taksitlio.main:app"
+taksitlio-scheduler = "taksitlio.ingestion_scheduler.daemon:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

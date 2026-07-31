@@ -247,9 +247,15 @@ def build_in_memory_container(
         responder=responder,
         campaign_repo=campaign_repo,
     )
+    from taksitlio.ingestion.binding import build_default_registry
+    from taksitlio.ingestion.repository import InMemoryIngestionRepository
+    from taksitlio.ingestion_scheduler.repository import InMemorySchedulerJobRepository
+    from taksitlio.product.catalog import InMemoryProductCatalogRepository
     from taksitlio.product_query.cache_wiring import build_product_query_caches
 
-    product_query_caches = build_product_query_caches(settings, redis=None)
+    product_query_caches = build_product_query_caches(
+        settings, redis=None, prefer_memory=True
+    )
     return AppContainer(
         settings=settings,
         pipeline=pipeline,
@@ -263,6 +269,10 @@ def build_in_memory_container(
             "health": health,
             "profiles": None,
             "product_query_caches": product_query_caches,
+            "adapter_registry": build_default_registry(),
+            "ingestion_repo": InMemoryIngestionRepository(),
+            "scheduler_repo": InMemorySchedulerJobRepository(),
+            "product_catalog": InMemoryProductCatalogRepository(),
         },
     )
 
@@ -323,6 +333,10 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         responder=responder,
         campaign_repo=campaign_repo,
     )
+    from taksitlio.ingestion.binding import build_default_registry
+    from taksitlio.ingestion.repository import PostgresIngestionRepository
+    from taksitlio.ingestion_scheduler.repository import PostgresSchedulerJobRepository
+    from taksitlio.product.catalog import PostgresProductCatalogRepository
     from taksitlio.product_query.cache_wiring import build_product_query_caches
 
     product_query_caches = build_product_query_caches(settings, redis=redis)
@@ -338,5 +352,9 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "route_repo": route_repo,
             "health": health,
             "product_query_caches": product_query_caches,
+            "adapter_registry": build_default_registry(),
+            "ingestion_repo": PostgresIngestionRepository(pool),
+            "scheduler_repo": PostgresSchedulerJobRepository(pool),
+            "product_catalog": PostgresProductCatalogRepository(pool),
         },
     )

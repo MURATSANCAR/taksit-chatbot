@@ -1,64 +1,22 @@
-"""Ingestion scheduler priorities (ADR-010 §63–64).
-
-User requests never wait on crawlers — enqueue high-priority refresh instead.
-"""
+"""Ingestion scheduler — freshness + lease worker exports (ADR-010 §63–64)."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from enum import Enum
+from datetime import datetime, timezone
 from typing import Optional
 
-
-class SchedulerQueue(str, Enum):
-    PRODUCT_DISCOVERY = "PRODUCT_DISCOVERY"
-    PRODUCT_DETAIL = "PRODUCT_DETAIL"
-    PRICE_REFRESH = "PRICE_REFRESH"
-    STOCK_REFRESH = "STOCK_REFRESH"
-    MEDIA_FETCH = "MEDIA_FETCH"
-    CAMPAIGN_REFRESH = "CAMPAIGN_REFRESH"
-    RATE_REFRESH = "RATE_REFRESH"
-    FAILED_ITEM_RETRY = "FAILED_ITEM_RETRY"
-
-
-# Lower number = higher priority
-PRIORITY_USER_SEARCH_STALE = 10
-PRIORITY_POPULAR_ACTIVE = 20
-PRIORITY_PRICE_CHANGED = 30
-PRIORITY_CAMPAIGN = 40
-PRIORITY_UNVERIFIED_LONG = 80
-PRIORITY_DEFAULT = 100
-
-
-@dataclass(frozen=True)
-class FreshnessTtlPolicy:
-    price_ttl_seconds: int = 3600
-    stock_ttl_seconds: int = 3600
-    product_ttl_seconds: int = 86400
-    image_ttl_seconds: int = 604800
-    campaign_ttl_seconds: int = 3600
-    bank_terms_ttl_seconds: int = 3600
-
-
-@dataclass(frozen=True)
-class FreshnessVerdict:
-    status: str  # FRESH | STALE | EXPIRED | UNVERIFIED
-    age_seconds: Optional[float]
-    show_as_current_offer: bool
-    enqueue_refresh: bool
-    queue: Optional[SchedulerQueue]
-    priority: int
-
-
-@dataclass(frozen=True)
-class SchedulerJobSpec:
-    queue_name: SchedulerQueue
-    priority: int
-    source_id: Optional[str] = None
-    product_id: Optional[str] = None
-    external_item_id: Optional[str] = None
-    payload: Optional[dict] = None
+from taksitlio.ingestion_scheduler.domain import (
+    PRIORITY_CAMPAIGN,
+    PRIORITY_DEFAULT,
+    PRIORITY_POPULAR_ACTIVE,
+    PRIORITY_PRICE_CHANGED,
+    PRIORITY_UNVERIFIED_LONG,
+    PRIORITY_USER_SEARCH_STALE,
+    FreshnessTtlPolicy,
+    FreshnessVerdict,
+    SchedulerJobSpec,
+    SchedulerQueue,
+)
 
 
 def classify_freshness(
@@ -105,7 +63,7 @@ def classify_freshness(
         return FreshnessVerdict(
             status="STALE",
             age_seconds=age,
-            show_as_current_offer=True,  # labeled stale; not removed
+            show_as_current_offer=True,
             enqueue_refresh=True,
             queue=queue_on_stale,
             priority=PRIORITY_USER_SEARCH_STALE if user_search_driven else PRIORITY_POPULAR_ACTIVE,

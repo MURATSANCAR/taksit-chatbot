@@ -85,14 +85,35 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] `product_query.search` (resolve → filter → rank → cards + refresh jobs)
 - [x] `POST /v1/product-query/search` + in-memory alias cache; Redis optional (`RedisAliasResolutionCache`)
 - [x] Search/cache unit tests
+- [x] Container DI: alias + popular-query + best-offer caches (Redis prod / in-mem demo)
+- [x] `POST /v1/product-query/resolve-entities`
+
+### P6 — data quality + operator source binding
+
+- [x] `data_quality` scorer (READY / PARTIAL / QUARANTINED / REJECTED; quarantine ≠ chatbot)
+- [x] `SourceBinding` + `instantiate_adapter` (opaque `adapter_code` / `credential_ref`)
+- [x] Dry-run ingestion runner (`run_ingestion_dry`) — no fake production seed
+- [x] Admin: `GET /ingestion/adapters`, `POST /data-quality/score`, `POST /ingestion/dry-run`, `GET /ingestion/sources/health`
+- [x] Unit tests
+
+### P7 — source/run persist + scheduler lease
+
+- [x] `InMemoryIngestionRepository` + `PostgresIngestionRepository`
+- [x] `InMemorySchedulerJobRepository` + `PostgresSchedulerJobRepository` (SKIP LOCKED lease SQL)
+- [x] `LeaseLoopWorker` tick (lease → handle → complete/fail+retry)
+- [x] Admin: upsert source, dry-run/persist, enqueue, tick, list runs/health
+- [x] Unit tests
 
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Task-specific FAST fine-tune / LoRA
-- [ ] İlk gerçek merchant feed bağlama (operatör; kodda merchant adı yok)
-- [ ] Redis popular-query / alias cache wiring at scale (container DI)
+- [ ] İlk gerçek merchant feed bağlama (operatör dry-run ile; kodda merchant adı yok)
+- [x] Redis popular-query / alias / best-offer cache wiring (container DI)
+- [x] `POST /v1/product-query/resolve-entities`
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
-
+- [x] Postgres’e source/run persist + scheduler worker lease loop
+- [ ] Product upsert from dry-run (gerçek feed; sahte seed yok)
+- [ ] Long-running scheduler daemon / compose service
 ## Gates
 
 | Gate | Status |
@@ -102,8 +123,8 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Runtime | BLOCKED / PERFORMANCE_REJECT (CPU) |
 | Provisional | not locked |
 | Campaign (kişisel onay) | CLOSED |
-| Data Ingestion | P1 (generic feed adapter + product schema) |
-| Data Quality | P2 media quality skeleton |
-| Fast Product Path | P5B (search HTTP + alias cache; Redis optional) |
+| Data Ingestion | P7 (source/run persist + scheduler lease; operator feed pending) |
+| Data Quality | P6 scorer + admin score API |
+| Fast Product Path | P5C (search + resolve-entities + Redis/in-mem cache DI) |
 | Finance Mapping | P3 skeleton (eligibility + payment plan) |
 | Recommendation | P4 ranking safety rules |

@@ -24,15 +24,9 @@ from taksitlio.product_query.ranking import (
     RankingWeights,
     rank_products,
 )
-from taksitlio.product_query.search import (
-    ProductSearchRequest,
-    ProductSearchResponse,
-    SearchProductCandidate,
-    search_products,
-)
 
 ADR_SCOPE = "ADR-010"
-PACKAGE_STATUS = "P5B"
+PACKAGE_STATUS = "P5C"
 
 
 @dataclass(frozen=True)
@@ -135,3 +129,17 @@ __all__ = [
     "run_product_query",
     "search_products",
 ]
+
+
+def __getattr__(name: str):
+    if name in {
+        "ProductSearchRequest",
+        "ProductSearchResponse",
+        "SearchProductCandidate",
+        "search_products",
+    }:
+        from taksitlio.product_query import search as _search
+
+        return getattr(_search, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+

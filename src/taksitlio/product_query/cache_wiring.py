@@ -36,9 +36,10 @@ def build_product_query_caches(
     settings: InfraSettings,
     *,
     redis: Any = None,
+    prefer_memory: bool = False,
 ) -> ProductQueryCaches:
     prefix = settings.redis_key_prefix.rstrip(":")
-    if redis is not None:
+    if redis is not None and not prefer_memory:
         return ProductQueryCaches(
             alias=RedisAliasResolutionCache(
                 redis, key_prefix=f"{prefix}:alias"
@@ -55,7 +56,7 @@ def build_product_query_caches(
             catalog_cache_version=settings.catalog_cache_version,
         )
 
-    if settings.allow_in_memory:
+    if prefer_memory or settings.allow_in_memory:
         return ProductQueryCaches(
             alias=InMemoryAliasResolutionCache(),
             popular=InMemoryPopularQueryCache(),
