@@ -14,7 +14,6 @@ from taksitlio.answer_integrity.response_composer import (
     merge_optional_llm_fields,
 )
 from taksitlio.answer_integrity.truth_status import ResponseOutcome
-from taksitlio.recommendation_safety.recommendation import why_recommended
 
 
 @dataclass(frozen=True)
@@ -43,6 +42,8 @@ def run_answer_integrity_pipeline(
 
     On claim failure, deterministic template is returned (LLM text dropped).
     """
+
+    from taksitlio.recommendation_safety.recommendation import why_recommended
 
     reasons = [why_recommended(reason_codes)] if reason_codes else []
     base = compose_from_facts(

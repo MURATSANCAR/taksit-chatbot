@@ -180,6 +180,7 @@ async def run_ingestion_dry(
         return IngestionRunResult(
             source_code=binding.source_code,
             adapter_code=binding.adapter_code,
+            merchant_id=str(binding.merchant_id),
             discovered=discovered,
             succeeded=succeeded,
             failed=failed,

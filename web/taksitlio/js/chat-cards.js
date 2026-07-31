@@ -51,11 +51,11 @@
     if (card.stock_status === "AVAILABLE") metaParts.push("Stokta");
 
     let primary = formatMoney(card.price, card.currency) || "—";
-    let secondary = "ürün fiyatı";
+    let secondary = "Ürün fiyatı";
     let hint = null;
     if (finance && finance.monthly_payment != null && finance.term_months != null) {
       primary = formatMoney(finance.monthly_payment, card.currency) || primary;
-      secondary = `/ ${finance.term_months} ay`;
+      secondary = `${finance.term_months} ay taksit`;
       hint = finance.display_label || "Tahmini aylık ödeme";
     }
 
@@ -121,30 +121,23 @@
       : "";
     const media = d.img
       ? `<div class="deal-media">${badgeOnMedia}<img src="${escapeHtml(d.img)}" alt="" loading="lazy" /></div>`
-      : `<div class="deal-media is-empty">${badgeOnMedia}Görsel yok</div>`;
+      : `<div class="deal-media is-empty">${badgeOnMedia}<span class="deal-media-ph">Görsel yok</span></div>`;
     const hint = d.hint
       ? `<span class="hint">${escapeHtml(d.hint)}</span>`
       : "";
-    const sideBadge = d.best
-      ? ""
-      : `<span class="pill soft">${escapeHtml(d.badge || "Seçenek")}</span>`;
+    const priceLabel = escapeHtml(d.secondary || "Ürün fiyatı");
     return `
       <article class="deal ${d.best ? "best" : ""}" style="animation-delay:${0.06 + i * 0.1}s">
         ${media}
         <div class="deal-body">
-          <div>
-            <div class="deal-top">
-              <div class="deal-name">${escapeHtml(d.name)}</div>
-              ${sideBadge}
-            </div>
+          <div class="deal-copy">
+            <div class="deal-name">${escapeHtml(d.name)}</div>
             <div class="deal-meta">${escapeHtml(d.meta)}</div>
           </div>
           <div class="deal-price">
-            <div>
-              <div class="n">${escapeHtml(d.primary)}</div>
-              ${hint}
-            </div>
-            <div class="l">${escapeHtml(d.secondary)}</div>
+            <div class="l">${priceLabel}</div>
+            <div class="n">${escapeHtml(d.primary)}</div>
+            ${hint}
           </div>
         </div>
       </article>`;

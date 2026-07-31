@@ -405,12 +405,13 @@
 
     .offer,
     .deal {
-      display: grid;
-      grid-template-columns: minmax(72px, 28%) minmax(0, 1fr);
-      gap: clamp(10px, 2.5vw, 14px);
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 12px;
       background: var(--surface);
       border-radius: clamp(16px, 4vw, 20px);
-      padding: clamp(10px, 2.5vw, 12px);
+      padding: 12px;
       margin-bottom: 10px;
       border: 1px solid var(--line);
       box-shadow: 0 10px 28px rgba(30, 31, 34, 0.04);
@@ -418,6 +419,10 @@
       transform: translateY(18px) scale(.97);
       filter: blur(2px);
       width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      isolation: isolate;
     }
     .offer.on,
     .deal.on {
@@ -433,14 +438,19 @@
     }
     .offer-media,
     .deal-media {
+      position: relative;
+      flex: 0 0 96px;
+      width: 96px;
+      min-width: 96px;
+      max-width: 96px;
+      align-self: stretch;
+      min-height: 96px;
       border-radius: 14px;
       overflow: hidden;
       background: #EEEAF4;
-      min-height: clamp(88px, 28vw, 120px);
-      aspect-ratio: 1 / 1.05;
-      display: grid;
-      place-items: center;
-      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .offer-media img,
     .deal-media img {
@@ -448,37 +458,53 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      position: relative;
+      z-index: 0;
     }
     .deal-media.is-empty {
-      font-size: 11px;
-      font-weight: 650;
+      padding: 28px 8px 10px;
+    }
+    .deal-media-ph {
+      position: relative;
+      z-index: 0;
+      font-size: 10px;
+      font-weight: 700;
       color: var(--muted);
       text-align: center;
-      padding: 8px;
+      line-height: 1.3;
+      max-width: 100%;
     }
     .deal-badge {
       position: absolute;
-      top: 8px;
-      left: 8px;
+      top: 6px;
+      left: 6px;
       z-index: 2;
-      font-size: 10px;
+      width: max-content;
+      max-width: calc(100% - 12px);
+      font-size: 9px;
       font-weight: 800;
       letter-spacing: 0.02em;
-      padding: 4px 8px;
+      padding: 3px 7px;
       border-radius: 999px;
       background: var(--lime);
       color: var(--ink);
       box-shadow: 0 4px 12px rgba(30, 31, 34, 0.12);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      pointer-events: none;
     }
     .offer-body,
     .deal-body {
+      flex: 1 1 auto;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-width: 0;
       gap: 8px;
-      padding: 2px 2px 0 0;
+      padding: 0;
     }
+    .deal-copy { min-width: 0; }
     .offer-top,
     .deal-top {
       display: flex;
@@ -488,11 +514,15 @@
     }
     .offer-name,
     .deal-name {
-      font-size: clamp(13.5px, 3.6vw, 15px);
+      font-size: clamp(13px, 3.5vw, 14.5px);
       font-weight: 750;
       letter-spacing: -0.02em;
-      line-height: 1.25;
+      line-height: 1.3;
       overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
     .offer-meta,
     .deal-meta {
@@ -500,6 +530,9 @@
       font-size: clamp(11px, 2.9vw, 12px);
       color: var(--muted);
       line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .pill {
       flex: none;
@@ -510,9 +543,6 @@
       background: var(--lime);
       color: var(--ink);
       white-space: nowrap;
-      max-width: 42%;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     .pill.soft {
       background: var(--purple-soft);
@@ -521,23 +551,26 @@
     .offer-price,
     .deal-price {
       margin-top: auto;
-      display: grid;
-      gap: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
     }
-    .offer-price .label {
+    .offer-price .label,
+    .deal-price .l {
       font-size: 11px;
       font-weight: 600;
       color: var(--muted);
-      margin-bottom: 2px;
+      line-height: 1.2;
     }
     .offer-price .n,
     .deal-price .n {
       font-family: var(--display);
-      font-size: var(--fs-price);
+      font-size: clamp(20px, 5vw, 26px);
       font-weight: 800;
       letter-spacing: -0.045em;
       color: var(--purple);
-      line-height: 1;
+      line-height: 1.1;
     }
     .deal-price .hint {
       display: block;
@@ -545,11 +578,6 @@
       font-size: 11px;
       color: var(--muted);
       font-weight: 600;
-    }
-    .deal-price .l {
-      font-size: 11.5px;
-      color: var(--muted);
-      font-weight: 500;
     }
     .offer-price .foot {
       margin-top: 4px;
@@ -795,28 +823,108 @@
     .search-progress-timeline {
       list-style: none;
       margin: 6px 0 8px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,0.72);
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.78);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 16px;
       display: grid;
-      gap: 6px;
+      gap: 0;
+      overflow: hidden;
     }
     .search-progress-timeline li {
       display: grid;
-      grid-template-columns: 18px minmax(0, 1fr);
-      gap: 8px;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 10px;
       align-items: start;
-      font-size: clamp(11px, 3vw, 12.5px);
+      font-size: clamp(12px, 3.1vw, 13.5px);
       color: var(--muted);
       line-height: 1.35;
+      padding: 8px 2px;
+      position: relative;
+      opacity: 0.55;
+      transform: translateY(6px);
     }
-    .search-progress-timeline li.done { color: var(--ink); font-weight: 650; }
-    .search-progress-timeline li.active { color: var(--purple-deep); font-weight: 700; }
+    .search-progress-timeline li:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 28px;
+      bottom: -2px;
+      width: 2px;
+      border-radius: 2px;
+      background: linear-gradient(
+        180deg,
+        rgba(151, 71, 255, 0.28),
+        rgba(151, 71, 255, 0.06)
+      );
+    }
+    .search-progress-timeline li.done {
+      color: var(--ink);
+      font-weight: 650;
+      opacity: 1;
+      transform: none;
+    }
+    .search-progress-timeline li.active {
+      color: var(--purple-deep);
+      font-weight: 750;
+      opacity: 1;
+      transform: none;
+    }
+    .search-progress-timeline li.pending {
+      opacity: 0.42;
+    }
     .search-progress-timeline .mark {
-      width: 18px;
-      text-align: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
       color: var(--purple);
+      background: var(--purple-soft);
+      border: 1px solid rgba(151, 71, 255, 0.18);
+      position: relative;
+      z-index: 1;
+    }
+    .search-progress-timeline li.done .mark {
+      background: var(--lime);
+      color: var(--ink);
+      border-color: rgba(30, 31, 34, 0.08);
+    }
+    .search-progress-timeline li.active .mark {
+      background: var(--purple);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(151, 71, 255, 0.16);
+      animation: stepPulse 1.15s ease-in-out infinite;
+    }
+    .search-progress-timeline .step-text {
+      padding-top: 2px;
+    }
+    .search-progress-timeline li.step-enter {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+      filter: blur(2px);
+    }
+    .search-progress-timeline li.step-enter-on {
+      animation: stepEnter 0.48s cubic-bezier(.22,1,.36,1) forwards;
+      animation-delay: calc(var(--step-i, 0) * 70ms);
+    }
+    .search-progress-timeline li.step-pop .mark {
+      animation: stepPop 0.42s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes stepEnter {
+      to { opacity: 1; transform: none; filter: none; }
+    }
+    @keyframes stepPop {
+      0% { transform: scale(0.7); }
+      55% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+    @keyframes stepPulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(151, 71, 255, 0.14); }
+      50% { box-shadow: 0 0 0 8px rgba(151, 71, 255, 0.08); }
     }
 
     .logo-progress-rail {
@@ -935,18 +1043,18 @@
       to { opacity: 1; transform: none; }
     }
 
-    /* Very narrow phones: stack product cards */
+    /* Very narrow phones: keep side-by-side, slightly tighter media */
     @media (max-width: 360px) {
       .offer,
-      .deal {
-        grid-template-columns: 1fr;
-      }
+      .deal { gap: 10px; padding: 10px; }
       .offer-media,
       .deal-media {
-        aspect-ratio: 16 / 10;
-        min-height: 120px;
+        flex-basis: 84px;
+        width: 84px;
+        min-width: 84px;
+        max-width: 84px;
+        min-height: 84px;
       }
-      .pill { max-width: none; }
     }
 
     /* Landscape phones / short viewports */

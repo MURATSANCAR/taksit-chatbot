@@ -186,34 +186,7 @@
     }
 
     function renderFeedback(el) {
-      if (!el) return;
-      if (!state.lastProducts.length || !state.queryVersion) {
-        el.innerHTML = "";
-        return;
-      }
-      el.innerHTML =
-        '<button type="button" class="feedback-btn" data-act="feedback">' +
-        "Bu sonuç yardımcı olmadı</button>";
-      el.querySelector('[data-act="feedback"]').onclick = function () {
-        var btn = el.querySelector('[data-act="feedback"]');
-        if (btn) btn.disabled = true;
-        var first = state.lastProducts[0] || {};
-        client
-          .postFeedback({
-            query_version: state.queryVersion,
-            parsed_constraints: {},
-            selected_product: first.product_id || null,
-            error_class: "PRODUCT_IDENTITY_ERROR",
-            user_note: "guest_ui:results_not_helpful",
-          })
-          .then(function () {
-            el.innerHTML = '<p class="feedback-thanks">Geri bildirimin için teşekkürler.</p>';
-          })
-          .catch(function (err) {
-            if (btn) btn.disabled = false;
-            onError(errorMessage(err));
-          });
-      };
+      if (el) el.innerHTML = "";
     }
 
     function renderResults(payload, optsReplace) {

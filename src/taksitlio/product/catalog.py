@@ -6,6 +6,7 @@ No demo seed — only rows produced from verified ingestion snapshots.
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Optional, Protocol, Sequence
 
@@ -18,6 +19,55 @@ from taksitlio.product.upsert import (
     plan_offer_upsert,
     plan_product_upsert,
 )
+
+
+_PRIVATE_CDN_PREFIXES = (
+    "http://127.0.0.1:9000/taksitlio-media/",
+    "http://localhost:9000/taksitlio-media/",
+    "http://127.0.0.1:9000/taksitlio-media",
+    "http://localhost:9000/taksitlio-media",
+)
+
+
+def publicize_cdn_url(
+    url: Optional[str],
+    *,
+    storage_key: Optional[str] = None,
+) -> Optional[str]:
+    """Map private MinIO/localhost URLs to CDN_BASE_URL for browser clients."""
+
+    base = (os.environ.get("CDN_BASE_URL") or "").rstrip("/")
+    if storage_key and base:
+        return f"{base}/{storage_key.lstrip('/')}"
+    if not url:
+        return None
+    if not base:
+        return url
+    for priv in _PRIVATE_CDN_PREFIXES:
+        if url.startswith(priv):
+            rest = url[len(priv) :].lstrip("/")
+            return f"{base}/{rest}" if rest else base
+    if url.startswith("http://127.0.0.1") or url.startswith("http://localhost"):
+        marker = "/taksitlio-media/"
+        if marker in url:
+            return f"{base}/{url.split(marker, 1)[1]}"
+    return url
+
+
+def _attrs_dict(attrs: Any) -> dict[str, Any]:
+    if attrs is None:
+        return {}
+    if isinstance(attrs, dict):
+        return dict(attrs)
+    if isinstance(attrs, (bytes, bytearray)):
+        attrs = attrs.decode("utf-8")
+    if isinstance(attrs, str):
+        text = attrs.strip()
+        if not text:
+            return {}
+        parsed = json.loads(text)
+        return dict(parsed) if isinstance(parsed, dict) else {}
+    return dict(attrs)
 
 
 @dataclass(frozen=True)
@@ -33,6 +83,30 @@ class StoredProduct:
     primary_cdn_url: Optional[str] = None
     pending_source_image_url: Optional[str] = None
     primary_media_status: Optional[str] = None
+
+
+def _row_to_stored_product(row: Any) -> StoredProduct:
+    keys = set(row.keys()) if hasattr(row, "keys") else set()
+    return StoredProduct(
+        id=int(row["id"]),
+        merchant_id=int(row["merchant_id"]),
+        external_product_id=str(row["external_product_id"]),
+        display_name=str(row["display_name"]),
+        content_hash=row["content_hash"],
+        data_quality_status=str(row["data_quality_status"]),
+        status=str(row["status"]),
+        attributes=_attrs_dict(row["attributes"]),
+        primary_cdn_url=publicize_cdn_url(
+            row["primary_cdn_url"] if "primary_cdn_url" in keys else None,
+            storage_key=row["storage_key"] if "storage_key" in keys else None,
+        ),
+        pending_source_image_url=(
+            row["pending_source_image_url"] if "pending_source_image_url" in keys else None
+        ),
+        primary_media_status=(
+            row["primary_media_status"] if "primary_media_status" in keys else None
+        ),
+    )
 
 
 @dataclass(frozen=True)
@@ -542,63 +616,67 @@ class PostgresProductCatalogRepository:
             if merchant_id is None:
                 rows = await conn.fetch(
                     """
-                    SELECT id, merchant_id, external_product_id, display_name,
-                           content_hash, data_quality_status, status, attributes
-                    FROM products ORDER BY id ASC LIMIT $1
+                    SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                           p.content_hash, p.data_quality_status, p.status, p.attributes,
+                           COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
+                           COALESCE(p.metadata->>'primary_media_status', ma.status)
+                             AS primary_media_status,
+                           p.metadata->>'pending_source_image_url' AS pending_source_image_url,
+                           ma.storage_key AS storage_key
+                    FROM products p
+                    LEFT JOIN product_media_links pml
+                      ON pml.product_id = p.id AND pml.is_primary = TRUE
+                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                    ORDER BY p.id ASC
+                    LIMIT $1
                     """,
                     limit,
                 )
             else:
                 rows = await conn.fetch(
                     """
-                    SELECT id, merchant_id, external_product_id, display_name,
-                           content_hash, data_quality_status, status, attributes
-                    FROM products WHERE merchant_id = $1
-                    ORDER BY id ASC LIMIT $2
+                    SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                           p.content_hash, p.data_quality_status, p.status, p.attributes,
+                           COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
+                           COALESCE(p.metadata->>'primary_media_status', ma.status)
+                             AS primary_media_status,
+                           p.metadata->>'pending_source_image_url' AS pending_source_image_url,
+                           ma.storage_key AS storage_key
+                    FROM products p
+                    LEFT JOIN product_media_links pml
+                      ON pml.product_id = p.id AND pml.is_primary = TRUE
+                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                    WHERE p.merchant_id = $1
+                    ORDER BY p.id ASC
+                    LIMIT $2
                     """,
                     merchant_id,
                     limit,
                 )
-        out = []
-        for row in rows:
-            attrs = row["attributes"]
-            out.append(
-                StoredProduct(
-                    id=int(row["id"]),
-                    merchant_id=int(row["merchant_id"]),
-                    external_product_id=str(row["external_product_id"]),
-                    display_name=str(row["display_name"]),
-                    content_hash=row["content_hash"],
-                    data_quality_status=str(row["data_quality_status"]),
-                    status=str(row["status"]),
-                    attributes=dict(attrs or {}),
-                )
-            )
-        return tuple(out)
+        return tuple(_row_to_stored_product(row) for row in rows)
 
     async def get_product(self, product_id: int) -> Optional[StoredProduct]:
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
-                SELECT id, merchant_id, external_product_id, display_name,
-                       content_hash, data_quality_status, status, attributes
-                FROM products WHERE id = $1
+                SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                       p.content_hash, p.data_quality_status, p.status, p.attributes,
+                       COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
+                       COALESCE(p.metadata->>'primary_media_status', ma.status)
+                         AS primary_media_status,
+                       p.metadata->>'pending_source_image_url' AS pending_source_image_url,
+                       ma.storage_key AS storage_key
+                FROM products p
+                LEFT JOIN product_media_links pml
+                  ON pml.product_id = p.id AND pml.is_primary = TRUE
+                LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                WHERE p.id = $1
                 """,
                 product_id,
             )
         if row is None:
             return None
-        attrs = row["attributes"]
-        return StoredProduct(
-            id=int(row["id"]),
-            merchant_id=int(row["merchant_id"]),
-            external_product_id=str(row["external_product_id"]),
-            display_name=str(row["display_name"]),
-            content_hash=row["content_hash"],
-            data_quality_status=str(row["data_quality_status"]),
-            status=str(row["status"]),
-            attributes=dict(attrs or {}),
-        )
+        return _row_to_stored_product(row)
 
     async def set_pending_source_image(
         self, product_id: int, source_url: str
