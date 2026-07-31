@@ -36,7 +36,7 @@ class MetricsSnapshot:
 
 def baseline_gates() -> list[GateStatus]:
     return [
-        GateStatus("Data Ingestion", "CODE_READY", "P15; live authorized feed pending"),
+        GateStatus("Data Ingestion", "CODE_READY", "P15; live source (API/feed/crawl) pending"),
         GateStatus("Data Quality", "CODE_READY", "P6 scorer; live coverage unmeasured"),
         GateStatus("Fast Product Path", "CODE_READY", "P14; needs catalog products"),
         GateStatus("Finance Mapping", "CODE_READY", "P12; needs real rate/campaign rows"),
@@ -71,7 +71,7 @@ def empty_coverage() -> dict[str, Any]:
         "stock_coverage": None,
         "finance_option_coverage": None,
         "payment_plan_coverage": None,
-        "note": "Populate only from live SQL after authorized ingest",
+        "note": "Populate only from live SQL after ingest",
     }
 
 
@@ -118,7 +118,7 @@ def build_snapshot(
     counts: Optional[dict[str, Any]] = None,
 ) -> MetricsSnapshot:
     blockers = [
-        "Authorized merchant feed/API not bound in production",
+        "Live merchant source (API/feed/crawl) not bound in production",
         "ADR-009 provisional not locked; Campaign Gate CLOSED",
         "FAST HR100 quality still REJECT without task-specific LoRA deploy",
         "Live search/finance latency & coverage not yet measured",
@@ -133,7 +133,7 @@ def build_snapshot(
         blockers=blockers,
         notes=[
             "Skeleton ADR-010 P0–P17 code-ready; live data gates open",
-            "No scraper; only authorized feeds/adapters",
+            "Ingestion sources: API, feed, HTML/JSON-LD, or shared crawl pipeline",
             "MinIO may be configured via OBJECT_STORAGE_BACKEND=s3",
         ],
     )

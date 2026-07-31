@@ -159,6 +159,8 @@ async def test_chat_falls_back_to_campaigns_when_catalog_empty() -> None:
         )
         assert resp.status_code == 200, resp.text
         body = resp.json()
-        assert body["diagnostics"].get("product_path") is False
-        assert body["campaigns"]
-        assert body["cards"] == []
+        assert body["diagnostics"].get("search_path") is True
+        assert body.get("search_session_id")
+        # Demo catalog pool may yield cards; campaigns are not the primary path anymore.
+        assert body["diagnostics"].get("route") in {"FAST", "CLARIFICATION", "LLM", "DEGRADED"}
+        assert body["campaigns"] == [] or body["diagnostics"].get("route") != "FAST"

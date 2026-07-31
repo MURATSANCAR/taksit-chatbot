@@ -48,8 +48,10 @@ ile çözülmelidir.
    `finance_campaigns` + `product_finance_options` projections.
 4. Merchant merkezî katalog bir kez ingest edilir; 12.500 şube ayrı ayrı
    taranmaz. Şubeler `merchant_locations` olarak tutulur.
-5. Her merchant için ayrı adapter; tek genel scraper yoktur. Capability
-   registry zorunludur. API/feed varsa HTML crawler kullanılmaz.
+5. Capability registry zorunludur. Kaynak tipi API, feed, affiliate,
+   sitemap/JSON-LD, product-page veya paylaşılan crawler pipeline olabilir;
+   “tek genel scraper yasak” / “API-feed varken HTML yok” kısıtı yoktur.
+   Merchant bağları `adapter_code` + capability ile kaydedilir.
 6. Credential’lar DB’ye açık yazılmaz; `credential_ref` secret manager
    referansıdır.
 7. Merchant görselleri hotlink edilmez; media pipeline → object storage →
@@ -117,8 +119,9 @@ Yakın adaylarda otomatik seçim yok.
 
 ## 33–35. Veri edinme ve ingestion modeli
 
-Öncelik: Merchant API → feed → affiliate → sitemap/JSON-LD → product
-pages → kontrollü browser crawler.
+Kaynaklar (zorunlu sıra yok; hepsi geçerli): Merchant API, feed, affiliate,
+sitemap/JSON-LD, product pages, paylaşılan / Storm-class crawler veya
+kontrollü browser. Seçim merchant yeteneğine ve coverage hedefine göre.
 
 Adapter:
 
@@ -282,8 +285,9 @@ banka API; stale kampanyayı aktif gösterme; hotlink görsel.
 16. Performance benchmark  
 17. Merchant-by-merchant production activation  
 
-İlk doğrulama: 1 feed/API + 1 HTML/JSON-LD + 1 store-only merchant
-modeli; sonra adapter sayısı artar. Kodda merchant adı hardcode yok.
+İlk doğrulama: en az bir canlı kaynak (API, feed veya crawl/HTML-JSON-LD)
++ store-only merchant modeli; sonra kaynak/adapter sayısı artar. Kodda
+merchant adı hardcode yok.
 
 ## 79. Testler
 
@@ -326,3 +330,6 @@ Recommendation, Campaign; kalan blocker’lar.
 - Legacy V004/campaign path hemen silinmez.
 - Production gerçek-veri kuralı bağlayıcıdır.
 - P0 sahte seed üretmez; crawler/chatbot kartı/LoRA bu ADR P0 kapsamında değildir.
+- Cevap bütünlüğü, claim grounding ve recommendation safety sıkılaştırması
+  [ADR-012](ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
+  kapsamındadır.

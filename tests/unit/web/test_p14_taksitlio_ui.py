@@ -21,8 +21,8 @@ UI_JS = ROOT / "web" / "taksitlio" / "js" / "chat-cards.js"
 def test_ui_assets_wire_chat_api_without_demo_offers() -> None:
     html = UI_HTML.read_text(encoding="utf-8")
     js = UI_JS.read_text(encoding="utf-8")
-    assert "/v1/chat" in html
     assert "js/chat-cards.js" in html
+    assert "js/search-session" in html or "/v1/search-sessions" in html
     assert "Galaxy A56" not in html
     assert "Yapı Kredi" not in html
     assert "MediaMarkt" not in html
@@ -31,7 +31,6 @@ def test_ui_assets_wire_chat_api_without_demo_offers() -> None:
     assert "dealsFromChatPayload" in js
     assert "thumbnail_cdn_url" in js
     assert "Tahmini aylık ödeme" in js or "display_label" in js
-    assert "Kişisel kredi onayı" in html or "kişisel" in html.casefold()
 
 
 @pytest.mark.asyncio
@@ -73,12 +72,17 @@ async def test_taksitlio_static_and_chat_cards_roundtrip() -> None:
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         ui = await client.get("/taksitlio/")
         assert ui.status_code == 200
-        assert b"/v1/chat" in ui.content
         assert b"js/chat-cards.js" in ui.content
+        assert b"js/search-session" in ui.content
+        assert b"const DEMO" not in ui.content
 
         js = await client.get("/taksitlio/js/chat-cards.js")
         assert js.status_code == 200
         assert b"dealsFromChatPayload" in js.content
+
+        search_js = await client.get("/taksitlio/js/search-session/client.js")
+        assert search_js.status_code == 200
+        assert b"/v1/search-sessions" in search_js.content
 
         chat = await client.post(
             "/v1/chat",

@@ -69,3 +69,7 @@ Frontend (mevcut `web/taksitlio`): `js/search-progress/`,
 Yeni model indirme, fine-tune, gerçek kredi başvurusu, kişiye özel limit,
 sahte canlı banka bağlantısı, rastgele logo, sahte yüzde progress,
 LLM’in fiyat/ödeme üretmesi.
+
+Cevap bütünlüğü / claim grounding / recommendation safety katmanı
+[ADR-012](ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
+kapsamındadır.

@@ -1,4 +1,4 @@
-# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010 / ADR-011
+# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010 / ADR-011 / ADR-012
 
 Status date: 2026-07-31
 
@@ -187,7 +187,7 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 
 ### Sonraki (operasyon / ayrı hat)
 
-- [ ] Canlı merchant feed URL + `MERCHANT_FEED_TOKEN` (ops; runbook P15)
+- [ ] Canlı merchant kaynağı (API / feed / crawl) + credential_ref (ops; P15 veya crawl adapter)
 - [x] Canlı MinIO wiring (nanobase `.env.runtime` → `taksitlio-media`; code deploy smoke OK)
 - [ ] Public CDN DNS / reverse-proxy (CDN hâlâ `127.0.0.1:9000` path-style)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
@@ -212,13 +212,45 @@ ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.m
 - [x] Guest UI modules under `web/taksitlio/js/...`
 - [x] Unit + acceptance gate tests
 
-### P1+ (sonraki)
+### P1 — bridge + worker + UI wire
 
-- [ ] Chat pipeline bridge → search_sessions (guest UI full wire)
-- [ ] Postgres repositories for search session tables
-- [ ] Async LLM worker + circuit breaker → model gateway
+- [x] Chat pipeline → `search_sessions` bridge (`prefer_search_sessions`; `product_phase` → ADR-010 catalog)
+- [x] `PostgresSearchSessionRepository` (sessions/events/jobs/metrics + SKIP LOCKED claim)
+- [x] `LlmUnderstandingWorker` + role circuit (`UNDERSTANDING_SERVICE`) + deterministic fallback provider
+- [x] Guest UI: DEMO kaldırıldı; SSE + clarification + chips + partial cards
+- [x] P1 unit tests
+
+### P2+ (sonraki)
+
 - [ ] Logo CDN URLs from merchant/brand/institution media
 - [ ] Live partial-result / queue latency metrics export
+- [ ] Remote understanding provider (OpenAI-compatible) behind same worker contract
+- [ ] Persist orchestrator runtime state fully via Postgres (not only event/job mirror)
+
+## Open — ADR-012 answer integrity / claim grounding / recommendation safety
+
+ADR: [`docs/adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md`](adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
+
+Durum: **Proposed — design**; kod P0 kabul sonrası.
+
+### P0 — design lock + skeleton (kabul sonrası)
+
+- [x] ADR-012 dokümanı (25 kalite katmanı + 10 gate)
+- [ ] `answer_integrity` / `claim_validation` / `recommendation_safety` paket iskeleti
+- [ ] Fact envelope + provenance validator (`no evidence → no claim`)
+- [ ] Field truth status + Deterministic Response Composer
+- [ ] Final Claim Validator + template fallback
+- [ ] Field-level confidence policy (overall_confidence yasağı)
+- [ ] Unit / acceptance gate tests (sıfır-tolerans claim’ler)
+
+### P1+ (sonraki)
+
+- [ ] Source conflict + precedence policy (DB)
+- [ ] Payment reconciliation gate + ZERO_RATE / ZERO_TOTAL_COST
+- [ ] Product identity / media match / recommendation integrity + reason_codes
+- [ ] Negative constraint lock + prompt injection boundary
+- [ ] Schema drift / quality circuit breaker
+- [ ] Golden + metamorphic suites; shadow mode; feedback snapshots; error classes
 
 ## Gates
 
@@ -242,3 +274,12 @@ ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.m
 | Stale LLM Protection | P0 skeleton PASS (unit/acceptance) |
 | LLM Timeout Fallback | P0 skeleton PASS (unit/acceptance) |
 | Logo Correctness | P0 skeleton PASS (unit/acceptance) |
+| Source Provenance | ADR-012 proposed |
+| Claim Grounding | ADR-012 proposed |
+| Payment Calculation | ADR-012 proposed (ADR-010 payment_plan üzerine) |
+| Product Identity | ADR-012 proposed |
+| Recommendation Integrity | ADR-012 proposed (ADR-010 Recommendation sıkılaştırma) |
+| Negative Constraint | ADR-012 proposed |
+| Source Conflict | ADR-012 proposed |
+| Schema Drift | ADR-012 proposed |
+| Prompt Injection | ADR-012 proposed |

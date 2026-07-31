@@ -78,9 +78,11 @@ class ChatPipeline:
         started = time.perf_counter()
 
         # ADR-011: clarification-first product search before legacy understanding LLM.
+        # Explicit product_phase keeps ADR-010 catalog progressive card path.
         if (
             request.prefer_search_sessions
             and self._search_orchestrator is not None
+            and not request.product_phase
             and self._looks_like_product_query(request.message)
         ):
             bridged = bridge_search_start(

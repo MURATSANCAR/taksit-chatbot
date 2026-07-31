@@ -70,7 +70,7 @@ class NormalizedMediaRef:
 
 
 class MerchantProductSourceAdapter(Protocol):
-    """Per-merchant ingestion adapter — no shared brittle scraper."""
+    """Merchant-bound ingestion adapter (API, feed, HTML/JSON-LD, or crawl)."""
 
     adapter_code: str
 

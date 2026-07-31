@@ -25,5 +25,6 @@ def test_adr011_frontend_modules_present() -> None:
 def test_adr011_scripts_referenced_in_html() -> None:
     html = (ROOT / "web" / "taksitlio" / "index.html").read_text(encoding="utf-8")
     assert "js/search-session/client.js" in html
+    assert "js/search-session/ui.js" in html
     assert "js/search-progress/timeline.js" in html
     assert "js/clarification/card.js" in html
