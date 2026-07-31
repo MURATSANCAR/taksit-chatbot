@@ -222,15 +222,20 @@ def _resolve_final_status(
     forbidden_count: int = 0,
     unsafe_count: int = 0,
     gate_profile: str = "default",
+    runtime_evidence: object | None = None,
 ) -> tuple[QualityGateStatus, list[str]]:
     """Guardrail: DRAFT-only / synthetic-only datasets cannot ACCEPT.
 
-    ADR-006 §7 + ADR-007 §H:
+    ADR-006 §7 + ADR-007 §H + ADR-009:
     * A synthetic bootstrap where every case is DRAFT is not a licence
       to promote a matcher — DRAFT-only never emits ACCEPT.
     * Even PROVISIONAL_ACCEPT requires ``forbidden_count == 0`` and
       ``unsafe_auto_select_count == 0`` — otherwise the gate is REJECT
       or INSUFFICIENT_REVIEWED_DATA depending on the reviewed count.
+    * ``gate_profile=provisional`` without measured runtime evidence stays
+      ``QUALITY_READY_RUNTIME_BLOCKED``. With ADR-009 evidence clearing
+      every dependency + FAST quality floor, provisional may emit
+      ``PROVISIONAL_ACCEPT`` (never full ACCEPT).
     """
 
     notes: list[str] = []
@@ -254,16 +259,30 @@ def _resolve_final_status(
             return QualityGateStatus.INSUFFICIENT_REVIEWED_DATA, notes
         return QualityGateStatus.REJECT, notes
 
+    runtime_cleared = False
+    if runtime_evidence is not None and gate_profile == "provisional":
+        from taksitlio.runtime_verification.gate import evaluate_provisional_gate
+
+        provisional = evaluate_provisional_gate(runtime_evidence)  # type: ignore[arg-type]
+        notes.extend(provisional.notes)
+        if provisional.violations:
+            notes.extend(f"runtime:{v}" for v in provisional.violations)
+        runtime_cleared = provisional.status == "PROVISIONAL_ACCEPT"
+
     if gate_ok:
         if has_reviewed_majority:
-            # ADR-008 P0: provisional profile cannot claim PROVISIONAL_ACCEPT
-            # until real FAST + embedding + pgvector + Redis are measured.
-            # Quality-ready-but-runtime-blocked is the honest sprint ceiling.
             if gate_profile == "provisional":
+                if runtime_cleared:
+                    notes.append(
+                        "ADR-009: quality + runtime evidence cleared — "
+                        "PROVISIONAL_ACCEPT (Final ACCEPT still requires holdout)"
+                    )
+                    return QualityGateStatus.PROVISIONAL_ACCEPT, notes
                 notes.append(
-                    "ADR-008 P0: quality thresholds met but runtime "
+                    "ADR-009: quality thresholds met but runtime "
                     "dependency gate is BLOCKED_DEPENDENCY — "
-                    "PROVISIONAL_ACCEPT deferred to P1"
+                    "PROVISIONAL_ACCEPT deferred until real Redis/pgvector/"
+                    "FAST/embedding are measured"
                 )
                 return QualityGateStatus.QUALITY_READY_RUNTIME_BLOCKED, notes
             return QualityGateStatus.ACCEPT, notes
@@ -277,8 +296,10 @@ def _resolve_final_status(
         if reviewed < MIN_HUMAN_REVIEWED_FOR_ACCEPT:
             return QualityGateStatus.INSUFFICIENT_REVIEWED_DATA, notes
         if gate_profile == "provisional":
+            if runtime_cleared:
+                return QualityGateStatus.PROVISIONAL_ACCEPT, notes
             notes.append(
-                "ADR-008 P0: runtime dependency still BLOCKED_DEPENDENCY"
+                "ADR-009: runtime dependency still BLOCKED_DEPENDENCY"
             )
             return QualityGateStatus.QUALITY_READY_RUNTIME_BLOCKED, notes
         return QualityGateStatus.PROVISIONAL_ACCEPT, notes
@@ -314,6 +335,7 @@ def evaluate(
     latency_values: list[float],
     concurrency: Mapping,
     gate_profile: str = "default",
+    runtime_evidence: object | None = None,
 ) -> EvaluationReport:
     cases = list(dataset.cases)
 
@@ -401,6 +423,7 @@ def evaluate(
         forbidden_count=int(metric_values["forbidden_candidate_violation_count"]),
         unsafe_count=int(metric_values["unsafe_auto_select_count"]),
         gate_profile=gate_profile,
+        runtime_evidence=runtime_evidence,
     )
 
     # Objective score uses float() coercion — ProportionMetric.__float__.

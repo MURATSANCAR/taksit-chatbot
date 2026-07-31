@@ -24,6 +24,10 @@ from taksitlio.understanding.fast.protocol import (
     FastExtractionOutcome,
     FastNeedUnderstanding,
 )
+from taksitlio.understanding.fast.remote import (
+    RemoteFastExtractor,
+    build_remote_fast_from_env,
+)
 from taksitlio.understanding.fast.stub_remote import StubRemoteFastExtractor
 
 __all__ = [
@@ -33,5 +37,7 @@ __all__ = [
     "FastExtractionOutcome",
     "FastNeedUnderstanding",
     "NeedProfileSchemaError",
+    "RemoteFastExtractor",
     "StubRemoteFastExtractor",
+    "build_remote_fast_from_env",
 ]
