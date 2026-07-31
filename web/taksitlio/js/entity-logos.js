@@ -73,8 +73,21 @@
   }
 
   function metaItemHtml(item) {
-    var label = escapeHtml(item.label || "");
+    var rawLabel = String(item.label || "").trim();
+    var label = escapeHtml(rawLabel);
     var src = item.src;
+    if (!rawLabel && !src) return "";
+    if (src && rawLabel) {
+      return (
+        '<span class="meta-entity" title="' +
+        label +
+        '"><span class="meta-logo" aria-hidden="true"><img src="' +
+        escapeHtml(src) +
+        '" alt="" loading="lazy" width="18" height="18" /></span><span class="meta-text">' +
+        label +
+        "</span></span>"
+      );
+    }
     if (src) {
       return (
         '<span class="meta-logo" title="' +
@@ -83,10 +96,9 @@
         escapeHtml(src) +
         '" alt="' +
         label +
-        '" loading="lazy" width="20" height="20" /></span>'
+        '" loading="lazy" width="18" height="18" /></span>'
       );
     }
-    if (!label) return "";
     return (
       '<span class="meta-text" title="' +
       label +

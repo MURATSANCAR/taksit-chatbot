@@ -537,18 +537,27 @@
     .deal-meta-logos {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       max-width: 100%;
       min-width: 0;
       flex-wrap: nowrap;
       overflow: hidden;
       white-space: nowrap;
     }
+    .deal-meta-logos .meta-entity {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 48%;
+      overflow: hidden;
+    }
     .deal-meta-logos .meta-logo {
       flex: 0 0 auto;
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
       background: #fff;
       border: 1px solid var(--line);
       display: inline-flex;
@@ -570,15 +579,20 @@
       background: rgba(80, 70, 100, 0.35);
     }
     .deal-meta-logos .meta-text {
-      flex: 0 1 auto;
+      flex: 1 1 auto;
       min-width: 0;
-      max-width: 42%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       font-size: 11px;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .deal-meta-logos > .meta-text {
+      flex: 1 1 0;
+      max-width: 48%;
     }
     .deal-meta-logos .meta-pill {
       flex: 0 0 auto;
