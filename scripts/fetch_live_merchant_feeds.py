@@ -144,6 +144,11 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
     img_m = re.search(
         r'property=["\']og:image["\'][^>]*content=["\']([^"\']+)', html, re.I
     )
+    # n11 SPA payload: displayPriceNumber + groupId (URL trailing id)
+    if "n11.com" in url:
+        n11 = _parse_n11_embedded(html, url)
+        if n11:
+            return n11
     if om and pm:
         price = float(pm.group(1).replace(",", "."))
         name = _clean_product_name(unescape(om.group(1)).strip())
@@ -164,7 +169,67 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
             "image_url": img,
             "attributes": {},
         }
+    # title + displayPriceNumber generic fallback (n11-like)
+    title_m = re.search(r"<title>([^<]+)", html, re.I) or re.search(
+        r"<h1[^>]*>([^<]+)", html, re.I
+    )
+    dpn = re.search(r'"displayPriceNumber"\s*:\s*(\d+(?:\.\d+)?)', html)
+    if title_m and dpn and "n11.com" in url:
+        clean_url = url.split("?")[0].split("#")[0]
+        return {
+            "id": _stable_product_id(html, clean_url),
+            "name": _clean_product_name(unescape(title_m.group(1)).strip()),
+            "url": clean_url,
+            "price": float(dpn.group(1)),
+            "currency": "TRY",
+            "stock_status": "UNKNOWN",
+            "image_url": None,
+            "attributes": {},
+        }
     return None
+
+
+def _parse_n11_embedded(html: str, url: str) -> Optional[dict[str, Any]]:
+    clean_url = url.split("?")[0].split("#")[0]
+    pid_m = re.search(r"-(\d+)\s*$", clean_url.rstrip("/"))
+    if not pid_m:
+        return None
+    pid = pid_m.group(1)
+    # Prefer price bound to this groupId
+    m = re.search(
+        rf'"displayPriceNumber"\s*:\s*(\d+(?:\.\d+)?)[\s\S]{{0,1500}}?"groupId"\s*:\s*{re.escape(pid)}\b',
+        html,
+    )
+    if not m:
+        m = re.search(
+            rf'"groupId"\s*:\s*{re.escape(pid)}\b[\s\S]{{0,1500}}?"displayPriceNumber"\s*:\s*(\d+(?:\.\d+)?)',
+            html,
+        )
+    if not m:
+        return None
+    price = float(m.group(1))
+    name_m = re.search(r"<h1[^>]*>([^<]+)", html, re.I) or re.search(
+        r"<title>([^<]+)", html, re.I
+    )
+    if not name_m:
+        return None
+    img = None
+    img_m = re.search(
+        rf'"groupId"\s*:\s*{re.escape(pid)}[\s\S]{{0,2500}}?"path"\s*:\s*"(https://n11scdn[^"]+)"',
+        html,
+    ) or re.search(r'(https://n11scdn[^"]+\.jpg)', html)
+    if img_m:
+        img = img_m.group(1).replace("{0}", "1000_1426")
+    return {
+        "id": pid,
+        "name": _clean_product_name(unescape(name_m.group(1)).strip()),
+        "url": clean_url,
+        "price": price,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "image_url": img,
+        "attributes": {},
+    }
 
 
 def _stable_product_id(html: str, url: str) -> str:
@@ -491,19 +556,55 @@ def fetch_sitemap_jsonld_catalog(
     map_filter: Optional[Callable[[str], bool]] = None,
     workers: int = 6,
     use_cloudscraper: bool = False,
+    use_curl_cffi: bool = False,
+    curl_impersonate: str = "chrome124",
     url_filter: Optional[Callable[[str], bool]] = None,
 ) -> list[dict[str, Any]]:
     """Generic sitemap → PDP JSON-LD catalog with resume + checkpoint."""
     import threading
     from concurrent.futures import ThreadPoolExecutor, as_completed
+    from html import unescape as _ue
 
-    product_urls = _collect_sitemap_locs(
-        client,
-        index_url=index_url,
-        map_urls=map_urls,
-        map_filter=map_filter,
-        delay=delay,
-    )
+    if use_curl_cffi:
+        # Collect maps/locs via curl_cffi (Akamai/CF-safe)
+        maps: list[str] = list(map_urls or [])
+        if index_url:
+            idx = _curl_get(index_url, impersonate=curl_impersonate)
+            if not idx:
+                print(f"  {source_code} sitemap index blocked")
+                return list(_load_existing_feed(source_code).values())
+            for u in re.findall(r"<loc>([^<]+)</loc>", idx):
+                u = _ue(u)
+                if map_filter and not map_filter(u):
+                    continue
+                if u not in maps:
+                    maps.append(u)
+        product_urls: list[str] = []
+        seen: set[str] = set()
+        for sm in maps:
+            time.sleep(max(delay, 0.05))
+            body = _curl_get(sm, impersonate=curl_impersonate)
+            if not body:
+                print(f"  {source_code} map fail {sm.rsplit('/', 1)[-1][:50]}")
+                continue
+            batch = 0
+            for u in re.findall(r"<loc>([^<]+)</loc>", body):
+                u = _ue(u).split("?")[0]
+                if u.endswith(".xml"):
+                    continue
+                if u not in seen:
+                    seen.add(u)
+                    product_urls.append(u)
+                    batch += 1
+            print(f"  {source_code} sitemap +{batch} total={len(product_urls)}")
+    else:
+        product_urls = _collect_sitemap_locs(
+            client,
+            index_url=index_url,
+            map_urls=map_urls,
+            map_filter=map_filter,
+            delay=delay,
+        )
     if url_filter:
         product_urls = [u for u in product_urls if url_filter(u)]
     by_id = _load_existing_feed(source_code)
@@ -518,6 +619,7 @@ def fetch_sitemap_jsonld_catalog(
     fail = 0
     done_n = 0
     tls = threading.local()
+    rate_limited = 0
 
     def _session():
         if use_cloudscraper:
@@ -531,12 +633,23 @@ def fetch_sitemap_jsonld_catalog(
         return client
 
     def _one(url: str) -> Optional[dict[str, Any]]:
+        nonlocal rate_limited
+        if use_curl_cffi:
+            html = _curl_get(url, impersonate=curl_impersonate)
+            if not html:
+                return None
+            return parse_jsonld_product(html, url)
         local = _session()
         try:
             r = local.get(url, timeout=60)
         except Exception:
             return None
-        if getattr(r, "status_code", 0) != 200:
+        code = getattr(r, "status_code", 0)
+        if code == 429:
+            rate_limited += 1
+            time.sleep(2.0)
+            return None
+        if code != 200:
             return None
         try:
             return parse_jsonld_product(r.text, url)
