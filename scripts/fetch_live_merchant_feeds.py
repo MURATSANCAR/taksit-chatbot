@@ -766,21 +766,40 @@ def fetch_civil(
 
 
 def fetch_trendyol(
-    client: httpx.Client, delay: float, limit: int, *, workers: int = 8
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 4
 ) -> list[dict[str, Any]]:
-    """Trendyol TR product sitemaps (bare /sitemap_productsN.xml). Very large catalog."""
+    """Trendyol TR product sitemaps. Prefer curl_cffi; httpx hits 429 quickly."""
     return fetch_sitemap_jsonld_catalog(
         client,
         source_code="src-m-trendyol",
-        delay=delay,
+        delay=max(delay, 0.25),
         limit=limit,
         index_url="https://www.trendyol.com/sitemap_index.xml",
         map_filter=lambda u: re.search(
             r"https://www\.trendyol\.com/sitemap_products\d+\.xml$", u
         )
         is not None,
-        workers=workers,
+        workers=min(workers, 4),
+        use_curl_cffi=True,
+        curl_impersonate="chrome124",
         url_filter=lambda u: "-p-" in u and "trendyol.com/" in u,
+    )
+
+
+def fetch_n11(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 6
+) -> list[dict[str, Any]]:
+    """n11 official product sitemap index (curl_cffi) + embedded price payload."""
+    return fetch_sitemap_jsonld_catalog(
+        client,
+        source_code="src-m-n11",
+        delay=delay,
+        limit=limit,
+        index_url="https://www.n11.com/sitemap/product/sitemap-index.xml",
+        workers=workers,
+        use_curl_cffi=True,
+        curl_impersonate="chrome124",
+        url_filter=lambda u: "/urun/" in u,
     )
 
 
@@ -1324,7 +1343,10 @@ FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
         c, d, lim, workers=int(kw.get("workers", 4))
     ),
     "trendyol": lambda c, d, lim, **kw: fetch_trendyol(
-        c, d, lim, workers=int(kw.get("workers", 8))
+        c, d, lim, workers=int(kw.get("workers", 4))
+    ),
+    "n11": lambda c, d, lim, **kw: fetch_n11(
+        c, d, lim, workers=int(kw.get("workers", 6))
     ),
     "arcelik": lambda c, d, lim, **kw: fetch_arcelik(
         c, d, lim, workers=int(kw.get("workers", 6))
