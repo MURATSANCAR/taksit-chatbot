@@ -284,13 +284,17 @@ async def campaign_feed_dry_run(
 
 
 class CampaignFeedPersistIn(CampaignFeedDryIn):
-    activate: bool = Field(
-        default=False,
-        description="Mark campaigns ACTIVE for estimate projection (not personal approval)",
+    activate: Optional[bool] = Field(
+        default=None,
+        description="None=auto (activate when feed has explicit rates)",
     )
-    persist_postgres: bool = Field(
-        default=False,
-        description="Write V018 tables when db pool is available",
+    persist_postgres: Optional[bool] = Field(
+        default=None,
+        description="None=auto (write V018 when db pool present)",
+    )
+    rebuild_finance: bool = Field(
+        default=True,
+        description="Auto-rebuild product_finance_options for linked merchants",
     )
 
 
@@ -298,7 +302,7 @@ class CampaignFeedPersistIn(CampaignFeedDryIn):
 async def campaign_feed_persist(
     payload: CampaignFeedPersistIn, request: Request
 ) -> Dict[str, Any]:
-    """Apply campaign feed: memory catalog always; optional Postgres + activate."""
+    """Apply campaign feed → activate (auto) → optional Postgres → finance rebuild."""
 
     from taksitlio.campaign_catalog.feed_apply import (
         InMemoryCampaignCatalog,
@@ -309,6 +313,11 @@ async def campaign_feed_persist(
         SourceBinding,
         build_default_registry,
         instantiate_campaign_adapter,
+    )
+    from taksitlio.merchant.directory import MerchantDirectoryEntry
+    from taksitlio.product_query.auto_finance import (
+        finance_deps_from_container,
+        rebuild_after_campaign_feed,
     )
 
     if payload.config.get("authorization") or payload.config.get("api_key"):
@@ -337,6 +346,16 @@ async def campaign_feed_persist(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
+    activate = (
+        bool(result.rates) if payload.activate is None else bool(payload.activate)
+    )
+    pool = container.extras.get("pool")
+    persist_postgres = (
+        pool is not None
+        if payload.persist_postgres is None
+        else bool(payload.persist_postgres)
+    )
+
     catalog = container.extras.get("campaign_catalog")
     if catalog is None:
         catalog = InMemoryCampaignCatalog()
@@ -345,8 +364,26 @@ async def campaign_feed_persist(
         catalog,
         result,
         institution_display_name=payload.institution_display_name,
-        activate=payload.activate,
+        activate=activate,
     )
+
+    # Ensure merchant directory knows campaign-linked merchants.
+    directory = container.extras.get("merchant_directory")
+    merchant_codes: list[str] = []
+    for camp in result.campaigns:
+        for mcode in camp.eligible_merchant_codes:
+            merchant_codes.append(mcode)
+            if directory is not None:
+                existing = await directory.get_by_code(mcode)
+                if existing is None:
+                    await directory.upsert(
+                        MerchantDirectoryEntry(
+                            id=0,
+                            merchant_code=mcode,
+                            display_name=mcode.removeprefix("m-").title(),
+                            status="ACTIVE",
+                        )
+                    )
 
     # Refresh institution labels for best_finance display names.
     loader = container.extras.get("institution_label_loader")
@@ -354,14 +391,15 @@ async def campaign_feed_persist(
         labels = dict(getattr(loader, "_labels", {}) or {})
         for code, name in catalog.institutions.items():
             labels[code] = name
+            # Also map numeric ids when postgres labels use id strings later.
+            labels[str(code)] = name
         loader.set_labels(labels)
         from taksitlio.product_query.finance_index import load_institution_labels
 
         container.extras["institution_labels"] = await load_institution_labels(loader)
 
     pg_stats: Optional[Dict[str, Any]] = None
-    if payload.persist_postgres:
-        pool = container.extras.get("pool")
+    if persist_postgres:
         if pool is None:
             raise HTTPException(status_code=501, detail="db pool not configured")
         from taksitlio.campaign_catalog.postgres import persist_campaign_feed
@@ -378,7 +416,7 @@ async def campaign_feed_persist(
                     conn,
                     result,
                     institution_display_names=names,
-                    activate=payload.activate,
+                    activate=activate,
                 )
         pg_stats = {
             "institutions_upserted": stats.institutions_upserted,
@@ -391,6 +429,20 @@ async def campaign_feed_persist(
             "activated": stats.activated,
         }
 
+    finance_stats: Optional[Dict[str, Any]] = None
+    if payload.rebuild_finance and activate:
+        deps = finance_deps_from_container(container)
+        if deps is not None:
+            stats = await rebuild_after_campaign_feed(
+                deps, merchant_codes=tuple(dict.fromkeys(merchant_codes))
+            )
+            finance_stats = {
+                "products_attempted": stats.products_attempted,
+                "products_synced": stats.products_synced,
+                "eligible_options": stats.eligible_options,
+                "errors": stats.errors,
+            }
+
     return {
         "source_code": payload.source_code,
         "adapter_code": result.adapter_code,
@@ -398,8 +450,10 @@ async def campaign_feed_persist(
         "rates": len(result.rates),
         "rates_skipped_no_explicit_rate": result.rates_skipped_no_explicit_rate,
         "applied": applied,
-        "activate": payload.activate,
+        "activate": activate,
+        "persist_postgres": persist_postgres,
         "postgres": pg_stats,
+        "finance_rebuild": finance_stats,
     }
 
 
@@ -581,12 +635,14 @@ async def dry_run_and_persist(
                     status_code=501, detail="product_catalog not configured"
                 )
             from taksitlio.product.catalog import apply_ingestion_to_catalog
+            from taksitlio.product_query.auto_finance import finance_deps_from_container
 
             applied = await apply_ingestion_to_catalog(
                 result,
                 merchant_id=payload.merchant_id_int,
                 catalog=catalog,
                 only_chatbot_visible=True,
+                finance_deps=finance_deps_from_container(container),
             )
             media_jobs = 0
             scheduler_repo = container.extras.get("scheduler_repo")
@@ -602,12 +658,20 @@ async def dry_run_and_persist(
                     catalog=catalog,
                     source_id=out.get("source_id"),
                 )
+            fr = applied.finance_rebuild
             out["catalog"] = {
                 "upserted_products": applied.upserted_products,
                 "upserted_offers": applied.upserted_offers,
                 "skipped_unchanged": applied.skipped_unchanged,
                 "skipped_quarantined": applied.skipped_quarantined,
                 "media_jobs_enqueued": media_jobs,
+                "finance_rebuild": None
+                if fr is None
+                else {
+                    "products_synced": fr.products_synced,
+                    "eligible_options": fr.eligible_options,
+                    "errors": fr.errors,
+                },
                 "items": [
                     {
                         "external_product_id": i.external_product_id,

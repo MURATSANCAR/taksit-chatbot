@@ -66,7 +66,8 @@ def safety_disqualify(
     require_image: bool = True,
 ) -> tuple[str, ...]:
     reasons: list[str] = []
-    if item.stock_status != "AVAILABLE":
+    # Crawl catalogs often lack live stock probes; UNKNOWN still ranks with a penalty.
+    if item.stock_status not in {"AVAILABLE", "LIMITED", "UNKNOWN"}:
         reasons.append("stock_not_available")
     if item.price_freshness != "FRESH":
         reasons.append("stale_or_unverified_price")
@@ -232,7 +233,8 @@ def rank_products(
             stale_ids = {
                 i.product_id
                 for i in items
-                if i.price_freshness != "FRESH" or i.stock_status != "AVAILABLE"
+                if i.price_freshness != "FRESH"
+                or i.stock_status not in {"AVAILABLE", "LIMITED", "UNKNOWN"}
             }
             isolated = apply_sponsored_isolation(
                 organic_ids,

@@ -139,6 +139,7 @@ class CatalogApplyResult:
     skipped_quarantined: int
     upserted_offers: int
     items: tuple[ApplyItemResult, ...]
+    finance_rebuild: Optional[Any] = None
 
 
 class ProductCatalogRepository(Protocol):
@@ -169,6 +170,14 @@ class ProductCatalogRepository(Protocol):
 
     async def list_products(
         self, *, merchant_id: Optional[int] = None, limit: int = 100
+    ) -> Sequence[StoredProduct]: ...
+
+    async def list_products_matching(
+        self,
+        *,
+        name_terms: Sequence[str],
+        merchant_id: Optional[int] = None,
+        limit: int = 100,
     ) -> Sequence[StoredProduct]: ...
 
     async def get_product(self, product_id: int) -> Optional[StoredProduct]: ...
@@ -290,6 +299,26 @@ class InMemoryProductCatalogRepository:
         rows = list(self._products.values())
         if merchant_id is not None:
             rows = [r for r in rows if r.merchant_id == merchant_id]
+        rows.sort(key=lambda r: r.id)
+        return tuple(rows[:limit])
+
+    async def list_products_matching(
+        self,
+        *,
+        name_terms: Sequence[str],
+        merchant_id: Optional[int] = None,
+        limit: int = 100,
+    ) -> Sequence[StoredProduct]:
+        terms = [t.casefold() for t in name_terms if t and str(t).strip()]
+        rows = list(self._products.values())
+        if merchant_id is not None:
+            rows = [r for r in rows if r.merchant_id == merchant_id]
+        if terms:
+            rows = [
+                r
+                for r in rows
+                if any(t in (r.display_name or "").casefold() for t in terms)
+            ]
         rows.sort(key=lambda r: r.id)
         return tuple(rows[:limit])
 
@@ -627,7 +656,18 @@ class PostgresProductCatalogRepository:
                     LEFT JOIN product_media_links pml
                       ON pml.product_id = p.id AND pml.is_primary = TRUE
                     LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
-                    ORDER BY p.id ASC
+                    ORDER BY
+                      CASE WHEN EXISTS (
+                        SELECT 1
+                        FROM product_offers po
+                        JOIN product_finance_options pfo ON pfo.product_offer_id = po.id
+                        WHERE po.product_id = p.id
+                          AND pfo.eligibility_status = 'ELIGIBLE'
+                          AND pfo.monthly_payment IS NOT NULL
+                      ) THEN 0 ELSE 1 END,
+                      CASE WHEN COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
+                           THEN 0 ELSE 1 END,
+                      p.id ASC
                     LIMIT $1
                     """,
                     limit,
@@ -651,6 +691,84 @@ class PostgresProductCatalogRepository:
                     LIMIT $2
                     """,
                     merchant_id,
+                    limit,
+                )
+        return tuple(_row_to_stored_product(row) for row in rows)
+
+    async def list_products_matching(
+        self,
+        *,
+        name_terms: Sequence[str],
+        merchant_id: Optional[int] = None,
+        limit: int = 100,
+    ) -> Sequence[StoredProduct]:
+        terms = [str(t).strip() for t in name_terms if t and str(t).strip()]
+        if not terms:
+            return await self.list_products(merchant_id=merchant_id, limit=limit)
+        # ILIKE any term; prefer finance-ready + media, then id.
+        patterns = [f"%{t}%" for t in terms]
+        async with self._pool.acquire() as conn:
+            if merchant_id is None:
+                rows = await conn.fetch(
+                    """
+                    SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                           p.content_hash, p.data_quality_status, p.status, p.attributes,
+                           COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
+                           COALESCE(p.metadata->>'primary_media_status', ma.status)
+                             AS primary_media_status,
+                           p.metadata->>'pending_source_image_url' AS pending_source_image_url,
+                           ma.storage_key AS storage_key
+                    FROM products p
+                    LEFT JOIN product_media_links pml
+                      ON pml.product_id = p.id AND pml.is_primary = TRUE
+                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                    WHERE p.status = 'ACTIVE'
+                      AND (
+                        SELECT bool_or(p.display_name ILIKE x)
+                        FROM unnest($1::text[]) AS x
+                      )
+                    ORDER BY
+                      CASE WHEN EXISTS (
+                        SELECT 1
+                        FROM product_offers po
+                        JOIN product_finance_options pfo ON pfo.product_offer_id = po.id
+                        WHERE po.product_id = p.id
+                          AND pfo.eligibility_status = 'ELIGIBLE'
+                          AND pfo.monthly_payment IS NOT NULL
+                      ) THEN 0 ELSE 1 END,
+                      CASE WHEN COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
+                           THEN 0 ELSE 1 END,
+                      p.id ASC
+                    LIMIT $2
+                    """,
+                    patterns,
+                    limit,
+                )
+            else:
+                rows = await conn.fetch(
+                    """
+                    SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                           p.content_hash, p.data_quality_status, p.status, p.attributes,
+                           COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
+                           COALESCE(p.metadata->>'primary_media_status', ma.status)
+                             AS primary_media_status,
+                           p.metadata->>'pending_source_image_url' AS pending_source_image_url,
+                           ma.storage_key AS storage_key
+                    FROM products p
+                    LEFT JOIN product_media_links pml
+                      ON pml.product_id = p.id AND pml.is_primary = TRUE
+                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                    WHERE p.merchant_id = $1
+                      AND p.status = 'ACTIVE'
+                      AND (
+                        SELECT bool_or(p.display_name ILIKE x)
+                        FROM unnest($2::text[]) AS x
+                      )
+                    ORDER BY p.id ASC
+                    LIMIT $3
+                    """,
+                    merchant_id,
+                    patterns,
                     limit,
                 )
         return tuple(_row_to_stored_product(row) for row in rows)
@@ -864,14 +982,21 @@ async def apply_ingestion_to_catalog(
     merchant_id: int,
     catalog: ProductCatalogRepository,
     only_chatbot_visible: bool = True,
+    finance_deps: Optional[Any] = None,
+    merchant_code: Optional[str] = None,
 ) -> CatalogApplyResult:
-    """Plan + apply products/offers from a dry-run or live ingestion result."""
+    """Plan + apply products/offers from a dry-run or live ingestion result.
+
+    When ``finance_deps`` is set, offer upserts automatically rebuild
+    ``product_finance_options`` for chatbot ``best_finance``.
+    """
 
     items: list[ApplyItemResult] = []
     upserted_products = 0
     skipped_unchanged = 0
     skipped_quarantined = 0
     upserted_offers = 0
+    finance_pairs: list[tuple[int, int]] = []
 
     for row in result.items:
         if row.product is None:
@@ -940,6 +1065,8 @@ async def apply_ingestion_to_catalog(
             )
             if offer_plan.action == "SKIP_UNCHANGED":
                 offer_action = "SKIP_UNCHANGED"
+                # Still refresh finance if offer exists (campaign may have changed).
+                finance_pairs.append((stored.id, merchant_id))
             else:
                 offer = await catalog.upsert_offer(
                     merchant_id=merchant_id,
@@ -949,6 +1076,7 @@ async def apply_ingestion_to_catalog(
                 offer_id = offer.id
                 upserted_offers += 1
                 offer_action = "UPSERT"
+                finance_pairs.append((stored.id, merchant_id))
 
         items.append(
             ApplyItemResult(
@@ -961,6 +1089,16 @@ async def apply_ingestion_to_catalog(
             )
         )
 
+    finance_stats = None
+    if finance_deps is not None and finance_pairs:
+        from taksitlio.product_query.auto_finance import rebuild_finance_for_products
+
+        finance_stats = await rebuild_finance_for_products(
+            finance_deps,
+            product_ids=finance_pairs,
+            merchant_code=merchant_code,
+        )
+
     return CatalogApplyResult(
         merchant_id=merchant_id,
         upserted_products=upserted_products,
@@ -968,6 +1106,7 @@ async def apply_ingestion_to_catalog(
         skipped_quarantined=skipped_quarantined,
         upserted_offers=upserted_offers,
         items=tuple(items),
+        finance_rebuild=finance_stats,
     )
 
 

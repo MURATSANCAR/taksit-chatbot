@@ -28,7 +28,7 @@ curl -sS "$API/ready"
 ```bash
 export OBJECT_STORAGE_BACKEND=s3
 export S3_BUCKET=taksitlio-media
-export S3_PREFIX=taksitlio
+export S3_PREFIX=taksitlio          # object key prefix; set empty to disable
 export S3_ENDPOINT_URL=http://127.0.0.1:9000   # omit for AWS
 export S3_REGION=us-east-1
 export CDN_BASE_URL=https://cdn.your-domain.example
@@ -36,6 +36,17 @@ export CDN_BASE_URL=https://cdn.your-domain.example
 export AWS_ACCESS_KEY_ID=…
 export AWS_SECRET_ACCESS_KEY=…
 # pip install '.[storage]'  # boto3
+```
+
+Portal cutover (nanobase): sync disk → MinIO, then point nginx CDN at the bucket:
+
+```bash
+# Upload var/media/media/** → s3://taksitlio-media/media/**
+python scripts/sync_media_to_minio.py
+# Public CDN path must match storage_key (media/…); disable prefix:
+# S3_PREFIX=
+# nginx: /taksitlio-cdn/ → http://127.0.0.1:9000/taksitlio-media/
+# (see docker/nginx-taksitlio-portal.conf)
 ```
 
 Validate config (fails if bucket missing):

@@ -72,12 +72,16 @@ def load_object_storage_config(
     cdn = (os.environ.get("CDN_BASE_URL") or "https://cdn.example.test").strip()
     root = os.environ.get("MEDIA_STORAGE_ROOT") or default_local_root
     if backend in {"s3", "s3_compatible", "minio"}:
+        # Unset → default "taksitlio". Explicit empty S3_PREFIX= → no prefix.
+        if "S3_PREFIX" in os.environ:
+            prefix = (os.environ.get("S3_PREFIX") or "").strip().strip("/")
+        else:
+            prefix = "taksitlio"
         return ObjectStorageConfig(
             backend="s3",
             cdn_base_url=cdn.rstrip("/"),
             bucket=(os.environ.get("S3_BUCKET") or "").strip() or None,
-            prefix=(os.environ.get("S3_PREFIX") or "taksitlio").strip().strip("/")
-            or "taksitlio",
+            prefix=prefix,
             endpoint_url=(os.environ.get("S3_ENDPOINT_URL") or "").strip() or None,
             region_name=(os.environ.get("S3_REGION") or "").strip() or None,
         )

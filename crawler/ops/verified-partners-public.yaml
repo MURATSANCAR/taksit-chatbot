@@ -21,14 +21,13 @@ merchants_verified_public:
   - merchant_code: m-teknosa
     display_name: Teknosa
     verification: [PUBLIC_MERCHANT_PAGE, PRESS]
-    crawl_status: CLOUDSCRAPER_SITEMAP
+    crawl_status: CRAWL4AI_SITEMAP
     source_code: src-m-teknosa
     seed_urls: [https://www.teknosa.com/, https://www.teknosa.com/siteharitasi.xml]
     notes: |
-      Cloudflare blocks plain HTTP/datacenter. Use cloudscraper:
-      pip install '.[crawler]'
-      python scripts/fetch_live_merchant_feeds.py --merchants teknosa --delay 0.3 --workers 6 --limit 0
-      Catalog ~380k PDP URLs (Product + Outlet sitemaps). Resumes + checkpoints.
+      Cloudflare blocks cloudscraper/httpx cookies. Use crawl4ai:
+      .venv-crawl/bin/python -u scripts/fetch_teknosa_crawl4ai.py --limit 0 --concurrency 3
+      Catalog ~380k PDP URLs (Product + Outlet). Resumes + checkpoints.
 
   - merchant_code: m-vatan
     display_name: Vatan Bilgisayar
@@ -58,57 +57,85 @@ merchants_verified_public:
   - merchant_code: m-arcelik
     display_name: Arçelik
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: BLOCKED_HTTP_403
-    seed_urls: [https://www.arcelik.com.tr/]
+    crawl_status: CURL_CFFI_SITEMAP
+    source_code: src-m-arcelik
+    seed_urls: [https://www.arcelik.com.tr/, https://www.arcelik.com.tr/sitemap.xml]
+    notes: |
+      Akamai blocks plain HTTP/crawl4ai on -c- category URLs.
+      Bypass: curl_cffi chrome TLS impersonation → PRODUCT-tr-TRY sitemap (~5.4k).
+      python scripts/fetch_live_merchant_feeds.py --merchants arcelik --delay 0.2 --workers 6 --limit 0
 
   - merchant_code: m-beko
     display_name: Beko
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: BLOCKED_HTTP_403
-    seed_urls: [https://www.beko.com.tr/]
+    crawl_status: CURL_CFFI_SITEMAP
+    source_code: src-m-beko
+    seed_urls: [https://www.beko.com.tr/, https://www.beko.com.tr/sitemap.xml]
+    notes: |
+      Same Hybris/Akamai stack as Arçelik. curl_cffi → PRODUCT sitemap (~4.8k).
 
   - merchant_code: m-decathlon
     display_name: Decathlon
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: BLOCKED_HTTP_403
-    seed_urls: [https://www.decathlon.com.tr/]
+    crawl_status: CURL_CFFI_CATEGORY_PDP
+    source_code: src-m-decathlon
+    seed_urls: [https://www.decathlon.com.tr/, https://www.decathlon.com.tr/sitemap/index.xml]
+    notes: |
+      Cloudflare blocks chrome impersonation; safari18_0 works.
+      category-product-listing sitemap → /p/.../_/R-p-{id} PDPs.
+      python scripts/fetch_live_merchant_feeds.py --merchants decathlon --delay 0.15 --workers 6 --limit 0
 
   - merchant_code: m-hepsiburada
     display_name: Hepsiburada
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: BLOCKED_HTTP_403
+    crawl_status: CRAWL4AI_CATEGORY
+    source_code: src-m-hepsiburada
     seed_urls: [https://www.hepsiburada.com/]
+    notes: Plain HTTP 403; crawl4ai opens category/PDP. No public product sitemap.
 
   - merchant_code: m-n11
     display_name: n11
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: ROBOTS_OK_PARSE_PENDING
+    crawl_status: CRAWL4AI_CATEGORY
+    source_code: src-m-n11
     seed_urls: [https://www.n11.com/]
+    notes: Product sitemap index HTTP 403; crawl4ai category→PDP path.
 
   - merchant_code: m-trendyol
     display_name: Trendyol
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: ROBOTS_OK_PARSE_PENDING
-    seed_urls: [https://www.trendyol.com/]
+    crawl_status: LIVE_SITEMAP
+    source_code: src-m-trendyol
+    seed_urls: [https://www.trendyol.com/, https://www.trendyol.com/sitemap_index.xml]
+    notes: |
+      Bare /sitemap_productsN.xml (~7M+ TR URLs). JSON-LD PDPs.
+      python scripts/fetch_live_merchant_feeds.py --merchants trendyol --delay 0.15 --workers 10 --limit 0
 
   - merchant_code: m-evofone
     display_name: Evofone
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: CAMPAIGN_ONLY
-    seed_urls: [https://www.evofone.com/]
-    notes: Named on Fibabanka güncel alışveriş kredisi kampanya sayfası.
+    crawl_status: LIVE_SITEMAP
+    source_code: src-m-evofone
+    seed_urls: [https://www.evofone.com/, https://evofone.com/sitemap/products/0.xml]
+    notes: Named on Fibabanka güncel alışveriş kredisi kampanya sayfası. ~400 SKUs in public sitemap.
 
   - merchant_code: m-vivense
     display_name: Vivense
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: BLOCKED_HTTP_403
+    crawl_status: CRAWL4AI_CATEGORY
+    source_code: src-m-vivense
     seed_urls: [https://www.vivense.com/]
+    notes: robots/sitemap often 403; crawl4ai homepage/category path.
 
   - merchant_code: m-flo
     display_name: FLO
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: ROBOTS_OK_PARSE_PENDING
-    seed_urls: [https://www.flo.com.tr/]
+    crawl_status: LIVE_SITEMAP
+    source_code: src-m-flo
+    seed_urls: [https://www.flo.com.tr/, https://www.flo.com.tr/products.xml]
+    notes: |
+      Official products.xml (~216k PDP URLs). JSON-LD PDPs.
+      python scripts/fetch_live_merchant_feeds.py --merchants flo --delay 0.2 --workers 8 --limit 0
 
   - merchant_code: m-dr
     display_name: D&R
@@ -121,8 +148,10 @@ merchants_verified_public:
   - merchant_code: m-civil
     display_name: Civil
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
-    seed_urls: []
+    crawl_status: LIVE_SITEMAP_CIVILIM
+    source_code: src-m-civil
+    seed_urls: [https://www.civilim.com/]
+    notes: Public storefront is civilim.com (Shopify product sitemaps + JSON-LD).
 
   - merchant_code: m-fujifilm
     display_name: Fujifilm
@@ -133,50 +162,56 @@ merchants_verified_public:
   - merchant_code: m-gurgenciler
     display_name: Gürgençler
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
+    crawl_status: DOMAIN_NOT_RESOLVED
     seed_urls: []
 
   - merchant_code: m-ets
     display_name: ETS
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
-    seed_urls: []
+    crawl_status: TRAVEL_SITEMAP_ONLY
+    seed_urls: [https://www.etstur.com/]
+    notes: Public site is travel/hotels — not retail product catalog.
 
   - merchant_code: m-generalmobile
     display_name: General Mobile
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
-    seed_urls: []
+    crawl_status: SITEMAP_404
+    seed_urls: [https://www.generalmobile.com/tr/]
 
   - merchant_code: m-network
     display_name: Network
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
-    seed_urls: []
+    crawl_status: LIVE_SITEMAP
+    source_code: src-m-network
+    seed_urls: [https://www.network.com.tr/]
+    notes: Official product_*.xml sitemaps + JSON-LD.
 
   - merchant_code: m-setur
     display_name: Setur
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
-    seed_urls: []
+    crawl_status: TRAVEL_SITEMAP_ONLY
+    seed_urls: [https://www.setur.com.tr/]
+    notes: Hotels/travel inventory — not retail SKU feed.
 
   - merchant_code: m-troy
     display_name: Troy
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
+    crawl_status: PENDING_SEED
     seed_urls: []
+    notes: Troy is a card scheme brand; no retail catalog seed found publicly.
 
   - merchant_code: m-vivo
     display_name: Vivo
     verification: [PUBLIC_BANK_PAGE]
     crawl_status: PENDING_PARSER
-    seed_urls: []
+    seed_urls: [https://www.vivo.com/tr/, https://www.vivo.com.tr/]
 
   - merchant_code: m-zuhalmuzik
     display_name: Zuhal Müzik
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: PENDING_PARSER
-    seed_urls: []
+    crawl_status: SITEMAP_NO_JSONLD
+    seed_urls: [https://www.zuhalmuzik.com/]
+    notes: Large sitemap (~27k) but PDP lacks Product JSON-LD; needs custom parser.
 
 banks_verified_public:
   - institution_code: fi-fibabanka

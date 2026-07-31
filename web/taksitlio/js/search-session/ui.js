@@ -360,10 +360,8 @@
             : payload.route === "CLARIFICATION"
               ? (payload.clarification && payload.clarification.question_text) ||
                 payload.status
-              : payload.route === "LLM"
-                ? "Tercihlerinizi ürün özellikleriyle eşleştiriyorum..."
-                : "Kriterlerinize uygun ürünler hazırlanıyor...");
-        botBubble(text);
+              : null);
+        if (text) botBubble(text);
       }
 
       wireChips(panels, payload.chips || state.chips || []);

@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Optional, Sequence
 
+from taksitlio.progressive_results.category_match import matches_required_categories
+
 
 PARTIAL_LABEL = "Ön sonuçlar"
 
@@ -62,6 +64,8 @@ def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]
     # Hard exclude locked / negative categories (ADR-012 NEGATIVE_CONSTRAINT_GATE)
     if _matches_negative_constraint(product, constraints):
         return float("-inf")
+    if not matches_required_categories(product, constraints):
+        return float("-inf")
     score = float(product.get("query_relevance") or 0.5)
     score += 0.15 if product.get("stock_status") == "AVAILABLE" else -0.2
     freshness = str(product.get("price_freshness") or "")
@@ -71,6 +75,8 @@ def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]
         score -= 0.15
     if product.get("has_primary_image"):
         score += 0.05
+    if product.get("best_finance") or product.get("best_monthly_payment"):
+        score += 0.12
     # LLM-inferred preferences must NOT act as hard filters here
     budget = constraints.get("budget") or {}
     price = float(product.get("price") or 0)
@@ -78,6 +84,12 @@ def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]
         score -= 0.35
     if budget.get("value") and abs(price - float(budget["value"])) / max(float(budget["value"]), 1) < 0.15:
         score += 0.1
+    # Soft budget band when user said "~40.000 TL"
+    if budget.get("value") and price > 0:
+        target = float(budget["value"])
+        ratio = price / target
+        if ratio > 1.6 or ratio < 0.35:
+            score -= 0.45
     # Uncertainty penalty when category unresolved
     if not constraints.get("positive_categories"):
         score -= 0.1
@@ -118,7 +130,12 @@ def build_partial_snapshot(
 ) -> PartialResultSnapshot:
     if not can_partial_retrieve(constraints):
         return PartialResultSnapshot(query_version=query_version, products=[])
-    eligible = [p for p in products if not _matches_negative_constraint(p, constraints)]
+    eligible = [
+        p
+        for p in products
+        if not _matches_negative_constraint(p, constraints)
+        and matches_required_categories(p, constraints)
+    ]
     ranked = sorted(
         eligible,
         key=lambda p: score_partial_candidate(p, constraints),
@@ -137,3 +154,13 @@ def build_partial_snapshot(
         for p in ranked
     ]
     return PartialResultSnapshot(query_version=query_version, products=out)
+
+
+__all__ = [
+    "PARTIAL_LABEL",
+    "PartialProduct",
+    "PartialResultSnapshot",
+    "build_partial_snapshot",
+    "can_partial_retrieve",
+    "score_partial_candidate",
+]

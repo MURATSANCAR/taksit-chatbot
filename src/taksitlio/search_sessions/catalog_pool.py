@@ -58,7 +58,7 @@ async def refresh_orchestrator_from_catalog(
     institutions: Optional[InstitutionLabelResolver] = None,
     logos: Optional[LogoResolver] = None,
     utterance: str = "",
-    limit: int = 80,
+    limit: int = 400,
 ) -> int:
     """Replace demo pool with crawled/catalog products when any exist."""
 

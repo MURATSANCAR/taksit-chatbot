@@ -26,6 +26,10 @@ class HandlerContext:
     catalog: Any = None  # ProductCatalogRepository with media helpers
     storage: Optional[ObjectStorage] = None
     download_image: DownloadFn = download_image
+    finance_index: Any = None
+    campaign_catalog: Any = None
+    merchant_directory: Any = None
+    db_pool: Any = None
 
 
 class QueueDispatchHandler:
@@ -46,10 +50,14 @@ class QueueDispatchHandler:
             await self._handle_price_or_stock(job)
             return
         if queue in {
-            SchedulerQueue.PRODUCT_DISCOVERY.value,
-            SchedulerQueue.PRODUCT_DETAIL.value,
             SchedulerQueue.CAMPAIGN_REFRESH.value,
             SchedulerQueue.RATE_REFRESH.value,
+        }:
+            await self._handle_campaign_or_rate(job)
+            return
+        if queue in {
+            SchedulerQueue.PRODUCT_DISCOVERY.value,
+            SchedulerQueue.PRODUCT_DETAIL.value,
             SchedulerQueue.FAILED_ITEM_RETRY.value,
         }:
             logger.info(
@@ -144,6 +152,60 @@ class QueueDispatchHandler:
             job.product_id,
             price,
             stock,
+        )
+        await self._rebuild_finance_for_job_product(job)
+
+    async def _handle_campaign_or_rate(self, job: SchedulerJobRecord) -> None:
+        payload = dict(job.payload or {})
+        merchant_codes = payload.get("merchant_codes") or []
+        if isinstance(merchant_codes, str):
+            merchant_codes = [merchant_codes]
+        deps = self._finance_deps()
+        if deps is None:
+            logger.info(
+                "campaign/rate refresh ack job_id=%s (finance deps missing)", job.id
+            )
+            return
+        from taksitlio.product_query.auto_finance import rebuild_after_campaign_feed
+
+        stats = await rebuild_after_campaign_feed(
+            deps, merchant_codes=tuple(str(c) for c in merchant_codes)
+        )
+        logger.info(
+            "campaign/rate finance rebuild job_id=%s synced=%s eligible=%s",
+            job.id,
+            stats.products_synced,
+            stats.eligible_options,
+        )
+
+    def _finance_deps(self) -> Any:
+        if self.ctx.finance_index is None or self.ctx.catalog is None:
+            return None
+        if self.ctx.campaign_catalog is None and self.ctx.db_pool is None:
+            return None
+        from taksitlio.product_query.auto_finance import FinanceAutoSyncDeps
+
+        return FinanceAutoSyncDeps(
+            finance_index=self.ctx.finance_index,
+            product_catalog=self.ctx.catalog,
+            merchant_directory=self.ctx.merchant_directory,
+            campaign_catalog=self.ctx.campaign_catalog,
+            db_pool=self.ctx.db_pool,
+        )
+
+    async def _rebuild_finance_for_job_product(self, job: SchedulerJobRecord) -> None:
+        deps = self._finance_deps()
+        if deps is None or job.product_id is None:
+            return
+        product = await self.ctx.catalog.get_product(int(job.product_id))
+        if product is None:
+            return
+        from taksitlio.product_query.auto_finance import rebuild_finance_for_product
+
+        await rebuild_finance_for_product(
+            deps,
+            product_id=int(job.product_id),
+            merchant_id=int(product.merchant_id),
         )
 
 

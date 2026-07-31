@@ -81,6 +81,10 @@ def build_handler_from_env(
     *,
     catalog: Optional[object] = None,
     storage_root: Optional[str] = None,
+    finance_index: Optional[object] = None,
+    campaign_catalog: Optional[object] = None,
+    merchant_directory: Optional[object] = None,
+    db_pool: Optional[object] = None,
 ) -> QueueDispatchHandler:
     if storage_root:
         os.environ.setdefault("MEDIA_STORAGE_ROOT", storage_root)
@@ -89,6 +93,10 @@ def build_handler_from_env(
         HandlerContext(
             catalog=catalog or InMemoryProductCatalogRepository(),
             storage=storage,
+            finance_index=finance_index,
+            campaign_catalog=campaign_catalog,
+            merchant_directory=merchant_directory,
+            db_pool=db_pool,
         )
     )
 
@@ -116,16 +124,31 @@ async def _amain(argv: Optional[list[str]] = None) -> int:
     pool = None
     if args.use_postgres:
         from taksitlio.db.pool import create_pool
+        from taksitlio.merchant.directory import PostgresMerchantDirectory
         from taksitlio.product.catalog import PostgresProductCatalogRepository
+        from taksitlio.product_query.postgres_finance import PostgresFinanceOptionIndex
 
         pool = await create_pool(os.environ["DATABASE_URL"])
         repo = PostgresSchedulerJobRepository(pool)
         catalog = PostgresProductCatalogRepository(pool)
+        handler = build_handler_from_env(
+            catalog=catalog,
+            finance_index=PostgresFinanceOptionIndex(pool),
+            merchant_directory=PostgresMerchantDirectory(pool),
+            db_pool=pool,
+        )
     else:
+        from taksitlio.campaign_catalog.feed_apply import InMemoryCampaignCatalog
+        from taksitlio.product_query.finance_index import InMemoryFinanceOptionIndex
+
         repo = InMemorySchedulerJobRepository()
         catalog = InMemoryProductCatalogRepository()
+        handler = build_handler_from_env(
+            catalog=catalog,
+            finance_index=InMemoryFinanceOptionIndex(),
+            campaign_catalog=InMemoryCampaignCatalog(),
+        )
 
-    handler = build_handler_from_env(catalog=catalog)
     ticks = await run_daemon(
         repo,
         worker_id=args.worker_id,

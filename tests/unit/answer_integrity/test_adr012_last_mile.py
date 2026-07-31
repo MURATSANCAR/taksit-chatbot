@@ -138,6 +138,41 @@ def test_partial_snapshot_hard_excludes_negatives() -> None:
     assert "2" in ids
 
 
+def test_partial_snapshot_phone_excludes_laptops() -> None:
+    products = [
+        {
+            "product_id": "phone",
+            "display_name": "iPhone 15 128 Gb Akıllı Telefon",
+            "price": 42000,
+            "stock_status": "UNKNOWN",
+            "price_freshness": "FRESH",
+            "has_primary_image": True,
+            "query_relevance": 0.5,
+            "best_finance": {"monthly_payment": 3500, "term_months": 12},
+        },
+        {
+            "product_id": "laptop",
+            "display_name": "Casper Nirvana S100 Core i5 Laptop",
+            "price": 34999,
+            "stock_status": "UNKNOWN",
+            "price_freshness": "FRESH",
+            "has_primary_image": True,
+            "query_relevance": 0.9,
+            "best_finance": {"monthly_payment": 3000, "term_months": 12},
+        },
+    ]
+    constraints = {
+        "positive_categories": [
+            {"resolved_id": "category-phone", "display_name": "Cep Telefonu"}
+        ],
+        "budget": {"value": 40000},
+    }
+    snap = build_partial_snapshot(query_version=1, products=products, constraints=constraints)
+    ids = [p.product_id for p in snap.products]
+    assert ids == ["phone"]
+    assert score_partial_candidate(products[1], constraints) == float("-inf")
+
+
 def test_card_public_dict_carries_evidence() -> None:
     card = build_product_card(
         CardSourceProduct(

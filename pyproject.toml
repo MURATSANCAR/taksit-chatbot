@@ -45,6 +45,7 @@ storage = [
 crawler = [
   "cloudscraper>=1.2",
   "playwright>=1.40",
+  "curl_cffi>=0.7",
 ]
 
 [project.scripts]

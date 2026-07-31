@@ -70,8 +70,15 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
             offers = it.get("offers") or {}
             if isinstance(offers, list):
                 offers = offers[0] if offers else {}
+            if not isinstance(offers, dict):
+                offers = {}
             try:
-                price = float(str(offers.get("price")).replace(",", "."))
+                price_raw = (
+                    offers.get("price")
+                    or offers.get("lowPrice")
+                    or offers.get("highPrice")
+                )
+                price = float(str(price_raw).replace(",", "."))
             except (TypeError, ValueError):
                 continue
             name = it.get("name")
@@ -86,6 +93,8 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                 stock = "AVAILABLE"
             elif "OutOfStock" in avail:
                 stock = "OUT_OF_STOCK"
+            if stock == "UNKNOWN" and "AggregateOffer" in str(offers.get("@type") or ""):
+                stock = "AVAILABLE"
             img = _normalize_image_url(it.get("image"))
             attrs: dict[str, Any] = {}
             for ap in it.get("additionalProperty") or []:
@@ -96,10 +105,13 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                 it.get("sku")
                 or it.get("productID")
                 or it.get("mpn")
+                or it.get("gtin13")
                 or url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
             )
-            # Prefer stable numeric id from -p- / /urun/ slug when sku is noisy
-            m_pid = re.search(r"-p-(\d+)\b", url) or re.search(r"-(\d{6,})\s*$", url.rstrip("/"))
+            # Prefer stable numeric id from -p- / trailing slug digits
+            m_pid = re.search(r"-p-(\d+)\b", url) or re.search(
+                r"-(\d{6,})\s*$", url.rstrip("/")
+            )
             if m_pid and (not pid.isdigit() or len(pid) < 5):
                 pid = m_pid.group(1)
             return {
@@ -113,7 +125,9 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                 "model": it.get("model"),
                 "url": url,
                 "price": price,
-                "list_price": _opt_float(offers.get("highPrice") or offers.get("listPrice")),
+                "list_price": _opt_float(
+                    offers.get("highPrice") or offers.get("listPrice")
+                ),
                 "currency": str(offers.get("priceCurrency") or "TRY").upper(),
                 "stock_status": stock,
                 "image_url": img,
@@ -133,18 +147,255 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
     if om and pm:
         price = float(pm.group(1).replace(",", "."))
         name = _clean_product_name(unescape(om.group(1)).strip())
-        pid = url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
+        clean_url = url.split("?")[0].split("#")[0]
+        pid = _stable_product_id(html, clean_url)
+        img = img_m.group(1) if img_m else None
+        if img and img.startswith("/"):
+            from urllib.parse import urljoin as _uj
+
+            img = _uj(clean_url, img)
         return {
             "id": pid,
             "name": name,
-            "url": url,
+            "url": clean_url,
             "price": price,
             "currency": "TRY",
             "stock_status": "UNKNOWN",
-            "image_url": img_m.group(1) if img_m else None,
+            "image_url": img,
             "attributes": {},
         }
     return None
+
+
+def _stable_product_id(html: str, url: str) -> str:
+    """Prefer merchant product codes over noisy URL slug tails."""
+    clean_url = url.split("?")[0].split("#")[0]
+    for pat in (
+        r'data-product-code=["\']([^"\']+)',
+        r'data-product-id=["\']([^"\']+)',
+        r'"sku"\s*:\s*"([^"]+)"',
+    ):
+        m = re.search(pat, html, re.I)
+        if m:
+            return m.group(1)
+    for pat in (r"/_/R-p-(\d+)", r"-p-(\d+)\b", r"/(\d{6,})(?:/|$)"):
+        m = re.search(pat, clean_url)
+        if m:
+            return m.group(1)
+    return clean_url.rstrip("/").rsplit("/", 1)[-1].replace(".html", "")[:80]
+
+
+def _curl_get(url: str, *, impersonate: str) -> Optional[str]:
+    from browser_fetch import curl_cffi_get
+
+    return curl_cffi_get(url, impersonate=impersonate, timeout=90.0)
+
+
+def fetch_hybris_product_sitemap(
+    *,
+    source_code: str,
+    sitemap_index: str,
+    delay: float,
+    limit: int,
+    workers: int = 6,
+    impersonate: str = "chrome124",
+) -> list[dict[str, Any]]:
+    """Arçelik/Beko-style Hybris PRODUCT-tr-TRY sitemap via curl_cffi."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from html import unescape as _ue
+
+    idx_html = _curl_get(sitemap_index, impersonate=impersonate)
+    if not idx_html:
+        print(f"  {source_code} sitemap index blocked")
+        return list(_load_existing_feed(source_code).values())
+    maps = [
+        _ue(u)
+        for u in re.findall(r"<loc>([^<]+)</loc>", idx_html)
+        if "PRODUCT" in u.upper()
+    ]
+    product_urls: list[str] = []
+    seen: set[str] = set()
+    for sm in maps:
+        time.sleep(max(delay, 0.1))
+        body = _curl_get(sm, impersonate=impersonate)
+        if not body:
+            print(f"  {source_code} product map fail")
+            continue
+        batch = 0
+        for u in re.findall(r"<loc>([^<]+)</loc>", body):
+            u = _ue(u).split("?")[0]
+            if u not in seen:
+                seen.add(u)
+                product_urls.append(u)
+                batch += 1
+        print(f"  {source_code} sitemap +{batch} total={len(product_urls)}")
+
+    by_id = _load_existing_feed(source_code)
+    done = {str(p.get("url")) for p in by_id.values() if p.get("url")}
+    todo = [u for u in product_urls if u not in done]
+    todo = _apply_limit(todo, limit)
+    print(f"  {source_code} todo={len(todo)} catalog={len(product_urls)} workers={workers}")
+
+    lock = threading.Lock()
+    fail = 0
+    done_n = 0
+
+    def _one(url: str) -> Optional[dict[str, Any]]:
+        html = _curl_get(url, impersonate=impersonate)
+        if not html:
+            return None
+        p = parse_jsonld_product(html, url)
+        if p and p.get("image_url") and str(p["image_url"]).startswith("/"):
+            p["image_url"] = urljoin(url, str(p["image_url"]))
+        return p
+
+    batch_size = 300
+    for start in range(0, len(todo), batch_size):
+        batch = todo[start : start + batch_size]
+        print(f"  {source_code} batch {start}-{start + len(batch) - 1}", flush=True)
+        with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+            futs = {ex.submit(_one, u): u for u in batch}
+            for fut in as_completed(futs):
+                try:
+                    p = fut.result()
+                except Exception:
+                    p = None
+                with lock:
+                    done_n += 1
+                    if p and p.get("id"):
+                        by_id[str(p["id"])] = p
+                    else:
+                        fail += 1
+                    if done_n % 150 == 0 or done_n == len(todo):
+                        write_feed(
+                            source_code,
+                            list(by_id.values()),
+                            f"{source_code} curl_cffi sitemap (checkpoint)",
+                        )
+                        print(
+                            f"    ... {done_n}/{len(todo)} ok={len(by_id)} fail={fail}",
+                            flush=True,
+                        )
+        if delay > 0:
+            time.sleep(delay)
+    return list(by_id.values())
+
+
+def fetch_arcelik(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 6
+) -> list[dict[str, Any]]:
+    return fetch_hybris_product_sitemap(
+        source_code="src-m-arcelik",
+        sitemap_index="https://www.arcelik.com.tr/sitemap.xml",
+        delay=delay,
+        limit=limit,
+        workers=workers,
+        impersonate="chrome124",
+    )
+
+
+def fetch_beko(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 6
+) -> list[dict[str, Any]]:
+    return fetch_hybris_product_sitemap(
+        source_code="src-m-beko",
+        sitemap_index="https://www.beko.com.tr/sitemap.xml",
+        delay=delay,
+        limit=limit,
+        workers=workers,
+        impersonate="chrome124",
+    )
+
+
+def fetch_decathlon(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 6
+) -> list[dict[str, Any]]:
+    """Decathlon TR: category sitemaps → /p/... PDP via safari TLS impersonation."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    from html import unescape as _ue
+
+    impersonate = "safari18_0"
+    idx = _curl_get("https://www.decathlon.com.tr/sitemap/index.xml", impersonate=impersonate)
+    if not idx:
+        print("  decathlon sitemap index blocked")
+        return list(_load_existing_feed("src-m-decathlon").values())
+    cat_maps = [
+        _ue(u)
+        for u in re.findall(r"<loc>([^<]+)</loc>", idx)
+        if "category-product-listing" in u
+    ]
+    category_urls: list[str] = []
+    for sm in cat_maps:
+        body = _curl_get(sm, impersonate=impersonate)
+        if not body:
+            continue
+        for u in re.findall(r"<loc>([^<]+)</loc>", body):
+            category_urls.append(_ue(u).split("?")[0])
+    print(f"  decathlon categories={len(category_urls)}")
+
+    pdp_urls: list[str] = []
+    seen: set[str] = set()
+    for i, cat in enumerate(category_urls, 1):
+        html = _curl_get(cat, impersonate=impersonate)
+        if html:
+            for href in re.findall(r'href="(/p/[^"?]+)"', html):
+                full = urljoin("https://www.decathlon.com.tr", href.split("?")[0])
+                # strip tracking query already; normalize R-p id path
+                if full not in seen:
+                    seen.add(full)
+                    pdp_urls.append(full)
+        if i % 50 == 0:
+            print(f"    cats {i}/{len(category_urls)} pdps={len(pdp_urls)}", flush=True)
+        time.sleep(max(delay, 0.05))
+
+    by_id = _load_existing_feed("src-m-decathlon")
+    done = {str(p.get("url")) for p in by_id.values() if p.get("url")}
+    todo = [u for u in pdp_urls if u not in done]
+    todo = _apply_limit(todo, limit)
+    print(f"  decathlon todo={len(todo)} catalog={len(pdp_urls)} workers={workers}")
+
+    lock = threading.Lock()
+    fail = 0
+    done_n = 0
+
+    def _one(url: str) -> Optional[dict[str, Any]]:
+        html = _curl_get(url, impersonate=impersonate)
+        if not html:
+            return None
+        return parse_jsonld_product(html, url)
+
+    batch_size = 250
+    for start in range(0, len(todo), batch_size):
+        batch = todo[start : start + batch_size]
+        print(f"  decathlon batch {start}-{start + len(batch) - 1}", flush=True)
+        with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+            futs = {ex.submit(_one, u): u for u in batch}
+            for fut in as_completed(futs):
+                try:
+                    p = fut.result()
+                except Exception:
+                    p = None
+                with lock:
+                    done_n += 1
+                    if p and p.get("id"):
+                        by_id[str(p["id"])] = p
+                    else:
+                        fail += 1
+                    if done_n % 100 == 0 or done_n == len(todo):
+                        write_feed(
+                            "src-m-decathlon",
+                            list(by_id.values()),
+                            "decathlon curl_cffi category→pdp (checkpoint)",
+                        )
+                        print(
+                            f"    ... {done_n}/{len(todo)} ok={len(by_id)} fail={fail}",
+                            flush=True,
+                        )
+        if delay > 0:
+            time.sleep(delay)
+    return list(by_id.values())
 
 
 def _opt_float(v: Any) -> Optional[float]:
@@ -763,7 +1014,7 @@ def fetch_teknosa(
     *,
     workers: int = 6,
 ) -> list[dict[str, Any]]:
-    """Teknosa full catalog via siteharitasi.xml + cloudscraper (Cloudflare).
+    """Teknosa full catalog via siteharitasi.xml + CF-bypass session.
 
     ~380k PDP URLs across Product + Outlet sitemaps. Resumes from existing
     live feed, checkpoints every 200 products. Polite concurrent fetch.
@@ -771,18 +1022,32 @@ def fetch_teknosa(
     import threading
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    from browser_fetch import create_cloudscraper
+    from browser_fetch import create_cf_httpx_client, create_cloudscraper
 
-    scraper = create_cloudscraper()
+    scraper: Any = create_cloudscraper()
     idx = scraper.get("https://www.teknosa.com/siteharitasi.xml", timeout=120)
-    if idx.status_code != 200:
-        print(f"  teknosa sitemap index HTTP {idx.status_code}")
-        # Do not wipe existing feed on transient WAF failure
-        existing = _load_existing_feed("src-m-teknosa")
-        if existing:
-            print(f"  teknosa keeping existing {len(existing)} products")
-            return list(existing.values())
-        return []
+    blocked = idx.status_code != 200 or "Just a moment" in (idx.text or "")[:2000]
+    if blocked:
+        print(
+            f"  teknosa cloudscraper blocked ({idx.status_code}); "
+            "trying Playwright CF cookies"
+        )
+        cf = create_cf_httpx_client("https://www.teknosa.com/", wait_ms=5000)
+        if cf is None:
+            existing = _load_existing_feed("src-m-teknosa")
+            if existing:
+                print(f"  teknosa keeping existing {len(existing)} products")
+                return list(existing.values())
+            return []
+        scraper = cf
+        idx = scraper.get("https://www.teknosa.com/siteharitasi.xml", timeout=120)
+        if idx.status_code != 200:
+            print(f"  teknosa sitemap index HTTP {idx.status_code}")
+            existing = _load_existing_feed("src-m-teknosa")
+            if existing:
+                print(f"  teknosa keeping existing {len(existing)} products")
+                return list(existing.values())
+            return []
     children = re.findall(r"<loc>([^<]+)</loc>", idx.text)
     maps = [
         u
@@ -793,7 +1058,7 @@ def fetch_teknosa(
     seen_u: set[str] = set()
     for sm in maps:
         time.sleep(max(delay, 0.2))
-        r = scraper.get(sm, timeout=120)
+        r = scraper.get(sm, timeout=180)
         if r.status_code != 200:
             print(f"  teknosa sitemap fail {sm.rsplit('/', 1)[-1]} {r.status_code}")
             continue
@@ -804,16 +1069,9 @@ def fetch_teknosa(
                 product_urls.append(u)
         print(f"  teknosa sitemap {sm.rsplit('/', 1)[-1]} total_urls={len(product_urls)}")
 
-    # Resume: skip IDs already in live feed
-    existing_path = OUT / "src-m-teknosa.json"
-    by_id: dict[str, dict[str, Any]] = {}
-    if existing_path.exists():
-        try:
-            prev = json.loads(existing_path.read_text(encoding="utf-8")).get("products") or []
-            by_id = {str(p["id"]): p for p in prev if p.get("id")}
-            print(f"  teknosa resume {len(by_id)} products already captured")
-        except Exception as exc:
-            print(f"  teknosa resume skip: {exc}")
+    by_id = _load_existing_feed("src-m-teknosa")
+    if by_id:
+        print(f"  teknosa resume {len(by_id)} products already captured")
 
     done_urls = {str(p.get("url")) for p in by_id.values() if p.get("url")}
     todo = [u for u in product_urls if u not in done_urls]
@@ -825,8 +1083,26 @@ def fetch_teknosa(
     done_n = 0
     batch_size = 500
     tls = threading.local()
+    shared_cookies = dict(scraper.cookies) if isinstance(scraper, httpx.Client) else None
 
     def _session():
+        if shared_cookies is not None:
+            s = getattr(tls, "client", None)
+            if s is None:
+                s = httpx.Client(
+                    timeout=60.0,
+                    headers={
+                        "User-Agent": (
+                            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                            "AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/120.0.0.0 Safari/537.36"
+                        )
+                    },
+                    cookies=shared_cookies,
+                    follow_redirects=True,
+                )
+                tls.client = s
+            return s
         s = getattr(tls, "scraper", None)
         if s is None:
             s = create_cloudscraper()
@@ -840,6 +1116,8 @@ def fetch_teknosa(
         except Exception:
             return None
         if r.status_code != 200:
+            return None
+        if "Just a moment" in (r.text or "")[:1500]:
             return None
         try:
             return parse_jsonld_product(r.text, url)
@@ -867,7 +1145,7 @@ def fetch_teknosa(
                             write_feed(
                                 "src-m-teknosa",
                                 list(by_id.values()),
-                                "teknosa full sitemap+cloudscraper (checkpoint)",
+                                "teknosa full sitemap+CF session (checkpoint)",
                             )
                             print(
                                 f"    ... {done_n}/{len(todo)} fetched, "
@@ -884,7 +1162,7 @@ def fetch_teknosa(
         write_feed(
             "src-m-teknosa",
             list(by_id.values()),
-            "teknosa full sitemap+cloudscraper (aborted checkpoint)",
+            "teknosa full sitemap+CF session (aborted checkpoint)",
         )
 
     return list(by_id.values())
@@ -935,6 +1213,15 @@ FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
     "trendyol": lambda c, d, lim, **kw: fetch_trendyol(
         c, d, lim, workers=int(kw.get("workers", 8))
     ),
+    "arcelik": lambda c, d, lim, **kw: fetch_arcelik(
+        c, d, lim, workers=int(kw.get("workers", 6))
+    ),
+    "beko": lambda c, d, lim, **kw: fetch_beko(
+        c, d, lim, workers=int(kw.get("workers", 6))
+    ),
+    "decathlon": lambda c, d, lim, **kw: fetch_decathlon(
+        c, d, lim, workers=int(kw.get("workers", 6))
+    ),
 }
 
 
@@ -943,7 +1230,7 @@ def main() -> None:
     p.add_argument(
         "--merchants",
         default="vatan,mediamarkt,koctas,dr,teknosa",
-        help="comma list: vatan,mediamarkt,koctas,dr,teknosa,flo,evofone,network,civil,trendyol",
+        help="comma list: vatan,mediamarkt,koctas,dr,teknosa,flo,evofone,network,civil,trendyol,arcelik,beko,decathlon",
     )
     p.add_argument("--delay", type=float, default=2.0)
     p.add_argument(

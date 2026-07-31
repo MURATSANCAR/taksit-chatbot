@@ -21,6 +21,8 @@ class MerchantDirectoryEntry:
 class MerchantDirectory(Protocol):
     async def get(self, merchant_id: int) -> Optional[MerchantDirectoryEntry]: ...
 
+    async def get_by_code(self, merchant_code: str) -> Optional[MerchantDirectoryEntry]: ...
+
     async def get_display_name(self, merchant_id: int) -> Optional[str]: ...
 
     async def get_logo_cdn_url(self, merchant_id: int) -> Optional[str]: ...
@@ -36,6 +38,13 @@ class InMemoryMerchantDirectory:
 
     async def get(self, merchant_id: int) -> Optional[MerchantDirectoryEntry]:
         return self._by_id.get(merchant_id)
+
+    async def get_by_code(self, merchant_code: str) -> Optional[MerchantDirectoryEntry]:
+        code = merchant_code.strip()
+        for entry in self._by_id.values():
+            if entry.merchant_code == code:
+                return entry
+        return None
 
     async def get_display_name(self, merchant_id: int) -> Optional[str]:
         row = self._by_id.get(merchant_id)
@@ -108,6 +117,36 @@ class PostgresMerchantDirectory:
             )
         if row is None:
             return None
+        return self._entry_from_row(row)
+
+    async def get_by_code(self, merchant_code: str) -> Optional[MerchantDirectoryEntry]:
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT m.id, m.merchant_code, m.display_name, m.status,
+                       logo.cdn_url AS logo_cdn_url
+                FROM merchants m
+                LEFT JOIN LATERAL (
+                    SELECT ma.cdn_url
+                    FROM merchant_media mm
+                    JOIN media_assets ma ON ma.id = mm.media_asset_id AND ma.status = 'READY'
+                    WHERE mm.merchant_id = m.id
+                      AND mm.role IN ('LOGO', 'PRIMARY', 'ICON')
+                      AND (mm.valid_until IS NULL OR mm.valid_until > NOW())
+                    ORDER BY CASE mm.role WHEN 'LOGO' THEN 0 WHEN 'PRIMARY' THEN 1 ELSE 2 END,
+                             mm.is_primary DESC
+                    LIMIT 1
+                ) logo ON TRUE
+                WHERE m.merchant_code = $1
+                """,
+                merchant_code,
+            )
+        if row is None:
+            return None
+        return self._entry_from_row(row)
+
+    @staticmethod
+    def _entry_from_row(row: Any) -> MerchantDirectoryEntry:
         return MerchantDirectoryEntry(
             id=int(row["id"]),
             merchant_code=str(row["merchant_code"]),

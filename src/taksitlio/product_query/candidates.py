@@ -108,7 +108,18 @@ async def load_search_candidates_from_catalog(
     finance_index: Optional[FinanceOptionIndex] = None,
     institutions: Optional[InstitutionLabelResolver] = None,
 ) -> tuple[SearchProductCandidate, ...]:
-    products = await catalog.list_products(merchant_id=merchant_id, limit=limit)
+    from taksitlio.progressive_results.category_match import utterance_name_terms
+
+    terms = utterance_name_terms(utterance)
+    if terms and hasattr(catalog, "list_products_matching"):
+        products = await catalog.list_products_matching(
+            name_terms=terms, merchant_id=merchant_id, limit=limit
+        )
+        # Fallback if category heuristic matched nothing.
+        if not products:
+            products = await catalog.list_products(merchant_id=merchant_id, limit=limit)
+    else:
+        products = await catalog.list_products(merchant_id=merchant_id, limit=limit)
     out: list[SearchProductCandidate] = []
     for product in products:
         offer = await catalog.get_offer(product.id)
