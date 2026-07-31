@@ -84,7 +84,7 @@ class RemoteFastExtractor:
         model_reference: str,
         timeout_ms: int = 3000,
         temperature: float = 0.0,
-        max_output_tokens: int = 128,
+        max_output_tokens: int = 384,
         chat_path: str = "/v1/chat/completions",
         api_key: Optional[str] = None,
         deployment_code: str = "runtime-fast",
