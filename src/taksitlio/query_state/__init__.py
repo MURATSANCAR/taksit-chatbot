@@ -107,12 +107,8 @@ def cancel_constraint(state: QueryNeedState, *, constraint_key: str, value: Any)
 
 
 def chips_from_state(state: QueryNeedState) -> list[dict[str, Any]]:
+    """UI chips for confirmed preferences only — no budget or uncertainty noise."""
     chips: list[dict[str, Any]] = []
-    budget = state.budget
-    if budget.get("maximum"):
-        chips.append({"id": "budget_max", "label": f"{int(budget['maximum']):,} TL’ye kadar".replace(",", "."), "kind": "budget"})
-    elif budget.get("value"):
-        chips.append({"id": "budget_approx", "label": f"{int(budget['value']):,} TL civarı".replace(",", "."), "kind": "budget"})
     for c in state.active_categories:
         chips.append(
             {
@@ -121,8 +117,6 @@ def chips_from_state(state: QueryNeedState) -> list[dict[str, Any]]:
                 "kind": "category",
             }
         )
-    if not state.active_categories:
-        chips.append({"id": "cat:uncertain", "label": "Ürün türü belirsiz", "kind": "uncertainty"})
     for u in state.usage_contexts:
         label = {"education": "Okul", "gaming": "Oyun", "business": "İş", "media": "Film"}.get(u, u)
         chips.append({"id": f"usage:{u}", "label": label, "kind": "usage"})

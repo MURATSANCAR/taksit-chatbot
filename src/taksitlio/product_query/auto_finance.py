@@ -93,7 +93,7 @@ async def rebuild_finance_for_product(
         product_offer_id=str(offer.id),
         merchant_id=str(merchant_id),
         merchant_code=code,
-        purchase_price=float(offer.price),
+        purchase_price=float(offer.current_price),
         stock_status=str(offer.stock_status or "UNKNOWN"),
         price_freshness=str(offer.freshness_status or "UNVERIFIED"),
     )

@@ -14,6 +14,11 @@ from taksitlio.ingestion.adapters.generic_campaign_feed import (
     GenericCampaignFeedAdapter,
     run_campaign_feed_dry,
 )
+from taksitlio.ingestion.protocol import (
+    NormalizedOffer,
+    NormalizedProduct,
+    NormalizedStock,
+)
 from taksitlio.merchant.directory import InMemoryMerchantDirectory, MerchantDirectoryEntry
 from taksitlio.product.catalog import InMemoryProductCatalogRepository
 from taksitlio.product.upsert import plan_offer_upsert, plan_product_upsert
@@ -26,8 +31,6 @@ from taksitlio.product_query.finance_index import (
     InMemoryFinanceOptionIndex,
     pick_best_eligible,
 )
-from taksitlio.ingestion.protocol import NormalizedOffer, NormalizedProduct, NormalizedStock
-from taksitlio.product.models import OfferFreshness
 
 
 FIXTURE = (
@@ -43,25 +46,25 @@ def _product() -> NormalizedProduct:
     return NormalizedProduct(
         external_product_id="sku-1",
         display_name="Laptop 16GB",
-        brand="Brand",
-        model="X",
-        description=None,
-        category_path=(),
-        attributes={},
-        source_url=None,
-        gtin=None,
-        mpn=None,
+        brand_name="Brand",
+        model_number="X",
         content_hash="h1",
     )
 
 
 def _offer() -> NormalizedOffer:
     return NormalizedOffer(
+        external_product_id="sku-1",
+        current_price=12000.0,
         currency="TRY",
-        price=12000.0,
-        list_price=None,
-        checkout_url=None,
         content_hash="o1",
+    )
+
+
+def _stock() -> NormalizedStock:
+    return NormalizedStock(
+        external_product_id="sku-1",
+        stock_status="AVAILABLE",
     )
 
 
@@ -99,13 +102,12 @@ async def test_campaign_then_product_auto_fills_best_finance() -> None:
         data_quality_status="READY",
         status="ACTIVE",
     )
-    offer_plan = plan_offer_upsert(_offer(), NormalizedStock(status="AVAILABLE"), None)
-    # Force FRESH freshness on plan if needed
     await product_catalog.upsert_offer(
-        merchant_id=1, product_id=stored.id, plan=offer_plan
+        merchant_id=1,
+        product_id=stored.id,
+        plan=plan_offer_upsert(_offer(), _stock(), previous_content_hash=None),
     )
 
-    # Campaign first path: rebuild merchants after campaign
     stats = await rebuild_after_campaign_feed(deps, merchant_codes=("m-teknosa",))
     assert stats.products_synced == 1
     assert stats.eligible_options >= 1
@@ -146,7 +148,7 @@ async def test_product_rebuild_alone_uses_active_catalog() -> None:
     await product_catalog.upsert_offer(
         merchant_id=1,
         product_id=stored.id,
-        plan=plan_offer_upsert(_offer(), NormalizedStock(status="AVAILABLE"), None),
+        plan=plan_offer_upsert(_offer(), _stock(), previous_content_hash=None),
     )
     eligible = await rebuild_finance_for_product(
         deps, product_id=stored.id, merchant_id=1, merchant_code="m-teknosa"

@@ -87,6 +87,21 @@
     });
   }
 
+  function focusTopProduct(root) {
+    if (!root) return;
+    var target =
+      root.querySelector(".deal.best") ||
+      root.querySelector(".deal") ||
+      root.querySelector(".partial-card.is-featured") ||
+      root.querySelector(".partial-card");
+    if (!target) return;
+    try {
+      target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+    } catch (_) {
+      target.scrollIntoView();
+    }
+  }
+
   function errorMessage(err) {
     if (global.TaksitlioPublic && global.TaksitlioPublic.errorMessage) {
       return global.TaksitlioPublic.errorMessage(err);
@@ -222,6 +237,7 @@
         wrap.querySelectorAll(".deal, .offer").forEach(function (node) {
           node.classList.add("on");
         });
+        focusTopProduct(wrap);
       });
       var panels = ensurePanels(thread);
       renderFeedback(panels.querySelector("[data-feedback]"));

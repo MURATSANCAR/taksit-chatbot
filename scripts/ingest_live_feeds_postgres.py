@@ -313,7 +313,7 @@ async def main() -> None:
     pool = await asyncpg.create_pool(dsn, min_size=1, max_size=4)
     try:
         product_reports = await ingest_products(pool)
-        campaign_reports = await ingest_campaigns(pool)
+        campaign_reports = await ingest_campaigns(pool, activate=True)
         async with pool.acquire() as conn:
             counts = {
                 "merchants": await conn.fetchval("SELECT count(*) FROM merchants"),

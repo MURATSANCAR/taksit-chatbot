@@ -81,6 +81,17 @@
     });
     html += "</div></div>";
     container.innerHTML = html;
+    var top = container.querySelector(".partial-card.is-featured") ||
+      container.querySelector(".partial-card");
+    if (top) {
+      requestAnimationFrame(function () {
+        try {
+          top.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+        } catch (_) {
+          top.scrollIntoView();
+        }
+      });
+    }
   }
 
   function escapeHtml(s) {
