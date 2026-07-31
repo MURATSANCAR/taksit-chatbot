@@ -19,7 +19,7 @@ from taksitlio.answer_integrity.truth_status import (
     ResponseOutcome,
 )
 from taksitlio.campaign.ranking import RankedCampaign
-from taksitlio.claim_validation.claim_validator import validate_claims
+from taksitlio.answer_integrity.claim_validator import validate_claims
 from taksitlio.model_gateway.gateway import ModelGateway, ModelGatewayError
 from taksitlio.model_gateway.types import CompletionRequest, ModelProfile
 

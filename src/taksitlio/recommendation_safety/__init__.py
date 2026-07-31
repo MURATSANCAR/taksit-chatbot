@@ -1,5 +1,9 @@
 """Recommendation safety package (ADR-012)."""
 
+from __future__ import annotations
+
+from typing import Any, Sequence, Union
+
 from taksitlio.recommendation_safety.circuit_breaker import (
     BreakerAction,
     BreakerScope,
@@ -13,6 +17,17 @@ from taksitlio.recommendation_safety.feedback import (
     SponsoredPlacement,
     apply_sponsored_isolation,
     compare_shadow,
+)
+from taksitlio.recommendation_safety.integrity import (
+    BEST_LABEL,
+    NEAREST_LABEL,
+    RecommendationCandidate,
+    RecommendationIntegrityResult,
+    RecommendationReasonCode,
+    three_winners,
+)
+from taksitlio.recommendation_safety.integrity import (
+    evaluate_recommendation_integrity as _evaluate_from_candidates,
 )
 from taksitlio.recommendation_safety.media_match import (
     MEDIA_PRODUCT_MATCH_UNCERTAIN,
@@ -44,8 +59,10 @@ from taksitlio.recommendation_safety.recommendation import (
     IntegritySignals,
     TripleWinnerSet,
     compute_triple_winners,
-    evaluate_recommendation_integrity,
     why_recommended,
+)
+from taksitlio.recommendation_safety.recommendation import (
+    evaluate_recommendation_integrity as _evaluate_from_signals,
 )
 from taksitlio.recommendation_safety.schema_drift import (
     DriftAction,
@@ -53,11 +70,25 @@ from taksitlio.recommendation_safety.schema_drift import (
     evaluate_schema_drift,
 )
 
+
+def evaluate_recommendation_integrity(
+    arg: Union[IntegritySignals, Sequence[RecommendationCandidate]],
+    *args: Any,
+    **kwargs: Any,
+) -> Union[IntegrityDecision, RecommendationIntegrityResult]:
+    """Dispatch: IntegritySignals (unit API) or RecommendationCandidate seq (acceptance)."""
+
+    if isinstance(arg, IntegritySignals):
+        return _evaluate_from_signals(arg)
+    return _evaluate_from_candidates(arg, *args, **kwargs)  # type: ignore[arg-type]
+
+
 ADR_SCOPE = "ADR-012"
 PACKAGE_STATUS = "P0"
 
 __all__ = [
     "ADR_SCOPE",
+    "BEST_LABEL",
     "BreakerAction",
     "BreakerScope",
     "ConstraintSource",
@@ -73,10 +104,14 @@ __all__ = [
     "MEDIA_PRODUCT_MATCH_UNCERTAIN",
     "MediaMatchDecision",
     "MediaMatchSignals",
+    "NEAREST_LABEL",
     "NegativeConstraintLock",
     "PACKAGE_STATUS",
     "QualityCircuitBreaker",
     "REASON_CODE_TEMPLATES",
+    "RecommendationCandidate",
+    "RecommendationIntegrityResult",
+    "RecommendationReasonCode",
     "ShadowComparison",
     "SponsoredPlacement",
     "TripleWinnerSet",
@@ -93,6 +128,7 @@ __all__ = [
     "merge_constraints_with_priority",
     "primary_image_url",
     "source_priority",
+    "three_winners",
     "variants_compatible",
     "why_recommended",
 ]

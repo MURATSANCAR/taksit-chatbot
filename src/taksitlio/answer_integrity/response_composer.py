@@ -149,7 +149,12 @@ def compose_deterministic(
             line += f" — {price}"
         lines.append(line)
         if monthly and term:
-            detail = f"   Tahmini aylık ödeme: {monthly} / {term}"
+            pay_label = "Tahmini aylık ödeme"
+            for fact in envelope.claimable_facts():
+                if fact.fact_type is FactType.MONTHLY_PAYMENT and fact.display_label:
+                    pay_label = fact.display_label
+                    break
+            detail = f"   {pay_label}: {monthly} / {term}"
             if inst:
                 detail += f" — {inst}"
             lines.append(detail)

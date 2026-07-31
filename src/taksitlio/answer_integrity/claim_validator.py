@@ -72,6 +72,9 @@ def _normalize_money(token: str) -> Optional[str]:
             t = t.replace(",", ".")
         else:
             t = t.replace(",", "")
+    elif re.fullmatch(r"\d{1,3}(\.\d{3})+", t):
+        # Turkish/EU thousands: 3.500 → 3500, 4.281 → 4281
+        t = t.replace(".", "")
     elif t.count(".") > 1:
         t = t.replace(".", "")
     try:

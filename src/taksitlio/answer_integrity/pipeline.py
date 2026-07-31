@@ -52,7 +52,11 @@ def run_answer_integrity_pipeline(
         reason_explanations=reasons,
         cards=cards,
     )
+    from taksitlio.answer_integrity.claim_validator import CLAIM_VALIDATION_FAILED
+
     final = base
+    llm_claim_outcome: Optional[str] = None
+    llm_violations: list[str] = []
     if llm_fields:
         final = merge_optional_llm_fields(
             base,
@@ -61,6 +65,11 @@ def run_answer_integrity_pipeline(
             ranking_winner_ids=ranking_winner_ids,
             result_institution_names=result_institution_names,
         )
+        if final.claim_validation is not None:
+            llm_claim_outcome = getattr(final.claim_validation, "outcome", None)
+            llm_violations = [
+                v.code for v in getattr(final.claim_validation, "violations", ())
+            ]
     cv = validate_claims(
         final.text,
         envelope,
@@ -76,11 +85,19 @@ def run_answer_integrity_pipeline(
             result_institution_names=result_institution_names,
         )
 
+    # Surface LLM rejection even when the fallback template validates cleanly.
+    claim_outcome = cv.outcome
+    violations = [v.code for v in cv.violations]
+    if final.template_used == "llm_rejected_template_fallback":
+        claim_outcome = llm_claim_outcome or CLAIM_VALIDATION_FAILED
+        if llm_violations:
+            violations = llm_violations
+
     return IntegrityPipelineResult(
         response=final,
         gate_diagnostics={
-            "claim_outcome": cv.outcome,
-            "violations": [v.code for v in cv.violations],
+            "claim_outcome": claim_outcome,
+            "violations": violations,
             "response_outcome": final.outcome.value,
             "template_used": final.template_used,
             "fact_ids": list(envelope.fact_ids()),

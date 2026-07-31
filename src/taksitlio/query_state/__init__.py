@@ -39,6 +39,25 @@ class QueryNeedState:
             "state_version": self.state_version,
         }
 
+    @classmethod
+    def from_dict(cls, payload: dict[str, Any] | None) -> "QueryNeedState":
+        data = dict(payload or {})
+        return cls(
+            active_categories=list(data.get("active_categories") or []),
+            excluded_categories=list(data.get("excluded_categories") or []),
+            merchant_preferences=list(data.get("merchant_preferences") or []),
+            brand_preferences=list(data.get("brand_preferences") or []),
+            institution_preferences=list(data.get("institution_preferences") or []),
+            budget=dict(data.get("budget") or {}),
+            payment_preferences=dict(data.get("payment_preferences") or {}),
+            required_attributes=list(data.get("required_attributes") or []),
+            preferred_attributes=list(data.get("preferred_attributes") or []),
+            usage_contexts=list(data.get("usage_contexts") or []),
+            cancelled_constraints=list(data.get("cancelled_constraints") or []),
+            preferences=list(data.get("preferences") or []),
+            state_version=int(data.get("state_version") or 0),
+        )
+
     def bump(self) -> None:
         self.state_version += 1
 

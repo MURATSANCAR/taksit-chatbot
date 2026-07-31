@@ -50,9 +50,23 @@ DEFAULT_PRECEDENCE: Mapping[str, tuple[str, ...]] = {
 class SourceObservation:
     source_class: str
     value: str
-    observed_at: Optional[datetime] = None
+    observed_at: Optional[datetime | str] = None
     specificity: int = 0  # higher = more product/merchant/category specific
     agreement_scope_ok: bool = True
+
+    def __post_init__(self) -> None:
+        raw = self.observed_at
+        if isinstance(raw, str):
+            text = raw.strip()
+            if text.endswith("Z"):
+                text = text[:-1] + "+00:00"
+            try:
+                parsed = datetime.fromisoformat(text)
+            except ValueError:
+                parsed = datetime.strptime(text[:10], "%Y-%m-%d").replace(
+                    tzinfo=timezone.utc
+                )
+            object.__setattr__(self, "observed_at", parsed)
 
 
 @dataclass(frozen=True)
@@ -86,11 +100,11 @@ def _rank(
         prec = order.index(obs.source_class)
     except ValueError:
         prec = len(order) + 10
-    ts = (
-        obs.observed_at.timestamp()
-        if obs.observed_at is not None
-        else float("-inf")
-    )
+    at = obs.observed_at
+    if isinstance(at, datetime):
+        ts = at.timestamp()
+    else:
+        ts = float("-inf")
     scope = 1 if obs.agreement_scope_ok else 0
     return (prec, -ts, -obs.specificity, -scope)
 

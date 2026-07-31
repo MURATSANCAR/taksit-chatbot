@@ -29,15 +29,6 @@ CLAIMABLE_STATUSES: frozenset[FieldTruthStatus] = frozenset(
 # Statuses that block "en uygun" / best-offer labeling.
 UNSAFE_FOR_BEST_OFFER: frozenset[FieldTruthStatus] = frozenset(
     {
-        FieldTruthStatus.CONFLICTED,
-        FieldTruthStatus.STALE,
-        FieldTruthStatus.UNAVAILABLE,
-        FieldTruthStatus.INFERRED,
-    }
-)
-
-UNSAFE_FOR_BEST_OFFER: frozenset[FieldTruthStatus] = frozenset(
-    {
         FieldTruthStatus.INFERRED,
         FieldTruthStatus.STALE,
         FieldTruthStatus.CONFLICTED,

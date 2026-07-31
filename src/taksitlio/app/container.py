@@ -327,6 +327,11 @@ def build_in_memory_container(
             "llm_understanding_worker": llm_worker,
             "logo_catalog": logo_catalog,
             "logo_resolver": logo_catalog.resolver,
+            "answer_integrity": {
+                "claim_validator": "taksitlio.answer_integrity.validate_claims",
+                "pipeline": "taksitlio.answer_integrity.run_answer_integrity_pipeline",
+                "circuit_breaker": "taksitlio.recommendation_safety.QualityCircuitBreaker",
+            },
         },
     )
 

@@ -381,6 +381,12 @@ class PostgresSearchSessionRepository:
             )
         if row is None:
             return None
+        return self._row_to_session(row)
+
+    def _row_to_session(self, row: Any) -> SearchSession:
+        meta = row["metadata"]
+        if isinstance(meta, str):
+            meta = json.loads(meta)
         return SearchSession(
             id=str(row["id"]),
             conversation_id=str(row["conversation_id"]),
@@ -394,7 +400,145 @@ class PostgresSearchSessionRepository:
             completed_at=row["completed_at"],
             cancelled_at=row["cancelled_at"],
             superseded_by=str(row["superseded_by"]) if row["superseded_by"] else None,
-            metadata=dict(row["metadata"] or {}),
+            metadata=dict(meta or {}),
+        )
+
+    async def load_full_session(self, session_id: str) -> Optional[Any]:
+        """Load session + versions/events/jobs/partials/clarifications for hydrate."""
+
+        from taksitlio.search_sessions.hydrate import SessionSnapshot
+
+        session = await self.get_session(session_id)
+        if session is None:
+            return None
+        async with self._pool.acquire() as conn:
+            version_rows = await conn.fetch(
+                """
+                SELECT * FROM search_query_versions
+                WHERE search_session_id = $1::uuid
+                ORDER BY version_number ASC
+                """,
+                session_id,
+            )
+            event_rows = await conn.fetch(
+                """
+                SELECT * FROM search_session_events
+                WHERE search_session_id = $1::uuid
+                ORDER BY created_at ASC
+                """,
+                session_id,
+            )
+            clar_rows = await conn.fetch(
+                """
+                SELECT * FROM clarification_requests
+                WHERE search_session_id = $1::uuid
+                ORDER BY created_at ASC
+                """,
+                session_id,
+            )
+            partial_rows = await conn.fetch(
+                """
+                SELECT * FROM partial_result_snapshots
+                WHERE search_session_id = $1::uuid
+                ORDER BY created_at ASC
+                """,
+                session_id,
+            )
+            job_rows = await conn.fetch(
+                """
+                SELECT * FROM llm_understanding_jobs
+                WHERE search_session_id = $1::uuid
+                ORDER BY queued_at ASC
+                """,
+                session_id,
+            )
+
+        versions = [
+            QueryVersion(
+                id=str(r["id"]),
+                search_session_id=str(r["search_session_id"]),
+                version_number=int(r["version_number"]),
+                raw_user_text=r["raw_user_text"],
+                normalized_text=r["normalized_text"],
+                state_snapshot=dict(r["state_snapshot"] or {})
+                if not isinstance(r["state_snapshot"], str)
+                else json.loads(r["state_snapshot"] or "{}"),
+                confidence=float(r["confidence"]) if r["confidence"] is not None else None,
+                requires_llm=bool(r["requires_llm"]),
+                created_at=r["created_at"],
+            )
+            for r in version_rows
+        ]
+        events = [
+            SessionEvent(
+                id=str(r["id"]),
+                search_session_id=str(r["search_session_id"]),
+                query_version=int(r["query_version"]),
+                event_type=r["event_type"],
+                severity=r["severity"],
+                display_message=r["display_message"],
+                data_origin=r["data_origin"],
+                payload=dict(r["payload"] or {})
+                if not isinstance(r["payload"], str)
+                else json.loads(r["payload"] or "{}"),
+                created_at=r["created_at"],
+            )
+            for r in event_rows
+        ]
+        clarifications = [
+            {
+                "clarification_id": str(r["id"]),
+                "query_version": int(r["query_version"]),
+                "field": r["field"],
+                "question_text": r["question_text"],
+                "question_signature": r["question_signature"],
+                "options": list(r["options"] or [])
+                if not isinstance(r["options"], str)
+                else json.loads(r["options"] or "[]"),
+                "status": r["status"],
+            }
+            for r in clar_rows
+        ]
+        partials = []
+        for r in partial_rows:
+            ranking = r["ranking_payload"]
+            if isinstance(ranking, str):
+                ranking = json.loads(ranking or "{}")
+            ranking = dict(ranking or {})
+            ranking.setdefault("query_version", int(r["query_version"]))
+            ranking.setdefault("label", r["label"])
+            partials.append(ranking)
+        llm_jobs = []
+        for r in job_rows:
+            inp = r["input_payload"]
+            out = r["output_payload"]
+            if isinstance(inp, str):
+                inp = json.loads(inp or "{}")
+            if isinstance(out, str):
+                out = json.loads(out) if out else None
+            llm_jobs.append(
+                {
+                    "id": str(r["id"]),
+                    "search_session_id": str(r["search_session_id"]),
+                    "query_version": int(r["query_version"]),
+                    "conversation_state_version": int(r["conversation_state_version"]),
+                    "status": r["status"],
+                    "input_payload": dict(inp or {}),
+                    "output_payload": dict(out) if out is not None else None,
+                    "error_code": r["error_code"],
+                    "queued_at": r["queued_at"],
+                    "started_at": r["started_at"],
+                    "completed_at": r["completed_at"],
+                }
+            )
+        return SessionSnapshot(
+            session=session,
+            versions=versions,
+            events=events,
+            clarifications=clarifications,
+            partials=partials,
+            llm_jobs=llm_jobs,
+            metadata=dict(session.metadata or {}),
         )
 
     async def upsert_partial_snapshot(

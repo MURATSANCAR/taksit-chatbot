@@ -1,6 +1,62 @@
 {
   "products": [
     {
+      "id": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
+      "name": "Lenovo LOQ 14.Nesil Core i5 14500HX-RTX5060 8Gb-16Gb-512Gb Ssd-15.6-W11",
+      "sku": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11.html",
+      "price": 59999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157183v-0-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
+      "name": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+      "sku": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo.html",
+      "price": 42499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156843-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
+      "name": "Dell Pro 15 Essential 13.Nesil Core i7 1355U-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
+      "brand": "Dell",
+      "url": "https://www.vatanbilgisayar.com/dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 37999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/156977-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
+      "name": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
+      "sku": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11.html",
+      "price": 74999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157184-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
       "id": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11",
       "name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-15.3inc-W11",
       "sku": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11",
@@ -43,76 +99,6 @@
       }
     },
     {
-      "id": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
-      "name": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
-      "sku": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
-      "brand": "Lenovo",
-      "url": "https://www.vatanbilgisayar.com/lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11.html",
-      "price": 74999.0,
-      "currency": "TRY",
-      "stock_status": "UNKNOWN",
-      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157184-1_small.jpg",
-      "attributes": {
-        "ram_gb_raw": 8
-      }
-    },
-    {
-      "id": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
-      "name": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
-      "sku": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
-      "brand": "Apple",
-      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo.html",
-      "price": 42499.0,
-      "currency": "TRY",
-      "stock_status": "UNKNOWN",
-      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156843-1_small.jpg",
-      "attributes": {
-        "ram_gb_raw": 8
-      }
-    },
-    {
-      "id": "macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo",
-      "name": "MacBook Neo MHFG4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Indigo",
-      "sku": "macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo",
-      "brand": "Apple",
-      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo.html",
-      "price": 46999.0,
-      "currency": "TRY",
-      "stock_status": "UNKNOWN",
-      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156846-1_small.jpg",
-      "attributes": {
-        "ram_gb_raw": 8
-      }
-    },
-    {
-      "id": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
-      "name": "Dell Pro 15 Essential 13.Nesil Core i7 1355U-16Gb-512Gb Ssd-15.6inc-W11",
-      "sku": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
-      "brand": "Dell",
-      "url": "https://www.vatanbilgisayar.com/dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11.html",
-      "price": 37999.0,
-      "currency": "TRY",
-      "stock_status": "UNKNOWN",
-      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/156977-1_small.jpg",
-      "attributes": {
-        "ram_gb_raw": 16
-      }
-    },
-    {
-      "id": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
-      "name": "Lenovo LOQ 14.Nesil Core i5 14500HX-RTX5060 8Gb-16Gb-512Gb Ssd-15.6-W11",
-      "sku": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
-      "brand": "Lenovo",
-      "url": "https://www.vatanbilgisayar.com/lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11.html",
-      "price": 59999.0,
-      "currency": "TRY",
-      "stock_status": "UNKNOWN",
-      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157183v-0-1_small.jpg",
-      "attributes": {
-        "ram_gb_raw": 8
-      }
-    },
-    {
       "id": "lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11",
       "name": "Lenovo Ideapad Slim 3 13.Nesil Core i3 1315U-8Gb-512Gb Ssd-15.6inc-W11",
       "sku": "lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11",
@@ -138,6 +124,20 @@
       "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/154754-1_small.jpg",
       "attributes": {
         "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "asus-vivobook-15-1-nesil-core-5-120u-8gb-512gb-ssd-15-6inc-w11-155220",
+      "name": "Asus Vivobook 15 1.Nesil Core 5 120U-8Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "asus-vivobook-15-1-nesil-core-5-120u-8gb-512gb-ssd-15-6inc-w11-155220",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-vivobook-15-1-nesil-core-5-120u-8gb-512gb-ssd-15-6inc-w11-155220.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/155220-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
       }
     },
     {
@@ -947,8 +947,1243 @@
       "attributes": {
         "ram_gb_raw": 256
       }
+    },
+    {
+      "id": "ipad-a16-tablet",
+      "name": "iPad A16 128GB Wi-Fi 11''Liquid Retina Ekran iPadOS Tablet Silver",
+      "sku": "ipad-a16-tablet",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/ipad-a16-tablet.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-443_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "ipad-128gb-wi-fi-11-liquid-retina-ekran-ipados-tablet-mavi",
+      "name": "iPad A16 128GB Wi-Fi 11''Liquid Retina Ekran iPadOS Tablet Mavi",
+      "sku": "ipad-128gb-wi-fi-11-liquid-retina-ekran-ipados-tablet-mavi",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/ipad-128gb-wi-fi-11-liquid-retina-ekran-ipados-tablet-mavi.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-444_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "honor-pad-10-2-63ghz-8gb-256gb-12-1-inc-android-tablet",
+      "name": "Honor Pad 10 2.63Ghz 8Gb 256Gb 12.1 inç Android Tablet",
+      "sku": "honor-pad-10-2-63ghz-8gb-256gb-12-1-inc-android-tablet",
+      "brand": "Honor",
+      "url": "https://www.vatanbilgisayar.com/honor-pad-10-2-63ghz-8gb-256gb-12-1-inc-android-tablet.html",
+      "price": 18999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/honor/thumb/152368-1-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet",
+      "name": "Lenovo Idea Tab 2.0Ghz 8Gb 128Gb 11inch 2.5K -Android Tablet",
+      "sku": "lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet.html",
+      "price": 12999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/2-5_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet-153427",
+      "name": "Lenovo Idea Tab 2.0Ghz 8Gb 128Gb 11inch 2.5K -Android Tablet",
+      "sku": "lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet-153427",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet-153427.html",
+      "price": 14999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/153427-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "lenovo-idea-tab-2-4ghz-8gb-128gb-11inch-2-5k-android-tablet",
+      "name": "Lenovo Idea Tab 2.4Ghz 8Gb 128Gb 11inch 2.5K LTE -Android Tablet",
+      "sku": "lenovo-idea-tab-2-4ghz-8gb-128gb-11inch-2-5k-android-tablet",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-2-4ghz-8gb-128gb-11inch-2-5k-android-tablet.html",
+      "price": 10899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/1-11_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "honor-pad-x9a-2-8ghz-8gb-128gb-11-5-android-tablet-155076",
+      "name": "Honor Pad X9a 2.8Ghz 8Gb 128Gb 11.5''-Android Tablet -Klavyeli",
+      "sku": "honor-pad-x9a-2-8ghz-8gb-128gb-11-5-android-tablet-155076",
+      "brand": "Honor",
+      "url": "https://www.vatanbilgisayar.com/honor-pad-x9a-2-8ghz-8gb-128gb-11-5-android-tablet-155076.html",
+      "price": 12499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/honor/thumb/155076_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "samsung-galaxy-tab-a11-256gb-8gb-11-android-tablet-sm-x230nzaptur-gri",
+      "name": "Samsung Galaxy Tab A11+ 256Gb 8GB-11'' Android Tablet SM-X230NZAPTUR Gri",
+      "sku": "samsung-galaxy-tab-a11-256gb-8gb-11-android-tablet-sm-x230nzaptur-gri",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-256gb-8gb-11-android-tablet-sm-x230nzaptur-gri.html",
+      "price": 11679.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155149-1-3_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "samsung-galaxy-tab-a11-android-tablet",
+      "name": "Samsung Galaxy Tab A11+ 128Gb 6Gb-11'' Android Tablet SM-X230NZARTUR Gri",
+      "sku": "samsung-galaxy-tab-a11-android-tablet",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-android-tablet.html",
+      "price": 8999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155149-1-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "samsung-galaxy-tab-a9-128gb-6gb-11-android-tablet-sm-x230nzsrtur-gumus",
+      "name": "Samsung Galaxy Tab A11+ 128Gb 6Gb-11'' Android Tablet SM-X230NZSRTUR Gümüş",
+      "sku": "samsung-galaxy-tab-a9-128gb-6gb-11-android-tablet-sm-x230nzsrtur-gumus",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a9-128gb-6gb-11-android-tablet-sm-x230nzsrtur-gumus.html",
+      "price": 8999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155150-1-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "ZAFR0025TR",
+      "name": "Lenovo Idea Tab 2.0Ghz 8Gb 128Gb 11inch 2.5K -Android Tablet",
+      "sku": "ZAFR0025TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet.html",
+      "price": 12999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/2-5_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "5301AQXJ",
+      "name": "Honor Pad X9a 2.8Ghz 8Gb 128Gb 11.5''-Android Tablet -Klavyeli",
+      "sku": "5301AQXJ",
+      "brand": "Honor",
+      "url": "https://www.vatanbilgisayar.com/honor-pad-x9a-2-8ghz-8gb-128gb-11-5-android-tablet-155076.html",
+      "price": 12499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/honor/thumb/155076_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "ZAFM0109TR",
+      "name": "Lenovo Idea Tab 2.4Ghz 8Gb 128Gb 11inch 2.5K LTE -Android Tablet",
+      "sku": "ZAFM0109TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-2-4ghz-8gb-128gb-11inch-2-5k-android-tablet.html",
+      "price": 10899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/1-11_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "ZAFR0284TR",
+      "name": "Lenovo Idea Tab 2.0Ghz 8Gb 128Gb 11inch 2.5K -Android Tablet",
+      "sku": "ZAFR0284TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-2-0ghz-8gb-128gb-11inch-2-5k-android-tablet-153427.html",
+      "price": 14999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/153427-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "MD3Y4TU/A",
+      "name": "iPad A16 128GB Wi-Fi 11''Liquid Retina Ekran iPadOS Tablet Silver",
+      "sku": "MD3Y4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/ipad-a16-tablet.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-443_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "5301ANNX",
+      "name": "Honor Pad 10 2.63Ghz 8Gb 256Gb 12.1 inç Android Tablet",
+      "sku": "5301ANNX",
+      "brand": "Honor",
+      "url": "https://www.vatanbilgisayar.com/honor-pad-10-2-63ghz-8gb-256gb-12-1-inc-android-tablet.html",
+      "price": 18999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/honor/thumb/152368-1-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "SM-X230NZSRTUR",
+      "name": "Samsung Galaxy Tab A11+ 128Gb 6Gb-11'' Android Tablet SM-X230NZSRTUR Gümüş",
+      "sku": "SM-X230NZSRTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a9-128gb-6gb-11-android-tablet-sm-x230nzsrtur-gumus.html",
+      "price": 8999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155150-1-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "SM-X230NZARTUR",
+      "name": "Samsung Galaxy Tab A11+ 128Gb 6Gb-11'' Android Tablet SM-X230NZARTUR Gri",
+      "sku": "SM-X230NZARTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-android-tablet.html",
+      "price": 8999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155149-1-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "5301ARML",
+      "name": "Honor Pad X8b 2.4Ghz 4Gb 128Gb 11''-Android Tablet",
+      "sku": "5301ARML",
+      "brand": "Honor",
+      "url": "https://www.vatanbilgisayar.com/honor-pad-x8b-2-4ghz-4gb-128gb-11-android-tablet.html",
+      "price": 8499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/honor/thumb/156515-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 4
+      }
+    },
+    {
+      "id": "MD4A4TU/A",
+      "name": "iPad A16 128GB Wi-Fi 11''Liquid Retina Ekran iPadOS Tablet Mavi",
+      "sku": "MD4A4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/ipad-128gb-wi-fi-11-liquid-retina-ekran-ipados-tablet-mavi.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-444_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "SM-X230NZAPTUR",
+      "name": "Samsung Galaxy Tab A11+ 256Gb 8GB-11'' Android Tablet SM-X230NZAPTUR Gri",
+      "sku": "SM-X230NZAPTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-256gb-8gb-11-android-tablet-sm-x230nzaptur-gri.html",
+      "price": 11679.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155149-1-3_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "ZAEH0039TR",
+      "name": "Lenovo Tab 1.8Ghz 4Gb 128Gb 10.1inch- Android Tablet",
+      "sku": "ZAEH0039TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-tab-m10-1-8ghz-4gb-128gb-10-1inch-android-tablet.html",
+      "price": 7999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/149424-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 4
+      }
+    },
+    {
+      "id": "SM-X400NZRRTUR",
+      "name": "Samsung Galaxy Tab S10 Lite 2Ghz 128Gb 6Gb 10.9''Android Tablet Red",
+      "sku": "SM-X400NZRRTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-s10-lite-2ghz-128gb-6gb-10-9-android-tablet-red.html",
+      "price": 13499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155593-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "Casper VIA S50",
+      "name": "Casper Via S50 2Ghz 4Gb 128Gb 11\"'Fhd -Android Tablet",
+      "sku": "Casper VIA S50",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-via-s50-2ghz-4gb-128gb-11-fhd-android-tablet.html",
+      "price": 8999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/1-7_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 4
+      }
+    },
+    {
+      "id": "SM-X230NZSPTUR",
+      "name": "Samsung Galaxy Tab A11+ 256Gb 8Gb-11'' Android Tablet SM-X230NZSPTUR Gümüş",
+      "sku": "SM-X230NZSPTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-256gb-8gb-11-android-tablet-sm-x230nzsptur-gumus.html",
+      "price": 11679.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155150-1-3_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "SM-X130NZAATUR",
+      "name": "Samsung Galaxy Tab A11 64Gb 4GB-8.7'' Android TabletSM-X130NZAATUR Gri",
+      "sku": "SM-X130NZAATUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-64gb-4gb-8-7-android-tabletsm-x130nzaatur-gri.html",
+      "price": 5699.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/154065-1-3_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 64
+      }
+    },
+    {
+      "id": "SM-X400NZARTUR",
+      "name": "Samsung Galaxy Tab S10 Lite 2Ghz 128Gb 6Gb 10.9''Android Tablet Gri",
+      "sku": "SM-X400NZARTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-s10-lite-2ghz-128gb-6gb-10-9-android-tablet-gri.html",
+      "price": 13499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/155591-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "ZAF00214TR",
+      "name": "Lenovo Tab One 1.8Ghz 4Gb 128Gb 8.7inch- Android Tablet",
+      "sku": "ZAF00214TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-tab-one-1-8ghz-4gb-128gb-8-7inch-android-tablet.html",
+      "price": 6499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/153738-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 4
+      }
+    },
+    {
+      "id": "SM-X620NZARTUR",
+      "name": "Samsung Galaxy Tab S10 Fe+ 128Gb 8GB-13.1''Android Tablet SM-X620NZARTUR Gri",
+      "sku": "SM-X620NZARTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-s10-fe-plus.html",
+      "price": 20799.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/150729-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "ZAE40185TR",
+      "name": "Lenovo Idea Tab Pro 2.2Ghz 8Gb 256Gb 12.7inch' 3K- Android Tablet",
+      "sku": "ZAE40185TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-idea-tab-pro-2-2ghz-8gb-256gb-12-7inch-3k-android-tablet-152329.html",
+      "price": 19999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/152329-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "SM-X130NZAETUR",
+      "name": "Samsung Galaxy Tab A11 128Gb 8GB-8.7'' Android Tablet SM-X130NZAETUR Gri",
+      "sku": "SM-X130NZAETUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-a11-128gb-8gb-8-7-android-tablet-sm-x130nzaetur-gri.html",
+      "price": 7799.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/154065-1-4_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "Casper PAD M10 PEN",
+      "name": "Casper Pad M10 Pen 2.2Ghz 8Gb 128Gb 12.2\"'2.4K -Android Tablet",
+      "sku": "Casper PAD M10 PEN",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-pad-m10-pen-2-2ghz-8gb-128gb-12-2-2-4k-android-tablet.html",
+      "price": 12999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/157890-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "MD4G4TU/A",
+      "name": "iPad A16 256GB Wi-Fi 11''Liquid Retina Ekran iPadOS Tablet Silver",
+      "sku": "MD4G4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/ipad-256gb-wi-fi-11-liquid-retina-ekran-ipados-tablet-silver.html",
+      "price": 28899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-447_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "SM-X620NZSRTUR",
+      "name": "Samsung Galaxy Tab S10 Fe+ 128Gb 8GB-13.1''Android Tablet SM-X620NZSRTUR Gümüş",
+      "sku": "SM-X620NZSRTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-tab-s10-fe-128gb-8gb-13-1-android-tablet-sm-x620nzsrtur-gumus.html",
+      "price": 20799.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/150730-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "tcl-65c6k-65inc-164-cm-4k-uhd-google-miniled-tv-uydu-alicili",
+      "name": "TCL 65C6K 65inc 165 cm QD Miniled 4K UHD Google TV,Uydu Alıcılı",
+      "sku": "tcl-65c6k-65inc-164-cm-4k-uhd-google-miniled-tv-uydu-alicili",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-65c6k-65inc-164-cm-4k-uhd-google-miniled-tv-uydu-alicili.html",
+      "price": 58649.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-7_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "tcl-55c6k-55inc-139-cm-4k-uhd-google-miniled-tv-uydu-alicili",
+      "name": "TCL 55C6K 55inc 139 cm QD Miniled 4K UHD Google TV,Uydu Alıcılı",
+      "sku": "tcl-55c6k-55inc-139-cm-4k-uhd-google-miniled-tv-uydu-alicili",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-55c6k-55inc-139-cm-4k-uhd-google-miniled-tv-uydu-alicili.html",
+      "price": 48999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-8_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "tcl-65p8k-65inc-164-cm-4k-uhd-google-smart-tv-uydu-alicili",
+      "name": "TCL 65P8K 65inc 165 cm 4K UHD 144 Hz Google Smart QLED  TV,Uydu Alıcılı",
+      "sku": "tcl-65p8k-65inc-164-cm-4k-uhd-google-smart-tv-uydu-alicili",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-65p8k-65inc-164-cm-4k-uhd-google-smart-tv-uydu-alicili.html",
+      "price": 47599.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-13_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "tcl-55p8k-55inc-139-cm-4k-uhd-google-smart-tv-uydu-alicili",
+      "name": "TCL 55P8K 55inc 139 cm 4K UHD 144 Hz Google Smart QLED  TV,Uydu Alıcılı",
+      "sku": "tcl-55p8k-55inc-139-cm-4k-uhd-google-smart-tv-uydu-alicili",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-55p8k-55inc-139-cm-4k-uhd-google-smart-tv-uydu-alicili.html",
+      "price": 33999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-14_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "samsung-qe-75qn70f-75inc-189-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili",
+      "name": "SAMSUNG QE 75QN70F 75inc 189 cm 4K UHD Smart Neo QLED TV,Uydu Alıcılı",
+      "sku": "samsung-qe-75qn70f-75inc-189-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-75qn70f-75inc-189-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili.html",
+      "price": 72499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151603-1-2_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "samsung-qe-65qn70f-65inc-163-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili",
+      "name": "SAMSUNG QE 65QN70F 65inc 163 cm 4K UHD Smart Neo QLED TV,Uydu Alıcılı",
+      "sku": "samsung-qe-65qn70f-65inc-163-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-65qn70f-65inc-163-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili.html",
+      "price": 67999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151603-1-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "samsung-qe-65q7f5-65inc-163-cm-4k-uhd-smart-qled-tv-uydu-alicili",
+      "name": "SAMSUNG QE 65Q7F5 65inc 163 cm 4K UHD Smart QLED TV,Uydu Alıcılı",
+      "sku": "samsung-qe-65q7f5-65inc-163-cm-4k-uhd-smart-qled-tv-uydu-alicili",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-65q7f5-65inc-163-cm-4k-uhd-smart-qled-tv-uydu-alicili.html",
+      "price": 46999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151611-1-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "lg-75nano80a6b-75-inc-190-cm-uhd-4k-smart-tv-ai-sihirli-kumanda-webos25-uydu-alici",
+      "name": "LG 75NANO80A6B 75 inç 190 cm UHD 4K Smart TV AI Sihirli Kumanda webOS25,Uydu Alıcı",
+      "sku": "lg-75nano80a6b-75-inc-190-cm-uhd-4k-smart-tv-ai-sihirli-kumanda-webos25-uydu-alici",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-75nano80a6b-75-inc-190-cm-uhd-4k-smart-tv-ai-sihirli-kumanda-webos25-uydu-alici.html",
+      "price": 48999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/75nano80a6b_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "lg-55qned70b6c-55-inc-139-cm-4k-miniled-smart-tv-ai-sihirli-kumanda-hdr10-webos2",
+      "name": "LG 55QNED70B6C 55 inç 139 cm 4K MiniLED Smart TV AI Sihirli Kumanda HDR10 webOS26",
+      "sku": "lg-55qned70b6c-55-inc-139-cm-4k-miniled-smart-tv-ai-sihirli-kumanda-hdr10-webos2",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-55qned70b6c-55-inc-139-cm-4k-miniled-smart-tv-ai-sihirli-kumanda-hdr10-webos2.html",
+      "price": 40899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/0010-55qned70b6c_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "tcl-50p7lgtv-50inc-127-cm-4k-uhd-google-smart-tv-uydu-alicili",
+      "name": "TCL 50P7LGTV 50inc 127 cm 4K UHD Google Smart QLED TV,Uydu Alıcılı",
+      "sku": "tcl-50p7lgtv-50inc-127-cm-4k-uhd-google-smart-tv-uydu-alicili",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-50p7lgtv-50inc-127-cm-4k-uhd-google-smart-tv-uydu-alicili.html",
+      "price": 27999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/158647_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "65C6KGTV",
+      "name": "TCL 65C6K 65inc 165 cm QD Miniled 4K UHD Google TV,Uydu Alıcılı",
+      "sku": "65C6KGTV",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-65c6k-65inc-164-cm-4k-uhd-google-miniled-tv-uydu-alicili.html",
+      "price": 58649.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-7_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "65P8KGTV",
+      "name": "TCL 65P8K 65inc 165 cm 4K UHD 144 Hz Google Smart QLED  TV,Uydu Alıcılı",
+      "sku": "65P8KGTV",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-65p8k-65inc-164-cm-4k-uhd-google-smart-tv-uydu-alicili.html",
+      "price": 47599.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-13_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "75NANO80A6B",
+      "name": "LG 75NANO80A6B 75 inç 190 cm UHD 4K Smart TV AI Sihirli Kumanda webOS25,Uydu Alıcı",
+      "sku": "75NANO80A6B",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-75nano80a6b-75-inc-190-cm-uhd-4k-smart-tv-ai-sihirli-kumanda-webos25-uydu-alici.html",
+      "price": 48999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/75nano80a6b_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "UE55U8000FUXTK",
+      "name": "SAMSUNG UE 55U8000 55inc 138 cm 4K UHD Smart TV,Uydu Alıcılı",
+      "sku": "UE55U8000FUXTK",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-ue-55u8000-55inc-138-cm-4k-uhd-smart-tv-uydu-alicili.html",
+      "price": 32399.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151621-1-4_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "QE65QN70FAUXTK",
+      "name": "SAMSUNG QE 65QN70F 65inc 163 cm 4K UHD Smart Neo QLED TV,Uydu Alıcılı",
+      "sku": "QE65QN70FAUXTK",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-65qn70f-65inc-163-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili.html",
+      "price": 67999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151603-1-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "QE75QN70FAUXTK",
+      "name": "SAMSUNG QE 75QN70F 75inc 189 cm 4K UHD Smart Neo QLED TV,Uydu Alıcılı",
+      "sku": "QE75QN70FAUXTK",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-75qn70f-75inc-189-cm-4k-uhd-smart-neo-qled-tv-uydu-alicili.html",
+      "price": 72499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151603-1-2_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "QE65Q7F5AUXTK",
+      "name": "SAMSUNG QE 65Q7F5 65inc 163 cm 4K UHD Smart QLED TV,Uydu Alıcılı",
+      "sku": "QE65Q7F5AUXTK",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-65q7f5-65inc-163-cm-4k-uhd-smart-qled-tv-uydu-alicili.html",
+      "price": 46999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151611-1-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "55C6KGTV",
+      "name": "TCL 55C6K 55inc 139 cm QD Miniled 4K UHD Google TV,Uydu Alıcılı",
+      "sku": "55C6KGTV",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-55c6k-55inc-139-cm-4k-uhd-google-miniled-tv-uydu-alicili.html",
+      "price": 42499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-8_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "50P7LGTV",
+      "name": "TCL 50P7LGTV 50inc 127 cm 4K UHD Google Smart QLED TV,Uydu Alıcılı",
+      "sku": "50P7LGTV",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-50p7lgtv-50inc-127-cm-4k-uhd-google-smart-tv-uydu-alicili.html",
+      "price": 27999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/158647_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "65QNED70B6C",
+      "name": "LG 65QNED70B6C 65 inç 164 cm 4K MiniLED Smart TV AI Sihirli Kumanda HDR10 webOS26",
+      "sku": "65QNED70B6C",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-65qned70b6c-65-inc-165-cm-4k-miniled-smart-tv-ai-sihirli-kumanda-hdr10-webos2.html",
+      "price": 50899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/0008-65qned70b6c_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "55QNED70B6C",
+      "name": "LG 55QNED70B6C 55 inç 139 cm 4K MiniLED Smart TV AI Sihirli Kumanda HDR10 webOS26",
+      "sku": "55QNED70B6C",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-55qned70b6c-55-inc-139-cm-4k-miniled-smart-tv-ai-sihirli-kumanda-hdr10-webos2.html",
+      "price": 40899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/0010-55qned70b6c_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "QE55Q7F5AUXTK",
+      "name": "SAMSUNG QE 55Q7F5 55inc 138 cm 4K UHD Smart QLED TV,Uydu Alıcılı",
+      "sku": "QE55Q7F5AUXTK",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-qe-55q7f5-55inc-138-cm-4k-uhd-smart-qled-tv-uydu-alicili.html",
+      "price": 42299.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/151611-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "55P8KGTV",
+      "name": "TCL 55P8K 55inc 139 cm 4K UHD 144 Hz Google Smart QLED  TV,Uydu Alıcılı",
+      "sku": "55P8KGTV",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-55p8k-55inc-139-cm-4k-uhd-google-smart-tv-uydu-alicili.html",
+      "price": 36549.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/1-14_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "65GQ750A",
+      "name": "GRUNDIG 65GQ750A 65inc 164 cm 4K UHD Google Smart QLED TV,Uydu Alıcılı",
+      "sku": "65GQ750A",
+      "brand": "Grundig",
+      "url": "https://www.vatanbilgisayar.com/grundig-65gq750a-65inc-164-cm-4k-uhd-google-smart-qled-tv-uydu-alicili.html",
+      "price": 40999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/grundig/thumb/153687-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "32VQ80F2HA",
+      "name": "ONVO 32VQ80F2HA 32inc 82 cm HD READY WhaleOS Android Smart QLED TV",
+      "sku": "32VQ80F2HA",
+      "brand": "Onvo",
+      "url": "https://www.vatanbilgisayar.com/onvo-32vq80f2ha-32inc-82-cm-hd-ready-whaleos-android-smart-qled-tv.html",
+      "price": 7999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/onvo/thumb/155634-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "43VQ80F3FA",
+      "name": "ONVO 43VQ80F3FA 43inc 109 cm FHD WhaleOS Android Smart QLED TV",
+      "sku": "43VQ80F3FA",
+      "brand": "Onvo",
+      "url": "https://www.vatanbilgisayar.com/onvo-43vq80f3fa-43inc-109-cm-fhd-whaleos-android-smart-qled-tv.html",
+      "price": 12499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/onvo/thumb/158586-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "50NU900B6LA",
+      "name": "LG 50NU900 50inc 127 cm 4K NANO UHD webOS26 Smart TV Uydu Alıcılı",
+      "sku": "50NU900B6LA",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-50nu900-50inc-127-cm-4k-nano-uhd-webos26-smart-tv-uydu-alicili.html",
+      "price": 30899.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/157885_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "55VQ90F3UA",
+      "name": "ONVO 55VQ90F3UA 55inc 140 cm 4K UHD Frameless Google Smart QLED TV,Uydu Alıcılı",
+      "sku": "55VQ90F3UA",
+      "brand": "Onvo",
+      "url": "https://www.vatanbilgisayar.com/onvo-55vq90f3ua-55inc-140-cm-4k-uhd-frameless-google-smart-qled-tv-uydu-alicili.html",
+      "price": 22499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/onvo/thumb/155153_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "65PUS8500/62",
+      "name": "Philips Ambilight TV 65PUS8500 4K UHD QLED 164cm 65\" Smart TV Dolby Atmos Titan OS",
+      "sku": "65PUS8500/62",
+      "brand": "Philips",
+      "url": "https://www.vatanbilgisayar.com/philips-ambilight-tv-65pus8500-4k-uhd-qled-164cm-65-smart-tv-dolby-atmos-titan.html",
+      "price": 44999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/philips/thumb/152216-1-5_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "55PUS8500/62",
+      "name": "Philips Ambilight TV 55PUS8500 4K UHD QLED 139cm 55\" Smart TV Dolby Atmos Titan OS",
+      "sku": "55PUS8500/62",
+      "brand": "Philips",
+      "url": "https://www.vatanbilgisayar.com/philips-ambilight-tv-55pus8500-4k-uhd-qled-139cm-55-smart-tv-dolby-atmos-titan.html",
+      "price": 34999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/philips/thumb/151725-1-6_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "65C7LGTV",
+      "name": "TCL 65C7L 65inc 164 cm 144 Hz SQD Miniled 4K UHD Google TV,Uydu Alıcılı",
+      "sku": "65C7LGTV",
+      "brand": "Tcl",
+      "url": "https://www.vatanbilgisayar.com/tcl-65c7l-65inc-164-cm-144-hz-sqd-miniled-4k-uhd-google-tv-uydu-alicili.html",
+      "price": 86699.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/tcl/thumb/157655-1_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "UE50M70HAUXTK",
+      "name": "SAMSUNG UE 50M70H 50inc 125cm 4K UHD MiniLED Smart TV,Uydu Alıcılı",
+      "sku": "UE50M70HAUXTK",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-ue-50m70h-125cm-4k-uhd-miniled-smart-tv-uydu-alicili.html",
+      "price": 38199.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/158380-1-2_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "55NU900B6LA",
+      "name": "LG 55NU900 55inc 139 cm 4K NANO UHD webOS26 Smart TV Uydu Alıcılı",
+      "sku": "55NU900B6LA",
+      "brand": "Lg",
+      "url": "https://www.vatanbilgisayar.com/lg-55nu900b6la-55inc-139-cm-4k-nano-uhd-webos26-smart-tv-uydu-alicili.html",
+      "price": 37999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lg/thumb/157885-2_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "24VL80F2HA",
+      "name": "ONVO 24VL80F2HA 24'' Frameless HD Whale Os 10 TV",
+      "sku": "24VL80F2HA",
+      "brand": "Onvo",
+      "url": "https://www.vatanbilgisayar.com/onvo-24vl80f2ha-24-frameless-hd-whale-os-10-tv.html",
+      "price": 6999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/onvo/thumb/157475_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "casper-excalibur-13-nesil-core-i7-13620h-rtx5070-8gb-32gb-1tb-ssd-15-6inc-w11",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX5070 8Gb-32Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "casper-excalibur-13-nesil-core-i7-13620h-rtx5070-8gb-32gb-1tb-ssd-15-6inc-w11",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx5070-8gb-32gb-1tb-ssd-15-6inc-w11.html",
+      "price": 89999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/152076-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "msi-katana-17-14-nesil-core-i7-14650hx-rtx5070-8gb-32gb-1tb-ssd-17-3inc-w11",
+      "name": "Msi Katana 17 14.Nesil Core i7 14650HX-RTX5070 8Gb-32Gb-1Tb Ssd-17.3inc-W11",
+      "sku": "msi-katana-17-14-nesil-core-i7-14650hx-rtx5070-8gb-32gb-1tb-ssd-17-3inc-w11",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-katana-17-14-nesil-core-i7-14650hx-rtx5070-8gb-32gb-1tb-ssd-17-3inc-w11.html",
+      "price": 100279.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/152400-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "asus-rog-strix-g16-14-nesil-core-i7-14650x-rtx5060-8gb-16gb-512gb-16inc-w11",
+      "name": "Asus Rog Strix G16 14.Nesil Core i7 14650X-RTX5060 8Gb-16Gb-512Gb-16inc-W11",
+      "sku": "asus-rog-strix-g16-14-nesil-core-i7-14650x-rtx5060-8gb-16gb-512gb-16inc-w11",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-rog-strix-g16-14-nesil-core-i7-14650x-rtx5060-8gb-16gb-512gb-16inc-w11.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/152621-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "casper-excalibur-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX5050 8Gb-16Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "casper-excalibur-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11.html",
+      "price": 64999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/152966-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "msi-cyborg-15-13-nesil-core-i7-13620h-rtx5060-8gb-32gb-1tb-ssd-15-6inc-w11",
+      "name": "Msi Cyborg 15 13.Nesil Core i7 13620H-RTX5060 8GB-32GB-1Tb Ssd-15.6inc-W11",
+      "sku": "msi-cyborg-15-13-nesil-core-i7-13620h-rtx5060-8gb-32gb-1tb-ssd-15-6inc-w11",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i7-13620h-rtx5060-8gb-32gb-1tb-ssd-15-6inc-w11.html",
+      "price": 105159.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/154287-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "msi-cyborg-15-13-nesil-core-i5-13420h-rtx4050-6gb-16gb-512gb-ssd-15-6inc-w11",
+      "name": "Msi Cyborg 15 13.Nesil Core i5 13420H-RTX4050 6GB-16GB-512Gb Ssd-15.6inc-W11",
+      "sku": "msi-cyborg-15-13-nesil-core-i5-13420h-rtx4050-6gb-16gb-512gb-ssd-15-6inc-w11",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i5-13420h-rtx4050-6gb-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 48559.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/154821-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "msi-cyborg-15-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11",
+      "name": "Msi Cyborg 15 13.Nesil Core i7 13620H-RTX5050 8GB-16GB-1Tb Ssd-15.6inc-W11",
+      "sku": "msi-cyborg-15-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11.html",
+      "price": 60369.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/155295-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "hp-omen-16-am0058nt-core-ultra-7-255h-rtx5060-24gb-1tb-ssd-16-inch-w11",
+      "name": "Hp Omen 16-am0058nt Core Ultra 7 255H-RTX5060 8Gb-24Gb-1Tb Ssd-16 inch- W11",
+      "sku": "hp-omen-16-am0058nt-core-ultra-7-255h-rtx5060-24gb-1tb-ssd-16-inch-w11",
+      "brand": "Hp",
+      "url": "https://www.vatanbilgisayar.com/hp-omen-16-am0058nt-core-ultra-7-255h-rtx5060-24gb-1tb-ssd-16-inch-w11.html",
+      "price": 75999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/hp/thumb/156090-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "G870.1362-BQ50A-C",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX5050 8Gb-16Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "G870.1362-BQ50A-C",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11.html",
+      "price": 64999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/152966-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "CYBORG 15 B13WFKG-489TR",
+      "name": "Msi Cyborg 15 13.Nesil Core i7 13620H-RTX5060 8GB-32GB-1Tb Ssd-15.6inc-W11",
+      "sku": "CYBORG 15 B13WFKG-489TR",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i7-13620h-rtx5060-8gb-32gb-1tb-ssd-15-6inc-w11.html",
+      "price": 105159.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/154287-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "G870.1362-DQ70A-C",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX5070 8Gb-32Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "G870.1362-DQ70A-C",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx5070-8gb-32gb-1tb-ssd-15-6inc-w11.html",
+      "price": 89999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/152076-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "CJ8U2EA",
+      "name": "Hp Omen 16-am0058nt Core Ultra 7 255H-RTX5060 8Gb-24Gb-1Tb Ssd-16 inch- W11",
+      "sku": "CJ8U2EA",
+      "brand": "Hp",
+      "url": "https://www.vatanbilgisayar.com/hp-omen-16-am0058nt-core-ultra-7-255h-rtx5060-24gb-1tb-ssd-16-inch-w11.html",
+      "price": 75999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/hp/thumb/156090-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "G870.1362-CQ60A-C",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX5060 8Gb-24Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "G870.1362-CQ60A-C",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx5060-8gb-24gb-1tb-ssd-15-6inc-w11.html",
+      "price": 71999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/154118-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "FA607NUQ-RL009W-Gaming",
+      "name": "Asus Tuf Gaming A16 1.Nesil Ryzen 7 170-RTX4050 6Gb-16Gb-512Gb Ssd-16inc-W11",
+      "sku": "FA607NUQ-RL009W-Gaming",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-tuf-gaming-a16-1-nesil-ryzen-7-170-rtx4050-6gb-16gb-512gb-ssd-16inc-w11.html",
+      "price": 54999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/157012-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "NH.QNBEY.00B",
+      "name": "Acer Nitro V 15 13.Nesil Core i5 13420H-RTX4050 6Gb-16Gb-1Tb Ssd-15-6inc-W11",
+      "sku": "NH.QNBEY.00B",
+      "brand": "Acer",
+      "url": "https://www.vatanbilgisayar.com/acer-nitro-v-15-13-nesil-core-i5-13420h-rtx4050-6gb-16gb-512gb-ssd-15-6inc-w11-153827.html",
+      "price": 39996.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/acer/thumb/153827-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "83LY009LTR",
+      "name": "Lenovo Legion 5 13.Nesil Core i7 13650HX-RTX5070 8Gb-32Gb-1Tb Ssd-15.1\"-W11",
+      "sku": "83LY009LTR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-13-nesil-core-i7-13650hx-rtx5070-8gb-24gb-1tb-ssd-15-6-w11-156584.html",
+      "price": 109999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/156584-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "G870.1362-AQJ0A-C",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX3050 6Gb-12Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "G870.1362-AQJ0A-C",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx3050-6gb-64gb-480gb-ssd-15-6inc-w11.html",
+      "price": 49999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/155605-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "83LY009KTR",
+      "name": "Lenovo Legion 5 14.Nesil Core i9 14900HX-RTX5070 8Gb-32Gb-1Tb Ssd-15.1\"-W11",
+      "sku": "83LY009KTR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-legion-5-14-nesil-core-i7-14900hx-rtx5070-8gb-32gb-1tb-ssd-15-1-w11.html",
+      "price": 139999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/156774-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "83GS00NUTR",
+      "name": "Lenovo LOQ 12.Nesil Core i5 12600HX-RTX4050 6Gb-24Gb-512Gb Ssd-15.6-W11",
+      "sku": "83GS00NUTR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-12-nesil-core-i5-12600hx-rtx4050-6gb-24gb-512gb-ssd-15-6-w11.html",
+      "price": 54999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/150530-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "CJ8T6EA",
+      "name": "Hp Omen 16-am0052nt Core Ultra 7 255H-RTX5070 8Gb-24Gb-1Tb Ssd-16 inch- W11",
+      "sku": "CJ8T6EA",
+      "brand": "Hp",
+      "url": "https://www.vatanbilgisayar.com/hp-omen-max16-ah0016nt-core-ultra-7-255hx-rtx5070-ti-32gb-1tb-ssd-16-inch-w11.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/hp/thumb/155598-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "G915.1362-DQ60A-C",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX5060 8Gb-32Gb-1Tb Ssd-16inc-W11",
+      "sku": "G915.1362-DQ60A-C",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx5060-8gb-32gb-1tb-ssd-16inc-w11.html",
+      "price": 79999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/urun-gorsel-sablonu-kurtarildi_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "CYBORG 15 A13VE-2056TR",
+      "name": "Msi Cyborg 15 13.Nesil Core i7 13620H-RTX4050 6GB-16GB-512Gb Ssd-15.6inc-W11",
+      "sku": "CYBORG 15 A13VE-2056TR",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i7-13620h-rtx4050-6gb-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 55829.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/155039_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "NH.QZAEY.003",
+      "name": "Acer Nitro V 15 13.Nesil Core i9 13900H-RTX5060 8Gb-32Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "NH.QZAEY.003",
+      "brand": "Acer",
+      "url": "https://www.vatanbilgisayar.com/acer-nitro-v-15-13-nesil-core-i9-13900h-rtx5060-8gb-32gb-1tb-ssd-15-6inc-w11.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/acer/thumb/154598-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "NH.QYWEY.003",
+      "name": "Acer Nitro V 16 2.Nesil Ryzen 5 AI 240-RTX5050 8Gb-16Gb-1Tb Ssd-16inc-W11",
+      "sku": "NH.QYWEY.003",
+      "brand": "Acer",
+      "url": "https://www.vatanbilgisayar.com/acer-nitro-v-16-2-nesil-ryzen-5-240-rtx5050-8gb-16gb-1tb-ssd-16inc-w11.html",
+      "price": 54996.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/acer/thumb/155461-2_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "G870.1362-DQA0A-C",
+      "name": "Casper Excalibur 13.Nesil Core i7 13620H-RTX4050 6Gb-32Gb-1Tb Ssd-15.6inc-W11",
+      "sku": "G870.1362-DQA0A-C",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-excalibur-13-nesil-core-i7-13620h-rtx4050-6gb-32gb-1tb-ssd-15-6inc-w11.html",
+      "price": 63999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/155715-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
     }
   ],
-  "source": "vatanbilgisayar.com listing HTML",
-  "retrieved_note": "polite listing crawl; stock UNKNOWN when not on page"
+  "source": "vatan live capture",
+  "count": 161,
+  "quality": "live_polite_capture"
 }
