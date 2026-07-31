@@ -38,6 +38,9 @@ media = [
   "Pillow>=10.0",
   "httpx>=0.27",
 ]
+storage = [
+  "boto3>=1.34",
+]
 
 [project.scripts]
 taksitlio-api = "taksitlio.main:app"

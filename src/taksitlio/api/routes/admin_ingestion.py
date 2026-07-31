@@ -367,6 +367,8 @@ async def list_products(
                 "display_name": p.display_name,
                 "data_quality_status": p.data_quality_status,
                 "status": p.status,
+                "primary_cdn_url": p.primary_cdn_url,
+                "primary_media_status": p.primary_media_status,
             }
             for p in rows
         ]

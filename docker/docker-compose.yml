@@ -43,8 +43,40 @@ services:
       SESSION_TTL_SECONDS: "86400"
       LOG_LEVEL: INFO
       ALLOW_IN_MEMORY: "false"
+      MEDIA_STORAGE_ROOT: /data/media
+      CDN_BASE_URL: http://localhost:8000/cdn
     ports:
       - "8000:8000"
+    volumes:
+      - media_data:/data/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  scheduler:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command:
+      [
+        "taksitlio-scheduler",
+        "--use-postgres",
+        "--poll-interval",
+        "2",
+        "--lease-seconds",
+        "60",
+      ]
+    environment:
+      DATABASE_URL: postgresql://taksitlio:taksitlio@postgres:5432/taksitlio
+      REDIS_URL: redis://redis:6379/0
+      LOG_LEVEL: INFO
+      SCHEDULER_WORKER_ID: scheduler-1
+      MEDIA_STORAGE_ROOT: /data/media
+      CDN_BASE_URL: http://localhost:8000/cdn
+    volumes:
+      - media_data:/data/media
     depends_on:
       postgres:
         condition: service_healthy
@@ -53,3 +85,4 @@ services:
 
 volumes:
   pgdata:
+  media_data:

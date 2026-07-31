@@ -59,20 +59,26 @@ class RankedProduct:
     disqualify_reasons: tuple[str, ...]
 
 
-def safety_disqualify(item: RankableProduct) -> tuple[str, ...]:
+def safety_disqualify(
+    item: RankableProduct,
+    *,
+    require_finance: bool = True,
+    require_image: bool = True,
+) -> tuple[str, ...]:
     reasons: list[str] = []
     if item.stock_status != "AVAILABLE":
         reasons.append("stock_not_available")
     if item.price_freshness != "FRESH":
         reasons.append("stale_or_unverified_price")
-    if not item.has_primary_image:
+    if require_image and not item.has_primary_image:
         reasons.append("primary_image_unavailable")
-    if not item.finance_active:
-        reasons.append("finance_inactive")
-    if not item.rate_fresh:
-        reasons.append("rate_not_fresh")
-    if not item.campaign_active:
-        reasons.append("campaign_inactive")
+    if require_finance:
+        if not item.finance_active:
+            reasons.append("finance_inactive")
+        if not item.rate_fresh:
+            reasons.append("rate_not_fresh")
+        if not item.campaign_active:
+            reasons.append("campaign_inactive")
     return tuple(reasons)
 
 
@@ -85,15 +91,28 @@ def rank_products(
 ) -> tuple[RankedProduct, ...]:
     w = weights or RankingWeights()
     scored: list[RankedProduct] = []
+    require_finance = mode in {
+        RankingMode.LOWEST_MONTHLY_PAYMENT,
+        RankingMode.LOWEST_TOTAL_REPAYMENT,
+        RankingMode.BEST_OVERALL_VALUE,
+        RankingMode.LONGEST_TERM,
+    }
+    # Catalog browse (cheapest / attribute) may surface IMAGE_UNAVAILABLE cards.
+    require_image = require_finance
 
     eligible_for_best = [
         i
         for i in items
-        if not safety_disqualify(i) and i.best_monthly_payment is not None
+        if not safety_disqualify(
+            i, require_finance=require_finance, require_image=require_image
+        )
+        and i.best_monthly_payment is not None
     ]
 
     for item in items:
-        reasons = safety_disqualify(item)
+        reasons = safety_disqualify(
+            item, require_finance=require_finance, require_image=require_image
+        )
         if mode in {
             RankingMode.LOWEST_MONTHLY_PAYMENT,
             RankingMode.LOWEST_TOTAL_REPAYMENT,
@@ -112,7 +131,7 @@ def rank_products(
             continue
 
         if mode is RankingMode.CHEAPEST_PRODUCT_PRICE:
-            # Still block unknown stock / stale from topping when safety says so.
+            # Still block unknown stock / stale / missing image from topping.
             if reasons:
                 score = float("-inf")
                 label = "excluded"
@@ -135,6 +154,13 @@ def rank_products(
             score = float("-inf") if term is None else float(term)
             label = "En uzun vade"
         elif mode is RankingMode.BEST_ATTRIBUTE_MATCH:
+            if reasons:
+                scored.append(
+                    RankedProduct(
+                        item.product_id, float("-inf"), "excluded", True, reasons
+                    )
+                )
+                continue
             score = item.attribute_coverage
             label = "Kriterlerinize en yakın seçenek"
         else:

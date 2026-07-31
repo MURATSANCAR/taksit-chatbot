@@ -11,7 +11,7 @@ COPY src ./src
 COPY db ./db
 COPY eval ./eval
 
-RUN pip install --no-cache-dir -e ".[api]"
+RUN pip install --no-cache-dir -e ".[api,media]"
 
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000

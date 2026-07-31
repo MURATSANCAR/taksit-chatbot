@@ -112,18 +112,30 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] `taksitlio-scheduler` daemon (`run_daemon` lease loop)
 - [x] Unit tests
 
+### P9 — queue handlers + media on upsert + compose scheduler
+
+- [x] `QueueDispatchHandler` (MEDIA_FETCH / PRICE|STOCK_REFRESH / ack queues)
+- [x] `enqueue_media_jobs_for_applied` after catalog upsert (source URL → worker only)
+- [x] Catalog media attach + offer stale/refresh helpers
+- [x] Compose `scheduler` service + shared `media_data` volume
+- [x] Dockerfile installs `.[api,media]`; `taksitlio-scheduler --use-postgres`
+- [x] Unit tests
+
+### P10 — catalog-backed progressive search
+
+- [x] `product_query.candidates` projection (quarantine skip; CDN only; opaque merchant label)
+- [x] `POST /product-query/search` loads catalog when `products=[]` + `use_catalog`
+- [x] Browse ranking: CHEAPEST / attribute skip finance+image hard gates
+- [x] Unit tests
+
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Task-specific FAST fine-tune / LoRA
 - [ ] İlk gerçek merchant feed bağlama (operatör dry-run+upsert ile; kodda merchant adı yok)
-- [x] Redis popular-query / alias / best-offer cache wiring (container DI)
-- [x] `POST /v1/product-query/resolve-entities`
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
-- [x] Postgres’e source/run persist + scheduler worker lease loop
-- [x] Product upsert from dry-run (gerçek feed; sahte seed yok)
-- [x] Scheduler daemon skeleton (`taksitlio-scheduler`)
-- [ ] Compose’a scheduler service + queue-specific job handlers (media/price fetch)
-- [ ] Media pipeline bağlama (CDN) on upsert
+- [ ] Live CDN origin (S3/GCS) instead of LocalObjectStorage
+- [ ] Merchant display name from DB (still no hardcode); finance projection into catalog search
+
 ## Gates
 
 | Gate | Status |
@@ -133,8 +145,8 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Runtime | BLOCKED / PERFORMANCE_REJECT (CPU) |
 | Provisional | not locked |
 | Campaign (kişisel onay) | CLOSED |
-| Data Ingestion | P8 (dry-run→catalog upsert + scheduler daemon; operator feed pending) |
+| Data Ingestion | P9 (handlers + media CDN attach + compose scheduler) |
 | Data Quality | P6 scorer + admin score API |
-| Fast Product Path | P5C (search + resolve-entities + Redis/in-mem cache DI) |
+| Fast Product Path | P10 (catalog-backed search + progressive cards) |
 | Finance Mapping | P3 skeleton (eligibility + payment plan) |
-| Recommendation | P4 ranking safety rules |
+| Recommendation | P4 ranking safety rules (browse vs finance modes) |

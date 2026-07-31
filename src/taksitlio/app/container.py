@@ -250,12 +250,24 @@ def build_in_memory_container(
     from taksitlio.ingestion.binding import build_default_registry
     from taksitlio.ingestion.repository import InMemoryIngestionRepository
     from taksitlio.ingestion_scheduler.repository import InMemorySchedulerJobRepository
+    from taksitlio.media.s3_storage import build_object_storage_from_env
+    from taksitlio.merchant.directory import InMemoryMerchantDirectory
     from taksitlio.product.catalog import InMemoryProductCatalogRepository
     from taksitlio.product_query.cache_wiring import build_product_query_caches
+    from taksitlio.product_query.finance_index import (
+        InMemoryFinanceOptionIndex,
+        InstitutionLabelResolver,
+    )
+    import os
+    import tempfile
 
     product_query_caches = build_product_query_caches(
         settings, redis=None, prefer_memory=True
     )
+    if not os.environ.get("MEDIA_STORAGE_ROOT"):
+        os.environ.setdefault(
+            "MEDIA_STORAGE_ROOT", tempfile.mkdtemp(prefix="taksitlio-media-")
+        )
     return AppContainer(
         settings=settings,
         pipeline=pipeline,
@@ -273,6 +285,10 @@ def build_in_memory_container(
             "ingestion_repo": InMemoryIngestionRepository(),
             "scheduler_repo": InMemorySchedulerJobRepository(),
             "product_catalog": InMemoryProductCatalogRepository(),
+            "media_storage": build_object_storage_from_env(),
+            "merchant_directory": InMemoryMerchantDirectory(),
+            "finance_option_index": InMemoryFinanceOptionIndex(),
+            "institution_labels": InstitutionLabelResolver(labels={}),
         },
     )
 
@@ -336,8 +352,14 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     from taksitlio.ingestion.binding import build_default_registry
     from taksitlio.ingestion.repository import PostgresIngestionRepository
     from taksitlio.ingestion_scheduler.repository import PostgresSchedulerJobRepository
+    from taksitlio.media.s3_storage import build_object_storage_from_env
+    from taksitlio.merchant.directory import PostgresMerchantDirectory
     from taksitlio.product.catalog import PostgresProductCatalogRepository
     from taksitlio.product_query.cache_wiring import build_product_query_caches
+    from taksitlio.product_query.finance_index import (
+        InMemoryFinanceOptionIndex,
+        InstitutionLabelResolver,
+    )
 
     product_query_caches = build_product_query_caches(settings, redis=redis)
     return AppContainer(
@@ -356,5 +378,10 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "ingestion_repo": PostgresIngestionRepository(pool),
             "scheduler_repo": PostgresSchedulerJobRepository(pool),
             "product_catalog": PostgresProductCatalogRepository(pool),
+            "media_storage": build_object_storage_from_env(),
+            "merchant_directory": PostgresMerchantDirectory(pool),
+            # Postgres finance projection table wiring is a follow-up; in-mem index OK for API inject.
+            "finance_option_index": InMemoryFinanceOptionIndex(),
+            "institution_labels": InstitutionLabelResolver(labels={}),
         },
     )

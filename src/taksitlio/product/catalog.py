@@ -73,6 +73,8 @@ class ProductCatalogRepository(Protocol):
 
     async def get_offer_hash(self, *, product_id: int) -> Optional[str]: ...
 
+    async def get_offer(self, product_id: int) -> Optional[StoredOffer]: ...
+
     async def upsert_product(
         self,
         *,
@@ -145,6 +147,9 @@ class InMemoryProductCatalogRepository:
     async def get_offer_hash(self, *, product_id: int) -> Optional[str]:
         row = self._offers.get(product_id)
         return None if row is None else row.content_hash
+
+    async def get_offer(self, product_id: int) -> Optional[StoredOffer]:
+        return self._offers.get(product_id)
 
     async def upsert_product(
         self,
@@ -322,6 +327,29 @@ class PostgresProductCatalogRepository:
                 """,
                 product_id,
             )
+
+    async def get_offer(self, product_id: int) -> Optional[StoredOffer]:
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT * FROM product_offers
+                WHERE product_id = $1
+                ORDER BY id DESC LIMIT 1
+                """,
+                product_id,
+            )
+        if row is None:
+            return None
+        return StoredOffer(
+            id=int(row["id"]),
+            product_id=product_id,
+            merchant_id=int(row["merchant_id"]),
+            current_price=float(row["current_price"]),
+            currency=str(row["currency"]),
+            stock_status=str(row["stock_status"]),
+            content_hash=row["content_hash"],
+            freshness_status=str(row["freshness_status"]),
+        )
 
     async def upsert_product(
         self,

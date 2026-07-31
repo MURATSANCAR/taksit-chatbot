@@ -5,13 +5,21 @@ from taksitlio.merchant.activation import (
     MerchantReadinessSignals,
     evaluate_merchant_activation,
 )
+from taksitlio.merchant.directory import (
+    InMemoryMerchantDirectory,
+    MerchantDirectoryEntry,
+    resolve_merchant_display_name,
+)
 from taksitlio.merchant.models import MerchantActivationGate, MerchantRecord
 
 __all__ = [
+    "InMemoryMerchantDirectory",
     "MerchantActivationGate",
+    "MerchantDirectoryEntry",
     "MerchantGateDecision",
     "MerchantReadinessSignals",
     "MerchantRecord",
     "evaluate_merchant_activation",
+    "resolve_merchant_display_name",
 ]
 

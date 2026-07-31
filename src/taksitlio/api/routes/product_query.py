@@ -165,7 +165,7 @@ class ProductSearchIn(BaseModel):
     utterance: str = Field(..., min_length=1, max_length=4000)
     merchant_text: Optional[str] = None
     institution_texts: List[str] = Field(default_factory=list)
-    ranking_mode: str = "BEST_OVERALL_VALUE"
+    ranking_mode: str = "CHEAPEST_PRODUCT_PRICE"
     max_price: Optional[float] = None
     requested_term: Optional[int] = None
     phase: str = "FIRST_CARDS"
@@ -174,6 +174,9 @@ class ProductSearchIn(BaseModel):
     institutions: List[EntityCandidateIn] = Field(default_factory=list)
     products: List[SearchProductIn] = Field(default_factory=list)
     use_popular_cache: bool = True
+    use_catalog: bool = True
+    catalog_merchant_id: Optional[int] = None
+    catalog_limit: int = Field(default=50, ge=1, le=200)
 
 
 class ProductSearchOut(BaseModel):
@@ -352,6 +355,28 @@ async def product_search(payload: ProductSearchIn, request: Request) -> ProductS
             )
         )
 
+    catalog_source = "request"
+    if not products and payload.use_catalog:
+        container = container_from(request)
+        product_catalog = container.extras.get("product_catalog")
+        if product_catalog is not None:
+            from taksitlio.product_query.candidates import (
+                load_search_candidates_from_catalog,
+            )
+
+            products = list(
+                await load_search_candidates_from_catalog(
+                    product_catalog,
+                    utterance=payload.utterance,
+                    merchant_id=payload.catalog_merchant_id,
+                    limit=payload.catalog_limit,
+                    merchants=container.extras.get("merchant_directory"),
+                    finance_index=container.extras.get("finance_option_index"),
+                    institutions=container.extras.get("institution_labels"),
+                )
+            )
+            catalog_source = "catalog"
+
     result = await search_products(
         ProductSearchRequest(
             utterance=payload.utterance,
@@ -391,7 +416,11 @@ async def product_search(payload: ProductSearchIn, request: Request) -> ProductS
         clarifications=list(result.clarifications),
         refresh_jobs=refresh_jobs,
         merchant_resolution=merchant_payload,
-        diagnostics={**dict(result.diagnostics), "cache_hit": None},
+        diagnostics={
+            **dict(result.diagnostics),
+            "cache_hit": None,
+            "candidate_source": catalog_source,
+        },
     )
 
     if payload.use_popular_cache and cards:
