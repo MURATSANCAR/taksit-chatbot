@@ -715,7 +715,6 @@ def fetch_sitemap_jsonld_catalog(
                 continue
             if u not in maps:
                 maps.append(u)
-    print(f"  {source_code} maps={len(maps)} workers={workers} curl={use_curl_cffi}")
 
     by_id = _load_existing_feed(source_code)
     if by_id:
@@ -736,7 +735,11 @@ def fetch_sitemap_jsonld_catalog(
     if budget is not None and len(by_id) >= budget:
         print(f"  {source_code} at cap {budget} — skip")
         return list(by_id.values())[:budget]
-    print(f"  {source_code} maps={len(maps)} workers={workers} curl={use_curl_cffi} abs_cap={budget}")
+    print(
+        f"  {source_code} maps={len(maps)} workers={workers} "
+        f"curl={use_curl_cffi} abs_cap={budget}",
+        flush=True,
+    )
 
     def _session():
         if use_cloudscraper:
@@ -1084,6 +1087,11 @@ def fetch_listing_then_jsonld(
 
 
 def fetch_vatan(client: httpx.Client, delay: float, limit: int = 0) -> list[dict[str, Any]]:
+    source_code = "src-m-vatan"
+    abs_cap = merchant_absolute_cap(source_code, limit)
+    if abs_cap is not None and abs_cap <= 0:
+        print("  vatan global product cap reached — skip")
+        return list(_load_existing_feed(source_code).values())
     cats = [
         "https://www.vatanbilgisayar.com/notebook/",
         "https://www.vatanbilgisayar.com/cep-telefonu-modelleri/",
@@ -1096,10 +1104,13 @@ def fetch_vatan(client: httpx.Client, delay: float, limit: int = 0) -> list[dict
         "https://www.vatanbilgisayar.com/monitor/",
         "https://www.vatanbilgisayar.com/kulaklik/",
     ]
-    out: list[dict[str, Any]] = []
+    out: list[dict[str, Any]] = list(_load_existing_feed(source_code).values())
     for cat in cats:
         page = 1
         while True:
+            live = merchant_absolute_cap(source_code, limit)
+            if live is not None and len(out) >= live:
+                return out[:live]
             url = cat if page == 1 else f"{cat}?page={page}"
             r = client.get(url)
             if r.status_code != 200:
@@ -1110,10 +1121,12 @@ def fetch_vatan(client: httpx.Client, delay: float, limit: int = 0) -> list[dict
             before = len(out)
             out.extend(batch)
             out = list({p["id"]: p for p in out}.values())
+            if live is not None:
+                out = out[:live]
             added = len(out) - before
             print(f"  vatan {cat.split('.com/')[1]} page={page} +{added} total={len(out)}")
-            if limit > 0 and len(out) >= limit:
-                return out[:limit]
+            if live is not None and len(out) >= live:
+                return out[:live]
             if added == 0:
                 break
             # discover max page from links
@@ -1124,7 +1137,9 @@ def fetch_vatan(client: httpx.Client, delay: float, limit: int = 0) -> list[dict
                 break
             time.sleep(delay)
         time.sleep(delay)
-    return list({p["id"]: p for p in out}.values())
+    live = merchant_absolute_cap(source_code, limit)
+    out = list({p["id"]: p for p in out}.values())
+    return out[:live] if live is not None else out
 
 
 def _mediamarkt_product_urls_from_sitemaps(
@@ -1361,6 +1376,8 @@ FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
 
 
 def main() -> None:
+    import os
+
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--merchants",
@@ -1372,7 +1389,16 @@ def main() -> None:
         "--limit",
         type=int,
         default=0,
-        help="max products per merchant; 0 = no limit",
+        help="max products per merchant; 0 = no per-merchant limit (global cap still applies)",
+    )
+    p.add_argument(
+        "--global-cap",
+        type=int,
+        default=int(os.environ.get("CRAWL_GLOBAL_PRODUCT_CAP", str(DEFAULT_GLOBAL_PRODUCT_CAP))),
+        help=(
+            f"stop when sum(src-m-*.json counts) reaches this "
+            f"(default {DEFAULT_GLOBAL_PRODUCT_CAP}; 0 disables; env CRAWL_GLOBAL_PRODUCT_CAP)"
+        ),
     )
     p.add_argument(
         "--workers",
@@ -1381,14 +1407,26 @@ def main() -> None:
         help="concurrent PDP workers (teknosa / WAF merchants)",
     )
     args = p.parse_args()
+    set_global_product_cap(args.global_cap)
     wanted = [m.strip() for m in args.merchants.split(",") if m.strip()]
+
+    total = count_live_feed_products()
+    cap = active_global_product_cap()
+    print(f"live feeds total={total} global_cap={cap or 'disabled'}")
+    if cap > 0 and total >= cap:
+        print(f"global product cap reached ({total}>={cap}) — crawl stopped")
+        return
 
     with httpx.Client(timeout=40.0, headers={"User-Agent": UA}, follow_redirects=True) as client:
         for code in wanted:
             if code not in FETCHERS:
                 print(f"skip unknown {code}")
                 continue
-            print(f"fetch {code} ...")
+            total = count_live_feed_products()
+            if cap > 0 and total >= cap:
+                print(f"global product cap reached ({total}>={cap}) — stopping remaining merchants")
+                break
+            print(f"fetch {code} ... (live_total={total})")
             try:
                 products = FETCHERS[code](
                     client, args.delay, args.limit, workers=args.workers
@@ -1397,7 +1435,7 @@ def main() -> None:
                     print(f"  {code}: empty result — keeping existing feed if any")
                     continue
                 path = write_feed(f"src-m-{code}", products, f"{code} live capture")
-                print(f"  {len(products)} -> {path}")
+                print(f"  {len(products)} -> {path} (live_total={count_live_feed_products()})")
             except Exception as exc:
                 print(f"  FAIL {exc}")
 
