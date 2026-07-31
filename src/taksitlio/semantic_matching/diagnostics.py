@@ -36,6 +36,11 @@ class RetrievalReasonCode:
     ALIAS_VARIANT_MISSING = "ALIAS_VARIANT_MISSING"
     TOKEN_SET_MISS = "TOKEN_SET_MISS"
     CORRECT_CANDIDATE_RANKED_LOW = "CORRECT_CANDIDATE_RANKED_LOW"
+    # ADR-008 P0.1 residual buckets.
+    CORRECT_CANDIDATE_RANKED_3 = "CORRECT_CANDIDATE_RANKED_3"
+    REQUIRED_SIBLING_MISSING = "REQUIRED_SIBLING_MISSING"
+    NEGATIVE_PENALTY_TOO_STRONG = "NEGATIVE_PENALTY_TOO_STRONG"
+    PARENT_CROWDS_OUT_CHILD = "PARENT_CROWDS_OUT_CHILD"
 
 
 @dataclass(frozen=True)
@@ -57,6 +62,9 @@ class RetrievalDiagnostic:
     decision_reason_code: Optional[str] = None
     reason_codes: tuple[str, ...] = ()
     top_signals: Mapping[str, Any] = field(default_factory=dict)
+    diversity_notes: tuple[str, ...] = ()
+    hierarchy_relations: tuple[Mapping[str, Any], ...] = ()
+    concept_coverage: Mapping[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         return {
@@ -75,6 +83,9 @@ class RetrievalDiagnostic:
             "decision_reason_code": self.decision_reason_code,
             "reason_codes": list(self.reason_codes),
             "top_signals": dict(self.top_signals),
+            "diversity_notes": list(self.diversity_notes),
+            "hierarchy_relations": [dict(r) for r in self.hierarchy_relations],
+            "concept_coverage": dict(self.concept_coverage),
         }
 
 
@@ -214,6 +225,52 @@ def build_from_match_result(
         expected_rank = ranks.get(expected_category_id)
         if expected_rank is not None and expected_rank > 1:
             reason_codes.append(RetrievalReasonCode.CORRECT_CANDIDATE_RANKED_LOW)
+            if expected_rank >= 3:
+                reason_codes.append(
+                    RetrievalReasonCode.CORRECT_CANDIDATE_RANKED_3
+                )
+        elif expected_rank is None:
+            reason_codes.append(
+                RetrievalReasonCode.REQUIRED_SIBLING_MISSING
+            )
+        top_penalty = float(top.signals.negative_penalty) if top else 0.0
+        if expected_rank is None and top_penalty <= 0 and negative_variants:
+            reason_codes.append(
+                RetrievalReasonCode.NEGATIVE_PENALTY_TOO_STRONG
+            )
+        # Parent crowds child: expected below rank 1 while a sibling of
+        # the expected's parent occupies rank 1 in the candidate list.
+        hierarchy_relations = diag.get("hierarchy_relations") or ()
+        if expected_rank is not None and expected_rank > 1 and hierarchy_relations:
+            top_rel = next(
+                (r for r in hierarchy_relations if r.get("category_id") == top.category_id),
+                None,
+            )
+            expected_rel = next(
+                (r for r in hierarchy_relations if r.get("category_id") == expected_category_id),
+                None,
+            )
+            if top_rel and expected_rel:
+                top_ancestors = set(top_rel.get("ancestor_ids") or ())
+                if expected_category_id in top_ancestors or top.category_id in (
+                    expected_rel.get("ancestor_ids") or ()
+                ):
+                    reason_codes.append(
+                        RetrievalReasonCode.PARENT_CROWDS_OUT_CHILD
+                    )
+
+    diversity_notes = _as_tuple(diag.get("diversity_notes"))
+    hierarchy_relations_raw = diag.get("hierarchy_relations") or ()
+    hierarchy_relations: tuple[Mapping[str, Any], ...] = tuple(
+        dict(r) for r in hierarchy_relations_raw if isinstance(r, Mapping)
+    )
+    concept_coverage_raw = diag.get("concept_coverage") or {}
+    concept_coverage = (
+        {str(k): dict(v) if isinstance(v, Mapping) else v for k, v in concept_coverage_raw.items()}
+        if isinstance(concept_coverage_raw, Mapping)
+        else {}
+    )
+
     return RetrievalDiagnostic(
         surface_concepts=surface,
         normalized_concepts=normalized,
@@ -230,6 +287,9 @@ def build_from_match_result(
         decision_reason_code=decision_reason_code,
         reason_codes=tuple(dict.fromkeys(reason_codes)),
         top_signals=_top_signal_summary(top),
+        diversity_notes=diversity_notes,
+        hierarchy_relations=hierarchy_relations,
+        concept_coverage=concept_coverage,
     )
 
 

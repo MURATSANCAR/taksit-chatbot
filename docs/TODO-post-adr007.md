@@ -19,11 +19,19 @@ Status date: 2026-07-31
 - [x] validation/dev v4 datasets
 - [x] Gate statuses: QUALITY_READY_RUNTIME_BLOCKED / QUALITY_REJECT
 
-## Open — P0 residual (quality)
+## Closed — ADR-008 P0.1 residual closeout
 
-- [ ] E2E top_1 ≥ 0.65 (now 0.649 — one case)
-- [ ] E2E top_2 ≥ 0.90 (now 0.882)
-- [ ] E2E required_recall ≥ 0.88 (now 0.860)
+- [x] Soft-exclude expansion (strong + soft + catalog-compatible)
+- [x] `ConceptCoverageScorer` bonus (semantic_description / use_case fallback)
+- [x] `diversify_top_k` + parent-demotion + sibling-diversity
+- [x] `force_parent_child_collapse_on_direct_alias`
+- [x] Policy fields + `__post_init__` range validation
+- [x] V014 top-K diversification policy migration
+- [x] `RetrievalDiagnostic` reason codes (RANKED_3, SIBLING_MISSING, PARENT_CROWDS_OUT_CHILD, ...)
+- [x] Residual analysis report (`evaluation/reports/adr008-p01-residual-analysis.json`)
+- [x] E2E top_1 ≥ 0.65 (now 0.684)
+- [x] E2E top_2 ≥ 0.90 (now 0.904)
+- [x] E2E required_recall ≥ 0.88 (now 0.880)
 
 ## Open — P1 runtime
 
@@ -38,8 +46,8 @@ Status date: 2026-07-31
 | Gate | Status |
 |---|---|
 | Safety | PASS |
-| Oracle Quality | PASS (near/above provisional bar) |
-| E2E Quality | REJECT (top_1/top_2/req slightly under) |
+| Oracle Quality | PASS (top_2=1.00, required=1.00) |
+| E2E Quality | PASS (top_1=0.684, top_2=0.904, required=0.880, status=0.842) |
 | Runtime Dependency | BLOCKED_DEPENDENCY |
 | Campaign | CLOSED |
-| Sprint gate | QUALITY_REJECT (E2E) — not PROVISIONAL_ACCEPT |
+| Sprint gate | QUALITY_READY_RUNTIME_BLOCKED — not PROVISIONAL_ACCEPT |

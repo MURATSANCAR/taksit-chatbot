@@ -18,6 +18,27 @@ from taksitlio.semantic_matching.token_set_alias_retriever import (
 from taksitlio.semantic_matching.turkish_normalize import turkish_lower
 
 
+def _node_context_tokens(node: CategorySnapshotNode) -> set[str]:
+    """Whole-token set from semantic_description + use_case texts.
+
+    Token-boundary safe (turkish_lower + whitespace split). Used only
+    as a *soft* coverage boost — never sets direct_alias_match, never
+    drives auto-select.
+    """
+
+    tokens: set[str] = set()
+    text_bits: list[str] = []
+    text_bits.append(getattr(node, "semantic_description", "") or "")
+    for use_case in getattr(node, "use_cases", ()) or ():
+        text_bits.append(getattr(use_case, "use_case_text", "") or "")
+    for chunk in text_bits:
+        for tok in turkish_lower(chunk).split():
+            tok = tok.strip(",;.!?()[]{}\"'")
+            if len(tok) >= 3:
+                tokens.add(tok)
+    return tokens
+
+
 @dataclass(frozen=True)
 class ConceptCoverageScore:
     matched_positive_concept_count: int = 0
@@ -70,6 +91,7 @@ class ConceptCoverageScorer:
 
         matched: list[str] = []
         weight_sum = 0.0
+        context_tokens = _node_context_tokens(node)
         for concept in usable:
             hit = self._retriever.score([concept], node)
             # Any non-zero channel counts as a soft cover; surface/token-set
@@ -77,12 +99,28 @@ class ConceptCoverageScorer:
             if hit.surface_exact >= 0.9 or hit.normalized_exact >= 0.9:
                 matched.append(concept)
                 weight_sum += 1.0
-            elif hit.token_set >= 0.9 or hit.prefix_safe >= 0.8:
+                continue
+            if hit.token_set >= 0.9 or hit.prefix_safe >= 0.8:
                 matched.append(concept)
                 weight_sum += 0.85
-            elif hit.morphological_variant > 0 or hit.character_ngram > 0:
+                continue
+            if hit.morphological_variant > 0 or hit.character_ngram > 0:
                 matched.append(concept)
                 weight_sum += 0.45
+                continue
+            # ADR-008 P0.1: whole-token overlap with the node's
+            # semantic_description / use_case texts counts as a soft
+            # coverage cue when the alias retriever misses (e.g., a
+            # concept like ``sandalye`` present only in furniture's
+            # description). Never sets direct_alias_match.
+            concept_tokens: set[str] = set()
+            for tok in turkish_lower(concept or "").split():
+                tok = tok.strip(",;.!?()[]{}\"'")
+                if len(tok) >= 3:
+                    concept_tokens.add(tok)
+            if concept_tokens and (concept_tokens & context_tokens):
+                matched.append(concept)
+                weight_sum += 0.30
 
         coverage = len(matched) / max(1, len(usable))
         weighted = weight_sum / max(1.0, float(len(usable)))

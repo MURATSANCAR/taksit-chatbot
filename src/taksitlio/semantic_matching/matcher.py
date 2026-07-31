@@ -29,7 +29,9 @@ from taksitlio.semantic_matching.cache import (
     build_cache_key,
 )
 from taksitlio.semantic_matching.candidate_retriever import SnapshotProvider
+from taksitlio.semantic_matching.concept_coverage import ConceptCoverageScorer
 from taksitlio.semantic_matching.decision_policy import DecisionPolicy
+from taksitlio.semantic_matching.diversification import diversify_top_k
 from taksitlio.semantic_matching.domain import (
     CategoryCandidate,
     CategoryMatchDecision,
@@ -62,6 +64,7 @@ from taksitlio.semantic_matching.token_set_alias_retriever import (
 )
 from taksitlio.semantic_matching.turkish_normalize import (
     normalize_turkish,
+    turkish_lower,
 )
 from taksitlio.semantic_matching.vector_retriever import VectorRetriever
 
@@ -211,6 +214,11 @@ class SemanticCategoryMatcher:
             morphological_variant_min_length=policy.morphological_variant_min_length,
         )
 
+        coverage_scorer = ConceptCoverageScorer(
+            retriever=token_set_retriever,
+            coverage_weight=policy.concept_coverage_weight,
+        )
+
         # Legacy normalization for use-case + lexical scorers.
         normalized_legacy = normalize_query(query.query_text, query.hint_texts)
 
@@ -293,6 +301,7 @@ class SemanticCategoryMatcher:
             )
 
         candidates: list[CategoryCandidate] = []
+        coverage_by_node: dict[str, dict] = {}
         for (
             node,
             alias_result,
@@ -329,16 +338,44 @@ class SemanticCategoryMatcher:
             # hard-exclude. Positive conflict uses *strong* channels only
             # (surface / normalized / exact token-set) — not single-token
             # membership — so "bilgisayar" does not rescue "masaüstü bilgisayar".
-            pos_alias_hit = False
+            #
+            # ADR-008 P0.1: expand the rescue signal — a *soft* positive
+            # channel (prefix_safe / morphological / character n-gram) OR
+            # a content-blind catalog-text token overlap is enough to
+            # avoid hard-exclude when the negative shares the node
+            # (robot+süpürge, kablolu+kulaklık, android+iphone, ...).
+            pos_alias_strong = False
+            pos_alias_soft = False
+            pos_catalog_compatible = False
             if negative_variants or correction_variants:
                 pos_score = token_set_retriever.score(
                     positive_variants or (query.query_text,), node
                 )
-                pos_alias_hit = (
+                pos_alias_strong = (
                     pos_score.surface_exact >= 0.9
                     or pos_score.normalized_exact >= 0.9
                     or pos_score.token_set >= 0.9
                 )
+                pos_alias_soft = (
+                    pos_score.prefix_safe >= 0.8
+                    or pos_score.morphological_variant > 0
+                    or (
+                        pos_score.character_ngram
+                        >= policy.character_ngram_min_similarity
+                    )
+                )
+                if not (pos_alias_strong or pos_alias_soft):
+                    pos_catalog_compatible = _positive_catalog_compatible(
+                        node,
+                        positive_variants,
+                        negative_variants=(
+                            *negative_variants,
+                            *correction_variants,
+                        ),
+                    )
+            pos_alias_hit = (
+                pos_alias_strong or pos_alias_soft or pos_catalog_compatible
+            )
             conflict_same_node = bool(
                 (neg_alias_hit or neg_correction_hit) and pos_alias_hit
             )
@@ -379,7 +416,8 @@ class SemanticCategoryMatcher:
                 continue
 
             if conflict_same_node:
-                # Sibling aliases share a category (kulaklık/hoparlör → audio).
+                # Sibling aliases share a category (kulaklık/hoparlör → audio,
+                # süpürge+robot, kulaklık+kablolu, akıllı saat+bileklik).
                 # Keep the candidate. Allow DIRECT_ALIAS only when the
                 # *positive* channel still has a surface/normalized exact hit
                 # on this node — otherwise refuse auto-select.
@@ -392,15 +430,24 @@ class SemanticCategoryMatcher:
                 ):
                     direct_alias_match = False
                     alias_boost = 0.0
-                # Soften the negation penalty — hard 0.9 would wipe the score.
+                # ADR-008 P0.1: soften negation penalty by
+                # ``sibling_soft_exclusion_factor``. Strong positive
+                # (surface/normalized/token-set) uses the historical 0.25
+                # factor so kulaklık/hoparlör regressions remain safe.
+                if pos_alias_strong:
+                    soft_factor = min(
+                        0.25, policy.sibling_soft_exclusion_factor
+                    )
+                else:
+                    soft_factor = policy.sibling_soft_exclusion_factor
                 explicit_negation_penalty = min(
                     explicit_negation_penalty,
-                    policy.explicit_negative_penalty * 0.25,
+                    policy.explicit_negative_penalty * soft_factor,
                 )
                 if neg_correction_hit:
                     correction_penalty_val = min(
                         correction_penalty_val,
-                        policy.correction_penalty * 0.25,
+                        policy.correction_penalty * soft_factor,
                     )
             breakdown = SignalBreakdown(
                 alias=alias_aggregate,
@@ -430,6 +477,17 @@ class SemanticCategoryMatcher:
             )
             base_score = scorer.combine(breakdown, degraded=degraded)
             score = base_score + alias_boost
+            # ADR-008 P0.1: concept-coverage bonus rewards nodes whose
+            # aliases match *multiple* positive concepts (e.g. "android
+            # telefon" hits both android + telefon on mobile-device).
+            # Bonus is capped in ConceptCoverageScorer.bonus.
+            coverage = coverage_scorer.score(
+                positive_variants,
+                node,
+                excluded_concepts=(*negative_variants, *correction_variants),
+            )
+            coverage_bonus = coverage_scorer.bonus(coverage)
+            score += coverage_bonus
             score = max(0.0, min(1.0, score))
             # Apply negative penalties multiplicatively so a strong hit
             # from vector alone cannot overwhelm an explicit user "not".
@@ -437,6 +495,10 @@ class SemanticCategoryMatcher:
                 score = max(0.0, score * (1.0 - explicit_negation_penalty))
             if correction_penalty_val > 0.0:
                 score = max(0.0, score * (1.0 - correction_penalty_val))
+            coverage_by_node[node.id] = {
+                **coverage.to_dict(),
+                "coverage_bonus": float(coverage_bonus),
+            }
 
             if score < policy.minimum_candidate_score and score <= 0.0:
                 continue
@@ -462,7 +524,14 @@ class SemanticCategoryMatcher:
         )
         collapsed_candidates = list(collapse_result.candidates)
 
-        limited = collapsed_candidates[: policy.maximum_candidates]
+        # ADR-008 P0.1: diversity-aware Top-K selection replaces the
+        # historical "first N after collapse" slice. Diversification is
+        # bounded by the same maximum_candidates limit and never removes
+        # non-matchable nodes (the runner still hides them post-decision).
+        diversification = diversify_top_k(
+            collapsed_candidates, index=index, policy=policy
+        )
+        limited = list(diversification.candidates)[: policy.maximum_candidates]
         ranked = tuple(
             CategoryCandidate(
                 category_id=c.category_id,
@@ -534,6 +603,7 @@ class SemanticCategoryMatcher:
                     {"kept": kept, "dropped": dropped}
                     for kept, dropped in collapse_result.collapsed_pairs
                 ],
+                "diversity_notes": list(diversification.diversity_notes),
                 "retrieved_by": dict(retrieved_by),
                 "surface_concepts": list(surface_concepts),
                 "normalized_concepts": list(normalized_concepts),
@@ -544,6 +614,12 @@ class SemanticCategoryMatcher:
                 ),
                 "negative_query_variants": list(negative_variants),
                 "correction_query_variants": list(correction_variants),
+                "concept_coverage": {
+                    cid: coverage_by_node[cid]
+                    for cid in (c.category_id for c in final_candidates)
+                    if cid in coverage_by_node
+                },
+                "hierarchy_relations": _hierarchy_relations(ranked, index),
             },
         )
 
@@ -649,6 +725,124 @@ def _adr008_direct_alias_bonus(
     if token_score.aggregate_alias >= 0.9:
         return False, policy.direct_alias_boost
     return False, 0.0
+
+
+def _positive_catalog_compatible(
+    node: CategorySnapshotNode,
+    positive_variants: Sequence[str],
+    *,
+    negative_variants: Sequence[str] = (),
+) -> bool:
+    """Content-blind rescue signal for sibling-alias conflicts.
+
+    Marks a node "compatible" with the positive concept when the
+    positive has WHOLE-TOKEN presence in the node's aliases / synonyms
+    / display_name / semantic_description / use-case texts and the
+    overlap is NOT dominated by an alias that also contains a
+    negative-variant token (e.g., desktop-computer's alias
+    ``masaüstü bilgisayar`` must not rescue the node from a
+    ``masaüstü`` negative when the positive is only ``bilgisayar``).
+
+    Rules (token-boundary safe, no substring match, no hardcoded
+    category names):
+
+    * Tokenise each positive variant separately (Turkish-lower,
+      whitespace split, len >= 3 required).
+    * Collect ALIAS-side texts (aliases + synonyms + display_name) with
+      their per-alias token sets. Reject any alias whose token set
+      shares a token with the negative variants.
+    * A positive variant is compatible when:
+        - N == 1 tokens → the token appears in at least one *unshared*
+          alias's token set;
+        - N >= 2 tokens → every positive token appears in at least one
+          *unshared* alias's token set (subset match on the union).
+    * If no alias-side rule fires, allow context-side rescue only when
+      a long (len >= 5) positive token overlaps the semantic
+      description / use-case texts.
+    """
+
+    def _tokens_of(text: str) -> set[str]:
+        out: set[str] = set()
+        for tok in turkish_lower(text or "").split():
+            tok = tok.strip(",;.!?()[]{}\"'")
+            if len(tok) >= 3:
+                out.add(tok)
+        return out
+
+    variant_tokens: list[set[str]] = []
+    for variant in positive_variants:
+        v_tokens = _tokens_of(variant)
+        if v_tokens:
+            variant_tokens.append(v_tokens)
+    if not variant_tokens:
+        return False
+
+    neg_tokens: set[str] = set()
+    for neg in negative_variants:
+        neg_tokens |= _tokens_of(neg)
+
+    alias_token_sets: list[set[str]] = []
+    for alias in getattr(node, "aliases", ()) or ():
+        alias_token_sets.append(
+            _tokens_of(getattr(alias, "alias_text", "") or "")
+        )
+    for syn in getattr(node, "synonyms", ()) or ():
+        alias_token_sets.append(_tokens_of(syn or ""))
+    alias_token_sets.append(
+        _tokens_of(getattr(node, "display_name", "") or "")
+    )
+    unshared_alias_tokens: set[str] = set()
+    for tokens in alias_token_sets:
+        if not tokens:
+            continue
+        if tokens & neg_tokens:
+            continue
+        unshared_alias_tokens |= tokens
+
+    for v_tokens in variant_tokens:
+        if len(v_tokens) == 1:
+            if v_tokens & unshared_alias_tokens:
+                return True
+        else:
+            if v_tokens.issubset(unshared_alias_tokens):
+                return True
+
+    # Context-side rescue via semantic_description / use_case texts —
+    # only when the positive concept has a *long* (len >= 5) token that
+    # appears in a use-case sentence whose token set does not share
+    # any token with the negative variants. Rejects rescues where the
+    # description literally names the negated form.
+    for use_case in getattr(node, "use_cases", ()) or ():
+        uc_tokens = _tokens_of(getattr(use_case, "use_case_text", "") or "")
+        if not uc_tokens or (uc_tokens & neg_tokens):
+            continue
+        for v_tokens in variant_tokens:
+            long_hits = {tok for tok in (v_tokens & uc_tokens) if len(tok) >= 5}
+            if long_hits and (
+                len(v_tokens) == 1 or v_tokens.issubset(uc_tokens)
+            ):
+                return True
+    return False
+
+
+def _hierarchy_relations(
+    candidates: Sequence[CategoryCandidate], index: SnapshotIndex
+) -> list[dict]:
+    out: list[dict] = []
+    for cand in candidates:
+        node = index.by_id.get(cand.category_id)
+        if node is None:
+            continue
+        out.append(
+            {
+                "category_id": cand.category_id,
+                "parent_id": node.parent_id,
+                "depth": node.depth,
+                "ancestor_ids": list(node.ancestor_ids),
+                "hierarchy_collapsed": cand.signals.hierarchy_collapsed,
+            }
+        )
+    return out
 
 
 def _classify_retrieval_channel(

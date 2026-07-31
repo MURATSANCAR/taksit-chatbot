@@ -77,6 +77,9 @@ def collapse_parent_child(
 
     working = list(candidates)
     collapsed_pairs: list[tuple[str, str]] = []
+    force_collapse_on_direct_alias = bool(
+        getattr(policy, "force_parent_child_collapse_on_direct_alias", False)
+    )
 
     changed = True
     while changed and len(working) >= 2:
@@ -86,16 +89,20 @@ def collapse_parent_child(
                 cand_i = working[i]
                 cand_j = working[j]
                 gap = abs(cand_i.score - cand_j.score)
-                if gap > policy.parent_child_collapse_gap:
-                    continue
                 pick = _pick_more_specific(cand_i, cand_j, index=index)
                 if pick is None:
                     continue
                 kept, dropped = pick
+                # ADR-008 P0.1: when a parent won via direct_alias but a
+                # descendant child also survived, collapse regardless of
+                # gap — the surface hit almost certainly matches both.
+                force = False
+                if force_collapse_on_direct_alias and dropped.signals.direct_alias_match:
+                    force = True
+                if gap > policy.parent_child_collapse_gap and not force:
+                    continue
                 collapsed_pairs.append((kept.category_id, dropped.category_id))
-                # Mark the surviving candidate as collapsed for observability.
                 kept = _flag_collapsed(kept)
-                # Remove the dropped candidate; keep kept in place.
                 if dropped is cand_i:
                     working[i] = kept
                     del working[j]

@@ -24,7 +24,9 @@ Model adı / IP / port kodda yok. Router state yazmaz (ADR-003).
 
 **ADR-007 closeout:** Safety Gate PASS (`forbidden=0`, `unsafe=0`). Quality Gate REJECT (E2E ranking/retrieval). Campaign layer CLOSED.
 
-**ADR-008 P0:** Morphology-safe surface concepts + token-set alias (no substring). E2E top_1 0.439→0.649; safety still 0. Gate: `QUALITY_REJECT` / `QUALITY_READY_RUNTIME_BLOCKED` — not PROVISIONAL_ACCEPT until P1 runtime. See [`ADR-008`](docs/adr/ADR-008-morphology-safe-retrieval-and-runtime-verification.md).
+**ADR-008 P0:** Morphology-safe surface concepts + token-set alias (no substring). E2E top_1 0.439→0.649; safety still 0. See [`ADR-008`](docs/adr/ADR-008-morphology-safe-retrieval-and-runtime-verification.md).
+
+**ADR-008 P0.1 (residual closeout, 2026-07-31):** Sibling / shared-category negatives now soft-penalise instead of hard-excluding when a positive is *catalog-text compatible*; concept coverage bonus + `diversify_top_k` (positive-channel preference, sibling diversity, parent demotion) close the residual gap. E2E v4 provisional bar cleared: `top_1=0.684`, `top_2=0.904`, `required=0.880`, `status=0.842`, `forbidden=0`, `unsafe=0`, `pool=1.00`. Oracle safety unchanged (`top_2=1.00`, `required=1.00`). Gate: `QUALITY_READY_RUNTIME_BLOCKED` — no `PROVISIONAL_ACCEPT` until P1 runtime measurement. See [`ADR-008`](docs/adr/ADR-008-morphology-safe-retrieval-and-runtime-verification.md) and reports under `evaluation/reports/adr008-p01-*.json`.
 
 ### End-to-end understanding + provisional gate (ADR-007)
 

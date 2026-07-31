@@ -50,7 +50,9 @@
             "ACCEPT",
             "REJECT",
             "PROVISIONAL_ACCEPT",
-            "INSUFFICIENT_REVIEWED_DATA"
+            "INSUFFICIENT_REVIEWED_DATA",
+            "QUALITY_READY_RUNTIME_BLOCKED",
+            "QUALITY_REJECT"
           ]
         },
         "objective_score": {"type": "number"},

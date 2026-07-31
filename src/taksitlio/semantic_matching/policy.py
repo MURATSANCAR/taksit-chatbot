@@ -81,7 +81,7 @@ class SemanticMatchPolicy:
     normalized_exact_alias_weight: float = 0.95
     token_set_alias_weight: float = 0.85
     prefix_safe_alias_weight: float = 0.75
-    character_ngram_weight: float = 0.45
+    character_ngram_weight: float = 0.50
     morphological_variant_weight: float = 0.55
     character_ngram_min_similarity: float = 0.78
     character_ngram_min_token_length: int = 4
@@ -90,6 +90,16 @@ class SemanticMatchPolicy:
     surface_exact_can_auto_select: bool = True
     token_set_can_auto_select: bool = False
     morphological_variant_can_auto_select: bool = False
+    # ADR-008 P0.1 — sibling-alias soft-exclude + concept coverage + Top-K
+    # diversification. Never lowers safety guarantees; all channels remain
+    # bounded by the ranking scorer, direct_alias auto-select is unaffected.
+    sibling_soft_exclusion_factor: float = 0.20
+    concept_coverage_weight: float = 0.10
+    diversification_enabled: bool = True
+    same_parent_penalty: float = 0.06
+    prefer_positive_channel_in_topk: bool = True
+    sibling_diversity_enabled: bool = True
+    force_parent_child_collapse_on_direct_alias: bool = True
 
     def __post_init__(self) -> None:
         if self.minimum_auto_select_score < self.minimum_candidate_score:
@@ -159,6 +169,15 @@ class SemanticMatchPolicy:
             raise ValueError("character_ngram_min_token_length must be > 0")
         if self.morphological_variant_min_length < 1:
             raise ValueError("morphological_variant_min_length must be > 0")
+        # ADR-008 P0.1 field validation — all fractions in [0, 1].
+        for name in (
+            "sibling_soft_exclusion_factor",
+            "concept_coverage_weight",
+            "same_parent_penalty",
+        ):
+            value = getattr(self, name)
+            if not (0.0 <= value <= 1.0):
+                raise ValueError(f"{name} must be in [0, 1]")
 
 
 class SemanticMatchPolicyMapper:

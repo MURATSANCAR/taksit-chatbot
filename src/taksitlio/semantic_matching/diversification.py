@@ -92,7 +92,7 @@ def diversify_top_k(
     # 2) Slot fill: prefer positive-channel candidates for ranks 2..k when
     #    the next pure-vector candidate would otherwise occupy the slot.
     selected = _select_with_signal_preference(
-        working, limit=limit, policy=policy, notes=notes
+        working, limit=limit, policy=policy, index=index, notes=notes
     )
 
     # Re-rank.
@@ -120,29 +120,44 @@ def _demote_crowding_parents(
     policy: SemanticMatchPolicy,
     notes: list[str],
 ) -> list[CategoryCandidate]:
-    penalty = float(getattr(policy, "same_parent_penalty", 0.04) or 0.04)
-    ids = {c.category_id for c in candidates}
+    """Soft-demote a parent when at least one of its descendants is a
+    viable candidate (score >= minimum_candidate_score * 0.5) so the
+    child can surface into Top-2 without global threshold changes.
+
+    Never removes the parent — a parent with genuinely stronger score
+    survives. Only re-sorts by demoted score.
+    """
+
+    penalty = float(getattr(policy, "same_parent_penalty", 0.06) or 0.06)
+    viable_floor = float(
+        max(0.0, policy.minimum_candidate_score * 0.5)
+    )
     adjusted: list[CategoryCandidate] = []
     for cand in candidates:
-        child_present = any(
+        viable_child = any(
             _is_ancestor_of(index, cand.category_id, other.category_id)
+            and other.score >= viable_floor
             for other in candidates
             if other.category_id != cand.category_id
         )
-        if (
-            child_present
+        # Original heuristic (unchanged): demote a direct-alias parent so
+        # a close child can enter Top-2.
+        direct_alias_parent = (
+            viable_child
             and cand.signals.direct_alias_match
             and cand.rank == 1
-        ):
-            # Soft demotion — does not remove the parent, only reduces score
-            # so a close child can surface into Top-2.
+        )
+        # ADR-008 P0.1: also demote when the parent is at rank 1 without
+        # direct_alias_match and any viable child exists — parent nodes
+        # like "Bilgisayar" that beat "Taşınabilir Bilgisayar" on soft
+        # channels should still lose Top-1 to the more specific child.
+        crowds_child = (
+            viable_child
+            and cand.rank == 1
+            and getattr(policy, "diversification_enabled", True)
+        )
+        if direct_alias_parent or crowds_child:
             new_score = max(0.0, cand.score - penalty)
-            new_signals = replace(
-                cand.signals,
-                # reuse hierarchy field as mild diversity marker in diagnostics
-            )
-            # Attach diversity via score only; SignalBreakdown has no diversity
-            # field in older builds — score demotion is enough.
             adjusted.append(
                 CategoryCandidate(
                     category_id=cand.category_id,
@@ -150,7 +165,7 @@ def _demote_crowding_parents(
                     display_name=cand.display_name,
                     score=new_score,
                     rank=cand.rank,
-                    signals=new_signals,
+                    signals=cand.signals,
                     matchable=cand.matchable,
                 )
             )
@@ -168,6 +183,7 @@ def _select_with_signal_preference(
     *,
     limit: int,
     policy: SemanticMatchPolicy,
+    index: SnapshotIndex,
     notes: list[str],
 ) -> list[CategoryCandidate]:
     if len(candidates) <= limit:
@@ -194,23 +210,35 @@ def _select_with_signal_preference(
                     f"signal_prefer:{remaining[pick_idx].category_id}"
                     f":over={remaining[0].category_id}"
                 )
-        # Sibling diversity: avoid filling remaining slots with same parent
-        # when an alternate-parent candidate with a positive channel exists.
-        pick = remaining.pop(pick_idx)
+        # Sibling diversity: prefer an alternate-parent candidate with a
+        # positive channel over stacking two siblings of the already
+        # selected top. Uses SnapshotIndex.by_id — no display heuristics.
         if (
             len(selected) >= 1
             and getattr(policy, "sibling_diversity_enabled", True)
         ):
-            parent = None
-            # Look up via signals only — parent resolved by caller when index
-            # available; here we use display proximity via score list order.
-            alt_idx = None
-            selected_parents = set()
-            # Without index in this helper path we skip parent-set filter;
-            # parent demotion already handled. Keep pick.
-            selected.append(pick)
-        else:
-            selected.append(pick)
+            selected_parents = {
+                _parent_id(index, sel.category_id) for sel in selected
+            }
+            selected_parents.discard(None)
+            candidate_parent = _parent_id(index, remaining[pick_idx].category_id)
+            if candidate_parent and candidate_parent in selected_parents:
+                for alt_idx, alt in enumerate(remaining):
+                    if alt_idx == pick_idx:
+                        continue
+                    if not _has_positive_channel(alt.signals):
+                        continue
+                    alt_parent = _parent_id(index, alt.category_id)
+                    if alt_parent and alt_parent in selected_parents:
+                        continue
+                    pick_idx = alt_idx
+                    notes.append(
+                        f"sibling_diverse:{alt.category_id}"
+                        f":over={remaining[0].category_id}"
+                    )
+                    break
+        pick = remaining.pop(pick_idx)
+        selected.append(pick)
 
     return selected
 
