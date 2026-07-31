@@ -28,7 +28,15 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "crawler" / "feeds" / "live"
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from fetch_live_merchant_feeds import parse_jsonld_product, parse_tr_price, write_feed  # noqa: E402
+from fetch_live_merchant_feeds import (  # noqa: E402
+    DEFAULT_GLOBAL_PRODUCT_CAP,
+    active_global_product_cap,
+    count_live_feed_products,
+    parse_jsonld_product,
+    parse_tr_price,
+    set_global_product_cap,
+    write_feed,
+)
 
 
 def _clean_name(name: str) -> Optional[str]:
@@ -478,16 +486,32 @@ async def fetch_vivense(limit: int, delay: float) -> list[dict[str, Any]]:
 
 
 async def amain() -> None:
+    import os
+
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--merchants",
         default="teknosa,koctas,dr,n11,hepsiburada,vivense",
     )
     p.add_argument("--delay", type=float, default=0.6)
-    p.add_argument("--limit", type=int, default=100, help="0 = uncapped where supported")
+    p.add_argument("--limit", type=int, default=100, help="0 = uncapped where supported (global cap still applies)")
+    p.add_argument(
+        "--global-cap",
+        type=int,
+        default=int(os.environ.get("CRAWL_GLOBAL_PRODUCT_CAP", str(DEFAULT_GLOBAL_PRODUCT_CAP))),
+        help=f"stop when all live feeds reach this (default {DEFAULT_GLOBAL_PRODUCT_CAP})",
+    )
     args = p.parse_args()
+    set_global_product_cap(args.global_cap)
     wanted = [m.strip() for m in args.merchants.split(",") if m.strip()]
     OUT.mkdir(parents=True, exist_ok=True)
+
+    total = count_live_feed_products()
+    cap = active_global_product_cap()
+    print(f"live feeds total={total} global_cap={cap or 'disabled'}")
+    if cap > 0 and total >= cap:
+        print(f"global product cap reached ({total}>={cap}) — crawl stopped")
+        return
 
     fetchers = {
         "teknosa": fetch_teknosa,
@@ -501,7 +525,11 @@ async def amain() -> None:
         if code not in fetchers:
             print(f"skip unknown {code}")
             continue
-        print(f"fetch {code} via crawl4ai/vendor ...")
+        total = count_live_feed_products()
+        if cap > 0 and total >= cap:
+            print(f"global product cap reached ({total}>={cap}) — stopping remaining merchants")
+            break
+        print(f"fetch {code} via crawl4ai/vendor ... (live_total={total})")
         products = await fetchers[code](args.limit, args.delay)
         path = write_feed(f"src-m-{code}", products, f"{code} via crawl4ai/vendor bridge")
         print(f"  {len(products)} -> {path}")

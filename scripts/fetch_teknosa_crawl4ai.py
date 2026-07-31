@@ -24,8 +24,13 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from fetch_live_merchant_feeds import (  # noqa: E402
     _load_existing_feed,
+    active_global_product_cap,
+    count_live_feed_products,
+    merchant_absolute_cap,
     parse_jsonld_product,
+    set_global_product_cap,
     write_feed,
+    DEFAULT_GLOBAL_PRODUCT_CAP,
 )
 
 OUT_CODE = "src-m-teknosa"
@@ -91,19 +96,48 @@ async def fetch_one(url: str, sem: asyncio.Semaphore) -> Optional[dict[str, Any]
 
 
 async def amain() -> None:
+    import os
+
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--limit", type=int, default=0)
     p.add_argument("--concurrency", type=int, default=3)
+    p.add_argument(
+        "--global-cap",
+        type=int,
+        default=int(os.environ.get("CRAWL_GLOBAL_PRODUCT_CAP", str(DEFAULT_GLOBAL_PRODUCT_CAP))),
+        help=f"stop when all live feeds reach this (default {DEFAULT_GLOBAL_PRODUCT_CAP})",
+    )
     args = p.parse_args()
+    set_global_product_cap(args.global_cap)
+
+    total = count_live_feed_products()
+    cap = active_global_product_cap()
+    print(f"live feeds total={total} global_cap={cap or 'disabled'}")
+    if cap > 0 and total >= cap:
+        print(f"global product cap reached ({total}>={cap}) — crawl stopped")
+        return
 
     by_id = _load_existing_feed(OUT_CODE)
     print(f"resume {len(by_id)}")
+    abs_cap = merchant_absolute_cap(OUT_CODE, args.limit)
+    if abs_cap is not None and abs_cap <= 0:
+        print("global product cap reached — skip teknosa")
+        return
+    if abs_cap is not None and len(by_id) >= abs_cap:
+        print(f"teknosa at cap {abs_cap} — skip")
+        return
+
     product_urls = await collect_product_urls()
     done = {str(x.get("url")) for x in by_id.values() if x.get("url")}
     todo = [u for u in product_urls if u not in done]
-    if args.limit > 0:
+    if abs_cap is not None:
+        todo = todo[: max(0, abs_cap - len(by_id))]
+    elif args.limit > 0:
         todo = todo[: args.limit]
-    print(f"todo={len(todo)} catalog={len(product_urls)} concurrency={args.concurrency}")
+    print(
+        f"todo={len(todo)} catalog={len(product_urls)} "
+        f"concurrency={args.concurrency} abs_cap={abs_cap}"
+    )
 
     sem = asyncio.Semaphore(max(1, args.concurrency))
     fail = 0
@@ -111,13 +145,23 @@ async def amain() -> None:
     # Process in chunks to checkpoint
     chunk = 100
     for start in range(0, len(todo), chunk):
+        live = merchant_absolute_cap(OUT_CODE, args.limit)
+        if live is not None and len(by_id) >= live:
+            print(f"stopped at global/merchant cap {live}", flush=True)
+            break
         batch = todo[start : start + chunk]
+        if live is not None:
+            batch = batch[: max(0, live - len(by_id))]
+        if not batch:
+            break
         print(f"batch {start}-{start + len(batch) - 1}", flush=True)
         results = await asyncio.gather(*[fetch_one(u, sem) for u in batch])
         for p_row in results:
             done_n += 1
+            live_now = merchant_absolute_cap(OUT_CODE, args.limit)
             if p_row and p_row.get("id"):
-                by_id[str(p_row["id"])] = p_row
+                if live_now is None or len(by_id) < live_now:
+                    by_id[str(p_row["id"])] = p_row
             else:
                 fail += 1
         write_feed(
@@ -126,16 +170,21 @@ async def amain() -> None:
             "teknosa crawl4ai sitemap+pdp (checkpoint)",
         )
         print(
-            f"  ... {done_n}/{len(todo)} ok={len(by_id)} fail={fail}",
+            f"  ... {done_n}/{len(todo)} ok={len(by_id)} fail={fail} "
+            f"live_total={count_live_feed_products()}",
             flush=True,
         )
 
+    live = merchant_absolute_cap(OUT_CODE, args.limit)
+    products = list(by_id.values())
+    if live is not None:
+        products = products[:live]
     path = write_feed(
         OUT_CODE,
-        list(by_id.values()),
+        products,
         "teknosa crawl4ai sitemap+pdp",
     )
-    print(f"done {len(by_id)} -> {path}")
+    print(f"done {len(products)} -> {path}")
 
 
 if __name__ == "__main__":
