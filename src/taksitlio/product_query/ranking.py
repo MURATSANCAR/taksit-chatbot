@@ -186,8 +186,9 @@ def rank_products(
                 + w.total_repayment * repay_score
                 + w.freshness * (1.0 if item.price_freshness == "FRESH" else 0.0)
             )
+            # ADR-012 §13: "En uygun" only when comparison bar + safety clear.
             if len(eligible_for_best) >= min_comparison_count_for_best_label:
-                label = "En uygun değer"
+                label = "En uygun"
             else:
                 label = "Kriterlerinize en yakın seçenek"
 

@@ -1,0 +1,954 @@
+{
+  "products": [
+    {
+      "id": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-15.3inc-W11",
+      "sku": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11.html",
+      "price": 29999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/150531-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-16inc-w11",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-16inc-W11",
+      "sku": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-16inc-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-16inc-w11.html",
+      "price": 26999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/150533-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "casper-nirvana-s100-13-nesil-core-i5-13420h-16gb-500gb-ssd-16inc-w11",
+      "name": "Casper Nirvana S100 13.Nesil Core i5 13420H-16Gb-500Gb Ssd-16inc-W11",
+      "sku": "casper-nirvana-s100-13-nesil-core-i5-13420h-16gb-500gb-ssd-16inc-w11",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-nirvana-s100-13-nesil-core-i5-13420h-16gb-500gb-ssd-16inc-w11.html",
+      "price": 34999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/151547-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
+      "name": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
+      "sku": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11.html",
+      "price": 74999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157184-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
+      "name": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+      "sku": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo.html",
+      "price": 42499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156843-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo",
+      "name": "MacBook Neo MHFG4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+      "sku": "macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo.html",
+      "price": 46999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156846-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
+      "name": "Dell Pro 15 Essential 13.Nesil Core i7 1355U-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
+      "brand": "Dell",
+      "url": "https://www.vatanbilgisayar.com/dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 37999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/156977-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
+      "name": "Lenovo LOQ 14.Nesil Core i5 14500HX-RTX5060 8Gb-16Gb-512Gb Ssd-15.6-W11",
+      "sku": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11.html",
+      "price": 59999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157183v-0-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i3 1315U-8Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11.html",
+      "price": 25999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/153855-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "dell-pro-15-essential-13-nesil-core-i5-1334u-16gb-512gb-ssd-15-6inc-w11",
+      "name": "Dell Pro 15 Essential 13.Nesil Core i5 1334U-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "dell-pro-15-essential-13-nesil-core-i5-1334u-16gb-512gb-ssd-15-6inc-w11",
+      "brand": "Dell",
+      "url": "https://www.vatanbilgisayar.com/dell-pro-15-essential-13-nesil-core-i5-1334u-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 31999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/154754-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "83K2000ETR",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-16inc-W11",
+      "sku": "83K2000ETR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-16inc-w11.html",
+      "price": 26999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/150533-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "83JE012JTR",
+      "name": "Lenovo LOQ 14.Nesil Core i5 14500HX-RTX5060 8Gb-16Gb-512Gb Ssd-15.6-W11",
+      "sku": "83JE012JTR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11.html",
+      "price": 59999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157183v-0-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "82X700G1TX",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i3 1315U-8Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "82X700G1TX",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11.html",
+      "price": 25999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/153855-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "PV15250-CI5165N",
+      "name": "Dell Pro 15 Essential 13.Nesil Core i5 1334U-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "PV15250-CI5165N",
+      "brand": "Dell",
+      "url": "https://www.vatanbilgisayar.com/dell-pro-15-essential-13-nesil-core-i5-1334u-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 31999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/154754-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "FA608UM-RV069W-Gaming",
+      "name": "Asus Tuf Gaming A16 2.Nesil Ryzen 7 260-RTX5060 8Gb-16Gb-512Gb-16inc-W11",
+      "sku": "FA608UM-RV069W-Gaming",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-tuf-gaming-a16-2-nesil-ryzen-7-260-rtx5050-8gb-16gb-512gb-16inc-w11-157015.html",
+      "price": 70609.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/157015-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "83K10016TR",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-15.3inc-W11",
+      "sku": "83K10016TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11.html",
+      "price": 29999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/150531-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "83JH004STR",
+      "name": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
+      "sku": "83JH004STR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11.html",
+      "price": 74999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/157184-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "MHFF4TU/A",
+      "name": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+      "sku": "MHFF4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo.html",
+      "price": 42499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156843-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "S100.1342-BE00P-G-F",
+      "name": "Casper Nirvana S100 13.Nesil Core i5 13420H-16Gb-500Gb Ssd-16inc-W11",
+      "sku": "S100.1342-BE00P-G-F",
+      "brand": "Casper",
+      "url": "https://www.vatanbilgisayar.com/casper-nirvana-s100-13-nesil-core-i5-13420h-16gb-500gb-ssd-16inc-w11.html",
+      "price": 34999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/casper/thumb/151547-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "PV15250-CI7W165N",
+      "name": "Dell Pro 15 Essential 13.Nesil Core i7 1355U-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "PV15250-CI7W165N",
+      "brand": "Dell",
+      "url": "https://www.vatanbilgisayar.com/dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 37999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/dell/thumb/156977-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "MHFG4TU/A",
+      "name": "MacBook Neo MHFG4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+      "sku": "MHFG4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo.html",
+      "price": 46999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156846-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "X1504VA-BQ4126W",
+      "name": "Asus Vivobook 15 1.Nesil Core 5 120U-8Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "X1504VA-BQ4126W",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-vivobook-15-1-nesil-core-5-120u-8gb-512gb-ssd-15-6inc-w11-155220.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/155220-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "83CV00E4TR",
+      "name": "Lenovo Yoga Slim 7 Core Ultra 5 125H-16Gb-512Gb Ssd-14inc-W11",
+      "sku": "83CV00E4TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-yoga-slim-7-core-ultra-5-125h-16gb-512gb-ssd-14inc-w11-155265.html",
+      "price": 49999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/155265-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "KATANA 17 HX B14WGK-045TR",
+      "name": "Msi Katana 17 14.Nesil Core i7 14650HX-RTX5070 8Gb-32Gb-1Tb Ssd-17.3inc-W11",
+      "sku": "KATANA 17 HX B14WGK-045TR",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-katana-17-14-nesil-core-i7-14650hx-rtx5070-8gb-32gb-1tb-ssd-17-3inc-w11.html",
+      "price": 100279.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/152400-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "P1503CVA-VT2391W",
+      "name": "Asus ExpertBook P1 2.Nesil Core 5 210H-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "P1503CVA-VT2391W",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-expertbook-p1-13-nesil-core-5-210h-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 37999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/155785-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "MHFC4TU/A",
+      "name": "MacBook Neo MHFC4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Gümüş",
+      "sku": "MHFC4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfc4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo.html",
+      "price": 46999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156847-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "83K10012TR",
+      "name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-16Gb-512Gb Ssd-15.3inc-W11",
+      "sku": "83K10012TR",
+      "brand": "Lenovo",
+      "url": "https://www.vatanbilgisayar.com/lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-16gb-512gb-ssd-15-3inc-w11.html",
+      "price": 37999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/lenovo/thumb/155158-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "MHFA4TU/A",
+      "name": "MacBook Neo MHFA4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Gümüş",
+      "sku": "MHFA4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-gumus.html",
+      "price": 42499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/156842-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "NX.DLMEY.001",
+      "name": "Acer Aspire Lite 5.Nesil Ryzen 7 5825U-16Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "NX.DLMEY.001",
+      "brand": "Acer",
+      "url": "https://www.vatanbilgisayar.com/acer-nitro-v-16-2-nesil-ryzen-7-260-rtx5070-8gb-32gb-1tb-ssd-16inc-w11-158884.html",
+      "price": 28999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/acer/thumb/158884-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "E1504FA-BQ4417W",
+      "name": "Asus Vivobook Go 15 4.Nesil Ryzen 5 40-8Gb-512Gb Ssd-15.6inc-W11",
+      "sku": "E1504FA-BQ4417W",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-vivobook-go-15-7-nesil-ryzen-5-7520u-8gb-512gb-ssd-15-6inc-w11-156451.html",
+      "price": 24879.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/156451-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "CYBORG 15 B13WEKG-849TRNN",
+      "name": "Msi Cyborg 15 13.Nesil Core i7 13620H-RTX5050 8GB-16GB-1Tb Ssd-15.6inc-W11",
+      "sku": "CYBORG 15 B13WEKG-849TRNN",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i7-13620h-rtx5050-8gb-16gb-1tb-ssd-15-6inc-w11.html",
+      "price": 60369.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/155295-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "MDE54TU/A",
+      "name": "MacBook Pro MDE54TU/A M5 16Gb-1Tb Ssd-Liquid Retina-14inc-Silver",
+      "sku": "MDE54TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/macbook-pro-mde14tu-a-m5-16gb-1tb-ssd-liquid-retina-14inc-silver.html",
+      "price": 119999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-751_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 16
+      }
+    },
+    {
+      "id": "G615JMR-S5112W-Gaming",
+      "name": "Asus Rog Strix G16 14.Nesil Core i7 14650X-RTX5060 8Gb-16Gb-512Gb-16inc-W11",
+      "sku": "G615JMR-S5112W-Gaming",
+      "brand": "Asus",
+      "url": "https://www.vatanbilgisayar.com/asus-rog-strix-g16-14-nesil-core-i7-14650x-rtx5060-8gb-16gb-512gb-16inc-w11.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/asus/thumb/152621-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 8
+      }
+    },
+    {
+      "id": "CYBORG 15 A13VE-2055TR",
+      "name": "Msi Cyborg 15 13.Nesil Core i5 13420H-RTX4050 6GB-16GB-512Gb Ssd-15.6inc-W11",
+      "sku": "CYBORG 15 A13VE-2055TR",
+      "brand": "Msi",
+      "url": "https://www.vatanbilgisayar.com/msi-cyborg-15-13-nesil-core-i5-13420h-rtx4050-6gb-16gb-512gb-ssd-15-6inc-w11.html",
+      "price": 48559.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/msi/thumb/154821-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 6
+      }
+    },
+    {
+      "id": "iphone-15-akilli-telefon",
+      "name": "iPhone 15 128 Gb Akıllı Telefon Siyah",
+      "sku": "iphone-15-akilli-telefon",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-15-akilli-telefon.html",
+      "price": 52999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/0005-mtp03tu-a_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "iphone-15-128-gb-akilli-telefon-mavi",
+      "name": "iPhone 15 128 Gb Akıllı Telefon Mavi",
+      "sku": "iphone-15-128-gb-akilli-telefon-mavi",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-15-128-gb-akilli-telefon-mavi.html",
+      "price": 52999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/0007-mtp43tu-a_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "iphone-16-128-gb-akilli-telefon-beyaz",
+      "name": "iPhone 16 128 GB Akıllı Telefon Beyaz",
+      "sku": "iphone-16-128-gb-akilli-telefon-beyaz",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-16-128-gb-akilli-telefon-beyaz.html",
+      "price": 66999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-246_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "oppo-a5-4g-6-128-akilli-telefon-aurora-yesil",
+      "name": "Oppo A5 4G 6/128 Akıllı Telefon Aurora Yeşil",
+      "sku": "oppo-a5-4g-6-128-akilli-telefon-aurora-yesil",
+      "brand": "Oppo",
+      "url": "https://www.vatanbilgisayar.com/oppo-a5-4g-6-128-akilli-telefon-aurora-yesil.html",
+      "price": 13499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oppo/thumb/2-6_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "samsung-galaxy-a17-8-256-gb-akilli-telefon-gri",
+      "name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Gri",
+      "sku": "samsung-galaxy-a17-8-256-gb-akilli-telefon-gri",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-a17-8-256-gb-akilli-telefon-gri.html",
+      "price": 16999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/153090-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "xiaomi-redmi-15c-8-256gb-siyah-akilli-telefon",
+      "name": "Xiaomi Redmi 15C 8+256GB Siyah Akıllı Telefon",
+      "sku": "xiaomi-redmi-15c-8-256gb-siyah-akilli-telefon",
+      "brand": "Xiaomi",
+      "url": "https://www.vatanbilgisayar.com/xiaomi-redmi-15c-8-256gb-siyah-akilli-telefon.html",
+      "price": 12999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/xiaomi/thumb/153207-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "iphone-17-256-gb-akilli-telefon-beyaz",
+      "name": "iPhone 17 256 GB Akıllı Telefon Beyaz",
+      "sku": "iphone-17-256-gb-akilli-telefon-beyaz",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-256-gb-akilli-telefon-beyaz.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153480-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "iphone-17-pro-max-256-gb-akilli-telefon-gumus",
+      "name": "iPhone 17 Pro Max 256 GB Akıllı Telefon Gümüş",
+      "sku": "iphone-17-pro-max-256-gb-akilli-telefon-gumus",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-pro-max-256-gb-akilli-telefon-gumus.html",
+      "price": 127999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153498-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "iphone-17-pro-256-gb-akilli-telefon-gumus",
+      "name": "iPhone 17 Pro 256 GB Akıllı Telefon Gümüş",
+      "sku": "iphone-17-pro-256-gb-akilli-telefon-gumus",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-pro-256-gb-akilli-telefon-gumus.html",
+      "price": 112999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153489-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "xiaomi-redmi-note-15-8-256gb-akilli-telefon-mavi",
+      "name": "Xiaomi Redmi Note 15 8+256GB Akıllı Telefon Mavi",
+      "sku": "xiaomi-redmi-note-15-8-256gb-akilli-telefon-mavi",
+      "brand": "Xiaomi",
+      "url": "https://www.vatanbilgisayar.com/xiaomi-redmi-note-15-8-256gb-akilli-telefon-mavi.html",
+      "price": 17999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/xiaomi/thumb/155405-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MTP43TU/A",
+      "name": "iPhone 15 128 Gb Akıllı Telefon Mavi",
+      "sku": "MTP43TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-15-128-gb-akilli-telefon-mavi.html",
+      "price": 52999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/0007-mtp43tu-a_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "MTP03TU/A",
+      "name": "iPhone 15 128 Gb Akıllı Telefon Siyah",
+      "sku": "MTP03TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-15-akilli-telefon.html",
+      "price": 52999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/0005-mtp03tu-a_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "MTP93TU/A",
+      "name": "iPhone 15 256 Gb Akıllı Telefon Mavi",
+      "sku": "MTP93TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-15-256-gb-akilli-telefon-mavi.html",
+      "price": 55999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/0007-mtp43tu-a-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MYE93TU/A",
+      "name": "iPhone 16 128 GB Akıllı Telefon Beyaz",
+      "sku": "MYE93TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-16-128-gb-akilli-telefon-beyaz.html",
+      "price": 66999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-246_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "MTP63TU/A",
+      "name": "iPhone 15 256 Gb Akıllı Telefon Siyah",
+      "sku": "MTP63TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-15-256-gb-akilli-telefon-siyah.html",
+      "price": 55999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/0005-mtp03tu-a-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MFYM4TU/A",
+      "name": "iPhone 17 Pro Max 256 GB Akıllı Telefon Gümüş",
+      "sku": "MFYM4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-pro-max-256-gb-akilli-telefon-gumus.html",
+      "price": 127999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153498-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MG8G4TU/A",
+      "name": "iPhone 17 Pro 256 GB Akıllı Telefon Gümüş",
+      "sku": "MG8G4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-pro-256-gb-akilli-telefon-gumus.html",
+      "price": 112999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153489-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MZB0MWLTR",
+      "name": "Xiaomi Redmi Note 15 8+256GB Akıllı Telefon Mavi",
+      "sku": "MZB0MWLTR",
+      "brand": "Xiaomi",
+      "url": "https://www.vatanbilgisayar.com/xiaomi-redmi-note-15-8-256gb-akilli-telefon-mavi.html",
+      "price": 17999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/xiaomi/thumb/155405-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "21.OP.A54G.6_128.01",
+      "name": "Oppo A5 4G 6/128 Akıllı Telefon Aurora Yeşil",
+      "sku": "21.OP.A54G.6_128.01",
+      "brand": "Oppo",
+      "url": "https://www.vatanbilgisayar.com/oppo-a5-4g-6-128-akilli-telefon-aurora-yesil.html",
+      "price": 13499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/oppo/thumb/2-6_small.jpg",
+      "attributes": {}
+    },
+    {
+      "id": "MG6K4TU/A",
+      "name": "iPhone 17 256 GB Akıllı Telefon Beyaz",
+      "sku": "MG6K4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-256-gb-akilli-telefon-beyaz.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153480-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MZB0LEMTR",
+      "name": "Xiaomi Redmi 15C 8+256GB Siyah Akıllı Telefon",
+      "sku": "MZB0LEMTR",
+      "brand": "Xiaomi",
+      "url": "https://www.vatanbilgisayar.com/xiaomi-redmi-15c-8-256gb-siyah-akilli-telefon.html",
+      "price": 12999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/xiaomi/thumb/153207-1-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "SM-A176BZADTUR",
+      "name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Gri",
+      "sku": "SM-A176BZADTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-a17-8-256-gb-akilli-telefon-gri.html",
+      "price": 16999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/153090-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MG6J4TU/A",
+      "name": "iPhone 17 256 GB Akıllı Telefon Siyah",
+      "sku": "MG6J4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-akilli-telefon.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-746_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "SM-A376BZAGTUR",
+      "name": "Samsung Galaxy A37 5G 8/256 GB Akıllı Telefon Antrasit",
+      "sku": "SM-A376BZAGTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-a37-5g-8-256-gb-akilli-telefon.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/157307-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MYED3TU/A",
+      "name": "iPhone 16 128 GB Akıllı Telefon Deniz Mavisi",
+      "sku": "MYED3TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-16-128-gb-akilli-telefon-deniz-mavisi.html",
+      "price": 66999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-248_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "MYE73TU/A",
+      "name": "iPhone 16 128 GB Akıllı Telefon Siyah",
+      "sku": "MYE73TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-16-akilli-telefon.html",
+      "price": 66999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-244_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "MG6M4TU/A",
+      "name": "iPhone 17 256 GB Akıllı Telefon Lavanta",
+      "sku": "MG6M4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-256-gb-akilli-telefon-lavanta.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153482-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "SM-A176BZBDTUR",
+      "name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Mavi",
+      "sku": "SM-A176BZBDTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-a17-8-256-gb-akilli-telefon-mavi.html",
+      "price": 16999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/153089-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MG6L4TU/A",
+      "name": "iPhone 17 256 GB Akıllı Telefon Sis Mavisi",
+      "sku": "MG6L4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-256-gb-akilli-telefon-sis-mavisi.html",
+      "price": 84999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153481-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MG8J4TU/A",
+      "name": "iPhone 17 Pro 256 GB Akıllı Telefon Abis",
+      "sku": "MG8J4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-pro-akilli-telefon.html",
+      "price": 112999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153491-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MFYN4TU/A",
+      "name": "iPhone 17 Pro Max 256 GB Akıllı Telefon Kozmik Turuncu",
+      "sku": "MFYN4TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-17-pro-max-akilli-telefon-turuncu.html",
+      "price": 127999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/153499-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "SM-A176BZKDTUR",
+      "name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Siyah",
+      "sku": "SM-A176BZKDTUR",
+      "brand": "Samsung",
+      "url": "https://www.vatanbilgisayar.com/samsung-galaxy-a17-8-256-gb-akilli-telefon-siyah.html",
+      "price": 16999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/samsung/thumb/153088-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    },
+    {
+      "id": "MYEA3TU/A",
+      "name": "iPhone 16 128 GB Akıllı Telefon Pembe",
+      "sku": "MYEA3TU/A",
+      "brand": "Apple",
+      "url": "https://www.vatanbilgisayar.com/iphone-16-128-gb-akilli-telefon-pembe.html",
+      "price": 66999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/apple/thumb/1-247_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 128
+      }
+    },
+    {
+      "id": "MZB0MWQTR",
+      "name": "Xiaomi Redmi Note 15 8+256GB Akıllı Telefon Siyah",
+      "sku": "MZB0MWQTR",
+      "brand": "Xiaomi",
+      "url": "https://www.vatanbilgisayar.com/xiaomi-redmi-note-15-8-256gb-akilli-telefon-siyah.html",
+      "price": 17999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "image_url": "https://cdn.vatanbilgisayar.com/Upload/PRODUCT/xiaomi/thumb/155406-1_small.jpg",
+      "attributes": {
+        "ram_gb_raw": 256
+      }
+    }
+  ],
+  "source": "vatanbilgisayar.com listing HTML",
+  "retrieved_note": "polite listing crawl; stock UNKNOWN when not on page"
+}

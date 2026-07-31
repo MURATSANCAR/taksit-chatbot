@@ -132,7 +132,7 @@ class PostgresFinanceOptionIndex:
 
 
 class PostgresInstitutionLabelLoader:
-    """Load institution_id → display_name from financial_institutions."""
+    """Load institution_id → display_name (+ logo CDN) from financial_institutions."""
 
     def __init__(self, pool: Any) -> None:
         self._pool = pool
@@ -147,6 +147,26 @@ class PostgresInstitutionLabelLoader:
                 """
             )
         return {str(r["id"]): str(r["display_name"]) for r in rows}
+
+    async def load_logos(self) -> dict[str, str]:
+        async with self._pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT DISTINCT ON (fim.institution_id)
+                       fim.institution_id::text AS institution_id,
+                       ma.cdn_url
+                FROM financial_institution_media fim
+                JOIN media_assets ma ON ma.id = fim.media_asset_id
+                WHERE ma.status = 'READY'
+                  AND ma.cdn_url IS NOT NULL
+                  AND fim.role IN ('LOGO', 'PRIMARY', 'ICON')
+                  AND (fim.valid_until IS NULL OR fim.valid_until > NOW())
+                ORDER BY fim.institution_id,
+                         CASE fim.role WHEN 'LOGO' THEN 0 WHEN 'PRIMARY' THEN 1 ELSE 2 END,
+                         fim.is_primary DESC
+                """
+            )
+        return {str(r["institution_id"]): str(r["cdn_url"]) for r in rows}
 
 
 __all__ = [

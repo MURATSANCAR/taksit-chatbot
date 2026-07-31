@@ -1,0 +1,22 @@
+{
+  "campaigns": [
+    {
+      "id": "isbank-mediamarkt-max-9ay-public",
+      "institution_code": "fi-isbank",
+      "name": "MediaMarkt Maximum Kart peşin fiyatına 9 aya varan taksit",
+      "campaign_type": "INSTALLMENT",
+      "summary": "İş Bankası Maximum/Maximiles/Privia kartları ile MediaMarkt alışverişlerinde peşin fiyatına 9 aya varan taksit (kamuya açık kampanya metni). Oran sayfada net APR olarak verilmediği için rate_apr yazılmadı.",
+      "valid_until": null,
+      "terms": [
+        {
+          "months": 9
+        }
+      ],
+      "merchant_codes": [
+        "m-mediamarkt"
+      ],
+      "category_codes": [],
+      "source_url": "https://www.isbank.com.tr/kampanyalar/mediamarktta-taksit-firsati"
+    }
+  ]
+}

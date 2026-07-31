@@ -1,0 +1,339 @@
+{
+  "products": [
+    {
+      "id": "1232522",
+      "name": "DYSON V15 Detect Absolute Şarjlı Dikey Süpürge Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_dyson-v15-detect-kablosuz-sarjli-dikey-supurge-sari-nikel-1232522.html",
+      "price": 8999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251036",
+      "name": "LENOVO Ideapad Slim 3/ Intel core i5-13420H/ 8 GB Ram/ 512 GB SSD/ 15.3\" WUXGA/ W11/ Laptop 83K100UFTR Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-ip-slim-3core-i5-13420h8512153w1183k100uftr-1251036.html",
+      "price": 25999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1246851",
+      "name": "LENOVO IdeaPad Slim 3/ AMD Ryzen 5 7520U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00JKTX Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-ideapad-slim-3-amd-ryzen-5-7520u-8gb-ram-512gb-ssd-156-fhd-w11-laptop-82xq00jktx-1246851.html",
+      "price": 26999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1253401",
+      "name": "LENOVO Yoga Slim 7 Aura Edition/Intel Core Ultra 5 226V/16GB RAM/512 GB SSD/14\" OLED/W11/83JX00BATR Laptop Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-yoga-slim-7-aura-editionintel-core-ultra-5-226v16gb-ram512-gb-ssd14-oledw1183jx00batr-laptop-1253401.html",
+      "price": 54999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1250347",
+      "name": "APPLE MDE54TU/A Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 16GB Ram/ 1TB SSD/ 14.2\"/ Gümüş Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-macbook-pro-apple-m5-islemci-10-cekirdekcpu-10-cekirdek-gpu-16gb-ram-1tb-ssd-142-silver-mde54tua-1250347.html",
+      "price": 119999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1250346",
+      "name": "APPLE MDE14TU/A Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 16GB Ram/ 1TB SSD/ 14.2\"/ Uzay Siyahı Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-macbook-pro-apple-m5-islemci-10-cekirdekcpu-10-cekirdek-gpu-16gb-ram-1tb-ssd-142-space-black-mde14tua-1250346.html",
+      "price": 120999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251460",
+      "name": "ASUS Vivobook 15 X1504VA-BQ5383W/Intel® Core™ 5 120U İşlemci/8 GB RAM/512 GB SSD/15.6\"/W11 Laptop Mavi Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_asus-vivobook-15-x1504va-bq5383wintelr-coretm-5-120u-islemci8-gb-ram512-gb-ssd156w11-laptop-mavi-1251460.html",
+      "price": 24999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1242972",
+      "name": "LENOVO IdeaPad Slim 3/ Ryzen 3 7320U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00NATX Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-ideapad-slim-3-ryzen-3-7320u-8gb-ram-512gb-ssd-15-1242972.html",
+      "price": 23999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1245264",
+      "name": "CASPER S100.1362-DF00A-G-F/Core i7-13620H/32 GB RAM/1 TB SSD/16\"/W11 Laptop Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_casper-s1001362-df00a-g-fcore-i7-13620h32-gb-ram1-tb-ssd16w11-laptop-1245264.html",
+      "price": 48999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1252137",
+      "name": "LENOVO LOQ/AMD Ryzen 7 7735HS/16 GB RAM/1 TB SSD/RTX 4050 Ekran Kartı/15.6\" FHD 144Hz /W11/Gaming Laptop Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-loqamd-ryzen-7-7735hs16-gb-ram1-tb-ssdrtx-4050-ekran-karti156-fhd-144hz-w11gaming-laptop-1252137.html",
+      "price": 52999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "180666323",
+      "name": "ASUS V16 V3607VM-RP047W RTX5060-8GB 144Hz WUXGA Intel Core 5 210H 16 GB RAM 512 GB SSD 16 inç FreeDOS Laptop Siyah Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_asus-v16-v3607vm-rp047w-rtx5060-8gb-144hz-wuxga-intel-core-5-210h-16-gb-ram-512-gb-ssd-16-inc-freedos-laptop-siyah-180666323.html",
+      "price": 52599.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1250348",
+      "name": "APPLE Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 24GB Ram/ 1TB SSD/ 14.2\"/ Space Black MDE34TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-macbook-pro-apple-m5-islemci-10-cekirdekcpu-10-cekirdek-gpu-24gb-ram-1tb-ssd-142-space-black-mde34tua-1250348.html",
+      "price": 139999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248370",
+      "name": "CASPER G870.1362-BQ50A-C /Intel Core i7 13620H/16 GB RAM/1 TB SSD/RTX5050/15.6\"/W11 Excalibur Gaming Laptop Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_casper-g8701362-bq50a-c-intel-core-i7-13620h16-gb-ram1-tb-ssdrtx5050156w11-excalibur-gaming-laptop-1248370.html",
+      "price": 64999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248958",
+      "name": "XIAOMI Redmi 15C 8/256 GB Akıllı Telefon Siyah Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_xiaomi-redmi-15c-8256-gb-akilli-telefon-siyah-1248958.html",
+      "price": 11499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1232436",
+      "name": "APPLE iPhone 15 128 GB Akıllı Telefon Mavi MTP43TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-iphone-15-128-gb-akilli-telefon-mavi-mtp43tua-1232436.html",
+      "price": 47779.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1249221",
+      "name": "APPLE iPhone 17 256 GB Akıllı Telefon Siyah MG6J4TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-mg6j4tua-iphone-17-256gb-akilli-telefon-siyah-1249221.html",
+      "price": 78999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1249683",
+      "name": "SAMSUNG Galaxy A07 4/128GB Akıllı Telefon Siyah Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_samsung-galaxy-a07-4128gb-akilli-telefon-siyah-1249683.html",
+      "price": 9199.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1232435",
+      "name": "APPLE iPhone 15 128 GB Akıllı Telefon Siyah MTP03TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-iphone-15-128-gb-akilli-telefon-siyah-mtp03tua-1232435.html",
+      "price": 50499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1244798",
+      "name": "APPLE iPhone 16e 8/128 GB Akıllı Telefon Siyah MD1Q4TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-md1q4tua-iphone-16e-128gb-akilli-telefon-siyah-1244798.html",
+      "price": 41929.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1249245",
+      "name": "APPLE iPhone 17 Pro Max 256 GB Akıllı Telefon Gümüş MFYM4TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-mfym4tua-iphone-17-pro-max-256gb-akilli-telefon-gumus-1249245.html",
+      "price": 121999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251728",
+      "name": "XIAOMI Redmi Note 15 Pro 8/256GB Akıllı Telefon Titanium Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_xiaomi-redmi-note-15-pro-8256gb-akilli-telefon-titanium-1251728.html",
+      "price": 20999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248957",
+      "name": "XIAOMI Redmi 15C 8/256 GB Akıllı Telefon Mavi Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_xiaomi-redmi-15c-8256-gb-akilli-telefon-mavi-1248957.html",
+      "price": 11499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1249061",
+      "name": "SAMSUNG Galaxy S25 FE 5G 8/256 GB Akıllı Telefon Gece Siyahı Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_samsung-galaxy-s25fe-8256gb-gece-siyahi-1249061.html",
+      "price": 40999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1249236",
+      "name": "APPLE iPhone 17 Pro 256 GB Akıllı Telefon Gümüş MG8G4TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-iphone-17-pro-256gb-akilli-telefon-gumus-1249236.html",
+      "price": 111999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1232441",
+      "name": "APPLE iPhone 15 256 GB Akıllı Telefon Mavi MTP93TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-iphone-15-256-gb-akilli-telefon-mavi-mtp93tua-1232441.html",
+      "price": 54829.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1245605",
+      "name": "APPLE iPad (A16) Wi-Fi 128 GB Tablet Gümüş MD3Y4TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-11-inc-ipad-11nesil-a16-wi-fi-128-gb-tablet-gumus-md3y4tua-1245605.html",
+      "price": 20499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248672",
+      "name": "HUAWEI Yeni Matepad 11.5 inç 2025 8/128 GB Tablet Uzay Grisi Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_huawei-new-matepad-115-inc-8128gb-tablet-uzay-grisi-1248672.html",
+      "price": 11299.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251720",
+      "name": "SAMSUNG Galaxy Tab S10 Lite 6/128 GB Tablet Gümüş Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_samsung-galaxy-tab-s10-lite-6128-gb-tablet-gumus-1251720.html",
+      "price": 13499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248792",
+      "name": "HUAWEI Yeni Matepad 11.5 inç 2025 8/256GB + Klavye Tablet Uzay Grisi Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_huawei-new-matepad-115-inc-8256gb-keyboard-tablet-1248792.html",
+      "price": 15999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1250155",
+      "name": "SAMSUNG Galaxy Tab A11 8GB/ 128GB Tablet Gri Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_samsung-galaxy-tab-a11-8gb-128gb-tablet-gri-1250155.html",
+      "price": 6999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251390",
+      "name": "SAMSUNG Galaxy Tab A11+ 6/128GB GB Tablet Gri Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_samsung-tab-a11-6gb128gb-gri-sm-x230nzartur-1251390.html",
+      "price": 8599.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251046",
+      "name": "LENOVO Idea Tab 8GB 128GB 11 inç 2.5K 500nits 5G Sim Kartlı Tablet+Kalem+Kılıf ZAFM0109TR Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-idea-tab-8gb-128gb-11-inc-25k-500nits-sim-kartli-tabletkalemkilif-zafm0109tr-1251046.html",
+      "price": 10499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248994",
+      "name": "LENOVO Idea Tab 8/128 GB 11\" 2.5K 500nits 90Hz Tablet+Kalem+Kılıf ZAFR0025TR Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_lenovo-idea-tab-8128-gb-11-25k-500nits-90hz-tabletkalemkilif-zafr0025tr-1248994.html",
+      "price": 12999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1245606",
+      "name": "APPLE iPad (A16) Wi-Fi 128 GB Tablet Mavi MD4A4TU/A Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_apple-11-inc-ipad-11nesil-a16-wi-fi-128-gb-tablet-mavi-md4a4tua-1245606.html",
+      "price": 20499.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1251392",
+      "name": "SAMSUNG Galaxy Tab A11+ 8/256 GB Tablet Gri Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_samsung-tab-a11-8gb256gb-gri-sm-x230nzaptur-1251392.html",
+      "price": 10999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1248671",
+      "name": "HUAWEI Yeni Matepad 11.5 inç 2025 8/256GB + Klavye Tablet Mor Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_huawei-new-matepad-115-8256gb-keyboard-tablet-1248671.html",
+      "price": 17999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    },
+    {
+      "id": "1249586",
+      "name": "HUAWEI Yeni Matepad 12X 2025 12/256 GB Bundle Klavye + Kalem Tablet Yeşil Fiyat & Özellik | MediaMarkt",
+      "url": "https://www.mediamarkt.com.tr/tr/product/_huawei-yeni-matepad-12x-2025-12256-gb-bundle-klavye-kalem-tablet-yesil-1249586.html",
+      "price": 25999.0,
+      "currency": "TRY",
+      "stock_status": "UNKNOWN",
+      "attributes": {}
+    }
+  ],
+  "source": "mediamarkt category+PDP JSON-LD",
+  "count": 37
+}

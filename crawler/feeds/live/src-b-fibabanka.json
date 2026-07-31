@@ -1,0 +1,18 @@
+{
+  "campaigns": [
+    {
+      "id": "fibabanka-alisveris-kredisi-listing",
+      "institution_code": "fi-fibabanka",
+      "name": "Fibabanka Alışveriş Kredisi (anlaşmalı mağaza listesi — oran kaynağı ayrı)",
+      "campaign_type": "INSTALLMENT",
+      "summary": "Kamuya açık Fibabanka alışveriş kredisi / Taksitlio partner anlatımı. Kesin APR/vade tablosu bu kaynakta normalize edilmediği için terms/rates boş bırakıldı (uydurma yok).",
+      "terms": [],
+      "merchant_codes": [
+        "m-teknosa",
+        "m-vatan"
+      ],
+      "category_codes": [],
+      "source_url": "https://www.teknosa.com/alisveris-kredisi"
+    }
+  ]
+}

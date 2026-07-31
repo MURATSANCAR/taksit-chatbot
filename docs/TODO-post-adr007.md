@@ -277,10 +277,10 @@ Durum: **Proposed — design**; kod P0 kabul sonrası.
 | Recommendation | P4 ranking safety rules (browse vs finance modes) |
 | Clarification Routing | P0 skeleton PASS (unit/acceptance) |
 | Progress Truthfulness | P0 skeleton PASS (unit/acceptance) |
-| Progressive Result | P0 path ready; live P95 not measured |
+| Progressive Result | P0 path ready; live P95 via `/v1/search-sessions/metrics/summary` |
 | Stale LLM Protection | P0 skeleton PASS (unit/acceptance) |
 | LLM Timeout Fallback | P0 skeleton PASS (unit/acceptance) |
-| Logo Correctness | P0 skeleton PASS (unit/acceptance) |
+| Logo Correctness | P2 CDN resolver PASS (unit; READY media only) |
 | Source Provenance | ADR-012 proposed |
 | Claim Grounding | ADR-012 proposed |
 | Payment Calculation | ADR-012 proposed (ADR-010 payment_plan üzerine) |

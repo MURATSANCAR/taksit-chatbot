@@ -89,8 +89,16 @@ class LlmUnderstandingWorker:
     metrics: dict[str, list[float]] = field(default_factory=dict)
     provider_mode: str = "deterministic_fallback"
 
-    def _record(self, name: str, value: float) -> None:
+    def _record(self, name: str, value: float, *, session_id: Optional[str] = None) -> None:
         self.metrics.setdefault(name, []).append(value)
+        from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
+
+        if name.endswith("_ms"):
+            GLOBAL_SEARCH_METRICS.observe(name, value)
+        else:
+            GLOBAL_SEARCH_METRICS.incr(name, int(value) if value == int(value) else 1)
+        if session_id and name.endswith("_ms"):
+            self.orchestrator.repo.record_metric(session_id, name, value)
 
     async def process_job(self, job_id: str) -> dict[str, Any]:
         job = self.orchestrator.llm_jobs.get(job_id)
@@ -121,7 +129,7 @@ class LlmUnderstandingWorker:
                 validate_llm_patch(patch)
                 latency = (time.perf_counter() - started) * 1000.0
                 self.circuit.success(latency)
-                self._record("llm_inference_ms", latency)
+                self._record("llm_inference_ms", latency, session_id=job.search_session_id)
                 session = self.orchestrator.repo.get(job.search_session_id)
                 if session is None:
                     return {"status": "FAILED", "applied": False}

@@ -31,6 +31,7 @@ from taksitlio.search_progress import (
     assert_truthful_message,
     display_message_for,
 )
+from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
 from taksitlio.search_sessions.repository import (
     InMemorySearchSessionRepository,
     SearchSession,
@@ -59,6 +60,29 @@ class SearchOrchestrator:
     logo_rails: dict[str, dict[str, list[LogoCandidate]]] = field(default_factory=dict)
     started_mono: dict[str, float] = field(default_factory=dict)
     circuit_open: bool = False
+    logo_resolver: Any = None
+
+    def _logo_url(self, kind: str, entity_id: Optional[str]) -> Optional[str]:
+        resolver = self.logo_resolver
+        if resolver is None or entity_id is None:
+            return None
+        if kind == "merchant":
+            return resolver.merchant(entity_id)
+        if kind == "brand":
+            return resolver.brand(entity_id)
+        if kind == "institution":
+            return resolver.institution(entity_id)
+        return None
+
+    def _elapsed_ms(self, session_id: str) -> float:
+        started = self.started_mono.get(session_id)
+        if started is None:
+            return 0.0
+        return (time.monotonic() - started) * 1000.0
+
+    def _record_latency(self, session_id: str, name: str, value_ms: float) -> None:
+        self.repo.record_metric(session_id, name, float(value_ms))
+        GLOBAL_SEARCH_METRICS.observe(name, float(value_ms), session_id=session_id)
 
     def _emit(
         self,
@@ -136,7 +160,7 @@ class SearchOrchestrator:
                 LogoCandidate(
                     entity_id=parse.merchant.resolved_id,
                     display_name=parse.merchant.display_name,
-                    logo_cdn_url=None,
+                    logo_cdn_url=self._logo_url("merchant", parse.merchant.resolved_id),
                     kind="merchant",
                 )
             )
@@ -146,7 +170,7 @@ class SearchOrchestrator:
                     LogoCandidate(
                         entity_id=b.resolved_id,
                         display_name=b.display_name,
-                        logo_cdn_url=None,
+                        logo_cdn_url=self._logo_url("brand", b.resolved_id),
                         kind="brand",
                     )
                 )
@@ -272,6 +296,9 @@ class SearchOrchestrator:
                 SearchProgressEventType.PARTIAL_RESULTS_READY,
                 payload={"count": len(partial.products), "label": partial.label},
             )
+            self._record_latency(
+                session.id, "partial_result_latency_ms", self._elapsed_ms(session.id)
+            )
 
         # Finance from local snapshot by default (truthful)
         origin = DataOrigin.LOCAL_VERIFIED_SNAPSHOT.value
@@ -289,8 +316,17 @@ class SearchOrchestrator:
             self.logo_rails[session.id]["institution"] = [
                 LogoCandidate(
                     entity_id=str(i),
-                    display_name=str(i),
-                    logo_cdn_url=None,
+                    display_name=str(
+                        next(
+                            (
+                                x.get("display_name")
+                                for x in (parse.preferred_institutions or [])
+                                if x.get("institution_id") == i
+                            ),
+                            i,
+                        )
+                    ),
+                    logo_cdn_url=self._logo_url("institution", str(i)),
                     kind="institution",
                 )
                 for i in institution_ids
@@ -321,6 +357,9 @@ class SearchOrchestrator:
         self._emit(session, SearchProgressEventType.FINAL_RESULTS_READY, payload={"count": len(partial.products)})
         self._emit(session, evt)
         self.repo.record_metric(session.id, "fast_path_completion", 1.0 if not degraded else 0.0)
+        self._record_latency(session.id, "search_complete_ms", self._elapsed_ms(session.id))
+        if not degraded:
+            self._record_latency(session.id, "fast_path_completion_ms", self._elapsed_ms(session.id))
         chips = chips_from_state(self.states[session.id])
         return {
             "search_session_id": session.id,
@@ -362,6 +401,8 @@ class SearchOrchestrator:
             "platform_role": "UNDERSTANDING_SERVICE",
         }
         self._emit(session, SearchProgressEventType.LLM_JOB_QUEUED, payload={"job_id": job.id})
+        queue_wait = self._elapsed_ms(session.id)
+        self._record_latency(session.id, "queue_wait_ms", queue_wait)
         self.repo.set_status(session.id, SearchSessionStatus.LLM_RUNNING)
         job.status = LlmJobStatus.RUNNING
         self._emit(session, SearchProgressEventType.LLM_JOB_STARTED, payload={"job_id": job.id})
@@ -382,7 +423,11 @@ class SearchOrchestrator:
                 SearchProgressEventType.PARTIAL_RESULTS_READY,
                 payload={"count": len(partial.products), "label": partial.label},
             )
+            self._record_latency(
+                session.id, "partial_result_latency_ms", self._elapsed_ms(session.id)
+            )
         self.repo.record_metric(session.id, "llm_route", 1.0)
+        GLOBAL_SEARCH_METRICS.incr("llm_route")
         return {
             "search_session_id": session.id,
             "query_version": session.active_query_version,

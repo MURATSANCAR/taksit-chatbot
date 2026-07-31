@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from typing import Optional, Protocol, Sequence
 
 from taksitlio.chatbot_cards import ProductCardFinanceSummary
@@ -37,12 +37,16 @@ class InMemoryFinanceOptionIndex:
 
 @dataclass(frozen=True)
 class InstitutionLabelResolver:
-    """Maps institution_id → display label from catalog; no hardcoded bank names."""
+    """Maps institution_id → display label + optional logo CDN from catalog."""
 
     labels: dict[str, str]
+    logos: dict[str, str] = field(default_factory=dict)
 
     def label_for(self, institution_id: str) -> str:
         return self.labels.get(institution_id) or f"institution:{institution_id}"
+
+    def logo_cdn_url_for(self, institution_id: str) -> Optional[str]:
+        return self.logos.get(str(institution_id))
 
 
 def pick_best_eligible(
@@ -78,6 +82,7 @@ def enrich_candidate_with_finance(
         total_repayment=float(best.total_repayment or 0),
         display_label=best.display_label or "Tahmini aylık ödeme",
         fees_total=float(best.fees_total or 0),
+        institution_logo_cdn_url=labels.logo_cdn_url_for(best.institution_id),
     )
     return replace(
         candidate,
@@ -105,10 +110,14 @@ class InMemoryInstitutionLabelLoader:
 
 
 async def load_institution_labels(loader: object) -> InstitutionLabelResolver:
-    """Build resolver from a loader exposing ``async load_labels() -> dict``."""
+    """Build resolver from a loader exposing ``async load_labels()`` (+ optional logos)."""
 
     labels = await loader.load_labels()  # type: ignore[attr-defined]
-    return InstitutionLabelResolver(labels=dict(labels or {}))
+    logos: dict[str, str] = {}
+    load_logos = getattr(loader, "load_logos", None)
+    if callable(load_logos):
+        logos = dict(await load_logos() or {})
+    return InstitutionLabelResolver(labels=dict(labels or {}), logos=logos)
 
 
 __all__ = [

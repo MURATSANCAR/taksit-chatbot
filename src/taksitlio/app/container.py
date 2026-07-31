@@ -260,6 +260,16 @@ def build_in_memory_container(
     )
     search_orchestrator = build_demo_orchestrator()
     from taksitlio.llm_routing.worker import build_default_worker
+    from taksitlio.media.logo_resolver import InMemoryLogoCatalog
+
+    logo_catalog = InMemoryLogoCatalog()
+    # Demo logos only for synthetic merchant/brand/institution ids used in tests
+    logo_catalog.put_merchant("merchant-teknosa", "https://cdn.test/merchants/teknosa.webp")
+    logo_catalog.put_brand("brand-apple", "https://cdn.test/brands/apple.webp")
+    logo_catalog.put_brand("brand-samsung", "https://cdn.test/brands/samsung.webp")
+    logo_catalog.put_institution("institution-kuveyt", "https://cdn.test/banks/kuveyt.webp")
+    logo_catalog.put_institution("institution-fibabanka", "https://cdn.test/banks/fibabanka.webp")
+    search_orchestrator.logo_resolver = logo_catalog.resolver
 
     llm_worker = build_default_worker(
         search_orchestrator, health_registry=health, http_client=client
@@ -315,6 +325,8 @@ def build_in_memory_container(
             "institution_labels": institution_labels,
             "search_orchestrator": search_orchestrator,
             "llm_understanding_worker": llm_worker,
+            "logo_catalog": logo_catalog,
+            "logo_resolver": logo_catalog.resolver,
         },
     )
 
@@ -387,13 +399,41 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     institution_label_loader = PostgresInstitutionLabelLoader(pool)
     institution_labels = await load_institution_labels(institution_label_loader)
     from taksitlio.llm_routing.worker import build_default_worker
+    from taksitlio.media.logo_resolver import PostgresLogoCatalog
     from taksitlio.search_sessions import build_demo_orchestrator
+    from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
+    from taksitlio.search_sessions.persist import SearchSessionStatePersister
     from taksitlio.search_sessions.postgres import PostgresSearchSessionRepository
 
     search_orchestrator = build_demo_orchestrator()
     search_pg = PostgresSearchSessionRepository(pool)
     await search_pg.load_timeout_policy()
     search_orchestrator.repo.policy = search_pg.policy
+    logo_catalog = PostgresLogoCatalog(pool)
+    logo_resolver = await logo_catalog.load()
+    # Merge institution logos from finance loader into resolver used by search rail
+    if institution_labels.logos:
+        from taksitlio.media.logo_resolver import LogoResolver
+
+        logo_resolver = LogoResolver(
+            merchant_logos=dict(logo_resolver.merchant_logos),
+            brand_logos=dict(logo_resolver.brand_logos),
+            institution_logos={
+                **dict(logo_resolver.institution_logos),
+                **dict(institution_labels.logos),
+            },
+        )
+    search_orchestrator.logo_resolver = logo_resolver
+    await refresh_orchestrator_from_catalog(
+        search_orchestrator,
+        catalog=product_catalog,
+        merchants=merchant_directory,
+        finance_index=finance_option_index,
+        institutions=institution_labels,
+        logos=logo_resolver,
+        utterance="",
+    )
+    search_persister = SearchSessionStatePersister(search_pg)
     llm_worker = build_default_worker(
         search_orchestrator, health_registry=health, http_client=client
     )
@@ -438,6 +478,9 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "institution_labels": institution_labels,
             "search_orchestrator": search_orchestrator,
             "search_session_pg": search_pg,
+            "search_session_persister": search_persister,
             "llm_understanding_worker": llm_worker,
+            "logo_catalog": logo_catalog,
+            "logo_resolver": logo_resolver,
         },
     )

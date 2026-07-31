@@ -13,6 +13,8 @@ from pydantic import BaseModel, Field
 from taksitlio.api.deps import container_from
 from taksitlio.llm_routing.worker import schedule_llm_job
 from taksitlio.search_sessions import SearchOrchestrator, build_demo_orchestrator
+from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
+from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
 
 router = APIRouter(tags=["search-sessions"])
 
@@ -24,6 +26,38 @@ def _orchestrator(request: Request) -> SearchOrchestrator:
         orch = build_demo_orchestrator()
         container.extras["search_orchestrator"] = orch
     return orch  # type: ignore[no-any-return]
+
+
+async def _maybe_refresh_catalog(request: Request, orch: SearchOrchestrator, utterance: str) -> None:
+    container = container_from(request)
+    catalog = container.extras.get("product_catalog")
+    if catalog is None:
+        return
+    logos = container.extras.get("logo_resolver")
+    await refresh_orchestrator_from_catalog(
+        orch,
+        catalog=catalog,
+        merchants=container.extras.get("merchant_directory"),
+        finance_index=container.extras.get("finance_option_index"),
+        institutions=container.extras.get("institution_labels"),
+        logos=logos,
+        utterance=utterance,
+    )
+
+
+async def _maybe_persist(request: Request, session_id: Optional[str]) -> None:
+    if not session_id:
+        return
+    container = container_from(request)
+    persister = container.extras.get("search_session_persister")
+    orch = container.extras.get("search_orchestrator")
+    if persister is None or orch is None:
+        return
+    try:
+        await persister.persist(orch, session_id)
+    except Exception:  # noqa: BLE001
+        # Persistence must not break search UX
+        pass
 
 
 def _schedule_understanding(request: Request, result: Dict[str, Any]) -> None:
@@ -68,9 +102,35 @@ class LlmCompleteIn(BaseModel):
     active_state_version: Optional[int] = None
 
 
+@router.get("/search-sessions/metrics/summary")
+async def search_metrics_summary(request: Request) -> Dict[str, Any]:
+    """Live P50/P95 for queue / inference / partial-result latencies."""
+
+    container = container_from(request)
+    summary = GLOBAL_SEARCH_METRICS.summary()
+    pg = container.extras.get("search_session_pg")
+    if pg is not None and hasattr(pg, "list_recent_metrics"):
+        try:
+            rows = await pg.list_recent_metrics(limit=500)
+            GLOBAL_SEARCH_METRICS.ingest_session_metrics(rows)
+            summary = GLOBAL_SEARCH_METRICS.summary()
+        except Exception:  # noqa: BLE001
+            pass
+    worker = container.extras.get("llm_understanding_worker")
+    if worker is not None:
+        for name, values in getattr(worker, "metrics", {}).items():
+            for v in values:
+                if name.endswith("_ms"):
+                    GLOBAL_SEARCH_METRICS.observe(name, float(v))
+        summary = GLOBAL_SEARCH_METRICS.summary()
+        summary["provider_mode"] = getattr(worker, "provider_mode", None)
+    return summary
+
+
 @router.post("/search-sessions")
 async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, Any]:
     orch = _orchestrator(request)
+    await _maybe_refresh_catalog(request, orch, payload.message)
     result = orch.start(
         conversation_id=payload.conversation_id,
         message=payload.message,
@@ -82,6 +142,7 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
     sid = result["search_session_id"]
     result["events_url"] = f"/v1/search-sessions/{sid}/events"
     _schedule_understanding(request, result)
+    await _maybe_persist(request, sid)
     return result
 
 
@@ -93,13 +154,16 @@ async def post_clarification(
 ) -> Dict[str, Any]:
     orch = _orchestrator(request)
     try:
-        return orch.answer_clarification(
+        result = orch.answer_clarification(
             session_id,
             clarification_id=payload.clarification_id,
             selected_option_ids=payload.selected_option_ids,
             free_text=payload.free_text,
             expected_query_version=payload.expected_query_version,
         )
+        _schedule_understanding(request, result)
+        await _maybe_persist(request, session_id)
+        return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -114,13 +178,15 @@ async def post_constraints(
 ) -> Dict[str, Any]:
     orch = _orchestrator(request)
     try:
-        return orch.update_constraint(
+        result = orch.update_constraint(
             session_id,
             action=payload.action,
             constraint_id=payload.constraint_id,
             value=payload.value,
             expected_query_version=payload.expected_query_version,
         )
+        await _maybe_persist(request, session_id)
+        return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -131,7 +197,9 @@ async def post_constraints(
 async def complete_with_current(session_id: str, request: Request) -> Dict[str, Any]:
     orch = _orchestrator(request)
     try:
-        return orch.complete_with_current_results(session_id)
+        result = orch.complete_with_current_results(session_id)
+        await _maybe_persist(request, session_id)
+        return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -140,7 +208,9 @@ async def complete_with_current(session_id: str, request: Request) -> Dict[str, 
 async def cancel_search(session_id: str, request: Request) -> Dict[str, Any]:
     orch = _orchestrator(request)
     try:
-        return orch.cancel(session_id)
+        result = orch.cancel(session_id)
+        await _maybe_persist(request, session_id)
+        return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -153,8 +223,10 @@ async def supersede_message(
 ) -> Dict[str, Any]:
     orch = _orchestrator(request)
     try:
+        await _maybe_refresh_catalog(request, orch, payload.message)
         result = orch.supersede_with_message(session_id, payload.message)
         _schedule_understanding(request, result)
+        await _maybe_persist(request, session_id)
         return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc

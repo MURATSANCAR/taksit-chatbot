@@ -15,12 +15,15 @@ class MerchantDirectoryEntry:
     merchant_code: str
     display_name: str
     status: str = "ACTIVE"
+    logo_cdn_url: Optional[str] = None
 
 
 class MerchantDirectory(Protocol):
     async def get(self, merchant_id: int) -> Optional[MerchantDirectoryEntry]: ...
 
     async def get_display_name(self, merchant_id: int) -> Optional[str]: ...
+
+    async def get_logo_cdn_url(self, merchant_id: int) -> Optional[str]: ...
 
     async def upsert(self, entry: MerchantDirectoryEntry) -> MerchantDirectoryEntry: ...
 
@@ -40,6 +43,12 @@ class InMemoryMerchantDirectory:
             return None
         return row.display_name
 
+    async def get_logo_cdn_url(self, merchant_id: int) -> Optional[str]:
+        row = self._by_id.get(merchant_id)
+        if row is None or row.status != "ACTIVE":
+            return None
+        return row.logo_cdn_url
+
     async def upsert(self, entry: MerchantDirectoryEntry) -> MerchantDirectoryEntry:
         for existing in self._by_id.values():
             if existing.merchant_code == entry.merchant_code:
@@ -48,6 +57,7 @@ class InMemoryMerchantDirectory:
                     merchant_code=entry.merchant_code,
                     display_name=entry.display_name,
                     status=entry.status,
+                    logo_cdn_url=entry.logo_cdn_url if entry.logo_cdn_url is not None else existing.logo_cdn_url,
                 )
                 self._by_id[existing.id] = updated
                 return updated
@@ -59,6 +69,7 @@ class InMemoryMerchantDirectory:
             merchant_code=entry.merchant_code,
             display_name=entry.display_name,
             status=entry.status,
+            logo_cdn_url=entry.logo_cdn_url,
         )
         self._by_id[new_id] = stored
         return stored
@@ -77,8 +88,21 @@ class PostgresMerchantDirectory:
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
-                SELECT id, merchant_code, display_name, status
-                FROM merchants WHERE id = $1
+                SELECT m.id, m.merchant_code, m.display_name, m.status,
+                       logo.cdn_url AS logo_cdn_url
+                FROM merchants m
+                LEFT JOIN LATERAL (
+                    SELECT ma.cdn_url
+                    FROM merchant_media mm
+                    JOIN media_assets ma ON ma.id = mm.media_asset_id AND ma.status = 'READY'
+                    WHERE mm.merchant_id = m.id
+                      AND mm.role IN ('LOGO', 'PRIMARY', 'ICON')
+                      AND (mm.valid_until IS NULL OR mm.valid_until > NOW())
+                    ORDER BY CASE mm.role WHEN 'LOGO' THEN 0 WHEN 'PRIMARY' THEN 1 ELSE 2 END,
+                             mm.is_primary DESC
+                    LIMIT 1
+                ) logo ON TRUE
+                WHERE m.id = $1
                 """,
                 merchant_id,
             )
@@ -89,6 +113,7 @@ class PostgresMerchantDirectory:
             merchant_code=str(row["merchant_code"]),
             display_name=str(row["display_name"]),
             status=str(row["status"]),
+            logo_cdn_url=str(row["logo_cdn_url"]) if row["logo_cdn_url"] else None,
         )
 
     async def get_display_name(self, merchant_id: int) -> Optional[str]:
@@ -96,6 +121,12 @@ class PostgresMerchantDirectory:
         if entry is None or entry.status != "ACTIVE":
             return None
         return entry.display_name
+
+    async def get_logo_cdn_url(self, merchant_id: int) -> Optional[str]:
+        entry = await self.get(merchant_id)
+        if entry is None or entry.status != "ACTIVE":
+            return None
+        return entry.logo_cdn_url
 
     async def upsert(self, entry: MerchantDirectoryEntry) -> MerchantDirectoryEntry:
         async with self._pool.acquire() as conn:
@@ -118,16 +149,27 @@ class PostgresMerchantDirectory:
             merchant_code=str(row["merchant_code"]),
             display_name=str(row["display_name"]),
             status=str(row["status"]),
+            logo_cdn_url=entry.logo_cdn_url,
         )
 
     async def list_active(self, *, limit: int = 200) -> Sequence[MerchantDirectoryEntry]:
         async with self._pool.acquire() as conn:
             rows = await conn.fetch(
                 """
-                SELECT id, merchant_code, display_name, status
-                FROM merchants
-                WHERE status = 'ACTIVE'
-                ORDER BY id ASC
+                SELECT m.id, m.merchant_code, m.display_name, m.status,
+                       logo.cdn_url AS logo_cdn_url
+                FROM merchants m
+                LEFT JOIN LATERAL (
+                    SELECT ma.cdn_url
+                    FROM merchant_media mm
+                    JOIN media_assets ma ON ma.id = mm.media_asset_id AND ma.status = 'READY'
+                    WHERE mm.merchant_id = m.id
+                      AND mm.role IN ('LOGO', 'PRIMARY', 'ICON')
+                    ORDER BY CASE mm.role WHEN 'LOGO' THEN 0 ELSE 1 END, mm.is_primary DESC
+                    LIMIT 1
+                ) logo ON TRUE
+                WHERE m.status = 'ACTIVE'
+                ORDER BY m.id ASC
                 LIMIT $1
                 """,
                 limit,
@@ -138,6 +180,7 @@ class PostgresMerchantDirectory:
                 merchant_code=str(r["merchant_code"]),
                 display_name=str(r["display_name"]),
                 status=str(r["status"]),
+                logo_cdn_url=str(r["logo_cdn_url"]) if r["logo_cdn_url"] else None,
             )
             for r in rows
         )

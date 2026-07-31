@@ -159,13 +159,30 @@ def validate_llm_patch(
                 _walk(item, f"{path}[{i}]")
 
     _walk(payload)
-    required = ("intent", "overall_confidence", "safe_to_retrieve")
+    required = ("intent", "safe_to_retrieve")
     for r in required:
         if r not in payload:
             raise LlmPatchValidationError(f"missing {r}")
-    conf = float(payload["overall_confidence"])
-    if conf < 0 or conf > 1:
-        raise LlmPatchValidationError("overall_confidence out of range")
+    # ADR-012 §2: prefer field-level confidence; overall is telemetry only.
+    field_conf = payload.get("confidence")
+    if isinstance(field_conf, Mapping):
+        for k, v in field_conf.items():
+            if k == "overall":
+                continue
+            try:
+                fv = float(v)  # type: ignore[arg-type]
+            except (TypeError, ValueError) as exc:
+                raise LlmPatchValidationError(f"confidence.{k} invalid") from exc
+            if fv < 0 or fv > 1:
+                raise LlmPatchValidationError(f"confidence.{k} out of range")
+    if "overall_confidence" in payload:
+        conf = float(payload["overall_confidence"])
+        if conf < 0 or conf > 1:
+            raise LlmPatchValidationError("overall_confidence out of range")
+    elif not isinstance(field_conf, Mapping) or not field_conf:
+        raise LlmPatchValidationError(
+            "missing confidence (field-level) or overall_confidence"
+        )
     return dict(payload)
 
 

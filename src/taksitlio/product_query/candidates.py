@@ -59,6 +59,14 @@ async def product_to_search_candidate(
         )
 
     merchant_name = await resolve_merchant_display_name(product.merchant_id, merchants)
+    merchant_logo = None
+    if merchants is not None:
+        get_logo = getattr(merchants, "get_logo_cdn_url", None)
+        if callable(get_logo):
+            merchant_logo = await get_logo(product.merchant_id)
+        else:
+            entry = await merchants.get(product.merchant_id)
+            merchant_logo = getattr(entry, "logo_cdn_url", None) if entry else None
     candidate = SearchProductCandidate(
         product_id=str(product.id),
         display_name=product.display_name,
@@ -72,6 +80,7 @@ async def product_to_search_candidate(
         price_freshness=offer.freshness_status,
         has_primary_image=has_image,
         thumbnail_cdn_url=product.primary_cdn_url if has_image else None,
+        merchant_logo_cdn_url=merchant_logo,
         query_relevance=max(0.2, float(relevance)),
         attribute_coverage=min(1.0, 0.4 + 0.1 * len(attrs)),
         finance_active=False,

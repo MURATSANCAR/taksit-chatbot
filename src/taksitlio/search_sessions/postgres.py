@@ -199,8 +199,9 @@ class PostgresSearchSessionRepository:
         data_origin: Optional[str] = None,
         payload: Optional[dict[str, Any]] = None,
         severity: str = "INFO",
+        event_id: Optional[str] = None,
     ) -> SessionEvent:
-        eid = uuid.uuid4()
+        eid = uuid.UUID(event_id) if event_id else uuid.uuid4()
         async with self._pool.acquire() as conn:
             await conn.execute(
                 """
@@ -208,6 +209,7 @@ class PostgresSearchSessionRepository:
                     id, search_session_id, query_version, event_type, severity,
                     display_message, data_origin, payload
                 ) VALUES ($1,$2::uuid,$3,$4,$5,$6,$7,$8::jsonb)
+                ON CONFLICT (id) DO NOTHING
                 """,
                 eid,
                 session_id,
@@ -394,3 +396,103 @@ class PostgresSearchSessionRepository:
             superseded_by=str(row["superseded_by"]) if row["superseded_by"] else None,
             metadata=dict(row["metadata"] or {}),
         )
+
+    async def upsert_partial_snapshot(
+        self,
+        *,
+        session_id: str,
+        query_version: int,
+        label: str,
+        product_ids: list[Any],
+        ranking_payload: dict[str, Any],
+        snapshot_id: Optional[str] = None,
+    ) -> str:
+        sid = snapshot_id or str(
+            uuid.uuid5(uuid.NAMESPACE_URL, f"partial:{session_id}:{query_version}:{label}")
+        )
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO partial_result_snapshots (
+                    id, search_session_id, query_version, label, product_ids, ranking_payload
+                ) VALUES ($1::uuid,$2::uuid,$3,$4,$5::jsonb,$6::jsonb)
+                ON CONFLICT (id) DO UPDATE SET
+                    product_ids = EXCLUDED.product_ids,
+                    ranking_payload = EXCLUDED.ranking_payload,
+                    label = EXCLUDED.label
+                """,
+                sid,
+                session_id,
+                query_version,
+                label,
+                _json([p for p in product_ids if p is not None]),
+                _json(ranking_payload),
+            )
+        return sid
+
+    async def upsert_clarification_request(
+        self,
+        *,
+        clarification_id: str,
+        session_id: str,
+        query_version: int,
+        field: str,
+        question_text: str,
+        question_signature: str,
+        options: list[Any],
+        status: str = "PENDING",
+    ) -> None:
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                """
+                INSERT INTO clarification_requests (
+                    id, search_session_id, query_version, field, question_text,
+                    question_signature, options, status
+                ) VALUES ($1::uuid,$2::uuid,$3,$4,$5,$6,$7::jsonb,$8)
+                ON CONFLICT (id) DO UPDATE SET
+                    status = EXCLUDED.status,
+                    options = EXCLUDED.options
+                """,
+                clarification_id,
+                session_id,
+                query_version,
+                field,
+                question_text,
+                question_signature,
+                _json(options),
+                status,
+            )
+
+    async def upsert_session_metadata(self, session_id: str, metadata: dict[str, Any]) -> None:
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                """
+                UPDATE search_sessions
+                SET metadata = COALESCE(metadata, '{}'::jsonb) || $2::jsonb,
+                    updated_at = NOW()
+                WHERE id = $1::uuid
+                """,
+                session_id,
+                _json(metadata),
+            )
+
+    async def list_recent_metrics(self, *, limit: int = 500) -> list[dict[str, Any]]:
+        async with self._pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT metric_name, metric_value, labels, recorded_at
+                FROM search_session_metrics
+                ORDER BY recorded_at DESC
+                LIMIT $1
+                """,
+                limit,
+            )
+        return [
+            {
+                "metric_name": r["metric_name"],
+                "metric_value": float(r["metric_value"]),
+                "labels": dict(r["labels"] or {}),
+                "recorded_at": r["recorded_at"].isoformat() if r["recorded_at"] else None,
+            }
+            for r in rows
+        ]

@@ -1,0 +1,1878 @@
+{
+  "product_ingest": [
+    {
+      "source_code": "src-m-vatan",
+      "discovered": 68,
+      "succeeded": 68,
+      "failed": 0,
+      "quarantined": 0,
+      "chatbot_visible": 68,
+      "upserted_products": 68,
+      "upserted_offers": 68,
+      "skipped_quarantined": 0
+    },
+    {
+      "source_code": "src-m-mediamarkt",
+      "discovered": 37,
+      "succeeded": 37,
+      "failed": 0,
+      "quarantined": 0,
+      "chatbot_visible": 37,
+      "upserted_products": 37,
+      "upserted_offers": 37,
+      "skipped_quarantined": 0
+    }
+  ],
+  "campaign_ingest": [
+    {
+      "source": "src-b-fibabanka.json",
+      "campaigns": 1,
+      "rates": 0,
+      "rates_skipped_no_explicit_rate": 0,
+      "applied": {
+        "campaigns_applied": 1,
+        "rates_applied": 0,
+        "rates_skipped_no_explicit_rate": 0,
+        "institutions_known": 1
+      },
+      "campaign_codes": [
+        "fibabanka-alisveris-kredisi-listing"
+      ]
+    },
+    {
+      "source": "src-b-isbank.json",
+      "campaigns": 1,
+      "rates": 0,
+      "rates_skipped_no_explicit_rate": 1,
+      "applied": {
+        "campaigns_applied": 1,
+        "rates_applied": 0,
+        "rates_skipped_no_explicit_rate": 1,
+        "institutions_known": 1
+      },
+      "campaign_codes": [
+        "isbank-mediamarkt-max-9ay-public"
+      ]
+    }
+  ],
+  "catalog": {
+    "product_count": 105,
+    "offer_count": 105,
+    "products": [
+      {
+        "merchant_id": 101,
+        "external_product_id": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-15-6inc-w11",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-15.3inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "lenovo-ideapad-slim-3-13-nesil-core-i5-13420h-8gb-512gb-ssd-16inc-w11",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-16inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "casper-nirvana-s100-13-nesil-core-i5-13420h-16gb-500gb-ssd-16inc-w11",
+        "display_name": "Casper Nirvana S100 13.Nesil Core i5 13420H-16Gb-500Gb Ssd-16inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "lenovo-loq-13-nesil-core-i7-13650hx-rtx5060-8gb-16gb-512gb-ssd-17-3inc-w11",
+        "display_name": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "macbook-neo-mhfa4tu-a-a18-pro-8gb-256gb-ssd-13inc-indigo",
+        "display_name": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "macbook-neo-mhfg4tu-a-a18-pro-8gb-512gb-ssd-13inc-indigo",
+        "display_name": "MacBook Neo MHFG4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "dell-pro-15-essential-13-nesil-core-i7-1355u-16gb-512gb-ssd-15-6inc-w11",
+        "display_name": "Dell Pro 15 Essential 13.Nesil Core i7 1355U-16Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "lenovo-loq-14-nesil-core-i5-14500hx-rtx5060-8gb-16gb-512gb-ssd-15-6-w11",
+        "display_name": "Lenovo LOQ 14.Nesil Core i5 14500HX-RTX5060 8Gb-16Gb-512Gb Ssd-15.6-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "lenovo-ideapad-3-13-nesil-core-i3-1315u-8gb-512gb-ssd-15-6inc-w11",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i3 1315U-8Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "dell-pro-15-essential-13-nesil-core-i5-1334u-16gb-512gb-ssd-15-6inc-w11",
+        "display_name": "Dell Pro 15 Essential 13.Nesil Core i5 1334U-16Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "83K2000ETR",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-16inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "83JE012JTR",
+        "display_name": "Lenovo LOQ 14.Nesil Core i5 14500HX-RTX5060 8Gb-16Gb-512Gb Ssd-15.6-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "82X700G1TX",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i3 1315U-8Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "PV15250-CI5165N",
+        "display_name": "Dell Pro 15 Essential 13.Nesil Core i5 1334U-16Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "FA608UM-RV069W-Gaming",
+        "display_name": "Asus Tuf Gaming A16 2.Nesil Ryzen 7 260-RTX5060 8Gb-16Gb-512Gb-16inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "83K10016TR",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-15.3inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "83JH004STR",
+        "display_name": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MHFF4TU/A",
+        "display_name": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "S100.1342-BE00P-G-F",
+        "display_name": "Casper Nirvana S100 13.Nesil Core i5 13420H-16Gb-500Gb Ssd-16inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "PV15250-CI7W165N",
+        "display_name": "Dell Pro 15 Essential 13.Nesil Core i7 1355U-16Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MHFG4TU/A",
+        "display_name": "MacBook Neo MHFG4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "X1504VA-BQ4126W",
+        "display_name": "Asus Vivobook 15 1.Nesil Core 5 120U-8Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "83CV00E4TR",
+        "display_name": "Lenovo Yoga Slim 7 Core Ultra 5 125H-16Gb-512Gb Ssd-14inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "KATANA 17 HX B14WGK-045TR",
+        "display_name": "Msi Katana 17 14.Nesil Core i7 14650HX-RTX5070 8Gb-32Gb-1Tb Ssd-17.3inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "P1503CVA-VT2391W",
+        "display_name": "Asus ExpertBook P1 2.Nesil Core 5 210H-16Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MHFC4TU/A",
+        "display_name": "MacBook Neo MHFC4TU/A A18 Pro 8Gb-512Gb Ssd-Liquid Retina ekran-13inc-Gümüş",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "83K10012TR",
+        "display_name": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-16Gb-512Gb Ssd-15.3inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MHFA4TU/A",
+        "display_name": "MacBook Neo MHFA4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Gümüş",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "NX.DLMEY.001",
+        "display_name": "Acer Aspire Lite 5.Nesil Ryzen 7 5825U-16Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "E1504FA-BQ4417W",
+        "display_name": "Asus Vivobook Go 15 4.Nesil Ryzen 5 40-8Gb-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "CYBORG 15 B13WEKG-849TRNN",
+        "display_name": "Msi Cyborg 15 13.Nesil Core i7 13620H-RTX5050 8GB-16GB-1Tb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MDE54TU/A",
+        "display_name": "MacBook Pro MDE54TU/A M5 16Gb-1Tb Ssd-Liquid Retina-14inc-Silver",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 16
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "G615JMR-S5112W-Gaming",
+        "display_name": "Asus Rog Strix G16 14.Nesil Core i7 14650X-RTX5060 8Gb-16Gb-512Gb-16inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 8
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "CYBORG 15 A13VE-2055TR",
+        "display_name": "Msi Cyborg 15 13.Nesil Core i5 13420H-RTX4050 6GB-16GB-512Gb Ssd-15.6inc-W11",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 6
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "iphone-15-akilli-telefon",
+        "display_name": "iPhone 15 128 Gb Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "iphone-15-128-gb-akilli-telefon-mavi",
+        "display_name": "iPhone 15 128 Gb Akıllı Telefon Mavi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "iphone-16-128-gb-akilli-telefon-beyaz",
+        "display_name": "iPhone 16 128 GB Akıllı Telefon Beyaz",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "oppo-a5-4g-6-128-akilli-telefon-aurora-yesil",
+        "display_name": "Oppo A5 4G 6/128 Akıllı Telefon Aurora Yeşil",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "samsung-galaxy-a17-8-256-gb-akilli-telefon-gri",
+        "display_name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Gri",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "xiaomi-redmi-15c-8-256gb-siyah-akilli-telefon",
+        "display_name": "Xiaomi Redmi 15C 8+256GB Siyah Akıllı Telefon",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "iphone-17-256-gb-akilli-telefon-beyaz",
+        "display_name": "iPhone 17 256 GB Akıllı Telefon Beyaz",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "iphone-17-pro-max-256-gb-akilli-telefon-gumus",
+        "display_name": "iPhone 17 Pro Max 256 GB Akıllı Telefon Gümüş",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "iphone-17-pro-256-gb-akilli-telefon-gumus",
+        "display_name": "iPhone 17 Pro 256 GB Akıllı Telefon Gümüş",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "xiaomi-redmi-note-15-8-256gb-akilli-telefon-mavi",
+        "display_name": "Xiaomi Redmi Note 15 8+256GB Akıllı Telefon Mavi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MTP43TU/A",
+        "display_name": "iPhone 15 128 Gb Akıllı Telefon Mavi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MTP03TU/A",
+        "display_name": "iPhone 15 128 Gb Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MTP93TU/A",
+        "display_name": "iPhone 15 256 Gb Akıllı Telefon Mavi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MYE93TU/A",
+        "display_name": "iPhone 16 128 GB Akıllı Telefon Beyaz",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MTP63TU/A",
+        "display_name": "iPhone 15 256 Gb Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MFYM4TU/A",
+        "display_name": "iPhone 17 Pro Max 256 GB Akıllı Telefon Gümüş",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MG8G4TU/A",
+        "display_name": "iPhone 17 Pro 256 GB Akıllı Telefon Gümüş",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MZB0MWLTR",
+        "display_name": "Xiaomi Redmi Note 15 8+256GB Akıllı Telefon Mavi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "21.OP.A54G.6_128.01",
+        "display_name": "Oppo A5 4G 6/128 Akıllı Telefon Aurora Yeşil",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MG6K4TU/A",
+        "display_name": "iPhone 17 256 GB Akıllı Telefon Beyaz",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MZB0LEMTR",
+        "display_name": "Xiaomi Redmi 15C 8+256GB Siyah Akıllı Telefon",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "SM-A176BZADTUR",
+        "display_name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Gri",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MG6J4TU/A",
+        "display_name": "iPhone 17 256 GB Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "SM-A376BZAGTUR",
+        "display_name": "Samsung Galaxy A37 5G 8/256 GB Akıllı Telefon Antrasit",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MYED3TU/A",
+        "display_name": "iPhone 16 128 GB Akıllı Telefon Deniz Mavisi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MYE73TU/A",
+        "display_name": "iPhone 16 128 GB Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MG6M4TU/A",
+        "display_name": "iPhone 17 256 GB Akıllı Telefon Lavanta",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "SM-A176BZBDTUR",
+        "display_name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Mavi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MG6L4TU/A",
+        "display_name": "iPhone 17 256 GB Akıllı Telefon Sis Mavisi",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MG8J4TU/A",
+        "display_name": "iPhone 17 Pro 256 GB Akıllı Telefon Abis",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MFYN4TU/A",
+        "display_name": "iPhone 17 Pro Max 256 GB Akıllı Telefon Kozmik Turuncu",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "SM-A176BZKDTUR",
+        "display_name": "Samsung Galaxy A17 5G 8/256 Gb Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MYEA3TU/A",
+        "display_name": "iPhone 16 128 GB Akıllı Telefon Pembe",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 128
+        }
+      },
+      {
+        "merchant_id": 101,
+        "external_product_id": "MZB0MWQTR",
+        "display_name": "Xiaomi Redmi Note 15 8+256GB Akıllı Telefon Siyah",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {
+          "ram_gb_raw": 256
+        }
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1232522",
+        "display_name": "DYSON V15 Detect Absolute Şarjlı Dikey Süpürge Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251036",
+        "display_name": "LENOVO Ideapad Slim 3/ Intel core i5-13420H/ 8 GB Ram/ 512 GB SSD/ 15.3\" WUXGA/ W11/ Laptop 83K100UFTR Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1246851",
+        "display_name": "LENOVO IdeaPad Slim 3/ AMD Ryzen 5 7520U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00JKTX Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1253401",
+        "display_name": "LENOVO Yoga Slim 7 Aura Edition/Intel Core Ultra 5 226V/16GB RAM/512 GB SSD/14\" OLED/W11/83JX00BATR Laptop Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1250347",
+        "display_name": "APPLE MDE54TU/A Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 16GB Ram/ 1TB SSD/ 14.2\"/ Gümüş Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1250346",
+        "display_name": "APPLE MDE14TU/A Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 16GB Ram/ 1TB SSD/ 14.2\"/ Uzay Siyahı Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251460",
+        "display_name": "ASUS Vivobook 15 X1504VA-BQ5383W/Intel® Core™ 5 120U İşlemci/8 GB RAM/512 GB SSD/15.6\"/W11 Laptop Mavi Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1242972",
+        "display_name": "LENOVO IdeaPad Slim 3/ Ryzen 3 7320U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00NATX Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1245264",
+        "display_name": "CASPER S100.1362-DF00A-G-F/Core i7-13620H/32 GB RAM/1 TB SSD/16\"/W11 Laptop Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1252137",
+        "display_name": "LENOVO LOQ/AMD Ryzen 7 7735HS/16 GB RAM/1 TB SSD/RTX 4050 Ekran Kartı/15.6\" FHD 144Hz /W11/Gaming Laptop Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "180666323",
+        "display_name": "ASUS V16 V3607VM-RP047W RTX5060-8GB 144Hz WUXGA Intel Core 5 210H 16 GB RAM 512 GB SSD 16 inç FreeDOS Laptop Siyah Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1250348",
+        "display_name": "APPLE Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 24GB Ram/ 1TB SSD/ 14.2\"/ Space Black MDE34TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248370",
+        "display_name": "CASPER G870.1362-BQ50A-C /Intel Core i7 13620H/16 GB RAM/1 TB SSD/RTX5050/15.6\"/W11 Excalibur Gaming Laptop Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248958",
+        "display_name": "XIAOMI Redmi 15C 8/256 GB Akıllı Telefon Siyah Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1232436",
+        "display_name": "APPLE iPhone 15 128 GB Akıllı Telefon Mavi MTP43TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1249221",
+        "display_name": "APPLE iPhone 17 256 GB Akıllı Telefon Siyah MG6J4TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1249683",
+        "display_name": "SAMSUNG Galaxy A07 4/128GB Akıllı Telefon Siyah Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1232435",
+        "display_name": "APPLE iPhone 15 128 GB Akıllı Telefon Siyah MTP03TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1244798",
+        "display_name": "APPLE iPhone 16e 8/128 GB Akıllı Telefon Siyah MD1Q4TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1249245",
+        "display_name": "APPLE iPhone 17 Pro Max 256 GB Akıllı Telefon Gümüş MFYM4TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251728",
+        "display_name": "XIAOMI Redmi Note 15 Pro 8/256GB Akıllı Telefon Titanium Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248957",
+        "display_name": "XIAOMI Redmi 15C 8/256 GB Akıllı Telefon Mavi Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1249061",
+        "display_name": "SAMSUNG Galaxy S25 FE 5G 8/256 GB Akıllı Telefon Gece Siyahı Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1249236",
+        "display_name": "APPLE iPhone 17 Pro 256 GB Akıllı Telefon Gümüş MG8G4TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1232441",
+        "display_name": "APPLE iPhone 15 256 GB Akıllı Telefon Mavi MTP93TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1245605",
+        "display_name": "APPLE iPad (A16) Wi-Fi 128 GB Tablet Gümüş MD3Y4TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248672",
+        "display_name": "HUAWEI Yeni Matepad 11.5 inç 2025 8/128 GB Tablet Uzay Grisi Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251720",
+        "display_name": "SAMSUNG Galaxy Tab S10 Lite 6/128 GB Tablet Gümüş Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248792",
+        "display_name": "HUAWEI Yeni Matepad 11.5 inç 2025 8/256GB + Klavye Tablet Uzay Grisi Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1250155",
+        "display_name": "SAMSUNG Galaxy Tab A11 8GB/ 128GB Tablet Gri Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251390",
+        "display_name": "SAMSUNG Galaxy Tab A11+ 6/128GB GB Tablet Gri Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251046",
+        "display_name": "LENOVO Idea Tab 8GB 128GB 11 inç 2.5K 500nits 5G Sim Kartlı Tablet+Kalem+Kılıf ZAFM0109TR Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248994",
+        "display_name": "LENOVO Idea Tab 8/128 GB 11\" 2.5K 500nits 90Hz Tablet+Kalem+Kılıf ZAFR0025TR Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1245606",
+        "display_name": "APPLE iPad (A16) Wi-Fi 128 GB Tablet Mavi MD4A4TU/A Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1251392",
+        "display_name": "SAMSUNG Galaxy Tab A11+ 8/256 GB Tablet Gri Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1248671",
+        "display_name": "HUAWEI Yeni Matepad 11.5 inç 2025 8/256GB + Klavye Tablet Mor Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      },
+      {
+        "merchant_id": 102,
+        "external_product_id": "1249586",
+        "display_name": "HUAWEI Yeni Matepad 12X 2025 12/256 GB Bundle Klavye + Kalem Tablet Yeşil Fiyat & Özellik | MediaMarkt",
+        "data_quality_status": "PARTIAL",
+        "status": "ACTIVE",
+        "attributes": {}
+      }
+    ],
+    "offers": [
+      {
+        "product_id": 1,
+        "merchant_id": 101,
+        "current_price": 29999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 2,
+        "merchant_id": 101,
+        "current_price": 26999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 3,
+        "merchant_id": 101,
+        "current_price": 34999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 4,
+        "merchant_id": 101,
+        "current_price": 74999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 5,
+        "merchant_id": 101,
+        "current_price": 42499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 6,
+        "merchant_id": 101,
+        "current_price": 46999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 7,
+        "merchant_id": 101,
+        "current_price": 37999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 8,
+        "merchant_id": 101,
+        "current_price": 59999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 9,
+        "merchant_id": 101,
+        "current_price": 25999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 10,
+        "merchant_id": 101,
+        "current_price": 31999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 11,
+        "merchant_id": 101,
+        "current_price": 26999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 12,
+        "merchant_id": 101,
+        "current_price": 59999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 13,
+        "merchant_id": 101,
+        "current_price": 25999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 14,
+        "merchant_id": 101,
+        "current_price": 31999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 15,
+        "merchant_id": 101,
+        "current_price": 70609.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 16,
+        "merchant_id": 101,
+        "current_price": 29999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 17,
+        "merchant_id": 101,
+        "current_price": 74999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 18,
+        "merchant_id": 101,
+        "current_price": 42499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 19,
+        "merchant_id": 101,
+        "current_price": 34999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 20,
+        "merchant_id": 101,
+        "current_price": 37999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 21,
+        "merchant_id": 101,
+        "current_price": 46999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 22,
+        "merchant_id": 101,
+        "current_price": 24999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 23,
+        "merchant_id": 101,
+        "current_price": 49999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 24,
+        "merchant_id": 101,
+        "current_price": 100279.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 25,
+        "merchant_id": 101,
+        "current_price": 37999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 26,
+        "merchant_id": 101,
+        "current_price": 46999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 27,
+        "merchant_id": 101,
+        "current_price": 37999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 28,
+        "merchant_id": 101,
+        "current_price": 42499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 29,
+        "merchant_id": 101,
+        "current_price": 28999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 30,
+        "merchant_id": 101,
+        "current_price": 24879.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 31,
+        "merchant_id": 101,
+        "current_price": 60369.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 32,
+        "merchant_id": 101,
+        "current_price": 119999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 33,
+        "merchant_id": 101,
+        "current_price": 84999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 34,
+        "merchant_id": 101,
+        "current_price": 48559.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 35,
+        "merchant_id": 101,
+        "current_price": 52999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 36,
+        "merchant_id": 101,
+        "current_price": 52999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 37,
+        "merchant_id": 101,
+        "current_price": 66999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 38,
+        "merchant_id": 101,
+        "current_price": 13499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 39,
+        "merchant_id": 101,
+        "current_price": 16999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 40,
+        "merchant_id": 101,
+        "current_price": 12999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 41,
+        "merchant_id": 101,
+        "current_price": 84999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 42,
+        "merchant_id": 101,
+        "current_price": 127999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 43,
+        "merchant_id": 101,
+        "current_price": 112999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 44,
+        "merchant_id": 101,
+        "current_price": 17999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 45,
+        "merchant_id": 101,
+        "current_price": 52999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 46,
+        "merchant_id": 101,
+        "current_price": 52999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 47,
+        "merchant_id": 101,
+        "current_price": 55999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 48,
+        "merchant_id": 101,
+        "current_price": 66999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 49,
+        "merchant_id": 101,
+        "current_price": 55999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 50,
+        "merchant_id": 101,
+        "current_price": 127999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 51,
+        "merchant_id": 101,
+        "current_price": 112999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 52,
+        "merchant_id": 101,
+        "current_price": 17999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 53,
+        "merchant_id": 101,
+        "current_price": 13499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 54,
+        "merchant_id": 101,
+        "current_price": 84999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 55,
+        "merchant_id": 101,
+        "current_price": 12999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 56,
+        "merchant_id": 101,
+        "current_price": 16999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 57,
+        "merchant_id": 101,
+        "current_price": 84999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 58,
+        "merchant_id": 101,
+        "current_price": 24999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 59,
+        "merchant_id": 101,
+        "current_price": 66999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 60,
+        "merchant_id": 101,
+        "current_price": 66999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 61,
+        "merchant_id": 101,
+        "current_price": 84999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 62,
+        "merchant_id": 101,
+        "current_price": 16999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 63,
+        "merchant_id": 101,
+        "current_price": 84999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 64,
+        "merchant_id": 101,
+        "current_price": 112999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 65,
+        "merchant_id": 101,
+        "current_price": 127999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 66,
+        "merchant_id": 101,
+        "current_price": 16999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 67,
+        "merchant_id": 101,
+        "current_price": 66999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 68,
+        "merchant_id": 101,
+        "current_price": 17999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 69,
+        "merchant_id": 102,
+        "current_price": 8999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 70,
+        "merchant_id": 102,
+        "current_price": 25999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 71,
+        "merchant_id": 102,
+        "current_price": 26999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 72,
+        "merchant_id": 102,
+        "current_price": 54999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 73,
+        "merchant_id": 102,
+        "current_price": 119999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 74,
+        "merchant_id": 102,
+        "current_price": 120999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 75,
+        "merchant_id": 102,
+        "current_price": 24999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 76,
+        "merchant_id": 102,
+        "current_price": 23999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 77,
+        "merchant_id": 102,
+        "current_price": 48999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 78,
+        "merchant_id": 102,
+        "current_price": 52999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 79,
+        "merchant_id": 102,
+        "current_price": 52599.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 80,
+        "merchant_id": 102,
+        "current_price": 139999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 81,
+        "merchant_id": 102,
+        "current_price": 64999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 82,
+        "merchant_id": 102,
+        "current_price": 11499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 83,
+        "merchant_id": 102,
+        "current_price": 47779.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 84,
+        "merchant_id": 102,
+        "current_price": 78999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 85,
+        "merchant_id": 102,
+        "current_price": 9199.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 86,
+        "merchant_id": 102,
+        "current_price": 50499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 87,
+        "merchant_id": 102,
+        "current_price": 41929.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 88,
+        "merchant_id": 102,
+        "current_price": 121999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 89,
+        "merchant_id": 102,
+        "current_price": 20999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 90,
+        "merchant_id": 102,
+        "current_price": 11499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 91,
+        "merchant_id": 102,
+        "current_price": 40999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 92,
+        "merchant_id": 102,
+        "current_price": 111999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 93,
+        "merchant_id": 102,
+        "current_price": 54829.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 94,
+        "merchant_id": 102,
+        "current_price": 20499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 95,
+        "merchant_id": 102,
+        "current_price": 11299.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 96,
+        "merchant_id": 102,
+        "current_price": 13499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 97,
+        "merchant_id": 102,
+        "current_price": 15999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 98,
+        "merchant_id": 102,
+        "current_price": 6999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 99,
+        "merchant_id": 102,
+        "current_price": 8599.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 100,
+        "merchant_id": 102,
+        "current_price": 10499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 101,
+        "merchant_id": 102,
+        "current_price": 12999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 102,
+        "merchant_id": 102,
+        "current_price": 20499.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 103,
+        "merchant_id": 102,
+        "current_price": 10999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 104,
+        "merchant_id": 102,
+        "current_price": 17999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      },
+      {
+        "product_id": 105,
+        "merchant_id": 102,
+        "current_price": 25999.0,
+        "currency": "TRY",
+        "stock_status": "UNKNOWN",
+        "freshness_status": "FRESH"
+      }
+    ]
+  }
+}
