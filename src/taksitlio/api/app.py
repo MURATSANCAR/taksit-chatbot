@@ -18,8 +18,10 @@ from taksitlio.config.settings import InfraSettings
 from taksitlio.api.routes import (
     admin,
     admin_finance,
+    admin_answer_integrity,
     admin_ingestion,
     admin_media,
+    answer_integrity,
     chat,
     health,
     product_query,
@@ -81,8 +83,10 @@ def create_app(container: AppContainer | None = None) -> FastAPI:
     app.include_router(chat.router, prefix="/v1")
     app.include_router(product_query.router, prefix="/v1")
     app.include_router(search_sessions.router, prefix="/v1")
+    app.include_router(answer_integrity.router, prefix="/v1")
     app.include_router(admin.router, prefix="/v1/admin")
     app.include_router(admin_ingestion.router, prefix="/v1/admin")
+    app.include_router(admin_answer_integrity.router, prefix="/v1/admin")
     app.include_router(admin_finance.router, prefix="/v1/admin")
     app.include_router(admin_media.router, prefix="/v1/admin")
     if _WEB_TAKSITLIO.is_dir():

@@ -232,20 +232,39 @@ def fetch_vatan(client: httpx.Client, delay: float) -> list[dict[str, Any]]:
 
 
 def fetch_mediamarkt(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
-    return fetch_listing_then_jsonld(
-        client,
-        category_urls=[
-            "https://www.mediamarkt.com.tr/tr/category/laptop-504926.html",
-            "https://www.mediamarkt.com.tr/tr/category/cep-telefonlari-504171.html",
-            "https://www.mediamarkt.com.tr/tr/category/tabletler-639520.html",
-            "https://www.mediamarkt.com.tr/tr/category/televizyonlar-504172.html",
-            "https://www.mediamarkt.com.tr/tr/category/oyuncu-laptop-878043.html",
-        ],
-        product_href_re=r'href="((?:https://www\.mediamarkt\.com\.tr)?/tr/product/[^"#?]+)"',
-        delay=delay,
-        limit=limit,
-        base="https://www.mediamarkt.com.tr",
-    )
+    cats = [
+        "https://www.mediamarkt.com.tr/tr/category/laptop-504926.html",
+        "https://www.mediamarkt.com.tr/tr/category/cep-telefonlari-504171.html",
+        "https://www.mediamarkt.com.tr/tr/category/tabletler-639520.html",
+        "https://www.mediamarkt.com.tr/tr/category/oyuncu-laptop-878043.html",
+    ]
+    product_urls: list[str] = []
+    for cat in cats:
+        r = client.get(cat)
+        if r.status_code != 200:
+            time.sleep(delay)
+            continue
+        links = re.findall(
+            r'href="(https://www\.mediamarkt\.com\.tr/tr/product/[^"#?]+)"', r.text
+        )
+        links += [
+            "https://www.mediamarkt.com.tr" + u
+            for u in re.findall(r'href="(/tr/product/[^"#?]+)"', r.text)
+        ]
+        for u in links:
+            if u not in product_urls:
+                product_urls.append(u)
+        time.sleep(delay)
+    product_urls = product_urls[:limit]
+    out: list[dict[str, Any]] = []
+    for url in product_urls:
+        r = client.get(url)
+        if r.status_code == 200:
+            p = parse_jsonld_product(r.text, url)
+            if p:
+                out.append(p)
+        time.sleep(delay)
+    return list({p["id"]: p for p in out}.values())
 
 
 def fetch_koctas(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:

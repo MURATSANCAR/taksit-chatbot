@@ -3,16 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any, Mapping, Optional
 
 from taksitlio.llm_routing import LlmJobStatus, LlmUnderstandingJob
 from taksitlio.query_state import QueryNeedState
 from taksitlio.search_sessions.orchestrator import LogoCandidate, SearchOrchestrator
-from taksitlio.search_sessions.repository import (
-    QueryVersion,
-    SearchSession,
-    SessionEvent,
-)
+from taksitlio.search_sessions.repository import QueryVersion, SearchSession, SessionEvent
 
 
 @dataclass
@@ -78,13 +75,19 @@ def hydrate_orchestrator(orch: SearchOrchestrator, snapshot: SessionSnapshot) ->
         if rails:
             orch.logo_rails[sid] = rails
 
-    # Active version snapshot → parse cache
     active = next(
         (v for v in snapshot.versions if v.version_number == session.active_query_version),
         snapshot.versions[-1] if snapshot.versions else None,
     )
     if active is not None and active.state_snapshot:
         orch.parses[sid] = dict(active.state_snapshot)
+
+    if snapshot.clarifications:
+        pending = next(
+            (c for c in snapshot.clarifications if c.get("status") == "PENDING"),
+            snapshot.clarifications[-1],
+        )
+        orch.clarifications[sid] = dict(pending)
 
     for raw in snapshot.llm_jobs:
         job_id = str(raw.get("id") or "")
@@ -95,7 +98,7 @@ def hydrate_orchestrator(orch: SearchOrchestrator, snapshot: SessionSnapshot) ->
             status = LlmJobStatus(str(status_raw))
         except ValueError:
             status = LlmJobStatus.QUEUED
-        job = LlmUnderstandingJob(
+        orch.llm_jobs[job_id] = LlmUnderstandingJob(
             id=job_id,
             search_session_id=str(raw.get("search_session_id") or sid),
             query_version=int(raw.get("query_version") or session.active_query_version),
@@ -108,26 +111,12 @@ def hydrate_orchestrator(orch: SearchOrchestrator, snapshot: SessionSnapshot) ->
                 else None
             ),
             error_code=raw.get("error_code"),
-            queued_at=raw.get("queued_at") or job_queued_default(),
+            queued_at=raw.get("queued_at") or datetime.now(timezone.utc),
             started_at=raw.get("started_at"),
             completed_at=raw.get("completed_at"),
         )
-        orch.llm_jobs[job_id] = job
-        clar = orch.clarifications.get(sid)
-        if clar is None and snapshot.clarifications:
-            pending = next(
-                (c for c in snapshot.clarifications if c.get("status") == "PENDING"),
-                snapshot.clarifications[-1],
-            )
-            orch.clarifications[sid] = dict(pending)
 
     return session
-
-
-def job_queued_default():
-    from datetime import datetime, timezone
-
-    return datetime.now(timezone.utc)
 
 
 async def ensure_session_loaded(

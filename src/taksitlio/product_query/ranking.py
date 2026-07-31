@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
 
 
 class RankingMode(str, Enum):
@@ -88,6 +88,7 @@ def rank_products(
     mode: RankingMode = RankingMode.BEST_OVERALL_VALUE,
     weights: Optional[RankingWeights] = None,
     min_comparison_count_for_best_label: int = 3,
+    sponsored: Optional[Sequence[Any]] = None,
 ) -> tuple[RankedProduct, ...]:
     w = weights or RankingWeights()
     scored: list[RankedProduct] = []
@@ -203,7 +204,127 @@ def rank_products(
         )
 
     scored.sort(key=lambda r: r.score, reverse=True)
+
+    if sponsored:
+        from taksitlio.recommendation_safety.feedback import (
+            SponsoredPlacement,
+            apply_sponsored_isolation,
+        )
+
+        placements: list[SponsoredPlacement] = []
+        for sp in sponsored:
+            if isinstance(sp, SponsoredPlacement):
+                placements.append(sp)
+            elif isinstance(sp, Mapping):
+                placements.append(
+                    SponsoredPlacement(
+                        product_id=str(sp.get("product_id") or ""),
+                        weight=float(sp.get("weight") or 0.0),
+                    )
+                )
+            else:
+                continue
+        placements = [p for p in placements if p.product_id]
+        if placements:
+            by_id = {r.product_id: r for r in scored}
+            organic_ids = [r.product_id for r in scored if not r.disqualified]
+            best_ids = {r.product_id for r in scored if r.label == "En uygun"}
+            stale_ids = {
+                i.product_id
+                for i in items
+                if i.price_freshness != "FRESH" or i.stock_status != "AVAILABLE"
+            }
+            isolated = apply_sponsored_isolation(
+                organic_ids,
+                placements,
+                eligible_ids=set(organic_ids),
+                stale_ids=stale_ids,
+                best_label_ids=best_ids,
+            )
+            # Keep disqualified at the end; reorder active results by isolation.
+            active = [by_id[pid] for pid in isolated if pid in by_id]
+            seen = set(isolated)
+            rest = [r for r in scored if r.product_id not in seen]
+            scored = active + rest
+
     return tuple(scored)
+
+
+def rank_products_with_sponsored_isolation(
+    items: Sequence[RankableProduct],
+    *,
+    mode: RankingMode = RankingMode.BEST_OVERALL_VALUE,
+    weights: Optional[RankingWeights] = None,
+    min_comparison_count_for_best_label: int = 3,
+    sponsored_product_ids: Sequence[str] = (),
+    sponsored_weights: Optional[Mapping[str, float]] = None,
+) -> tuple[RankedProduct, ...]:
+    """Rank then apply ADR-012 sponsored isolation (never steals 'en uygun')."""
+
+    ranked = rank_products(
+        items,
+        mode=mode,
+        weights=weights,
+        min_comparison_count_for_best_label=min_comparison_count_for_best_label,
+    )
+    if not sponsored_product_ids:
+        return ranked
+
+    from taksitlio.recommendation_safety.feedback import (
+        SponsoredPlacement,
+        apply_sponsored_isolation,
+    )
+
+    organic_ids = [r.product_id for r in ranked if not r.disqualified]
+    best_ids = {r.product_id for r in ranked if r.label in {"En uygun", "En uygun değer", "En uygun ürün"}}
+    stale_ids = {
+        i.product_id for i in items if i.price_freshness != "FRESH"
+    }
+    eligible = {
+        i.product_id
+        for i in items
+        if not safety_disqualify(i, require_finance=False, require_image=False)
+    }
+    weights_map = sponsored_weights or {}
+    sponsored = [
+        SponsoredPlacement(pid, float(weights_map.get(pid, 0.0)))
+        for pid in sponsored_product_ids
+    ]
+    order = apply_sponsored_isolation(
+        organic_ids,
+        sponsored,
+        eligible_ids=eligible,
+        stale_ids=stale_ids,
+        best_label_ids=best_ids,
+    )
+    by_id = {r.product_id: r for r in ranked}
+    reordered: list[RankedProduct] = []
+    for pid in order:
+        item = by_id.get(pid)
+        if item is None:
+            continue
+        if pid in sponsored_product_ids and item.label in {
+            "En uygun",
+            "En uygun değer",
+            "En uygun ürün",
+        }:
+            reordered.append(
+                RankedProduct(
+                    product_id=item.product_id,
+                    score=item.score,
+                    label="Sponsorlu seçenek",
+                    disqualified=item.disqualified,
+                    disqualify_reasons=item.disqualify_reasons,
+                )
+            )
+        else:
+            reordered.append(item)
+    # Append any disqualified that were dropped from organic order
+    seen = {r.product_id for r in reordered}
+    for r in ranked:
+        if r.product_id not in seen:
+            reordered.append(r)
+    return tuple(reordered)
 
 
 __all__ = [
@@ -212,5 +333,6 @@ __all__ = [
     "RankingMode",
     "RankingWeights",
     "rank_products",
+    "rank_products_with_sponsored_isolation",
     "safety_disqualify",
 ]

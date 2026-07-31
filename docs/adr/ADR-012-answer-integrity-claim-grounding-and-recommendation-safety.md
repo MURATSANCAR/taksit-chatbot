@@ -2,7 +2,7 @@
 
 ## Durum
 
-**Accepted — P0 skeleton + zero-tolerance gates (2026-07-31).**
+**Accepted — production closed (2026-07-31).**
 
 Bu ADR, ADR-010 (gerçek katalog / kampanya / ödeme) ve ADR-011
 (clarification-first / LLM routing) üzerine **cevap bütünlüğü** katmanını
@@ -10,15 +10,16 @@ tanımlar. Ürün araması çalışır; finansal ürün sunan kurumsal güven se
 için claim grounding, alan bazlı güven, deterministik response composer ve
 recommendation safety zorunludur.
 
-P0 kod iskeleti land edildi:
+Kod land edildi:
 
 - `src/taksitlio/answer_integrity/`
 - `src/taksitlio/claim_validation/`
 - `src/taksitlio/recommendation_safety/`
 - `db/migrations/V023__answer_integrity_claim_grounding.sql`
+- Admin: `/v1/admin/answer-integrity/*` (feedback / shadow / error-class)
 
 `GroundedResponseGenerator` Final Claim Validator + template fallback ile
-bağlandı. Sıfır-tolerans unit/acceptance testleri mevcut.
+bağlandı. On quality gates: unit + acceptance sıfır-tolerans PASS.
 
 ## Bağlam
 
@@ -739,5 +740,10 @@ campaign_version / payment_calculation satırlarına FK ile bağlanır.
   güvenilirliğini bağlar.
 - LLM anlamaya yardım eder; iddia üretmez.
 - Sıfır-tolerans finansal claim’ler gate’lerle ölçülür.
-- Kod P0’ı land edildi; sıfır-tolerans gate testleri zorunlu kalır.
-- P1+: shadow/feedback API wiring, golden/metamorphic genişletme, DB policy loaders.
+- Kod land edildi; sıfır-tolerans gate testleri zorunlu kalır.
+- Admin feedback / shadow / error-class API + Postgres policy loaders bağlı.
+  Production: `PostgresFeedbackStore` → V023 tabloları
+  (`feedback_result_snapshots`, `shadow_mode_comparisons`, `error_class_events`).
+  Demo: `InMemoryFeedbackStore`.
+- Sponsored isolation ranking path’te (`rank_products_with_sponsored_isolation`).
+- Metamorphic + golden regression suite `tests/unit/answer_integrity/`.

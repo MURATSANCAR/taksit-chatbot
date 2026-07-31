@@ -252,6 +252,12 @@ def build_in_memory_container(
         InstitutionLabelResolver,
     )
     from taksitlio.search_sessions import build_demo_orchestrator
+    from taksitlio.answer_integrity.policy_store import (
+        InMemoryCircuitBreakerStore,
+        InMemoryFeedbackStore,
+        InMemoryPrecedencePolicyLoader,
+    )
+    from taksitlio.recommendation_safety import QualityCircuitBreaker
     import os
     import tempfile
 
@@ -327,11 +333,10 @@ def build_in_memory_container(
             "llm_understanding_worker": llm_worker,
             "logo_catalog": logo_catalog,
             "logo_resolver": logo_catalog.resolver,
-            "answer_integrity": {
-                "claim_validator": "taksitlio.answer_integrity.validate_claims",
-                "pipeline": "taksitlio.answer_integrity.run_answer_integrity_pipeline",
-                "circuit_breaker": "taksitlio.recommendation_safety.QualityCircuitBreaker",
-            },
+            "precedence_policy_loader": InMemoryPrecedencePolicyLoader(),
+            "circuit_breaker_store": InMemoryCircuitBreakerStore(),
+            "feedback_store": InMemoryFeedbackStore(),
+            "quality_circuit_breaker": QualityCircuitBreaker(),
         },
     )
 
@@ -409,6 +414,13 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
     from taksitlio.search_sessions.persist import SearchSessionStatePersister
     from taksitlio.search_sessions.postgres import PostgresSearchSessionRepository
+    from taksitlio.answer_integrity.policy_store import (
+        PostgresCircuitBreakerStore,
+        PostgresFeedbackStore,
+        PostgresPrecedencePolicyLoader,
+    )
+    from taksitlio.answer_integrity.store import AnswerIntegrityStore
+    from taksitlio.recommendation_safety import QualityCircuitBreaker
 
     search_orchestrator = build_demo_orchestrator()
     search_pg = PostgresSearchSessionRepository(pool)
@@ -439,6 +451,16 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         utterance="",
     )
     search_persister = SearchSessionStatePersister(search_pg)
+    circuit_breaker_store = PostgresCircuitBreakerStore(pool)
+    try:
+        quality_circuit_breaker = await circuit_breaker_store.hydrate()
+    except Exception:  # noqa: BLE001
+        quality_circuit_breaker = QualityCircuitBreaker()
+    precedence_loader = PostgresPrecedencePolicyLoader(pool)
+    try:
+        await precedence_loader.load_async()
+    except Exception:  # noqa: BLE001
+        pass
     llm_worker = build_default_worker(
         search_orchestrator, health_registry=health, http_client=client
     )
@@ -487,5 +509,10 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "llm_understanding_worker": llm_worker,
             "logo_catalog": logo_catalog,
             "logo_resolver": logo_resolver,
+            "precedence_policy_loader": precedence_loader,
+            "circuit_breaker_store": circuit_breaker_store,
+            "feedback_store": PostgresFeedbackStore(pool=pool),
+            "quality_circuit_breaker": quality_circuit_breaker,
+            "answer_integrity_store": AnswerIntegrityStore(pool),
         },
     )

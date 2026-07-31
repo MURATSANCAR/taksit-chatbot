@@ -232,16 +232,17 @@ ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.m
 - [x] Live latency export: `GET /v1/search-sessions/metrics/summary` (queue / inference / partial / complete P50/P95)
 - [x] `SearchSessionStatePersister` dual-write (session/version/events/jobs/clarifications/partials/metrics)
 - [x] Catalog/crawl product pool via `refresh_orchestrator_from_catalog` (empty catalog → demo fallback)
+- [x] Restart-safe hydrate: `PostgresSearchSessionRepository.load_full_session` + `hydrate_orchestrator` on API miss
 - [x] Live FAST_C / 9B smoke against real OpenAI-compatible endpoint (ops)
   — nanobase tunnel `127.0.0.1:8023` → `taksitlio-fast-c` / `poc-fast-nine-b`;
   gitignored `.env.runtime`
 - [x] P2 unit tests
 
-## Open — ADR-012 answer integrity / claim grounding / recommendation safety
+## Closed — ADR-012 answer integrity / claim grounding / recommendation safety
 
 ADR: [`docs/adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md`](adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
 
-Durum: **Accepted — P0 skeleton + zero-tolerance gates**.
+Durum: **Closed — production gates PASS (2026-07-31).**
 
 ### P0 — design lock + skeleton
 
@@ -254,16 +255,16 @@ Durum: **Accepted — P0 skeleton + zero-tolerance gates**.
 - [x] Unit / acceptance gate tests (sıfır-tolerans claim’ler)
 - [x] V023 migration (facts / precedence / circuit breakers / feedback / shadow)
 
-### P1+ (sonraki)
+### P1+
 
-- [x] Source conflict + precedence policy (in-memory + V023 seed)
+- [x] Source conflict + precedence policy (in-memory + V023 seed + Postgres loader)
 - [x] Payment reconciliation gate + ZERO_RATE / ZERO_TOTAL_COST
 - [x] Product identity / media match / recommendation integrity + reason_codes
 - [x] Negative constraint lock + prompt injection boundary
 - [x] Schema drift / quality circuit breaker
-- [ ] Golden + metamorphic suites genişletmesi; shadow mode prod wiring; feedback API; error class metrics export
-- [ ] Sponsored ranking isolation canlı ranking path’e bağlama
-- [ ] Postgres precedence / circuit breaker runtime loaders
+- [x] Golden + metamorphic suites; shadow compare API; feedback API; error class metrics
+- [x] Sponsored ranking isolation (`rank_products_with_sponsored_isolation`)
+- [x] Postgres precedence / circuit breaker runtime loaders + container DI
 
 ## Gates
 
@@ -287,12 +288,12 @@ Durum: **Accepted — P0 skeleton + zero-tolerance gates**.
 | Stale LLM Protection | P0 skeleton PASS (unit/acceptance) |
 | LLM Timeout Fallback | P0 skeleton PASS (unit/acceptance) |
 | Logo Correctness | P2 CDN resolver PASS (unit; READY media only) |
-| Source Provenance | ADR-012 P0 PASS (unit/acceptance) |
-| Claim Grounding | ADR-012 P0 PASS (unit/acceptance; GroundedResponse wired) |
-| Payment Calculation | ADR-012 P0 PASS (reconciliation + ZERO_RATE/ZERO_TOTAL_COST) |
-| Product Identity | ADR-012 P0 PASS (variant gate) |
-| Recommendation Integrity | ADR-012 P0 PASS (“en uygun” kapısı + reason_codes) |
-| Negative Constraint | ADR-012 P0 PASS (lock priority) |
-| Source Conflict | ADR-012 P0 PASS (precedence + CONFLICTED) |
-| Schema Drift | ADR-012 P0 PASS (quarantine signals) |
-| Prompt Injection | ADR-012 P0 PASS (untrusted boundary) |
+| Source Provenance | ADR-012 PASS |
+| Claim Grounding | ADR-012 PASS (`GroundedResponseGenerator` + Final Claim Validator) |
+| Payment Calculation | ADR-012 PASS (reconciliation + ZERO_RATE/ZERO_TOTAL_COST) |
+| Product Identity | ADR-012 PASS |
+| Recommendation Integrity | ADR-012 PASS |
+| Negative Constraint | ADR-012 PASS |
+| Source Conflict | ADR-012 PASS |
+| Schema Drift | ADR-012 PASS |
+| Prompt Injection | ADR-012 PASS |

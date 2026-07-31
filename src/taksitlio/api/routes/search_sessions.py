@@ -14,6 +14,7 @@ from taksitlio.api.deps import container_from
 from taksitlio.llm_routing.worker import schedule_llm_job
 from taksitlio.search_sessions import SearchOrchestrator, build_demo_orchestrator
 from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
+from taksitlio.search_sessions.hydrate import ensure_session_loaded
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
 
 router = APIRouter(tags=["search-sessions"])
@@ -26,6 +27,19 @@ def _orchestrator(request: Request) -> SearchOrchestrator:
         orch = build_demo_orchestrator()
         container.extras["search_orchestrator"] = orch
     return orch  # type: ignore[no-any-return]
+
+
+async def _ensure_session(request: Request, session_id: str) -> SearchOrchestrator:
+    orch = _orchestrator(request)
+    if orch.repo.get(session_id) is not None:
+        return orch
+    container = container_from(request)
+    loaded = await ensure_session_loaded(
+        orch, session_id, pg=container.extras.get("search_session_pg")
+    )
+    if loaded is None:
+        raise HTTPException(status_code=404, detail="search_session_not_found")
+    return orch
 
 
 async def _maybe_refresh_catalog(request: Request, orch: SearchOrchestrator, utterance: str) -> None:
@@ -152,7 +166,7 @@ async def post_clarification(
     payload: ClarificationIn,
     request: Request,
 ) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     try:
         result = orch.answer_clarification(
             session_id,
@@ -176,7 +190,7 @@ async def post_constraints(
     payload: ConstraintIn,
     request: Request,
 ) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     try:
         result = orch.update_constraint(
             session_id,
@@ -195,7 +209,7 @@ async def post_constraints(
 
 @router.post("/search-sessions/{session_id}/complete-with-current-results")
 async def complete_with_current(session_id: str, request: Request) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     try:
         result = orch.complete_with_current_results(session_id)
         await _maybe_persist(request, session_id)
@@ -206,7 +220,7 @@ async def complete_with_current(session_id: str, request: Request) -> Dict[str, 
 
 @router.post("/search-sessions/{session_id}/cancel")
 async def cancel_search(session_id: str, request: Request) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     try:
         result = orch.cancel(session_id)
         await _maybe_persist(request, session_id)
@@ -221,7 +235,7 @@ async def supersede_message(
     payload: SupersedeIn,
     request: Request,
 ) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     try:
         await _maybe_refresh_catalog(request, orch, payload.message)
         result = orch.supersede_with_message(session_id, payload.message)
@@ -236,9 +250,7 @@ async def supersede_message(
 async def drain_llm_jobs(session_id: str, request: Request) -> Dict[str, Any]:
     """Process queued UNDERSTANDING_SERVICE jobs for this session (ops / tests)."""
 
-    orch = _orchestrator(request)
-    if orch.repo.get(session_id) is None:
-        raise HTTPException(status_code=404, detail="search_session_not_found")
+    orch = await _ensure_session(request, session_id)
     container = container_from(request)
     worker = container.extras.get("llm_understanding_worker")
     if worker is None:
@@ -265,13 +277,14 @@ async def complete_llm_job(
     payload: LlmCompleteIn,
     request: Request,
 ) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     try:
         result = orch.complete_llm_job(
             job_id,
             payload.patch,
             active_state_version=payload.active_state_version,
         )
+        await _maybe_persist(request, session_id)
         return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
@@ -281,10 +294,9 @@ async def complete_llm_job(
 
 @router.get("/search-sessions/{session_id}")
 async def get_session(session_id: str, request: Request) -> Dict[str, Any]:
-    orch = _orchestrator(request)
+    orch = await _ensure_session(request, session_id)
     session = orch.repo.get(session_id)
-    if session is None:
-        raise HTTPException(status_code=404, detail="search_session_not_found")
+    assert session is not None
     return {
         "search_session_id": session.id,
         "status": session.status.value,
@@ -298,9 +310,7 @@ async def get_session(session_id: str, request: Request) -> Dict[str, Any]:
 async def search_session_events(session_id: str, request: Request) -> StreamingResponse:
     """Server-Sent Events stream for search progress."""
 
-    orch = _orchestrator(request)
-    if orch.repo.get(session_id) is None:
-        raise HTTPException(status_code=404, detail="search_session_not_found")
+    orch = await _ensure_session(request, session_id)
 
     async def event_generator() -> AsyncIterator[str]:
         last_id: Optional[str] = None
@@ -327,7 +337,6 @@ async def search_session_events(session_id: str, request: Request) -> StreamingR
                 idle_rounds += 1
                 yield ": keepalive\n\n"
                 await asyncio.sleep(0.15)
-        # Final snapshot if any remaining
         payloads = orch.list_event_payloads(session_id, after_id=last_id)
         for p in payloads:
             yield f"id: {p['event_id']}\nevent: {p['type']}\ndata: {json.dumps(p, ensure_ascii=False)}\n\n"

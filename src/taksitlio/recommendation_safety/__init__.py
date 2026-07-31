@@ -84,7 +84,7 @@ def evaluate_recommendation_integrity(
 
 
 ADR_SCOPE = "ADR-012"
-PACKAGE_STATUS = "P0"
+PACKAGE_STATUS = "P0_PROD"
 
 __all__ = [
     "ADR_SCOPE",
