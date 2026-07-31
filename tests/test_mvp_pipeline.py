@@ -254,7 +254,7 @@ async def test_pipeline_clarification_path():
         responder=responder,
         campaign_repo=campaign_repo,
     )
-    result = await pipeline.handle(ChatRequest(session_id="c1", message="bilmiyorum"))
+    result = await pipeline.handle(ChatRequest(session_id="c1", message="telefon bakıyorum ama emin değilim"))
     assert result.decision == "CLARIFY"
     assert "bütçe" in result.reply.casefold() or "ödeme" in result.reply.casefold()
 

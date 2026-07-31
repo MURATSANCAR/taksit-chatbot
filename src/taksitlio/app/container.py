@@ -294,6 +294,12 @@ def build_in_memory_container(
     from taksitlio.media.logo_resolver import InMemoryLogoCatalog
 
     logo_catalog = InMemoryLogoCatalog()
+    # Test-only CDN stubs for synthetic ids used by unit tests.
+    logo_catalog.put_merchant("merchant-teknosa", "https://cdn.test/merchants/teknosa.webp")
+    logo_catalog.put_brand("brand-apple", "https://cdn.test/brands/apple.webp")
+    logo_catalog.put_brand("brand-samsung", "https://cdn.test/brands/samsung.webp")
+    logo_catalog.put_institution("institution-kuveyt", "https://cdn.test/banks/kuveyt.webp")
+    logo_catalog.put_institution("institution-fibabanka", "https://cdn.test/banks/fibabanka.webp")
     search_orchestrator.logo_resolver = logo_catalog.resolver
 
     llm_worker = build_default_worker(
