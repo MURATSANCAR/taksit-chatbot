@@ -1,0 +1,34 @@
+---
+description: All runtime/ops work runs on nanobase server — never on Mac local
+alwaysApply: true
+---
+
+# Server-only ops (no Mac local runtime)
+
+This project’s **runtime, crawls, feeds, ingest, media, and verification** run on the **server** (`nanobase` / `/data/nanobaseai/taksitlio-chatbot`). The Mac is for **editing code in Cursor only**.
+
+## Hard rules
+
+- Do **not** run crawlers, feed fetchers, supervisors, ingest, media attach, StormCrawler, long-lived workers, or load tests on the Mac.
+- Do **not** write/update live catalogs under the Mac checkout as the source of truth (`crawler/feeds/live`, `LIVE_FEED_DIR`, product media caches).
+- Do **not** start `scripts/supervise_partner_crawls.py`, `scripts/fetch_live_merchant_feeds.py`, `scripts/fetch_via_crawl4ai.py`, or similar locally “just to try”.
+- Prefer `ssh nanobase '…'` (or equivalent) for shell ops that mutate runtime state.
+- Live feeds live on the server (see `crawler/feeds/live/README.md`, optional `LIVE_FEED_DIR=/var/lib/taksitlio/feeds/live`).
+
+## Allowed on Mac
+
+- Edit source, ADRs, tests, configs in the git working tree.
+- Run **fast unit tests** that need no live DB/Redis/external crawl (if the user asks).
+- Read-only `git` / code search.
+
+## When starting crawls or catalog work
+
+```bash
+# ✅ GOOD — server
+ssh nanobase 'cd /data/nanobaseai/taksitlio-chatbot && nohup .venv-crawl/bin/python -u scripts/supervise_partner_crawls.py > /tmp/supervise-partners.log 2>&1 &'
+
+# ❌ BAD — Mac local
+.venv-crawl/bin/python -u scripts/fetch_live_merchant_feeds.py --merchants flo ...
+```
+
+If work was accidentally started on Mac: **stop it**, sync needed artifacts to nanobase if any, continue only on the server.
