@@ -162,6 +162,8 @@ def candidate_specs_from_env() -> dict[str, CandidateSpec]:
         or os.environ.get("FAST_CHALLENGER_MODEL_REFERENCE")
         or "poc-fast-challenger"
     )
+    c_url = (os.environ.get("FAST_C_BASE_URL") or "").rstrip("/")
+    c_model = os.environ.get("FAST_C_MODEL_REFERENCE") or "poc-fast-nine-b"
     return {
         "A": CandidateSpec(
             code="FAST_A_REAL",
@@ -184,6 +186,16 @@ def candidate_specs_from_env() -> dict[str, CandidateSpec]:
             or os.environ.get("FAST_CHALLENGER_RUNTIME_ALIAS")
             or "poc-fast-challenger",
             service_name=os.environ.get("FAST_B_SERVICE") or "taksitlio-fast-b",
+            sibling_service=os.environ.get("FAST_A_SERVICE") or "taksitlio-fast-a",
+            quantization=os.environ.get("FAST_QUANTIZATION") or "q4_k_m",
+        ),
+        "C": CandidateSpec(
+            code="FAST_C_REAL",
+            role="CHALLENGER_9B",
+            base_url=c_url,
+            model_reference=c_model,
+            runtime_alias=os.environ.get("FAST_C_RUNTIME_ALIAS") or "poc-fast-nine-b",
+            service_name=os.environ.get("FAST_C_SERVICE") or "taksitlio-fast-c",
             sibling_service=os.environ.get("FAST_A_SERVICE") or "taksitlio-fast-a",
             quantization=os.environ.get("FAST_QUANTIZATION") or "q4_k_m",
         ),

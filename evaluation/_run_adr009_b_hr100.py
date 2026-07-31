@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ADR-009 — B + deterministic hybrid HR-100 quality + warm latency.
+"""ADR-009 — FAST A/B + deterministic hybrid HR-100 quality + warm latency.
 
 Never uses 35B / ModelRouter. Campaign stays CLOSED on performance miss.
 """
@@ -56,24 +56,44 @@ DATASET = ROOT / "evaluation" / "datasets" / "validation" / "tr-category-validat
 FIXTURE = ROOT / "evaluation" / "fixtures" / "catalogs" / "category-fixture.v3.json"
 REPORTS = ROOT / "evaluation" / "reports"
 
+DEFAULT_URLS = {
+    "A": "http://127.0.0.1:8021",
+    "B": "http://127.0.0.1:8022",
+    "C": "http://127.0.0.1:8023",
+}
+DEFAULT_ALIASES = {
+    "A": "poc-fast-understanding",
+    "B": "poc-fast-challenger",
+    "C": "poc-fast-nine-b",
+}
+
 
 def _sh(cmd: str) -> str:
     proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
     return ((proc.stdout or "") + (proc.stderr or "")).strip()
 
 
-def _stop_a_start_b() -> None:
-    _sh("sudo systemctl stop taksitlio-fast-a.service")
-    _sh("sudo systemctl start taksitlio-fast-b.service")
+def _isolate_candidate(key: str) -> None:
+    cands = candidate_specs_from_env()
+    spec = cands[key]
+    for other_key, other in cands.items():
+        if other_key != key:
+            _sh(f"sudo systemctl stop {other.service_name}.service")
+    _sh(f"sudo systemctl start {spec.service_name}.service")
+    url = spec.base_url or DEFAULT_URLS[key]
     for _ in range(40):
-        if _sh("curl -fsS -m 2 http://127.0.0.1:8022/health"):
+        if _sh(f"curl -fsS -m 2 {url}/health"):
             return
         time.sleep(1)
-    raise RuntimeError("FAST B health failed")
+    raise RuntimeError(f"FAST {key} health failed at {url}")
 
 
-def _restore_both() -> None:
-    _sh("sudo systemctl start taksitlio-fast-a.service taksitlio-fast-b.service")
+def _restore_all() -> None:
+    _sh(
+        "sudo systemctl start "
+        "taksitlio-fast-a.service taksitlio-fast-b.service taksitlio-fast-c.service",
+        check=False,
+    )
 
 
 def _metric(payload: dict, key: str) -> Optional[float]:
@@ -108,13 +128,18 @@ async def _hybrid_extract(
     }
 
 
-async def run_hr100(*, timeout_ms: int, max_tokens: int) -> dict[str, Any]:
+async def run_hr100(
+    *,
+    candidate_key: str,
+    timeout_ms: int,
+    max_tokens: int,
+) -> dict[str, Any]:
     cands = candidate_specs_from_env()
-    b = cands["B"]
-    if not b.base_url:
-        b = replace(b, base_url="http://127.0.0.1:8022")
+    spec = cands[candidate_key]
+    if not spec.base_url:
+        spec = replace(spec, base_url=DEFAULT_URLS[candidate_key])
 
-    remote = build_isolated_extractor(b, timeout_ms=timeout_ms, max_output_tokens=max_tokens)
+    remote = build_isolated_extractor(spec, timeout_ms=timeout_ms, max_output_tokens=max_tokens)
     deterministic = DeterministicFastExtractor()
     dataset = load_jsonl(DATASET)
     hr = human_reviewed_cases(dataset.cases)
@@ -280,11 +305,12 @@ async def run_hr100(*, timeout_ms: int, max_tokens: int) -> dict[str, Any]:
         "detail_safe": detail,
         "hybrid_by_case": hybrid_by_case,
         "deployment": {
-            "code": b.code,
-            "runtime_alias": b.runtime_alias,
-            "base_url": b.base_url,
+            "code": spec.code,
+            "runtime_alias": spec.runtime_alias,
+            "base_url": spec.base_url,
             "prompt_version": PROMPT_VERSION,
             "schema_version": SCHEMA_VERSION,
+            "candidate_key": candidate_key,
         },
     }
 
@@ -413,20 +439,22 @@ def quality_pass(hybrid: dict, corr: dict, e2e: dict, model: dict) -> tuple[bool
     return (len(violations) == 0), violations
 
 
-def lock_b_as_provisional_primary() -> dict[str, str]:
-    """Point runtime env + DB FAST primary at candidate B (opaque alias)."""
+def lock_candidate_as_provisional_primary(key: str) -> dict[str, str]:
+    """Point runtime env + DB FAST primary at the chosen candidate."""
 
+    alias = DEFAULT_ALIASES[key]
+    url = DEFAULT_URLS[key]
     env_path = ROOT / ".env.runtime"
     if not env_path.exists():
         return {"status": "skipped", "reason": ".env.runtime missing"}
     text = env_path.read_text().splitlines()
     repl = {
-        "FAST_PROVIDER_BASE_URL": "http://127.0.0.1:8022",
-        "FAST_MODEL_REFERENCE": "poc-fast-challenger",
-        "FAST_RUNTIME_ALIAS": "poc-fast-challenger",
-        "FAST_A_BASE_URL": "http://127.0.0.1:8021",
-        "FAST_B_BASE_URL": "http://127.0.0.1:8022",
-        "FAST_PROVISIONAL_PRIMARY": "B",
+        "FAST_PROVIDER_BASE_URL": url,
+        "FAST_MODEL_REFERENCE": alias,
+        "FAST_RUNTIME_ALIAS": alias,
+        "FAST_A_BASE_URL": DEFAULT_URLS["A"],
+        "FAST_B_BASE_URL": DEFAULT_URLS["B"],
+        "FAST_PROVISIONAL_PRIMARY": key,
     }
     out = []
     seen = set()
@@ -443,35 +471,44 @@ def lock_b_as_provisional_primary() -> dict[str, str]:
             out.append(f"{k}={v}")
     env_path.write_text("\n".join(out) + "\n")
 
-    # Best-effort DB update when DATABASE_URL present.
     db = os.environ.get("DATABASE_URL")
     if db:
-        sql = """
+        sql = f"""
 UPDATE ai_model_profiles
-SET model_reference = 'poc-fast-challenger', updated_at = NOW()
+SET model_reference = '{alias}', updated_at = NOW()
 WHERE profile_code = 'FAST_UNDERSTANDING';
 UPDATE ai_provider_connections
-SET base_url = 'http://127.0.0.1:8022', updated_at = NOW()
+SET base_url = '{url}', updated_at = NOW()
 WHERE connection_code = 'POC_FAST_RUNTIME';
 UPDATE ai_model_deployments
-SET runtime_alias = 'poc-fast-challenger', updated_at = NOW()
+SET runtime_alias = '{alias}', updated_at = NOW()
 WHERE deployment_code = 'POC_FAST_RUNTIME_PRIMARY';
 """
         subprocess.run(["psql", db, "-v", "ON_ERROR_STOP=1", "-c", sql], check=False)
-    return {"status": "locked", "primary": "B", "alias": "poc-fast-challenger"}
+    return {"status": "locked", "primary": key, "alias": alias}
 
 
 async def main_async(args: argparse.Namespace) -> int:
+    key = args.candidate.upper()
+    if key not in {"A", "B", "C"}:
+        raise SystemExit("candidate must be A, B, or C")
+    slug = key.lower()
+    deployment_id = f"FAST_{key}_REAL"
+
     timeout_ms = int(os.environ.get("FAST_TIMEOUT_MS") or args.timeout_ms)
     max_tokens = int(os.environ.get("FAST_MAX_OUTPUT_TOKENS") or args.max_tokens)
-    _stop_a_start_b()
+    _isolate_candidate(key)
     try:
-        print("=== HR100 hybrid quality + warm latency (B) ===", flush=True)
-        result = await run_hr100(timeout_ms=timeout_ms, max_tokens=max_tokens)
+        print(f"=== HR100 hybrid quality + warm latency ({key}) ===", flush=True)
+        result = await run_hr100(
+            candidate_key=key,
+            timeout_ms=timeout_ms,
+            max_tokens=max_tokens,
+        )
         print("=== E2E cached hybrid ===", flush=True)
         e2e = await run_e2e_cached(result["hybrid_by_case"])
     finally:
-        _restore_both()
+        _restore_all()
 
     hybrid = result["hybrid_metrics"]
     model = result["model_metrics"]
@@ -480,22 +517,25 @@ async def main_async(args: argparse.Namespace) -> int:
     lat = result["latency"]["latency"]
     perf_ok = (lat.get("p95_ms") or 1e9) < 3000
 
-    if ok:
-        lock = lock_b_as_provisional_primary()
+    if ok and args.lock_on_pass:
+        lock = lock_candidate_as_provisional_primary(key)
     else:
-        lock = {"status": "not_locked", "reason": "quality_gate_failed"}
+        lock = {
+            "status": "not_locked",
+            "reason": "quality_gate_failed" if not ok else "lock_on_pass_disabled",
+        }
 
     hardware = {
         "platform": _sh("uname -srm"),
-        "note": "B isolated; A stopped during measurement",
+        "note": f"{key} isolated; sibling FAST stopped during measurement",
     }
 
     quality_payload = report_envelope(
-        report_id="adr009-fast-b-hr100-hybrid-quality",
+        report_id=f"adr009-fast-{slug}-hr100-hybrid-quality",
         environment="nanobase-runtime",
         hardware=hardware,
         model_profile_id="FAST_UNDERSTANDING",
-        deployment_id="FAST_B_REAL",
+        deployment_id=deployment_id,
         dataset_version="validation.v4",
         policy_version="V014",
         extra={
@@ -514,15 +554,14 @@ async def main_async(args: argparse.Namespace) -> int:
             "violations": violations,
         },
     )
-    # Drop hybrid_by_case from disk report (large; may include concept strings only — ok)
-    write_runtime_report("adr009-fast-b-hr100-hybrid-quality.json", quality_payload)
+    write_runtime_report(f"adr009-fast-{slug}-hr100-hybrid-quality.json", quality_payload)
 
     latency_payload = report_envelope(
-        report_id="adr009-fast-b-hr100-warm-latency",
+        report_id=f"adr009-fast-{slug}-hr100-warm-latency",
         environment="nanobase-runtime",
         hardware=hardware,
         model_profile_id="FAST_UNDERSTANDING",
-        deployment_id="FAST_B_REAL",
+        deployment_id=deployment_id,
         dataset_version="validation.v4",
         extra={
             "prompt_version": PROMPT_VERSION,
@@ -531,17 +570,17 @@ async def main_async(args: argparse.Namespace) -> int:
             "note": "Concurrency 4 not run: P95 expected >> 3s on CPU",
         },
     )
-    write_runtime_report("adr009-fast-b-hr100-warm-latency.json", latency_payload)
+    write_runtime_report(f"adr009-fast-{slug}-hr100-warm-latency.json", latency_payload)
 
     e2e_payload = report_envelope(
-        report_id="adr009-fast-b-hr100-hybrid-e2e",
+        report_id=f"adr009-fast-{slug}-hr100-hybrid-e2e",
         environment="nanobase-runtime",
         hardware=hardware,
-        deployment_id="FAST_B_REAL",
+        deployment_id=deployment_id,
         dataset_version="validation.v4",
         extra={"e2e": e2e},
     )
-    write_runtime_report("adr009-fast-b-hr100-hybrid-e2e.json", e2e_payload)
+    write_runtime_report(f"adr009-fast-{slug}-hr100-hybrid-e2e.json", e2e_payload)
 
     runtime_gate = (
         "RUNTIME_READY"
@@ -549,7 +588,7 @@ async def main_async(args: argparse.Namespace) -> int:
         else ("RUNTIME_PERFORMANCE_REJECT" if ok else "RUNTIME_QUALITY_REJECT")
     )
     gate = report_envelope(
-        report_id="adr009-fast-b-hr100-gate",
+        report_id=f"adr009-fast-{slug}-hr100-gate",
         environment="nanobase-runtime",
         hardware=hardware,
         dataset_version="validation.v4",
@@ -575,11 +614,12 @@ async def main_async(args: argparse.Namespace) -> int:
             },
         },
     )
-    write_runtime_report("adr009-fast-b-hr100-gate.json", gate)
+    write_runtime_report(f"adr009-fast-{slug}-hr100-gate.json", gate)
 
     print(
         json.dumps(
             {
+                "candidate": key,
                 "quality_ok": ok,
                 "performance_ok": perf_ok,
                 "runtime_gate": runtime_gate,
@@ -596,8 +636,14 @@ async def main_async(args: argparse.Namespace) -> int:
 
 def main() -> int:
     p = argparse.ArgumentParser()
+    p.add_argument("--candidate", choices=["A", "B", "C", "a", "b", "c"], default="B")
     p.add_argument("--timeout-ms", type=int, default=60000)
     p.add_argument("--max-tokens", type=int, default=512)
+    p.add_argument(
+        "--lock-on-pass",
+        action="store_true",
+        help="Only lock provisional primary if quality gate passes",
+    )
     args = p.parse_args()
     return asyncio.run(main_async(args))
 

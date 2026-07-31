@@ -111,6 +111,7 @@ def _preflight() -> dict[str, Any]:
     for name in (
         "taksitlio-fast-a",
         "taksitlio-fast-b",
+        "taksitlio-fast-c",
         "nanobase-qwen36-35b-a3b-mtp",
     ):
         services[name] = {
@@ -122,10 +123,11 @@ def _preflight() -> dict[str, Any]:
                 f"systemctl show {name}.service -p MemoryCurrent --value 2>/dev/null || true"
             ),
         }
-    ports = _sh("ss -lntp | grep -E ':8010|:8021|:8022' || true")
+    ports = _sh("ss -lntp | grep -E ':8010|:8021|:8022|:8023' || true")
     health = {
         "a": _sh("curl -fsS http://127.0.0.1:8021/health || echo FAIL"),
         "b": _sh("curl -fsS http://127.0.0.1:8022/health || echo FAIL"),
+        "c": _sh("curl -fsS http://127.0.0.1:8023/health || echo FAIL"),
         "deep": _sh("curl -fsS http://127.0.0.1:8010/health || echo FAIL"),
     }
     runtime_args = {
@@ -150,15 +152,22 @@ def _preflight() -> dict[str, Any]:
         "runtime_args": runtime_args,
         "models_a": _sh("curl -fsS http://127.0.0.1:8021/v1/models || true"),
         "models_b": _sh("curl -fsS http://127.0.0.1:8022/v1/models || true"),
+        "models_c": _sh("curl -fsS http://127.0.0.1:8023/v1/models || true"),
     }
 
 
-def _toggle_sibling(spec: CandidateSpec, *, stop: bool, enabled: bool) -> None:
+def _toggle_sibling(spec: CandidateSpec, *, stop: bool, enabled: bool, all_specs: dict[str, CandidateSpec] | None = None) -> None:
     if not enabled:
         return
+    if stop and all_specs:
+        for other in all_specs.values():
+            if other.service_name != spec.service_name:
+                _sh(f"sudo systemctl stop {other.service_name}.service", check=False)
+    elif not stop and spec.sibling_service:
+        _sh(f"sudo systemctl start {spec.sibling_service}.service", check=False)
     action = "stop" if stop else "start"
-    _sh(f"sudo systemctl {action} {spec.sibling_service}.service", check=False)
-    # Ensure candidate itself is up.
+    if stop and not all_specs and spec.sibling_service:
+        _sh(f"sudo systemctl {action} {spec.sibling_service}.service", check=False)
     _sh(f"sudo systemctl start {spec.service_name}.service", check=False)
     time.sleep(2)
     for _ in range(30):
@@ -172,7 +181,11 @@ def _toggle_sibling(spec: CandidateSpec, *, stop: bool, enabled: bool) -> None:
 def _restore_services(enabled: bool) -> None:
     if not enabled:
         return
-    _sh("sudo systemctl start taksitlio-fast-a.service taksitlio-fast-b.service", check=False)
+    _sh(
+        "sudo systemctl start "
+        "taksitlio-fast-a.service taksitlio-fast-b.service taksitlio-fast-c.service",
+        check=False,
+    )
 
 
 def _load_baselines() -> tuple[dict, dict]:
@@ -294,9 +307,11 @@ async def run_candidate(
 ) -> dict[str, Any]:
     spec = candidates[key]
     if not spec.base_url:
-        raise RuntimeError(f"candidate {key} base_url empty — set FAST_A_BASE_URL / FAST_B_BASE_URL")
+        raise RuntimeError(
+            f"candidate {key} base_url empty — set FAST_{key}_BASE_URL (or FAST_A/B/C_BASE_URL)"
+        )
     print(f"=== candidate {key} {spec.code} ===", flush=True)
-    _toggle_sibling(spec, stop=True, enabled=toggle_services)
+    _toggle_sibling(spec, stop=True, enabled=toggle_services, all_specs=candidates)
 
     extractor = build_isolated_extractor(
         spec, timeout_ms=timeout_ms, max_output_tokens=max_tokens
@@ -491,7 +506,7 @@ async def run_candidate(
         out["process_sample_after"] = _process_sample(pid)
     finally:
         await extractor.aclose()
-        _toggle_sibling(spec, stop=False, enabled=toggle_services)
+        _restore_services(toggle_services)
 
     return out
 
@@ -654,6 +669,7 @@ async def main_async(args: argparse.Namespace) -> int:
     defaults = {
         "A": "http://127.0.0.1:8021",
         "B": "http://127.0.0.1:8022",
+        "C": "http://127.0.0.1:8023",
     }
     for k, url in defaults.items():
         if not candidates[k].base_url:
@@ -765,7 +781,7 @@ async def main_async(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--candidate", choices=["A", "B", "both", "a", "b"], default="both")
+    p.add_argument("--candidate", choices=["A", "B", "C", "both", "a", "b", "c"], default="both")
     p.add_argument(
         "--phases",
         default="all",
