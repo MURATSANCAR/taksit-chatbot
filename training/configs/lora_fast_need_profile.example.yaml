@@ -1,0 +1,34 @@
+# Example LoRA config for FAST NeedProfile SFT (P17 scaffold).
+# Opaque placeholders only — do not commit real vendor secrets or claim quality pass.
+# After a real train (ops/GPU), evaluate with evaluation/_run_adr009_fast_ab.py
+# against a new FAST_* deployment. Campaign Gate stays CLOSED until ADR-009 provisional.
+
+base_model_ref: "opaque-base-model-ref"   # resolve via ops registry, not app hardcode
+output_dir: "training/exports/lora-out"
+train_jsonl: "training/exports/need_profile_sft.jsonl"
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  # target_modules depend on base architecture — set by ops
+  target_modules: ["q_proj", "v_proj"]
+
+train:
+  epochs: 1
+  learning_rate: 2.0e-4
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_seq_len: 2048
+  bf16: true
+  logging_steps: 10
+
+runtime:
+  require_gpu: true
+  # Fail loud if torch/peft/transformers missing (see train_lora_stub.py)
+  framework: "peft+transformers"
+
+notes:
+  - "Output must remain NeedProfile JSON (need_profile.schema.json)"
+  - "Never emit merchant/bank/fixture IDs"
+  - "Scaffold ≠ QUALITY_READY / PROVISIONAL_ACCEPT"

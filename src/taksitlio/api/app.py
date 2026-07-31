@@ -23,6 +23,7 @@ from taksitlio.api.routes import (
     chat,
     health,
     product_query,
+    search_sessions,
 )
 
 _WEB_TAKSITLIO = Path(__file__).resolve().parents[3] / "web" / "taksitlio"
@@ -79,6 +80,7 @@ def create_app(container: AppContainer | None = None) -> FastAPI:
     app.include_router(health.router)
     app.include_router(chat.router, prefix="/v1")
     app.include_router(product_query.router, prefix="/v1")
+    app.include_router(search_sessions.router, prefix="/v1")
     app.include_router(admin.router, prefix="/v1/admin")
     app.include_router(admin_ingestion.router, prefix="/v1/admin")
     app.include_router(admin_finance.router, prefix="/v1/admin")

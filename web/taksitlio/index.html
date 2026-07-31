@@ -7,17 +7,20 @@
   <link rel="icon" href="assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --purple: #9747FF;
       --purple-deep: #6C1ED0;
+      --purple-soft: #F1E8FF;
       --lime: #D8FF00;
       --ink: #1E1F22;
       --muted: #6F737A;
       --line: rgba(30, 31, 34, 0.08);
+      --bubble-bot: #FFFFFF;
+      --bubble-user: #9747FF;
+      --bg: #F5F3F8;
       --surface: #FFFFFF;
-      --bg: #F3F1F6;
       --font: "Figtree", system-ui, sans-serif;
       --display: "Bricolage Grotesque", system-ui, sans-serif;
     }
@@ -32,8 +35,8 @@
       place-items: center;
       padding: 20px 14px;
       background:
-        radial-gradient(900px 420px at 50% -10%, rgba(151, 71, 255, 0.14), transparent 55%),
-        linear-gradient(180deg, #EDE8F5 0%, #F6F5F7 48%, #ECECEE 100%);
+        radial-gradient(900px 420px at 50% -12%, rgba(151, 71, 255, 0.16), transparent 55%),
+        linear-gradient(180deg, #EDE8F5 0%, #F6F5F7 50%, #ECECEE 100%);
     }
 
     .shell { width: min(390px, 100%); }
@@ -43,10 +46,8 @@
       border-radius: 36px;
       overflow: hidden;
       border: 9px solid #141416;
-      background: var(--surface);
-      box-shadow:
-        0 30px 70px rgba(40, 20, 80, 0.18),
-        0 2px 0 rgba(255,255,255,0.35) inset;
+      background: var(--bg);
+      box-shadow: 0 28px 64px rgba(40, 20, 80, 0.18);
       position: relative;
     }
     .phone::before {
@@ -56,7 +57,7 @@
       width: 88px; height: 20px;
       border-radius: 0 0 12px 12px;
       background: #141416;
-      z-index: 20;
+      z-index: 30;
     }
 
     .app {
@@ -65,306 +66,359 @@
       height: min(760px, calc(100vh - 56px));
       min-height: 620px;
       background: var(--bg);
+      position: relative;
     }
 
-    /* ── Header ── */
+    #fx {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 25;
+    }
+
+    .app.flash::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 24;
+      pointer-events: none;
+      background: radial-gradient(
+        circle at 50% 42%,
+        rgba(216, 255, 0, 0.28),
+        rgba(151, 71, 255, 0.12) 38%,
+        transparent 68%
+      );
+      animation: canvasFlash .55s ease forwards;
+    }
+    @keyframes canvasFlash {
+      0% { opacity: 0; }
+      28% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
     .top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 30px 18px 12px;
-      background: var(--bg);
+      gap: 12px;
+      padding: 30px 16px 10px;
+      background: rgba(245, 243, 248, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid transparent;
       position: relative;
       z-index: 5;
     }
+    .top.scrolled { border-bottom-color: var(--line); }
     .wordmark { height: 15px; width: auto; display: block; }
-    .top-note {
+    .guest {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.01em;
+      font-weight: 700;
+      color: var(--purple-deep);
+      background: var(--purple-soft);
+      border: 1px solid rgba(151, 71, 255, 0.18);
+      padding: 6px 10px;
+      border-radius: 999px;
     }
+    .guest svg { width: 12px; height: 12px; fill: currentColor; }
 
-    /* ── Stage ── */
-    .stage {
-      position: relative;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    .view {
-      position: absolute;
-      inset: 0;
-      padding: 8px 18px 12px;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-      transition: opacity .32s ease, transform .38s cubic-bezier(.22,1,.36,1);
+    .thread {
+      overflow: auto;
+      padding: 8px 14px 18px;
       display: flex;
       flex-direction: column;
-    }
-    .view.is-on {
-      opacity: 1;
-      transform: none;
-      pointer-events: auto;
-    }
-
-    /* ── Idle ── */
-    .idle {
-      justify-content: space-between;
-      gap: 18px;
-      padding-top: 18px;
-      padding-bottom: 8px;
-    }
-    .idle-hero {
-      max-width: 17ch;
-      animation: rise .7s cubic-bezier(.22,1,.36,1) both;
-    }
-    .idle-kicker {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--purple-deep);
-      margin-bottom: 12px;
-    }
-    .idle-hero h1 {
-      font-family: var(--display);
-      font-size: clamp(28px, 8vw, 34px);
-      font-weight: 800;
-      letter-spacing: -0.045em;
-      line-height: 1.05;
-      margin: 0 0 12px;
-    }
-    .idle-hero p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-      max-width: 28ch;
-    }
-
-    .shelf {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr 0.95fr;
-      gap: 8px;
-      height: 148px;
-      animation: rise .8s cubic-bezier(.22,1,.36,1) .08s both;
-    }
-    .shelf figure {
-      margin: 0;
-      border-radius: 18px;
-      overflow: hidden;
-      background: #ddd;
-      position: relative;
-    }
-    .shelf figure:nth-child(1) { transform: translateY(8px); }
-    .shelf figure:nth-child(2) { transform: translateY(-6px); }
-    .shelf figure:nth-child(3) { transform: translateY(14px); }
-    .shelf img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform .5s ease, filter .35s ease, opacity .35s ease;
-    }
-    .shelf.is-live figure:not(.is-hot) img {
-      opacity: 0.35;
-      filter: grayscale(0.5);
-    }
-    .shelf.is-live figure.is-hot img {
-      transform: scale(1.04);
-      opacity: 1;
-      filter: none;
-    }
-    .shelf figcaption {
-      position: absolute;
-      left: 8px; bottom: 8px;
-      font-size: 10px;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 1px 8px rgba(0,0,0,.45);
-    }
-
-    /* ── Reading ── */
-    .reading {
-      justify-content: center;
-      align-items: flex-start;
-      gap: 22px;
-    }
-    .reading-mark {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--lime);
-      box-shadow: 0 0 0 6px rgba(216,255,0,.25);
-      animation: pulse 1.1s ease infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.15); opacity: .7; }
-    }
-    .reading h2 {
-      font-family: var(--display);
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      margin: 0;
-      line-height: 1.15;
-    }
-    .facts {
-      display: grid;
-      gap: 10px;
-      width: 100%;
-    }
-    .fact {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 10px;
-      align-items: baseline;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--line);
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    .fact.on {
-      animation: rise .45s cubic-bezier(.22,1,.36,1) forwards;
-    }
-    .fact .k {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .fact .v {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    /* ── Offers ── */
-    .offers {
-      gap: 14px;
-      overflow: auto;
-      padding-bottom: 4px;
+      gap: 12px;
+      scroll-behavior: smooth;
       scrollbar-width: none;
     }
-    .offers::-webkit-scrollbar { display: none; }
-    .offers-head {
-      opacity: 0;
-      transform: translateY(8px);
+    .thread::-webkit-scrollbar { display: none; }
+
+    .welcome {
+      text-align: center;
+      padding: 18px 10px 8px;
+      animation: rise .55s cubic-bezier(.22,1,.36,1) both;
     }
-    .offers-head.on { animation: rise .45s cubic-bezier(.22,1,.36,1) forwards; }
-    .offers-head .eyebrow {
+    .welcome h1 {
+      font-family: var(--display);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      margin: 14px 0 8px;
+      line-height: 1.1;
+    }
+    .welcome p {
+      margin: 0 auto;
+      max-width: 28ch;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+    .welcome-ai {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: min(100%, 300px);
+      margin: 0 auto;
+      padding: 16px 22px 14px;
+      border-radius: 28px;
+      background:
+        linear-gradient(165deg, rgba(255,255,255,0.92), rgba(244,235,255,0.88));
+      border: 1px solid rgba(151, 71, 255, 0.14);
+      box-shadow:
+        0 18px 40px rgba(151, 71, 255, 0.12),
+        0 2px 0 rgba(255,255,255,0.9) inset;
+      overflow: hidden;
+      isolation: isolate;
+      animation: aiPop .7s cubic-bezier(.22,1,.36,1) .12s both;
+    }
+    .welcome-ai::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(151,71,255,.18), transparent 46%),
+        radial-gradient(circle at 88% 100%, rgba(216,255,0,.16), transparent 42%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .welcome-ai::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        105deg,
+        transparent 30%,
+        rgba(255,255,255,.55) 48%,
+        transparent 64%
+      );
+      transform: translateX(-120%);
+      animation: aiShine 3.2s ease-in-out 1s infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .welcome-ai .label {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      gap: 6px;
+      line-height: 1;
+    }
+    .welcome-ai .brand-line {
+      font-family: var(--display);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: #2A2B2E;
+      text-align: center;
+      width: 100%;
+    }
+    .welcome-ai .brand-line .pi,
+    .welcome-ai .brand-line .po {
+      color: var(--purple);
+    }
+    .welcome-ai .ai-line {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--display);
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--purple-deep);
+      background: rgba(216, 255, 0, 0.55);
+      padding: 6px 12px;
+      border-radius: 999px;
+      text-align: center;
+    }
+    @keyframes aiShine {
+      0%, 55%, 100% { transform: translateX(-120%); }
+      70% { transform: translateX(120%); }
+    }
+    @keyframes aiPop {
+      from { opacity: 0; transform: translateY(8px) scale(.94); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      max-width: 100%;
+      animation: bubbleIn .42s cubic-bezier(.22,1,.36,1) both;
+    }
+    .row.user { justify-content: flex-end; animation-name: bubbleInRight; }
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(14px) scale(.96); filter: blur(2px); }
+      to { opacity: 1; transform: none; filter: none; }
+    }
+    @keyframes bubbleInRight {
+      from { opacity: 0; transform: translate(12px, 10px) scale(.96); }
+      to { opacity: 1; transform: none; }
+    }
+    .avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(145deg, #A66BFF, var(--purple));
+      display: grid; place-items: center; flex: none;
+      box-shadow: 0 6px 14px rgba(151, 71, 255, 0.28);
+    }
+    .avatar img {
+      width: 14px; height: 14px;
+      filter: brightness(0) invert(1);
+    }
+
+    .bubble {
+      max-width: min(78%, 280px);
+      padding: 11px 13px;
+      border-radius: 18px;
+      font-size: 13.5px;
+      line-height: 1.4;
+      box-shadow: 0 8px 20px rgba(30, 31, 34, 0.05);
+    }
+    .bubble.bot {
+      background: var(--bubble-bot);
+      color: var(--ink);
+      border-bottom-left-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    .bubble.user {
+      background: var(--bubble-user);
+      color: #fff;
+      border-bottom-right-radius: 6px;
+      box-shadow: 0 10px 22px rgba(151, 71, 255, 0.25);
+    }
+    .bubble .who {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 4px;
+    }
+    .bubble.typing {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+      padding: 14px 16px;
+      min-width: 56px;
+    }
+    .bubble.typing i {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #C4B5E0;
+      animation: dot 1s ease infinite;
+    }
+    .bubble.typing i:nth-child(2) { animation-delay: .15s; }
+    .bubble.typing i:nth-child(3) { animation-delay: .3s; }
+    @keyframes dot {
+      0%, 80%, 100% { transform: translateY(0); opacity: .45; }
+      40% { transform: translateY(-3px); opacity: 1; }
+    }
+
+    /* Showroom block inside thread */
+    .showroom {
+      margin: 4px 0 2px;
+      animation: showroomIn .55s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes showroomIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+    .showroom-head {
+      padding: 6px 2px 12px;
+      animation: rise .45s cubic-bezier(.22,1,.36,1) both;
+    }
+    .showroom-head .eyebrow {
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--purple-deep);
       margin-bottom: 6px;
     }
-    .offers-head h2 {
+    .showroom-head h2 {
       font-family: var(--display);
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 800;
       letter-spacing: -0.04em;
       margin: 0 0 4px;
       line-height: 1.1;
     }
-    .offers-head p {
+    .showroom-head p {
       margin: 0;
-      color: var(--muted);
+      color: var(--purple);
       font-size: 13px;
+      font-weight: 600;
     }
 
-    .deal-list {
+    .offer {
       display: grid;
-      gap: 10px;
-    }
-
-    .deal {
-      display: grid;
-      grid-template-columns: 84px 1fr;
+      grid-template-columns: 96px 1fr;
       gap: 12px;
-      align-items: stretch;
       background: var(--surface);
       border-radius: 20px;
-      padding: 10px;
-      border: 1px solid transparent;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 28px rgba(30, 31, 34, 0.04);
       opacity: 0;
-      transform: translateY(14px);
+      transform: translateY(18px) scale(.97);
+      filter: blur(2px);
     }
-    .deal.on { animation: rise .5s cubic-bezier(.22,1,.36,1) forwards; }
-    .deal.best {
-      border-color: rgba(151, 71, 255, 0.22);
-      box-shadow:
-        0 10px 28px rgba(151, 71, 255, 0.1),
-        0 1px 0 rgba(255,255,255,0.8) inset;
+    .offer.on {
+      animation: offerIn .55s cubic-bezier(.22,1,.36,1) forwards;
     }
-    .deal-media {
+    @keyframes offerIn {
+      to { opacity: 1; transform: none; filter: none; }
+    }
+    .offer.best {
+      border-color: rgba(151, 71, 255, 0.28);
+      box-shadow: 0 14px 32px rgba(151, 71, 255, 0.1);
+    }
+    .offer-media {
       border-radius: 14px;
       overflow: hidden;
-      background: #ECEAF0;
-      min-height: 96px;
+      background: #EEEAF4;
+      min-height: 112px;
     }
-    .deal-media img {
+    .offer-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
-    .deal-media.is-empty {
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 8px;
-      text-align: center;
-    }
-    .deal-price .hint {
-      display: block;
-      margin-top: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      color: var(--muted);
-      line-height: 1.3;
-    }
-    .reply-box {
-      margin: 0 0 8px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.72);
-      border: 1px solid var(--line);
-      font-size: 13px;
-      line-height: 1.45;
-      color: var(--ink);
-      white-space: pre-wrap;
-    }
-    .deal-body {
+    .offer-body {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 4px 4px 2px 0;
       min-width: 0;
+      padding: 2px 2px 0 0;
     }
-    .deal-top {
+    .offer-top {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
+      align-items: flex-start;
     }
-    .deal-name {
-      font-size: 14px;
-      font-weight: 700;
+    .offer-name {
+      font-size: 14.5px;
+      font-weight: 750;
       letter-spacing: -0.02em;
       line-height: 1.25;
     }
-    .deal-meta {
+    .offer-meta {
       margin-top: 4px;
       font-size: 11.5px;
       color: var(--muted);
@@ -374,80 +428,85 @@
       flex: none;
       font-size: 10px;
       font-weight: 800;
-      letter-spacing: 0.02em;
       padding: 4px 7px;
       border-radius: 999px;
       background: var(--lime);
       color: var(--ink);
       white-space: nowrap;
     }
-    .pill.soft {
-      background: rgba(151, 71, 255, 0.1);
-      color: var(--purple-deep);
+    .offer-price {
+      margin-top: 12px;
     }
-    .deal-price {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      margin-top: 10px;
+    .offer-price .label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 2px;
     }
-    .deal-price .n {
+    .offer-price .n {
       font-family: var(--display);
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 800;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.045em;
       color: var(--purple);
       line-height: 1;
     }
-    .deal-price .l {
-      font-size: 12px;
-      font-weight: 600;
+    .offer-price .foot {
+      margin-top: 4px;
+      font-size: 11.5px;
       color: var(--muted);
+      font-weight: 500;
     }
 
-    .cta {
-      margin-top: 2px;
+    .cta-card {
+      margin-top: 4px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 18px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
       opacity: 0;
-      transform: translateY(12px);
+      transform: translateY(16px) scale(.97);
     }
-    .cta.on { animation: rise .5s cubic-bezier(.22,1,.36,1) forwards; }
-    .cta button {
+    .cta-card.on {
+      animation: offerIn .55s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .cta-card p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: rgba(255,255,255,0.72);
+    }
+    .cta-card strong {
+      display: block;
+      color: #fff;
+      font-size: 14.5px;
+      font-weight: 750;
+      margin-bottom: 4px;
+      letter-spacing: -0.02em;
+    }
+    .cta-btn {
       appearance: none;
       border: 0;
       width: 100%;
       cursor: pointer;
-      background: var(--ink);
-      color: #fff;
+      background: var(--lime);
+      color: var(--ink);
       font: inherit;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 15px 16px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      transition: background .2s ease, transform .15s ease;
-    }
-    .cta button:hover { background: #2A2B2E; }
-    .cta button:active { transform: scale(0.985); }
-    .cta button span:last-child {
-      color: var(--lime);
+      font-size: 13.5px;
       font-weight: 800;
-      letter-spacing: -0.02em;
+      padding: 13px 14px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .cta-note {
-      margin: 8px 2px 0;
-      text-align: center;
-      font-size: 11.5px;
-      color: var(--muted);
-      line-height: 1.35;
-    }
+    .cta-btn:active { transform: scale(0.985); }
 
-    /* ── Composer ── */
     .composer {
-      padding: 10px 14px 16px;
-      background: linear-gradient(180deg, transparent, var(--bg) 24%);
+      padding: 10px 12px 16px;
+      background: linear-gradient(180deg, transparent, rgba(245,243,248,0.96) 28%);
       position: relative;
       z-index: 5;
     }
@@ -458,15 +517,15 @@
       align-items: end;
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 8px;
-      box-shadow: 0 10px 30px rgba(30, 31, 34, 0.06);
+      border-radius: 22px;
+      padding: 7px;
+      box-shadow: 0 12px 30px rgba(30, 31, 34, 0.06);
       transition: border-color .2s ease, box-shadow .2s ease;
     }
     .composer-box:focus-within {
       border-color: rgba(151, 71, 255, 0.45);
       box-shadow:
-        0 10px 30px rgba(151, 71, 255, 0.1),
+        0 12px 30px rgba(151, 71, 255, 0.1),
         0 0 0 3px rgba(151, 71, 255, 0.08);
     }
     .composer-box textarea {
@@ -479,8 +538,8 @@
       font-size: 14.5px;
       line-height: 1.4;
       color: var(--ink);
-      padding: 10px 8px;
-      min-height: 46px;
+      padding: 10px 10px;
+      min-height: 44px;
       max-height: 96px;
     }
     .composer-box textarea::placeholder { color: #A0A3A9; }
@@ -488,16 +547,16 @@
       width: 44px;
       height: 44px;
       border: 0;
-      border-radius: 14px;
+      border-radius: 50%;
       cursor: pointer;
-      background: var(--purple);
-      color: #fff;
+      background: var(--lime);
+      color: var(--ink);
       display: grid;
       place-items: center;
-      transition: background .15s ease, transform .15s ease;
+      transition: transform .15s ease, background .15s ease;
     }
-    .send:hover { background: #8433E8; }
-    .send:active { transform: scale(0.96); }
+    .send:hover { background: #c9ef00; }
+    .send:active { transform: scale(0.95); }
     .send:disabled { opacity: 0.45; cursor: wait; }
     .send svg { width: 16px; height: 16px; fill: currentColor; }
 
@@ -539,69 +598,37 @@
 <body>
   <div class="shell">
     <div class="phone" aria-label="Taksitlio ihtiyaç asistanı">
-      <div class="app">
-        <header class="top">
+      <div class="app" id="app">
+        <canvas id="fx" aria-hidden="true"></canvas>
+        <header class="top" id="top">
           <img class="wordmark" src="assets/logowithlabel.png" alt="taksitlio" />
-          <div class="top-note" id="statusText">Misafir</div>
+          <div class="guest">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12Zm0 2.25c-3.6 0-6.75 1.8-6.75 4v1.25h13.5V18.25c0-2.2-3.15-4-6.75-4Z"/></svg>
+            Misafir
+          </div>
         </header>
 
-        <main class="stage" id="stage">
-          <section class="view idle is-on" id="view-idle">
-            <div class="idle-hero">
-              <div class="idle-kicker">İhtiyaç asistanı</div>
-              <h1>Sana en uygun taksiti bulalım</h1>
-              <p>Ne almak istediğini ve bütçeni yaz. Katalogdaki gerçek ürün ve tahmini ödemeleri getireyim.</p>
+        <div class="thread" id="thread" aria-live="polite">
+          <div class="welcome" id="welcome">
+            <div class="welcome-ai" aria-label="Taksitlio Yapay Zekâ">
+              <span class="label">
+                <span class="brand-line">taks<span class="pi">i</span>tl<span class="pi">i</span><span class="po">o</span></span>
+                <span class="ai-line">yapay zekâ</span>
+              </span>
             </div>
-            <div class="shelf" id="shelf" aria-hidden="true">
-              <figure data-cat="phone">
-                <img src="assets/products/phone-1.jpg" alt="" />
-                <figcaption>Telefon</figcaption>
-              </figure>
-              <figure data-cat="laptop">
-                <img src="assets/products/laptop.jpg" alt="" />
-                <figcaption>Laptop</figcaption>
-              </figure>
-              <figure data-cat="wearable">
-                <img src="assets/products/watch.jpg" alt="" />
-                <figcaption>Watch</figcaption>
-              </figure>
-            </div>
-          </section>
-
-          <section class="view reading" id="view-reading">
-            <div class="reading-mark" aria-hidden="true"></div>
-            <h2 id="readingTitle">Anlıyorum…</h2>
-            <div class="facts" id="facts"></div>
-          </section>
-
-          <section class="view offers" id="view-offers">
-            <div class="offers-head" id="offersHead">
-              <div class="eyebrow" id="offersEyebrow">Sonuçlar</div>
-              <h2 id="showTitle">Uygun seçenekler</h2>
-              <p id="showSub"></p>
-            </div>
-            <div class="reply-box" id="replyBox" hidden></div>
-            <div class="deal-list" id="deals"></div>
-            <div class="cta" id="cta">
-              <button type="button" id="btnSignup">
-                <span id="ctaLabel">Üye ol, devam et</span>
-                <span>→</span>
-              </button>
-              <p class="cta-note" id="ctaNote">
-                Tahmini ödemeler bilgilendirme amaçlıdır. Kişisel kredi onayı ayrıca değerlendirilir.
-              </p>
-            </div>
-          </section>
-        </main>
+            <h1>Merhaba</h1>
+            <p>Henüz üye olmadan ihtiyacına en uygun kampanyaları birlikte bulalım.</p>
+          </div>
+        </div>
 
         <footer class="composer">
           <form id="form" autocomplete="off">
             <div class="composer-box">
               <textarea
                 id="input"
-                rows="2"
+                rows="1"
                 maxlength="500"
-                placeholder="Örn. cep telefonu alacağım, bütçem 40 bin…"
+                placeholder="Örn. cep telefonu, bütçem 40 bin…"
                 aria-label="İhtiyaç prompt’u"
               ></textarea>
               <button class="send" id="send" type="submit" aria-label="Gönder">
@@ -616,38 +643,55 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="js/chat-cards.js"></script>
+  <!-- ADR-011 progressive search UI modules (event-driven; no fake timers) -->
+  <script src="js/search-session/client.js"></script>
+  <script src="js/search-progress/timeline.js"></script>
+  <script src="js/clarification/card.js"></script>
+  <script src="js/constraint-chips/chips.js"></script>
+  <script src="js/progressive-products/carousel.js"></script>
+  <script src="js/logo-progress-rail/rail.js"></script>
+
   <script>
-    const Cards = window.TaksitlioCards;
-    const CHAT_URL = "/v1/chat";
+    const DEMO = [
+      {
+        best: true,
+        brand: "Samsung Galaxy A56",
+        meta: "MediaMarkt × Yapı Kredi · 0 faiz",
+        badge: "En uygun",
+        monthly: "3.249 TL",
+        tenure: "12 ay",
+        total: "≈ 38.990 TL",
+        img: "assets/products/phone-1.jpg",
+      },
+      {
+        best: false,
+        brand: "iPhone 15 128GB",
+        meta: "Vatan × Akbank · peşinatlı",
+        badge: null,
+        monthly: "3.499 TL",
+        tenure: "12 ay",
+        total: "≈ 41.990 TL",
+        img: "assets/products/phone-2.jpg",
+      },
+    ];
 
     const els = {
-      status: document.getElementById("statusText"),
-      idle: document.getElementById("view-idle"),
-      reading: document.getElementById("view-reading"),
-      offers: document.getElementById("view-offers"),
-      shelf: document.getElementById("shelf"),
-      readingTitle: document.getElementById("readingTitle"),
-      facts: document.getElementById("facts"),
-      offersHead: document.getElementById("offersHead"),
-      offersEyebrow: document.getElementById("offersEyebrow"),
-      showTitle: document.getElementById("showTitle"),
-      showSub: document.getElementById("showSub"),
-      replyBox: document.getElementById("replyBox"),
-      deals: document.getElementById("deals"),
-      cta: document.getElementById("cta"),
-      ctaLabel: document.getElementById("ctaLabel"),
+      app: document.getElementById("app"),
+      fx: document.getElementById("fx"),
+      top: document.getElementById("top"),
+      thread: document.getElementById("thread"),
       form: document.getElementById("form"),
       input: document.getElementById("input"),
       send: document.getElementById("send"),
       toast: document.getElementById("toast"),
-      signup: document.getElementById("btnSignup"),
     };
 
-    const views = { idle: els.idle, reading: els.reading, offers: els.offers };
     let busy = false;
-    let active = "idle";
+    let started = false;
+    let particles = [];
+    const COLORS = ["#9747FF", "#D8FF00", "#B370FF", "#FFFFFF", "#6C1ED0", "#E2C2FF"];
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     function toast(msg) {
       els.toast.textContent = msg;
@@ -656,27 +700,149 @@
       toast._t = setTimeout(() => els.toast.classList.remove("show"), 2200);
     }
 
-    /** Soft UI hint only — never used as product/merchant/rate source of truth. */
-    function parseHint(text) {
+    function flashApp() {
+      if (reduceMotion) return;
+      els.app.classList.remove("flash");
+      void els.app.offsetWidth;
+      els.app.classList.add("flash");
+    }
+
+    (function fxLoop() {
+      const c = els.fx;
+      const ctx = c.getContext("2d");
+      function resize() {
+        const r = els.app.getBoundingClientRect();
+        c.width = Math.max(1, r.width) * devicePixelRatio;
+        c.height = Math.max(1, r.height) * devicePixelRatio;
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      function spawnConfetti(n = 42, power = 1) {
+        if (reduceMotion) return;
+        const w = c.width / devicePixelRatio;
+        const h = c.height / devicePixelRatio;
+        const cx = w * 0.5;
+        const cy = h * 0.36;
+        for (let i = 0; i < n; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = (3 + Math.random() * 5.8) * power;
+          particles.push({
+            x: cx + (Math.random() - 0.5) * 24,
+            y: cy + (Math.random() - 0.5) * 14,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 2.2 * power,
+            life: 1,
+            decay: 0.014 + Math.random() * 0.012,
+            w: 4 + Math.random() * 7,
+            h: 2 + Math.random() * 4,
+            rot: Math.random() * Math.PI * 2,
+            vr: (Math.random() - 0.5) * 0.35,
+            color: COLORS[(Math.random() * COLORS.length) | 0],
+            shape: Math.random() > 0.55 ? "rect" : Math.random() > 0.5 ? "ribbon" : "dot",
+          });
+        }
+      }
+
+      window.__burst = (kind = "soft") => {
+        if (kind === "big") {
+          spawnConfetti(58, 1.15);
+          flashApp();
+        } else if (kind === "finale") {
+          spawnConfetti(72, 1.25);
+          setTimeout(() => spawnConfetti(28, 0.8), 90);
+          flashApp();
+        } else {
+          spawnConfetti(28, 0.85);
+        }
+      };
+
+      function tick() {
+        const w = c.width / devicePixelRatio;
+        const h = c.height / devicePixelRatio;
+        ctx.clearRect(0, 0, w, h);
+        particles = particles.filter((p) => p.life > 0.02);
+        for (const p of particles) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.15;
+          p.vx *= 0.99;
+          p.rot += p.vr;
+          p.life -= p.decay;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.globalAlpha = Math.max(p.life, 0);
+          ctx.fillStyle = p.color;
+          if (p.shape === "dot") {
+            ctx.beginPath();
+            ctx.arc(0, 0, p.w * 0.35, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (p.shape === "ribbon") {
+            ctx.fillRect(-p.w * 0.15, -p.h * 1.8, p.w * 0.3, p.h * 3.6);
+          } else {
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          }
+          ctx.restore();
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+
+    function scrollEnd() {
+      requestAnimationFrame(() => {
+        els.thread.scrollTop = els.thread.scrollHeight;
+      });
+    }
+
+    function botBubble(html) {
+      const row = document.createElement("div");
+      row.className = "row bot";
+      row.innerHTML = `
+        <div class="avatar"><img src="assets/favicon.png" alt="" /></div>
+        <div class="bubble bot"><span class="who">Taksitlio</span>${html}</div>`;
+      els.thread.appendChild(row);
+      scrollEnd();
+      return row;
+    }
+
+    function userBubble(text) {
+      const row = document.createElement("div");
+      row.className = "row user";
+      row.innerHTML = `<div class="bubble user"></div>`;
+      row.querySelector(".bubble").textContent = text;
+      els.thread.appendChild(row);
+      scrollEnd();
+      return row;
+    }
+
+    function typing() {
+      const row = document.createElement("div");
+      row.className = "row bot";
+      row.dataset.typing = "1";
+      row.innerHTML = `
+        <div class="avatar"><img src="assets/favicon.png" alt="" /></div>
+        <div class="bubble bot typing"><i></i><i></i><i></i></div>`;
+      els.thread.appendChild(row);
+      scrollEnd();
+      return row;
+    }
+
+    function clearTyping() {
+      els.thread.querySelectorAll('[data-typing="1"]').forEach((n) => n.remove());
+    }
+
+    function parse(text) {
       const lower = text.toLocaleLowerCase("tr-TR");
       let category = null;
-      let shelfCat = null;
-      if (/telefon|iphone|samsung|xiaomi|cep|mobil/.test(lower)) {
-        category = "Cep telefonu";
-        shelfCat = "phone";
-      } else if (/tablet|ipad/.test(lower)) {
-        category = "Tablet";
-        shelfCat = "phone";
-      } else if (/saat|watch/.test(lower)) {
-        category = "Akıllı saat";
-        shelfCat = "wearable";
-      } else if (/kulaklık|airpods|buds/.test(lower)) {
-        category = "Kulaklık";
-        shelfCat = "wearable";
-      } else if (/laptop|bilgisayar|macbook/.test(lower)) {
-        category = "Laptop";
-        shelfCat = "laptop";
-      }
+      if (/telefon|iphone|samsung|xiaomi|cep/.test(lower)) category = "Cep telefonu";
+      else if (/tablet|ipad/.test(lower)) category = "Tablet";
+      else if (/saat|watch/.test(lower)) category = "Akıllı saat";
+      else if (/laptop|bilgisayar|macbook/.test(lower)) category = "Laptop";
+      else if (/buzdolab|çamaşır|bulaşık|beyaz/.test(lower)) category = "Beyaz eşya";
+      else if (/koltuk|masa|yatak|mobilya/.test(lower)) category = "Mobilya";
 
       let budget = null;
       let m = lower.match(/(\d+[.,]?\d*)\s*(bin|k)\b/);
@@ -688,184 +854,113 @@
           if (n >= 1000) budget = n;
         }
       }
-      return { category, budget, shelfCat, raw: text.trim() };
+      return { category, budget, raw: text.trim() };
     }
 
     function money(n) {
-      return Cards.formatMoney(n, "TRY");
+      return n ? `${n.toLocaleString("tr-TR")} TL` : null;
     }
 
-    async function showView(name) {
-      if (active === name) {
-        views[name].classList.add("is-on");
-        return;
-      }
-      Object.values(views).forEach((v) => v.classList.remove("is-on"));
-      views[name].classList.add("is-on");
-      active = name;
-      await wait(40);
-    }
-
-    function previewShelf(text) {
-      const need = parseHint(text);
-      const figs = els.shelf.querySelectorAll("figure");
-      if (!need.shelfCat) {
-        els.shelf.classList.remove("is-live");
-        figs.forEach((f) => f.classList.remove("is-hot"));
-        return;
-      }
-      els.shelf.classList.add("is-live");
-      figs.forEach((f) => f.classList.toggle("is-hot", f.dataset.cat === need.shelfCat));
-    }
-
-    async function postChat(message, phase) {
-      const res = await fetch(CHAT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          session_id: Cards.sessionId(),
-          message,
-          product_phase: phase,
-        }),
+    function renderShowroom(need) {
+      const budgetText = money(need.budget) || "bütçene";
+      const wrap = document.createElement("div");
+      wrap.className = "showroom";
+      wrap.innerHTML = `
+        <div class="showroom-head">
+          <div class="eyebrow">Kampanyalar</div>
+          <h2>2 uygun seçenek</h2>
+          <p>${budgetText} için</p>
+        </div>
+        ${DEMO.map(
+          (d, i) => `
+          <article class="offer ${d.best ? "best" : ""}" style="animation-delay:${0.06 + i * 0.1}s">
+            <div class="offer-media"><img src="${d.img}" alt="" /></div>
+            <div class="offer-body">
+              <div>
+                <div class="offer-top">
+                  <div class="offer-name">${d.brand}</div>
+                  ${d.badge ? `<span class="pill">${d.badge}</span>` : ""}
+                </div>
+                <div class="offer-meta">${d.meta}</div>
+              </div>
+              <div class="offer-price">
+                <div class="label">Aylık taksit</div>
+                <div class="n">${d.monthly}</div>
+                <div class="foot">${d.tenure} · Toplam ${d.total}</div>
+              </div>
+            </div>
+          </article>`
+        ).join("")}
+        <div class="cta-card" id="ctaCard">
+          <div>
+            <strong>Üye ol, kampanyadan yararlan</strong>
+            <p>Beğendiğin teklife hemen başvur, ücretsiz üyelikle limitini anında öğren.</p>
+          </div>
+          <button class="cta-btn" type="button" id="btnSignup">
+            <span>Üye ol</span>
+            <span>30 sn →</span>
+          </button>
+        </div>`;
+      els.thread.appendChild(wrap);
+      requestAnimationFrame(() => {
+        [...wrap.querySelectorAll(".offer")].forEach((el) => el.classList.add("on"));
       });
-      if (!res.ok) {
-        const detail = await res.text();
-        throw new Error(detail || `HTTP ${res.status}`);
-      }
-      return res.json();
-    }
-
-    function factsFromPayload(payload, hint) {
-      const rows = [];
-      const np = payload.need_profile || {};
-      const cats = payload.categories || [];
-      const desc = np.need_description || hint.raw;
-      rows.push({ k: "İhtiyaç", v: desc.slice(0, 80) || hint.category || "—" });
-      const budget = np.budget || {};
-      const budgetVal = budget.maximum || budget.value || hint.budget;
-      rows.push({ k: "Bütçe", v: money(budgetVal) || "Esnek" });
-      if (cats[0] && cats[0].display_name) {
-        rows.push({ k: "Kategori", v: cats[0].display_name });
-      }
-      const path = payload.diagnostics && payload.diagnostics.product_path;
-      rows.push({
-        k: "Kaynak",
-        v: path ? "Ürün kataloğu" : "Kampanya kayıtları",
+      setTimeout(() => {
+        const cta = wrap.querySelector("#ctaCard");
+        if (cta) cta.classList.add("on");
+        window.__burst("finale");
+      }, 420);
+      wrap.querySelector("#btnSignup").addEventListener("click", () => {
+        window.__burst("soft");
+        toast("Üyelik akışı yakında BE’ye bağlanacak");
       });
-      return rows;
+      scrollEnd();
     }
 
-    function paintOffers(payload) {
-      const mapped = Cards.dealsFromChatPayload(payload);
-      const n = mapped.deals.length;
-      els.offersEyebrow.textContent =
-        mapped.source === "catalog" ? "Ürün kataloğu" : "Kampanyalar";
-      els.showTitle.textContent =
-        n === 0 ? "Sonuç bulunamadı" : `${n} uygun seçenek`;
-      const phaseNote =
-        mapped.phase === "FINANCE_ENRICHED"
-          ? " · tahmini ödeme dahil"
-          : mapped.phase === "FIRST_CARDS"
-            ? " · finansman yükleniyor olabilir"
-            : "";
-      els.showSub.textContent =
-        n === 0
-          ? "Bütçeyi veya ürün tercihini biraz değiştirebilir misin?"
-          : `API yanıtı${phaseNote}`;
-
-      if (payload.reply) {
-        els.replyBox.hidden = false;
-        els.replyBox.textContent = payload.reply;
-      } else {
-        els.replyBox.hidden = true;
-        els.replyBox.textContent = "";
-      }
-
-      els.deals.innerHTML = mapped.deals
-        .map((d, i) => Cards.dealArticleHtml(d, i))
-        .join("");
-
-      if (payload.cta && payload.cta.enabled && payload.cta.label) {
-        els.ctaLabel.textContent = payload.cta.label;
-      } else {
-        els.ctaLabel.textContent = "Üye ol, devam et";
-      }
-      return mapped;
+    async function boot() {
+      window.__burst("soft");
+      const t = typing();
+      await wait(520);
+      t.remove();
+      botBubble(
+        "Ne almak istediğini ve bütçeni kendi cümlelerinle yazman yeterli. Örneğin:<br>" +
+        "<em style=\"color:var(--purple-deep);font-style:normal;font-weight:600\">“Cep telefonu alacağız, bütçemiz 40 bin TL civarı”</em><br>" +
+        "<em style=\"color:#0F8F6B;font-style:normal;font-weight:600\">“Buzdolabı bakıyorum, 25–30 bin”</em>"
+      );
+      started = true;
     }
 
-    async function runShow(text) {
+    async function run(text) {
       if (busy) return;
-      const hint = parseHint(text);
-      if (!hint.raw) return;
+      const need = parse(text);
+      if (!need.raw) return;
 
       busy = true;
       els.send.disabled = true;
-      els.status.textContent = "Okuyor";
+      els.input.value = "";
+      els.input.style.height = "auto";
 
-      els.readingTitle.textContent = "Anlıyorum…";
-      els.facts.innerHTML = [
-        { k: "İhtiyaç", v: hint.category || "Yazılan ihtiyaç" },
-        { k: "Bütçe", v: money(hint.budget) || "Esnek" },
-        { k: "Durum", v: "Katalog sorgulanıyor" },
-      ]
-        .map(
-          (r) =>
-            `<div class="fact"><div class="k">${Cards.escapeHtml(r.k)}</div><div class="v">${Cards.escapeHtml(r.v)}</div></div>`
-        )
-        .join("");
-
-      await showView("reading");
-      await wait(80);
-      [...els.facts.children].forEach((el, i) => {
-        el.style.animationDelay = `${0.08 + i * 0.1}s`;
-        el.classList.add("on");
-      });
-
-      let payload;
-      try {
-        els.readingTitle.textContent = "Ürünler aranıyor…";
-        els.status.textContent = "Arama";
-        // Progressive: first cards, then finance-enriched when catalog path is used.
-        payload = await postChat(hint.raw, "FIRST_CARDS");
-        if (payload.diagnostics && payload.diagnostics.product_path) {
-          els.readingTitle.textContent = "Tahmini ödemeler ekleniyor…";
-          payload = await postChat(hint.raw, "FINANCE_ENRICHED");
-        }
-      } catch (err) {
-        busy = false;
-        els.send.disabled = false;
-        els.status.textContent = "Hata";
-        toast("Yanıt alınamadı. API çalışıyor mu?");
-        console.error(err);
-        await showView("idle");
-        return;
-      }
-
-      els.facts.innerHTML = factsFromPayload(payload, hint)
-        .map(
-          (r) =>
-            `<div class="fact on"><div class="k">${Cards.escapeHtml(r.k)}</div><div class="v">${Cards.escapeHtml(r.v)}</div></div>`
-        )
-        .join("");
+      userBubble(need.raw);
+      window.__burst("soft");
       await wait(280);
+      const t = typing();
+      await wait(700);
+      t.remove();
 
-      els.offersHead.classList.remove("on");
-      els.cta.classList.remove("on");
-      const mapped = paintOffers(payload);
+      const budgetBit = money(need.budget)
+        ? `<strong style="color:var(--purple)">${money(need.budget)}</strong> bütçene`
+        : "bütçene";
+      botBubble(
+        `Bankalar ve markalar arasındaki güncel kampanyaları taradım. ${budgetBit} en uygun seçenekler:`
+      );
+      await wait(180);
+      window.__burst("big");
+      renderShowroom(need);
 
-      await showView("offers");
-      els.status.textContent =
-        mapped.deals.length === 0
-          ? "Sonuç yok"
-          : mapped.source === "catalog"
-            ? `${mapped.deals.length} ürün`
-            : `${mapped.deals.length} kampanya`;
-      requestAnimationFrame(() => {
-        els.offersHead.classList.add("on");
-        [...els.deals.children].forEach((el) => el.classList.add("on"));
-      });
-      await wait(320);
-      els.cta.classList.add("on");
+      if (!need.category) {
+        await wait(300);
+        botBubble("İstersen kategoriyi biraz netleştir (telefon, beyaz eşya, mobilya…). Yeni bir cümle yazman yeterli.");
+      }
 
       busy = false;
       els.send.disabled = false;
@@ -874,24 +969,24 @@
 
     els.form.addEventListener("submit", (e) => {
       e.preventDefault();
-      runShow(els.input.value);
+      run(els.input.value);
     });
     els.input.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
-        runShow(els.input.value);
+        run(els.input.value);
       }
     });
     els.input.addEventListener("input", () => {
-      if (active === "idle") previewShelf(els.input.value);
       const el = els.input;
       el.style.height = "auto";
       el.style.height = Math.min(el.scrollHeight, 96) + "px";
     });
-    els.signup.addEventListener("click", () =>
-      toast("Üyelik akışı yakında bağlanacak · kişisel onay kapalı")
-    );
-    els.input.focus();
+    els.thread.addEventListener("scroll", () => {
+      els.top.classList.toggle("scrolled", els.thread.scrollTop > 8);
+    });
+
+    boot().then(() => els.input.focus());
   </script>
 </body>
 </html>

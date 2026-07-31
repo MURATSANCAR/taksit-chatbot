@@ -251,12 +251,14 @@ def build_in_memory_container(
         InMemoryInstitutionLabelLoader,
         InstitutionLabelResolver,
     )
+    from taksitlio.search_sessions import build_demo_orchestrator
     import os
     import tempfile
 
     product_query_caches = build_product_query_caches(
         settings, redis=None, prefer_memory=True
     )
+    search_orchestrator = build_demo_orchestrator()
     if not os.environ.get("MEDIA_STORAGE_ROOT"):
         os.environ.setdefault(
             "MEDIA_STORAGE_ROOT", tempfile.mkdtemp(prefix="taksitlio-media-")
@@ -305,6 +307,7 @@ def build_in_memory_container(
             "finance_option_index": finance_option_index,
             "institution_label_loader": institution_label_loader,
             "institution_labels": institution_labels,
+            "search_orchestrator": search_orchestrator,
         },
     )
 

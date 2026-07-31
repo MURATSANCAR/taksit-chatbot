@@ -17,3 +17,6 @@ src/*.egg-info/
 evaluation/reports/*
 !evaluation/reports/.gitkeep
 evaluation/private/*
+
+# P17 LoRA exports (generated)
+training/exports/

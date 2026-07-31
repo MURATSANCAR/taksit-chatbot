@@ -1,4 +1,4 @@
-# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010
+# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010 / ADR-011
 
 Status date: 2026-07-31
 
@@ -167,12 +167,56 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] Runbook: `docs/runbooks/ADR-010-merchant-feed-bind.md`
 - [x] Unit tests (synthetic fixture only)
 
+### P16 — S3/CDN origin readiness
+
+- [x] `media.config` validate + describe/probe (`head_bucket`)
+- [x] Local `/cdn` StaticFiles mount from `MEDIA_STORAGE_ROOT`
+- [x] Scheduler uses `build_object_storage_from_env` (S3-capable)
+- [x] Admin `GET /v1/admin/media/storage`; `/ready` includes media status
+- [x] Runbook: `docs/runbooks/ADR-010-s3-cdn-origin.md`
+- [x] Unit tests
+
+### P17 — FAST NeedProfile LoRA scaffold (no quality claim)
+
+- [x] SFT row schema + `taksitlio.training.export_sft`
+- [x] CLI export from golden / HR validation (concepts only; no fixture IDs)
+- [x] Example LoRA YAML + loud-fail `train_lora_stub.py`
+- [x] Runbook: `docs/runbooks/ADR-009-fast-lora-scaffold.md`
+- [x] Unit tests
+- [ ] Ops GPU train + redeploy FAST_* + re-run ADR-009 HR100 (not done here)
+
 ### Sonraki (operasyon / ayrı hat)
 
-- [ ] Task-specific FAST fine-tune / LoRA
 - [ ] Canlı merchant feed URL + `MERCHANT_FEED_TOKEN` (ops; runbook P15)
+- [ ] Canlı MinIO/S3 + CDN DNS/credentials (ops; runbook P16)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
-- [ ] Canlı S3/MinIO credentials + CDN origin (ops)
+- [ ] GPU LoRA train + live FAST eval (runbook P17)
+
+## Open — ADR-011 clarification-first LLM routing + progressive search
+
+ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.md`](adr/ADR-011-clarification-first-llm-routing-and-progressive-search.md)
+
+### P0 — skeleton
+
+- [x] ADR-011 dokümanı
+- [x] `V021__search_sessions_clarification_and_llm_jobs.sql`
+- [x] `search_sessions` state machine + orchestrator
+- [x] `query_understanding` fast parser + gap detector
+- [x] `query_clarification` policy (≤1 soru / mesaj, ≤2 / oturum)
+- [x] `llm_routing` job + stale protection + patch validation
+- [x] `search_progress` data-origin-aware messages + SSE
+- [x] `progressive_results` / `query_state` / `query_fallback`
+- [x] API: `POST/GET /v1/search-sessions*` + SSE events
+- [x] Guest UI modules under `web/taksitlio/js/...`
+- [x] Unit + acceptance gate tests
+
+### P1+ (sonraki)
+
+- [ ] Chat pipeline bridge → search_sessions (guest UI full wire)
+- [ ] Postgres repositories for search session tables
+- [ ] Async LLM worker + circuit breaker → model gateway
+- [ ] Logo CDN URLs from merchant/brand/institution media
+- [ ] Live partial-result / queue latency metrics export
 
 ## Gates
 
@@ -187,4 +231,12 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Data Quality | P6 scorer + admin score API |
 | Fast Product Path | P14 (chat cards + guest UI renderer) |
 | Finance Mapping | P12 (Postgres finance sync + institution labels + admin rebuild) |
+| Media / CDN | P16 (local /cdn mount + S3 factory + storage health) |
+| FAST LoRA | P17 scaffold only (export/stub; no train / no quality claim) |
 | Recommendation | P4 ranking safety rules (browse vs finance modes) |
+| Clarification Routing | P0 skeleton PASS (unit/acceptance) |
+| Progress Truthfulness | P0 skeleton PASS (unit/acceptance) |
+| Progressive Result | P0 path ready; live P95 not measured |
+| Stale LLM Protection | P0 skeleton PASS (unit/acceptance) |
+| LLM Timeout Fallback | P0 skeleton PASS (unit/acceptance) |
+| Logo Correctness | P0 skeleton PASS (unit/acceptance) |
