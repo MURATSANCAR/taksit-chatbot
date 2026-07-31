@@ -9,6 +9,7 @@ from taksitlio.product.models import (
     StockStatus,
 )
 from taksitlio.product.normalize import normalize_display_name
+from taksitlio.product.taxonomy import enrich_product_attributes, taxonomy_code
 from taksitlio.product.upsert import (
     OfferUpsertResult,
     ProductUpsertPlan,
@@ -24,8 +25,10 @@ __all__ = [
     "ProductUpsertPlan",
     "StockStatus",
     "content_hash",
+    "enrich_product_attributes",
     "normalize_display_name",
     "plan_offer_upsert",
     "plan_product_upsert",
     "resolve_canonical_key",
+    "taxonomy_code",
 ]

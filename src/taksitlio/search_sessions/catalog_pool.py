@@ -36,10 +36,15 @@ def candidate_to_pool_dict(cand: Any) -> dict[str, Any]:
             "display_label": f.display_label,
             "institution_logo_cdn_url": getattr(f, "institution_logo_cdn_url", None),
         }
+    brand = getattr(cand, "brand_name", None)
+    if not brand and getattr(cand, "brand_model", None):
+        brand = str(cand.brand_model).split("/")[0].strip() or None
     return {
         "product_id": cand.product_id,
         "display_name": cand.display_name,
+        "brand": brand,
         "brand_model": cand.brand_model,
+        "category": getattr(cand, "category_name", None),
         "merchant_id": cand.merchant_id,
         "merchant_display_name": cand.merchant_display_name,
         "price": cand.price,
@@ -113,6 +118,39 @@ def brands_from_pool(pool: Sequence[dict[str, Any]]) -> tuple[EntityCandidate, .
             entity_type="brand",
         )
     return tuple(by_id.values())
+
+
+def categories_from_pool(
+    pool: Sequence[dict[str, Any]],
+    *,
+    existing_codes: Optional[set[str]] = None,
+) -> list[Category]:
+    """Surface feed category labels as Category rows when DB catalog lags."""
+
+    from taksitlio.product.taxonomy import taxonomy_code
+
+    seen = set(existing_codes or ())
+    out: list[Category] = []
+    next_id = -1
+    for row in pool:
+        label = str(row.get("category") or "").strip()
+        if not label:
+            continue
+        code = taxonomy_code(label)
+        if code in seen:
+            continue
+        seen.add(code)
+        out.append(
+            Category(
+                id=next_id,
+                category_code=code,
+                display_name=label[:128],
+                description=f"Feed-derived category: {label}",
+                synonyms=(label,),
+            )
+        )
+        next_id -= 1
+    return out
 
 
 def institutions_from_labels(
@@ -238,9 +276,13 @@ async def refresh_orchestrator_from_catalog(
     brand_cands = brands_from_pool(orch.product_pool)
     inst_cands = institutions_from_labels(institutions)
 
+    existing_codes = {str(c.category_code) for c in category_rows}
+    feed_cats = categories_from_pool(orch.product_pool, existing_codes=existing_codes)
+    merged_categories = list(category_rows) + feed_cats
+
     apply_catalog_hints(
         orch,
-        categories=category_rows,
+        categories=merged_categories,
         merchants=merchant_cands,
         brands=brand_cands,
         institutions=inst_cands,

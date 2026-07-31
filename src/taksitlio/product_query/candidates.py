@@ -52,11 +52,14 @@ async def product_to_search_candidate(
     )
     relevance = _token_overlap(utterance, product.display_name)
     brand_model = None
+    brand_name = None
+    category_name = None
     attrs = dict(product.attributes or {})
-    if attrs.get("brand") or attrs.get("model"):
-        brand_model = " / ".join(
-            str(x) for x in (attrs.get("brand"), attrs.get("model")) if x
-        )
+    brand_name = str(attrs["brand"]).strip() if attrs.get("brand") else None
+    category_name = str(attrs["category"]).strip() if attrs.get("category") else None
+    model = attrs.get("model") or product.model_number
+    if brand_name or model:
+        brand_model = " / ".join(str(x) for x in (brand_name, model) if x)
 
     merchant_name = await resolve_merchant_display_name(product.merchant_id, merchants)
     merchant_logo = None
@@ -71,6 +74,8 @@ async def product_to_search_candidate(
         product_id=str(product.id),
         display_name=product.display_name,
         brand_model=brand_model,
+        brand_name=brand_name,
+        category_name=category_name,
         merchant_id=str(product.merchant_id),
         merchant_display_name=merchant_name,
         price=float(offer.current_price),

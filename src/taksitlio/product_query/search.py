@@ -75,6 +75,8 @@ class SearchProductCandidate:
     offer_id: Optional[str] = None
     is_sponsored: bool = False
     sponsor_weight: float = 0.0
+    brand_name: Optional[str] = None
+    category_name: Optional[str] = None
 
 
 @dataclass(frozen=True)
