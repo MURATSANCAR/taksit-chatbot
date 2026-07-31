@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Optional, Sequence
+from dataclasses import dataclass, field
+from typing import Any, Mapping, Optional, Sequence
 
 from taksitlio.entity_resolution import (
     EntityCandidate,
@@ -35,12 +35,7 @@ class StructuredProductFilters:
     institution_ids: tuple[str, ...] = ()
     max_price: Optional[float] = None
     term_months: Optional[int] = None
-    required_attributes: MappingLike = None  # patched below
-
-
-from typing import Any, Mapping  # noqa: E402
-
-StructuredProductFilters.__annotations__["required_attributes"] = Mapping[str, Any]
+    required_attributes: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
