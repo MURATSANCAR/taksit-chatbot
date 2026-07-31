@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Sequence
 
 import asyncpg
@@ -127,6 +128,16 @@ def _cfg(value) -> dict:
         return {}
     if isinstance(value, dict):
         return dict(value)
+    if isinstance(value, (bytes, bytearray)):
+        value = value.decode("utf-8")
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return {}
+        import json
+
+        parsed = json.loads(text)
+        return dict(parsed) if isinstance(parsed, dict) else {}
     return dict(value)
 
 
