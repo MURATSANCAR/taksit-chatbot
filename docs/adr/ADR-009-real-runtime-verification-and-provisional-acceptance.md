@@ -47,6 +47,12 @@ gerçek CATEGORY_EMBEDDING ölçülmeden `PROVISIONAL_ACCEPT` verilmez.
     concurrency/latency → quality comparison → provisional gate. Bir adım
     tamamlanmadan sonraki adım başarılı sayılmaz.
 
+## Canlı doğrulama
+
+Operasyonel runbook (matcher / threshold / dataset değiştirilmez):
+
+[`docs/runbooks/ADR-009-live-runtime-verification.md`](../runbooks/ADR-009-live-runtime-verification.md)
+
 ## Typed dependency kodları
 
 ```text

@@ -9,46 +9,38 @@ Status date: 2026-07-31
 - [x] ≥100 HUMAN_REVIEWED; decision_policy_error ↓
 - [x] Substring alias guardrail; NON_PURCHASE intent
 
-## Closed — ADR-008 P0 quality retrieval
+## Closed — ADR-008 P0 / P0.1 quality
 
-- [x] Morphology-safe concept variants (surface preserved)
-- [x] Token-set alias retrieval (no substring)
-- [x] E2E retrieval diagnostics + failure stage codes
-- [x] Sibling-alias conflict soft-exclude
-- [x] V013 morphology-safe retrieval policy migration
-- [x] validation/dev v4 datasets
-- [x] Gate statuses: QUALITY_READY_RUNTIME_BLOCKED / QUALITY_REJECT
+- [x] Morphology-safe + token-set + residual closeout (top_2/required bar)
+- [x] V013 / V014 policies; QUALITY_READY_RUNTIME_BLOCKED
 
-## Closed — ADR-008 P0.1 residual closeout
+## Closed — ADR-009 kod iskeleti
 
-- [x] Soft-exclude expansion + concept coverage + diversify Top-K
-- [x] V014 top-K diversification policy migration
-- [x] E2E top_1 ≥ 0.65 / top_2 ≥ 0.90 / required ≥ 0.88
+- [x] Runtime probes + provisional / campaign gates
+- [x] Redis / pgvector integration suites (CI skip=0)
+- [x] RemoteFastExtractor + StrictOpenAICompatibleEmbedder
+- [x] Bootstrap SQL + compose.runtime + runtime-verification workflow
+- [x] Live runbook: [`docs/runbooks/ADR-009-live-runtime-verification.md`](runbooks/ADR-009-live-runtime-verification.md)
+- [x] `python -m taksitlio.db.migrate` + `.env.runtime` gitignore
 
-## In progress — ADR-008 P1 / ADR-009 runtime verification
+## Open — canlı sunucu (runbook; kod değişikliği yok)
 
-- [x] ADR-009 accepted (real runtime ≠ test-double)
-- [x] Runtime dependency probes + provisional / campaign gates
-- [x] Redis integration suite under `tests/integration/redis` (CI skip=0)
-- [x] pgvector integration suite under `tests/integration/pgvector` (CI skip=0)
-- [x] `RemoteFastExtractor` + `StrictOpenAICompatibleEmbedder` (no silent fallback)
-- [x] Bootstrap templates: `poc-fast-understanding.sql`, `poc-category-embedding.sql`
-- [x] `docker/docker-compose.runtime.yml` (redis + pgvector/pg16 profile)
-- [x] `.github/workflows/runtime-verification.yml`
-- [ ] Live FAST deployment health + Turkish extraction eval (env-configured)
+Operatör runbook’u çalıştırır. Matcher / threshold / dataset **dokunulmaz**.
+
+- [ ] Sunucuda Docker + Redis + pgvector ayakta
+- [ ] Live FAST health + Türkçe extraction eval
 - [ ] Live CATEGORY_EMBEDDING rebuild + quality comparison
-- [ ] pgvector 100 / 1k / 10k benchmarks measured
-- [ ] Full Redis+FAST+embedding+pgvector E2E latency stages
-- [ ] `PROVISIONAL_ACCEPT` after all `real_*_measured=true`
-- [ ] Campaign Gate `READY_TO_OPEN` (no campaign code in this sprint)
+- [ ] pgvector 100 / 1k / 10k benchmark
+- [ ] Full E2E stage latency
+- [ ] `PROVISIONAL_ACCEPT` (`real_*_measured=true`)
+- [ ] Campaign Gate `READY_TO_OPEN` → sonra kampanya domain tasarımı
 
 ## Gates
 
 | Gate | Status |
 |---|---|
-| Safety | PASS (test-double baseline) |
-| Oracle Quality | PASS (baseline retained) |
-| E2E Quality | PASS (baseline retained) |
-| Runtime Dependency | BLOCKED_DEPENDENCY until live FAST+embedding+Redis+pgvector measured |
-| Provisional | deferred — see `evaluation/reports/adr008-p1-gate.json` |
-| Campaign | CLOSED (opens only after PROVISIONAL_ACCEPT) |
+| Safety | PASS (baseline) |
+| Quality | QUALITY_READY (baseline) |
+| Runtime | BLOCKED_DEPENDENCY → runbook |
+| Provisional | BLOCKED_DEPENDENCY → runbook |
+| Campaign | CLOSED |

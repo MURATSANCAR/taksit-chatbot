@@ -9,6 +9,8 @@ build/
 *.egg-info/
 src/*.egg-info/
 .env
+.env.runtime
+.env.*.local
 .DS_Store
 .tools/
 *.rdb

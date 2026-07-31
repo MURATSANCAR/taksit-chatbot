@@ -1,11 +1,10 @@
 # ADR-009 runtime verification stack.
-# Usage:
-#   docker compose -f docker/docker-compose.runtime.yml --profile runtime-verification up -d
-# Then:
-#   export REDIS_URL=redis://127.0.0.1:6379/15
-#   export PGVECTOR_URL=postgres://taksitlio:taksitlio@127.0.0.1:5432/taksitlio
-#   export INTEGRATION_REQUIRE_PG=1
-#   pytest -m integration tests/integration/redis tests/integration/pgvector -q
+# Runbook: docs/runbooks/ADR-009-live-runtime-verification.md
+#
+#   cp .env.example .env.runtime && chmod 600 .env.runtime
+#   docker compose --env-file .env.runtime \
+#     -f docker/docker-compose.runtime.yml \
+#     --profile runtime-verification up -d redis postgres
 
 version: "3.9"
 
@@ -14,7 +13,7 @@ services:
     profiles: ["runtime-verification"]
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "${REDIS_PUBLISH_PORT:-6379}:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -25,23 +24,23 @@ services:
     profiles: ["runtime-verification"]
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: taksitlio
-      POSTGRES_PASSWORD: taksitlio
-      POSTGRES_DB: taksitlio
+      POSTGRES_USER: ${POSTGRES_USER:-taksitlio}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-taksitlio}
+      POSTGRES_DB: ${POSTGRES_DB:-taksitlio}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PUBLISH_PORT:-5432}:5432"
     volumes:
       - runtime_pgdata:/var/lib/postgresql/data
       - ../db/migrations:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U taksitlio -d taksitlio"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 20
 
-  # Optional placeholders — operators point FAST_PROVIDER_BASE_URL /
-  # EMBEDDING_PROVIDER_BASE_URL at real OpenAI-compatible deployments.
-  # No model image is bundled; absence must yield BLOCKED_DEPENDENCY.
+  # FAST / embedding images are NOT bundled.
+  # Point FAST_PROVIDER_BASE_URL / EMBEDDING_PROVIDER_BASE_URL at live
+  # OpenAI-compatible deployments. Absence → BLOCKED_DEPENDENCY.
 
 volumes:
   runtime_pgdata:
