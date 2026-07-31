@@ -1,0 +1,4 @@
+# Runtime crawl output (fixtures are kept under feeds/fixtures/)
+/feeds/*.json
+!/feeds/fixtures/
+!/feeds/fixtures/**

@@ -2,22 +2,36 @@
 
 Does not invent product/finance facts. Patch provider is injectable.
 Frontend sees only platform_role=UNDERSTANDING_SERVICE.
+
+Remote provider prefers FAST_C (9B) / UNDERSTANDING_* when configured;
+otherwise DeterministicFallbackProvider keeps local/demo paths green.
 """
 
 from __future__ import annotations
 
+import asyncio
+import logging
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Optional, Protocol
+
+import httpx
 
 from taksitlio.llm_routing import (
     LlmJobStatus,
     PLATFORM_ROLE,
     validate_llm_patch,
 )
+from taksitlio.llm_routing.remote_provider import (
+    EmptyResponse,
+    UnderstandingDeploymentUnavailable,
+    build_remote_understanding_from_env,
+)
 from taksitlio.runtime_verification.circuit import CircuitBreakerController, CircuitBreakerPolicy
 from taksitlio.search_sessions.orchestrator import SearchOrchestrator
+
+logger = logging.getLogger(__name__)
 
 
 class UnderstandingPatchProvider(Protocol):
@@ -27,6 +41,8 @@ class UnderstandingPatchProvider(Protocol):
 @dataclass
 class DeterministicFallbackProvider:
     """No remote model — returns safe empty preferences so deterministic path continues."""
+
+    provider_mode: str = "deterministic_fallback"
 
     async def understand(self, input_payload: dict[str, Any]) -> dict[str, Any]:
         parse = ((input_payload.get("deterministic_parse") or {}).get("parse")) or {}
@@ -71,6 +87,7 @@ class LlmUnderstandingWorker:
     circuit: UnderstandingCircuit
     max_attempts: int = 1
     metrics: dict[str, list[float]] = field(default_factory=dict)
+    provider_mode: str = "deterministic_fallback"
 
     def _record(self, name: str, value: float) -> None:
         self.metrics.setdefault(name, []).append(value)
@@ -112,7 +129,9 @@ class LlmUnderstandingWorker:
                     job.status = LlmJobStatus.STALE_RESULT
                     self._record("stale_llm_result", 1.0)
                     return {"status": "STALE_RESULT", "applied": False}
-                return self.orchestrator.complete_llm_job(job_id, patch)
+                out = self.orchestrator.complete_llm_job(job_id, patch)
+                out["provider_mode"] = self.provider_mode
+                return out
             except Exception as exc:  # noqa: BLE001
                 last_error = type(exc).__name__
                 if attempt > self.max_attempts:
@@ -135,7 +154,13 @@ class LlmUnderstandingWorker:
         parse = self.orchestrator.parses[job.search_session_id]
         result = self.orchestrator._fast_retrieve(session, parse, degraded=True)  # type: ignore[arg-type]
         self._record("llm_failed_fallback", 1.0)
-        return {"status": "FAILED", "applied": True, "result": result, "error": last_error}
+        return {
+            "status": "FAILED",
+            "applied": True,
+            "result": result,
+            "error": last_error,
+            "provider_mode": self.provider_mode,
+        }
 
     async def drain_once(self) -> list[dict[str, Any]]:
         results = []
@@ -151,18 +176,73 @@ class LlmUnderstandingWorker:
         return results
 
 
+def build_understanding_provider(
+    *,
+    http_client: Optional[httpx.AsyncClient] = None,
+    prefer_remote: bool = True,
+) -> tuple[UnderstandingPatchProvider, str]:
+    """Build provider; remote when env configured, else deterministic fallback."""
+
+    if prefer_remote:
+        try:
+            remote = build_remote_understanding_from_env(client=http_client)
+            return remote, remote.provider_mode
+        except UnderstandingDeploymentUnavailable:
+            pass
+    fallback = DeterministicFallbackProvider()
+    return fallback, fallback.provider_mode
+
+
 def build_default_worker(
     orchestrator: SearchOrchestrator,
     *,
     health_registry: Any,
+    http_client: Optional[httpx.AsyncClient] = None,
+    prefer_remote: bool = True,
 ) -> LlmUnderstandingWorker:
     circuit = UnderstandingCircuit(
         controller=CircuitBreakerController(
             health_registry, policy=CircuitBreakerPolicy(failure_threshold=3)
         )
     )
+    provider, mode = build_understanding_provider(
+        http_client=http_client, prefer_remote=prefer_remote
+    )
     return LlmUnderstandingWorker(
         orchestrator=orchestrator,
-        provider=DeterministicFallbackProvider(),
+        provider=provider,
         circuit=circuit,
+        provider_mode=mode,
     )
+
+
+def schedule_llm_job(worker: Optional[LlmUnderstandingWorker], job_id: Optional[str]) -> None:
+    """Fire-and-forget process for a queued understanding job (chat / search API)."""
+
+    if worker is None or not job_id:
+        return
+
+    async def _run() -> None:
+        try:
+            await worker.process_job(job_id)
+        except Exception:  # noqa: BLE001
+            logger.exception("understanding job failed job_id=%s", job_id)
+
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    loop.create_task(_run())
+
+
+# Re-export for callers / tests
+__all__ = [
+    "DeterministicFallbackProvider",
+    "EmptyResponse",
+    "LlmUnderstandingWorker",
+    "UnderstandingCircuit",
+    "UnderstandingPatchProvider",
+    "build_default_worker",
+    "build_understanding_provider",
+    "schedule_llm_job",
+]

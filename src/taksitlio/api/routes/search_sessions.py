@@ -11,6 +11,7 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from taksitlio.api.deps import container_from
+from taksitlio.llm_routing.worker import schedule_llm_job
 from taksitlio.search_sessions import SearchOrchestrator, build_demo_orchestrator
 
 router = APIRouter(tags=["search-sessions"])
@@ -23,6 +24,15 @@ def _orchestrator(request: Request) -> SearchOrchestrator:
         orch = build_demo_orchestrator()
         container.extras["search_orchestrator"] = orch
     return orch  # type: ignore[no-any-return]
+
+
+def _schedule_understanding(request: Request, result: Dict[str, Any]) -> None:
+    job_id = result.get("llm_job_id")
+    if not job_id:
+        return
+    container = container_from(request)
+    worker = container.extras.get("llm_understanding_worker")
+    schedule_llm_job(worker, job_id)
 
 
 class StartSearchIn(BaseModel):
@@ -71,6 +81,7 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
     # Normalize events_url to this API prefix
     sid = result["search_session_id"]
     result["events_url"] = f"/v1/search-sessions/{sid}/events"
+    _schedule_understanding(request, result)
     return result
 
 
@@ -142,9 +153,37 @@ async def supersede_message(
 ) -> Dict[str, Any]:
     orch = _orchestrator(request)
     try:
-        return orch.supersede_with_message(session_id, payload.message)
+        result = orch.supersede_with_message(session_id, payload.message)
+        _schedule_understanding(request, result)
+        return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/search-sessions/{session_id}/llm-jobs/drain")
+async def drain_llm_jobs(session_id: str, request: Request) -> Dict[str, Any]:
+    """Process queued UNDERSTANDING_SERVICE jobs for this session (ops / tests)."""
+
+    orch = _orchestrator(request)
+    if orch.repo.get(session_id) is None:
+        raise HTTPException(status_code=404, detail="search_session_not_found")
+    container = container_from(request)
+    worker = container.extras.get("llm_understanding_worker")
+    if worker is None:
+        raise HTTPException(status_code=501, detail="llm_understanding_worker unavailable")
+    results = []
+    for job_id, job in list(orch.llm_jobs.items()):
+        if job.search_session_id == session_id and job.status.value in {
+            "QUEUED",
+            "RUNNING",
+        }:
+            results.append(await worker.process_job(job_id))
+    return {
+        "search_session_id": session_id,
+        "processed": len(results),
+        "results": results,
+        "provider_mode": getattr(worker, "provider_mode", None),
+    }
 
 
 @router.post("/search-sessions/{session_id}/llm-jobs/{job_id}/complete")

@@ -261,7 +261,9 @@ def build_in_memory_container(
     search_orchestrator = build_demo_orchestrator()
     from taksitlio.llm_routing.worker import build_default_worker
 
-    llm_worker = build_default_worker(search_orchestrator, health_registry=health)
+    llm_worker = build_default_worker(
+        search_orchestrator, health_registry=health, http_client=client
+    )
     if not os.environ.get("MEDIA_STORAGE_ROOT"):
         os.environ.setdefault(
             "MEDIA_STORAGE_ROOT", tempfile.mkdtemp(prefix="taksitlio-media-")
@@ -392,7 +394,9 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     search_pg = PostgresSearchSessionRepository(pool)
     await search_pg.load_timeout_policy()
     search_orchestrator.repo.policy = search_pg.policy
-    llm_worker = build_default_worker(search_orchestrator, health_registry=health)
+    llm_worker = build_default_worker(
+        search_orchestrator, health_registry=health, http_client=client
+    )
     pipeline = ChatPipeline(
         understanding=understanding,
         category_matcher=matcher,

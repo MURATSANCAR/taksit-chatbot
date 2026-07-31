@@ -35,7 +35,7 @@ from taksitlio.search_sessions.repository import (
     InMemorySearchSessionRepository,
     SearchSession,
 )
-from taksitlio.search_sessions.status import SearchSessionStatus
+from taksitlio.search_sessions.status import SearchSessionStatus, can_transition
 
 
 @dataclass
@@ -252,7 +252,10 @@ class SearchOrchestrator:
         *,
         degraded: bool = False,
     ) -> dict[str, Any]:
-        self.repo.set_status(session.id, SearchSessionStatus.FAST_RETRIEVAL)
+        # LLM route may already be PARTIAL_RESULTS_READY / LLM_RUNNING — do not
+        # force FAST_RETRIEVAL (illegal transition). Jump ahead when allowed.
+        if can_transition(session.status, SearchSessionStatus.FAST_RETRIEVAL):
+            self.repo.set_status(session.id, SearchSessionStatus.FAST_RETRIEVAL)
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
         constraints = parse.to_dict()
         partial = build_partial_snapshot(
@@ -262,6 +265,8 @@ class SearchOrchestrator:
         )
         self.repo.partial_snapshots.setdefault(session.id, []).append(partial.to_dict())
         if partial.products:
+            if can_transition(session.status, SearchSessionStatus.PARTIAL_RESULTS_READY):
+                self.repo.set_status(session.id, SearchSessionStatus.PARTIAL_RESULTS_READY)
             self._emit(
                 session,
                 SearchProgressEventType.PARTIAL_RESULTS_READY,
@@ -300,12 +305,14 @@ class SearchOrchestrator:
                 },
             )
 
-        self.repo.set_status(session.id, SearchSessionStatus.RANKING)
+        if can_transition(session.status, SearchSessionStatus.RANKING):
+            self.repo.set_status(session.id, SearchSessionStatus.RANKING)
         self._emit(session, SearchProgressEventType.RANKING_STARTED)
         final_status = (
             SearchSessionStatus.COMPLETED_DEGRADED if degraded else SearchSessionStatus.COMPLETED
         )
-        self.repo.set_status(session.id, final_status)
+        if can_transition(session.status, final_status):
+            self.repo.set_status(session.id, final_status)
         evt = (
             SearchProgressEventType.SEARCH_COMPLETED_DEGRADED
             if degraded

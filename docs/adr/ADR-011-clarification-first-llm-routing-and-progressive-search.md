@@ -73,3 +73,10 @@ LLM’in fiyat/ödeme üretmesi.
 Cevap bütünlüğü / claim grounding / recommendation safety katmanı
 [ADR-012](ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
 kapsamındadır.
+
+## Remote understanding (P2)
+
+`LlmUnderstandingWorker` OpenAI-compatible provider kullanır. Endpoint
+önceliği: `UNDERSTANDING_*` → `FAST_C_*` (9B / `remote_nine_b`) →
+`FAST_PROVIDER_*`. Env yoksa deterministic fallback. Frontend’e yalnız
+`UNDERSTANDING_SERVICE` gider.

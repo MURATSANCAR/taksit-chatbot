@@ -1,0 +1,31 @@
+{
+  "org.apache.stormcrawler.filtering.URLFilters": [
+    {
+      "class": "org.apache.stormcrawler.filtering.basic.BasicURLFilter",
+      "name": "BasicURLFilter",
+      "params": {
+        "removeQueryParameters": false,
+        "maxPathDepth": 12
+      }
+    },
+    {
+      "class": "org.apache.stormcrawler.filtering.basic.SelfURLFilter",
+      "name": "SelfURLFilter"
+    },
+    {
+      "class": "org.apache.stormcrawler.filtering.host.HostURLFilter",
+      "name": "HostURLFilter",
+      "params": {
+        "ignoreOutsideHost": false,
+        "ignoreOutsideDomain": true
+      }
+    },
+    {
+      "class": "org.apache.stormcrawler.filtering.regex.RegexURLFilter",
+      "name": "RegexURLFilter",
+      "params": {
+        "regexFilterFile": "conf/regex-urlfilter.txt"
+      }
+    }
+  ]
+}

@@ -194,6 +194,85 @@ async def ingestion_dry_run(
     }
 
 
+class CampaignFeedDryIn(BaseModel):
+    source_code: str = Field(..., min_length=1, max_length=64)
+    adapter_code: str = Field(default="generic.campaign_feed.v1")
+    merchant_id: str = Field(default="ops-platform", min_length=1, max_length=64)
+    credential_ref: Optional[str] = Field(default=None, max_length=256)
+    config: Dict[str, Any] = Field(default_factory=dict)
+    institution_display_name: Optional[str] = None
+
+
+@router.post("/ingestion/campaign-dry-run")
+async def campaign_feed_dry_run(
+    payload: CampaignFeedDryIn, request: Request
+) -> Dict[str, Any]:
+    """Dry-run campaign JSON feed — does not invent rates; no production write."""
+
+    from taksitlio.campaign_catalog.feed_apply import (
+        InMemoryCampaignCatalog,
+        apply_campaign_feed_result,
+    )
+    from taksitlio.ingestion.adapters.generic_campaign_feed import run_campaign_feed_dry
+    from taksitlio.ingestion.binding import (
+        SourceBinding,
+        build_default_registry,
+        instantiate_campaign_adapter,
+    )
+
+    if payload.config.get("authorization") or payload.config.get("api_key"):
+        raise HTTPException(
+            status_code=400,
+            detail="Inline secrets forbidden; use credential_ref",
+        )
+    if payload.adapter_code != "generic.campaign_feed.v1":
+        raise HTTPException(status_code=400, detail="unsupported campaign adapter_code")
+
+    _ = container_from(request)
+    binding = SourceBinding(
+        source_code=payload.source_code,
+        adapter_code=payload.adapter_code,
+        merchant_id=payload.merchant_id,
+        credential_ref=payload.credential_ref,
+        config=payload.config,
+    )
+    try:
+        adapter = instantiate_campaign_adapter(
+            binding, registry=build_default_registry()
+        )
+        result = await run_campaign_feed_dry(adapter)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    catalog = InMemoryCampaignCatalog()
+    applied = apply_campaign_feed_result(
+        catalog,
+        result,
+        institution_display_name=payload.institution_display_name,
+    )
+    return {
+        "source_code": payload.source_code,
+        "adapter_code": result.adapter_code,
+        "campaigns": len(result.campaigns),
+        "rates": len(result.rates),
+        "rates_skipped_no_explicit_rate": result.rates_skipped_no_explicit_rate,
+        "applied": applied,
+        "items": [
+            {
+                "campaign_code": c.campaign_code,
+                "institution_code": c.institution_code,
+                "display_name": c.display_name,
+                "campaign_type": c.campaign_type.value,
+                "eligible_terms": list(c.eligible_terms),
+                "status": c.status.value,
+            }
+            for c in result.campaigns
+        ],
+    }
+
+
 class UpsertSourceIn(BaseModel):
     merchant_id: int = Field(..., ge=1)
     source_code: str = Field(..., min_length=1, max_length=64)

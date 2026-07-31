@@ -1,0 +1,82 @@
+# ADR-010 StormCrawler stack — separate from app compose.
+# Usage:
+#   docker compose -f docker/docker-compose.crawler.yml up -d
+# Storm UI: http://127.0.0.1:8080  URLFrontier: 127.0.0.1:7071  Feeds: http://127.0.0.1:8091/
+
+version: "3.9"
+
+services:
+  zookeeper:
+    image: zookeeper:3.9.3
+    restart: unless-stopped
+    networks: [crawler]
+
+  nimbus:
+    image: storm:2.8.1
+    hostname: nimbus
+    command: storm nimbus
+    depends_on: [zookeeper]
+    restart: unless-stopped
+    networks: [crawler]
+    environment:
+      STORM_ZOOKEEPER_SERVERS: zookeeper
+
+  supervisor:
+    image: storm:2.8.1
+    command: storm supervisor -c worker.childopts=-Xmx2g
+    depends_on: [nimbus, zookeeper]
+    restart: unless-stopped
+    networks: [crawler]
+    volumes:
+      - crawler_feeds:/feeds
+      - crawler_topology:/topology:ro
+    environment:
+      STORM_ZOOKEEPER_SERVERS: zookeeper
+      NIMBUS_SEEDS: nimbus
+
+  ui:
+    image: storm:2.8.1
+    command: storm ui
+    depends_on: [nimbus]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [crawler]
+    environment:
+      STORM_ZOOKEEPER_SERVERS: zookeeper
+      NIMBUS_SEEDS: nimbus
+
+  urlfrontier:
+    image: crawlercommons/url-frontier:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7071:7071"
+    networks: [crawler]
+
+  feed-server:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8091:80"
+    volumes:
+      - crawler_feeds:/usr/share/nginx/html/feeds:ro
+      - ../crawler/ops/nginx-feeds.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [crawler]
+
+  # Builds topology JAR and can submit to Nimbus (ops / CI).
+  topology-builder:
+    build:
+      context: ../crawler
+      dockerfile: Dockerfile
+    profiles: ["build"]
+    volumes:
+      - crawler_topology:/out
+    networks: [crawler]
+
+networks:
+  crawler:
+    driver: bridge
+
+volumes:
+  crawler_feeds:
+  crawler_topology:

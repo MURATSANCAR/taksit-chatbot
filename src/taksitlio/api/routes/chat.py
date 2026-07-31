@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from taksitlio.api.deps import container_from
+from taksitlio.llm_routing.worker import schedule_llm_job
 from taksitlio.pipeline.orchestrator import ChatRequest
 
 router = APIRouter(tags=["chat"])
@@ -53,6 +54,10 @@ async def chat(payload: ChatMessageIn, request: Request) -> ChatMessageOut:
         )
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=502, detail=str(exc)) from exc
+    schedule_llm_job(
+        container.extras.get("llm_understanding_worker"),
+        (result.diagnostics or {}).get("llm_job_id"),
+    )
     return ChatMessageOut(
         session_id=result.session_id,
         reply=result.reply,

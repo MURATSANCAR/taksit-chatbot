@@ -1,0 +1,325 @@
+{
+  "count": 40,
+  "seeds": [
+    {
+      "url": "https://www.teknosa.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-teknosa",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-teknosa"
+      }
+    },
+    {
+      "url": "https://www.mediamarkt.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-mediamarkt",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-mediamarkt"
+      }
+    },
+    {
+      "url": "https://www.vatanbilgisayar.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-vatan",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-vatan"
+      }
+    },
+    {
+      "url": "https://www.n11.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-n11",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-n11"
+      }
+    },
+    {
+      "url": "https://www.hepsiburada.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-hepsiburada",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-hepsiburada"
+      }
+    },
+    {
+      "url": "https://www.trendyol.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-trendyol",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-trendyol"
+      }
+    },
+    {
+      "url": "https://www.amazon.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-amazontr",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-amazontr"
+      }
+    },
+    {
+      "url": "https://www.pazarama.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-pazarama",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-pazarama"
+      }
+    },
+    {
+      "url": "https://www.pttavm.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-pttavm",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-pttavm"
+      }
+    },
+    {
+      "url": "https://www.ciceksepeti.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-ciceksepeti",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-ciceksepeti"
+      }
+    },
+    {
+      "url": "https://www.boyner.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-boyner",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-boyner"
+      }
+    },
+    {
+      "url": "https://www.lcwaikiki.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-lcwaikiki",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-lcwaikiki"
+      }
+    },
+    {
+      "url": "https://www.defacto.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-defacto",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-defacto"
+      }
+    },
+    {
+      "url": "https://www.koton.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-koton",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-koton"
+      }
+    },
+    {
+      "url": "https://www.ikea.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-ikea",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-ikea"
+      }
+    },
+    {
+      "url": "https://www.koctas.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-koctas",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-koctas"
+      }
+    },
+    {
+      "url": "https://www.bauhaus.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-bauhaus",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-bauhaus"
+      }
+    },
+    {
+      "url": "https://www.migros.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-migros",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-migros"
+      }
+    },
+    {
+      "url": "https://www.a101.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-a101",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-a101"
+      }
+    },
+    {
+      "url": "https://www.bim.com.tr/",
+      "metadata": {
+        "taksitlio.source_code": "src-m-bim",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-bim"
+      }
+    },
+    {
+      "url": "https://www.gratis.com/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-gratis",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-gratis"
+      }
+    },
+    {
+      "url": "https://www.watsons.com.tr/sitemap.xml",
+      "metadata": {
+        "taksitlio.source_code": "src-m-watsons",
+        "taksitlio.channel": "PRODUCT",
+        "taksitlio.merchant_code": "m-watsons"
+      }
+    },
+    {
+      "url": "https://www.fibabanka.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-fibabanka",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-fibabanka"
+      }
+    },
+    {
+      "url": "https://www.akbank.com/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-akbank",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-akbank"
+      }
+    },
+    {
+      "url": "https://www.yapikredi.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-yapikredi",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-yapikredi"
+      }
+    },
+    {
+      "url": "https://www.garantibbva.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-garanti",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-garanti"
+      }
+    },
+    {
+      "url": "https://www.isbank.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-isbank",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-isbank"
+      }
+    },
+    {
+      "url": "https://www.qnb.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-qnb",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-qnb"
+      }
+    },
+    {
+      "url": "https://www.denizbank.com/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-denizbank",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-denizbank"
+      }
+    },
+    {
+      "url": "https://www.teb.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-teb",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-teb"
+      }
+    },
+    {
+      "url": "https://www.vakifbank.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-vakifbank",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-vakifbank"
+      }
+    },
+    {
+      "url": "https://www.halkbank.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-halkbank",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-halkbank"
+      }
+    },
+    {
+      "url": "https://www.ziraatbank.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-ziraat",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-ziraat"
+      }
+    },
+    {
+      "url": "https://www.kuveytturk.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-kuveytturk",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-kuveytturk"
+      }
+    },
+    {
+      "url": "https://www.albaraka.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-albaraka",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-albaraka"
+      }
+    },
+    {
+      "url": "https://www.turkiyefinans.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-turkiyefinans",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-turkiyefinans"
+      }
+    },
+    {
+      "url": "https://www.ing.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-ing",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-ing"
+      }
+    },
+    {
+      "url": "https://www.hsbc.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-hsbc",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-hsbc"
+      }
+    },
+    {
+      "url": "https://www.sekerbank.com.tr/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-sekerbank",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-sekerbank"
+      }
+    },
+    {
+      "url": "https://www.enpara.com/kampanyalar",
+      "metadata": {
+        "taksitlio.source_code": "src-b-enpara",
+        "taksitlio.channel": "CAMPAIGN",
+        "taksitlio.institution_code": "fi-enpara"
+      }
+    }
+  ]
+}

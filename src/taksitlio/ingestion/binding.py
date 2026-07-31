@@ -8,6 +8,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Optional
 
+from taksitlio.ingestion.adapters.generic_campaign_feed import (
+    ADAPTER_CODE as GENERIC_CAMPAIGN_FEED,
+    GenericCampaignFeedAdapter,
+)
 from taksitlio.ingestion.adapters.generic_json_feed import (
     ADAPTER_CODE as GENERIC_JSON_FEED,
     GenericJsonFeedAdapter,
@@ -40,7 +44,13 @@ def build_default_registry() -> AdapterRegistry:
             "generic.json_feed.v1 requires instantiate_adapter(binding=...)"
         )
 
+    def _campaign_factory() -> MerchantProductSourceAdapter:
+        raise RuntimeError(
+            "generic.campaign_feed.v1 requires instantiate_campaign_adapter(binding=...)"
+        )
+
     registry.register(GENERIC_JSON_FEED, _generic_factory)
+    registry.register(GENERIC_CAMPAIGN_FEED, _campaign_factory)  # type: ignore[arg-type]
     return registry
 
 
@@ -49,11 +59,15 @@ def instantiate_adapter(
     *,
     registry: Optional[AdapterRegistry] = None,
 ) -> MerchantProductSourceAdapter:
-    """Create adapter from binding config. Raises KeyError if adapter unknown."""
+    """Create product adapter from binding config. Raises KeyError if adapter unknown."""
 
     reg = registry or build_default_registry()
     if binding.adapter_code not in reg.known_codes():
         raise KeyError(f"unknown adapter_code: {binding.adapter_code}")
+    if binding.adapter_code == GENERIC_CAMPAIGN_FEED:
+        raise ValueError(
+            "use instantiate_campaign_adapter for generic.campaign_feed.v1"
+        )
 
     cfg = dict(binding.config or {})
     if binding.adapter_code == GENERIC_JSON_FEED:
@@ -83,8 +97,42 @@ def instantiate_adapter(
     return reg.get(binding.adapter_code)
 
 
+def instantiate_campaign_adapter(
+    binding: SourceBinding,
+    *,
+    registry: Optional[AdapterRegistry] = None,
+) -> GenericCampaignFeedAdapter:
+    """Create campaign feed adapter (opaque adapter_code only)."""
+
+    reg = registry or build_default_registry()
+    if binding.adapter_code not in reg.known_codes():
+        raise KeyError(f"unknown adapter_code: {binding.adapter_code}")
+    if binding.adapter_code != GENERIC_CAMPAIGN_FEED:
+        raise ValueError(f"not a campaign adapter: {binding.adapter_code}")
+
+    cfg = dict(binding.config or {})
+    for forbidden in ("authorization", "api_key", "token", "password"):
+        if forbidden in cfg:
+            raise ValueError(
+                f"inline {forbidden} forbidden; use credential_ref (env://…)"
+            )
+    try:
+        headers = http_headers_from_credential_ref(binding.credential_ref)
+    except CredentialResolveError as exc:
+        raise ValueError(str(exc)) from exc
+    return GenericCampaignFeedAdapter(
+        feed_url=cfg.get("feed_url"),
+        feed_path=cfg.get("feed_path"),
+        timeout_seconds=float(cfg.get("timeout_seconds", 30.0)),
+        source_reference=str(cfg.get("source_reference") or binding.source_code),
+        request_headers=headers,
+        default_institution_code=cfg.get("institution_code"),
+    )
+
+
 __all__ = [
     "SourceBinding",
     "build_default_registry",
     "instantiate_adapter",
+    "instantiate_campaign_adapter",
 ]

@@ -188,6 +188,7 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Canlı merchant kaynağı (API / feed / crawl) + credential_ref (ops; P15 veya crawl adapter)
+- [x] StormCrawler Docker stack + JSON feed bridge (`docker/docker-compose.crawler.yml`, `crawler/`, `generic.campaign_feed.v1`, runbook `ADR-010-stormcrawler.md`)
 - [x] Canlı MinIO wiring (nanobase `.env.runtime` → `taksitlio-media`; code deploy smoke OK)
 - [ ] Public CDN DNS / reverse-proxy (CDN hâlâ `127.0.0.1:9000` path-style)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
@@ -222,10 +223,16 @@ ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.m
 
 ### P2+ (sonraki)
 
+- [x] Remote understanding provider (OpenAI-compatible) behind same worker contract
+  — prefers `FAST_C_*` / 9B (`remote_nine_b`); `UNDERSTANDING_*` override; else deterministic fallback
+- [x] Chat + search-session APIs schedule `LlmUnderstandingWorker` when `llm_job_id` set
+- [x] `POST /v1/search-sessions/{id}/llm-jobs/drain` ops helper
 - [ ] Logo CDN URLs from merchant/brand/institution media
 - [ ] Live partial-result / queue latency metrics export
-- [ ] Remote understanding provider (OpenAI-compatible) behind same worker contract
 - [ ] Persist orchestrator runtime state fully via Postgres (not only event/job mirror)
+- [x] Live FAST_C / 9B smoke against real OpenAI-compatible endpoint (ops)
+  — nanobase tunnel `127.0.0.1:8023` → `taksitlio-fast-c` / `poc-fast-nine-b`;
+  gitignored `.env.runtime`
 
 ## Open — ADR-012 answer integrity / claim grounding / recommendation safety
 

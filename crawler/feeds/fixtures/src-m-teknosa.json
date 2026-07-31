@@ -1,0 +1,19 @@
+{
+  "products": [
+    {
+      "id": "SKU-LAP-16",
+      "name": "Example 16GB Laptop",
+      "sku": "SKU-LAP-16",
+      "gtin": "8680000000016",
+      "brand": "ExampleBrand",
+      "model": "EB-16",
+      "url": "https://example-merchant.test/p/SKU-LAP-16",
+      "price": 42999.0,
+      "list_price": 45999.0,
+      "currency": "TRY",
+      "stock_status": "AVAILABLE",
+      "image_url": "https://example-merchant.test/img/SKU-LAP-16.jpg",
+      "attributes": { "ram_gb": 16 }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+# Accept product / campaign-ish paths; reject assets and accounts.
+- \.(css|js|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|mp4|pdf)$
+- (?i)/cart|/checkout|/login|/account|/sepet|/giris
++ .

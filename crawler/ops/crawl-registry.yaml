@@ -1,0 +1,415 @@
+# Ops crawl registry (ADR-010) — not application hardcoding.
+# Display names live here / in DB via bind script. Python code never branches on them.
+#
+# channel: PRODUCT | CAMPAIGN
+# Seeds are starting URLs (homepage / sitemap / campaign listing). Live product rows
+# appear only after StormCrawler parse succeeds — no invented prices/rates.
+
+version: 1
+
+defaults:
+  max_urls_per_bucket: 5
+  fetch_delay_seconds: 2.0
+  honor_robots: true
+
+merchants:
+  - merchant_code: m-teknosa
+    display_name: Teknosa
+    source_code: src-m-teknosa
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.teknosa.com, teknosa.com]
+    seed_urls:
+      - https://www.teknosa.com/sitemap.xml
+
+  - merchant_code: m-mediamarkt
+    display_name: MediaMarkt
+    source_code: src-m-mediamarkt
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.mediamarkt.com.tr, mediamarkt.com.tr]
+    seed_urls:
+      - https://www.mediamarkt.com.tr/sitemap.xml
+
+  - merchant_code: m-vatan
+    display_name: Vatan Bilgisayar
+    source_code: src-m-vatan
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.vatanbilgisayar.com, vatanbilgisayar.com]
+    seed_urls:
+      - https://www.vatanbilgisayar.com/sitemap.xml
+
+  - merchant_code: m-n11
+    display_name: n11
+    source_code: src-m-n11
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.n11.com, n11.com]
+    seed_urls:
+      - https://www.n11.com/sitemap.xml
+
+  - merchant_code: m-hepsiburada
+    display_name: Hepsiburada
+    source_code: src-m-hepsiburada
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.hepsiburada.com, hepsiburada.com]
+    seed_urls:
+      - https://www.hepsiburada.com/sitemap.xml
+
+  - merchant_code: m-trendyol
+    display_name: Trendyol
+    source_code: src-m-trendyol
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.trendyol.com, trendyol.com]
+    seed_urls:
+      - https://www.trendyol.com/sitemap.xml
+
+  - merchant_code: m-amazontr
+    display_name: Amazon TR
+    source_code: src-m-amazontr
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.amazon.com.tr, amazon.com.tr]
+    seed_urls:
+      - https://www.amazon.com.tr/sitemap.xml
+
+  - merchant_code: m-pazarama
+    display_name: Pazarama
+    source_code: src-m-pazarama
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.pazarama.com, pazarama.com]
+    seed_urls:
+      - https://www.pazarama.com/sitemap.xml
+
+  - merchant_code: m-pttavm
+    display_name: PTT AVM
+    source_code: src-m-pttavm
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.pttavm.com, pttavm.com]
+    seed_urls:
+      - https://www.pttavm.com/sitemap.xml
+
+  - merchant_code: m-ciceksepeti
+    display_name: ÇiçekSepeti
+    source_code: src-m-ciceksepeti
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.ciceksepeti.com, ciceksepeti.com]
+    seed_urls:
+      - https://www.ciceksepeti.com/sitemap.xml
+
+  - merchant_code: m-boyner
+    display_name: Boyner
+    source_code: src-m-boyner
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.boyner.com.tr, boyner.com.tr]
+    seed_urls:
+      - https://www.boyner.com.tr/sitemap.xml
+
+  - merchant_code: m-lcwaikiki
+    display_name: LC Waikiki
+    source_code: src-m-lcwaikiki
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.lcwaikiki.com, lcwaikiki.com]
+    seed_urls:
+      - https://www.lcwaikiki.com/sitemap.xml
+
+  - merchant_code: m-defacto
+    display_name: DeFacto
+    source_code: src-m-defacto
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.defacto.com.tr, defacto.com.tr]
+    seed_urls:
+      - https://www.defacto.com.tr/sitemap.xml
+
+  - merchant_code: m-koton
+    display_name: Koton
+    source_code: src-m-koton
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.koton.com, koton.com]
+    seed_urls:
+      - https://www.koton.com/sitemap.xml
+
+  - merchant_code: m-ikea
+    display_name: IKEA TR
+    source_code: src-m-ikea
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.ikea.com.tr, ikea.com.tr]
+    seed_urls:
+      - https://www.ikea.com.tr/sitemap.xml
+
+  - merchant_code: m-koctas
+    display_name: Koçtaş
+    source_code: src-m-koctas
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.koctas.com.tr, koctas.com.tr]
+    seed_urls:
+      - https://www.koctas.com.tr/sitemap.xml
+
+  - merchant_code: m-bauhaus
+    display_name: Bauhaus
+    source_code: src-m-bauhaus
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.bauhaus.com.tr, bauhaus.com.tr]
+    seed_urls:
+      - https://www.bauhaus.com.tr/sitemap.xml
+
+  - merchant_code: m-migros
+    display_name: Migros
+    source_code: src-m-migros
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.migros.com.tr, migros.com.tr]
+    seed_urls:
+      - https://www.migros.com.tr/sitemap.xml
+
+  - merchant_code: m-a101
+    display_name: A101
+    source_code: src-m-a101
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.a101.com.tr, a101.com.tr]
+    seed_urls:
+      - https://www.a101.com.tr/sitemap.xml
+
+  - merchant_code: m-bim
+    display_name: BİM
+    source_code: src-m-bim
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.bim.com.tr, bim.com.tr]
+    seed_urls:
+      - https://www.bim.com.tr/
+
+  - merchant_code: m-gratis
+    display_name: Gratis
+    source_code: src-m-gratis
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.gratis.com, gratis.com]
+    seed_urls:
+      - https://www.gratis.com/sitemap.xml
+
+  - merchant_code: m-watsons
+    display_name: Watsons
+    source_code: src-m-watsons
+    channel: PRODUCT
+    adapter_code: generic.json_feed.v1
+    source_type: SITEMAP_JSONLD
+    allowed_hosts: [www.watsons.com.tr, watsons.com.tr]
+    seed_urls:
+      - https://www.watsons.com.tr/sitemap.xml
+
+banks:
+  - institution_code: fi-fibabanka
+    display_name: Fibabanka
+    source_code: src-b-fibabanka
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.fibabanka.com.tr, fibabanka.com.tr]
+    seed_urls:
+      - https://www.fibabanka.com.tr/kampanyalar
+
+  - institution_code: fi-akbank
+    display_name: Akbank
+    source_code: src-b-akbank
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.akbank.com, akbank.com]
+    seed_urls:
+      - https://www.akbank.com/kampanyalar
+
+  - institution_code: fi-yapikredi
+    display_name: Yapı Kredi
+    source_code: src-b-yapikredi
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.yapikredi.com.tr, yapikredi.com.tr]
+    seed_urls:
+      - https://www.yapikredi.com.tr/kampanyalar
+
+  - institution_code: fi-garanti
+    display_name: Garanti BBVA
+    source_code: src-b-garanti
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.garantibbva.com.tr, garantibbva.com.tr]
+    seed_urls:
+      - https://www.garantibbva.com.tr/kampanyalar
+
+  - institution_code: fi-isbank
+    display_name: İş Bankası
+    source_code: src-b-isbank
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.isbank.com.tr, isbank.com.tr]
+    seed_urls:
+      - https://www.isbank.com.tr/kampanyalar
+
+  - institution_code: fi-qnb
+    display_name: QNB
+    source_code: src-b-qnb
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.qnb.com.tr, qnb.com.tr]
+    seed_urls:
+      - https://www.qnb.com.tr/kampanyalar
+
+  - institution_code: fi-denizbank
+    display_name: DenizBank
+    source_code: src-b-denizbank
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.denizbank.com, denizbank.com]
+    seed_urls:
+      - https://www.denizbank.com/kampanyalar
+
+  - institution_code: fi-teb
+    display_name: TEB
+    source_code: src-b-teb
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.teb.com.tr, teb.com.tr]
+    seed_urls:
+      - https://www.teb.com.tr/kampanyalar
+
+  - institution_code: fi-vakifbank
+    display_name: VakıfBank
+    source_code: src-b-vakifbank
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.vakifbank.com.tr, vakifbank.com.tr]
+    seed_urls:
+      - https://www.vakifbank.com.tr/kampanyalar
+
+  - institution_code: fi-halkbank
+    display_name: Halkbank
+    source_code: src-b-halkbank
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.halkbank.com.tr, halkbank.com.tr]
+    seed_urls:
+      - https://www.halkbank.com.tr/kampanyalar
+
+  - institution_code: fi-ziraat
+    display_name: Ziraat Bankası
+    source_code: src-b-ziraat
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.ziraatbank.com.tr, ziraatbank.com.tr]
+    seed_urls:
+      - https://www.ziraatbank.com.tr/kampanyalar
+
+  - institution_code: fi-kuveytturk
+    display_name: Kuveyt Türk
+    source_code: src-b-kuveytturk
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.kuveytturk.com.tr, kuveytturk.com.tr]
+    seed_urls:
+      - https://www.kuveytturk.com.tr/kampanyalar
+
+  - institution_code: fi-albaraka
+    display_name: Albaraka Türk
+    source_code: src-b-albaraka
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.albaraka.com.tr, albaraka.com.tr]
+    seed_urls:
+      - https://www.albaraka.com.tr/kampanyalar
+
+  - institution_code: fi-turkiyefinans
+    display_name: Türkiye Finans
+    source_code: src-b-turkiyefinans
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.turkiyefinans.com.tr, turkiyefinans.com.tr]
+    seed_urls:
+      - https://www.turkiyefinans.com.tr/kampanyalar
+
+  - institution_code: fi-ing
+    display_name: ING
+    source_code: src-b-ing
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.ing.com.tr, ing.com.tr]
+    seed_urls:
+      - https://www.ing.com.tr/kampanyalar
+
+  - institution_code: fi-hsbc
+    display_name: HSBC TR
+    source_code: src-b-hsbc
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.hsbc.com.tr, hsbc.com.tr]
+    seed_urls:
+      - https://www.hsbc.com.tr/kampanyalar
+
+  - institution_code: fi-sekerbank
+    display_name: Şekerbank
+    source_code: src-b-sekerbank
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.sekerbank.com.tr, sekerbank.com.tr]
+    seed_urls:
+      - https://www.sekerbank.com.tr/kampanyalar
+
+  - institution_code: fi-enpara
+    display_name: Enpara
+    source_code: src-b-enpara
+    channel: CAMPAIGN
+    adapter_code: generic.campaign_feed.v1
+    source_type: HTML
+    allowed_hosts: [www.enpara.com, enpara.com]
+    seed_urls:
+      - https://www.enpara.com/kampanyalar

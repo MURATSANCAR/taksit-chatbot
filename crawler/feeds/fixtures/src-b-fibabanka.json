@@ -1,0 +1,32 @@
+{
+  "campaigns": [
+    {
+      "id": "fib-installment-listing",
+      "institution_code": "fi-fibabanka",
+      "name": "Example Installment Campaign Listing",
+      "campaign_type": "INSTALLMENT",
+      "summary": "Public listing page capture — rates only when source provides them.",
+      "valid_from": null,
+      "valid_until": null,
+      "min_amount": null,
+      "max_amount": null,
+      "terms": [],
+      "merchant_codes": [],
+      "category_codes": [],
+      "source_url": "https://www.fibabanka.com.tr/kampanyalar",
+      "content_hash": "fixture-no-rates"
+    },
+    {
+      "id": "fib-zero-rate-explicit",
+      "institution_code": "fi-fibabanka",
+      "name": "Example Zero Rate When Source Explicit",
+      "campaign_type": "ZERO_RATE",
+      "summary": "Only included because fixture explicitly sets rate_apr=0.",
+      "terms": [{ "months": 12, "rate_apr": 0.0, "fee": 0.0 }],
+      "merchant_codes": ["m-teknosa"],
+      "category_codes": [],
+      "source_url": "https://www.fibabanka.com.tr/kampanyalar/example-zero",
+      "content_hash": "fixture-zero-rate"
+    }
+  ]
+}
