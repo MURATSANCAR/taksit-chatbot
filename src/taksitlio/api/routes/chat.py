@@ -33,6 +33,10 @@ class ChatMessageOut(BaseModel):
     cta: Optional[Dict[str, Any]] = None
     diagnostics: Dict[str, Any] = Field(default_factory=dict)
     latency_ms: float = 0.0
+    search_session_id: Optional[str] = None
+    events_url: Optional[str] = None
+    clarification: Optional[Dict[str, Any]] = None
+    chips: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 @router.post("/chat", response_model=ChatMessageOut)
@@ -61,6 +65,10 @@ async def chat(payload: ChatMessageIn, request: Request) -> ChatMessageOut:
         cta=result.cta,
         diagnostics=result.diagnostics,
         latency_ms=result.latency_ms,
+        search_session_id=result.search_session_id,
+        events_url=result.events_url,
+        clarification=result.clarification,
+        chips=result.chips,
     )
 
 

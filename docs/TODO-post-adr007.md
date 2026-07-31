@@ -188,9 +188,11 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Canlı merchant feed URL + `MERCHANT_FEED_TOKEN` (ops; runbook P15)
-- [ ] Canlı MinIO/S3 + CDN DNS/credentials (ops; runbook P16)
+- [x] Canlı MinIO wiring (nanobase `.env.runtime` → `taksitlio-media`; code deploy smoke OK)
+- [ ] Public CDN DNS / reverse-proxy (CDN hâlâ `127.0.0.1:9000` path-style)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
 - [ ] GPU LoRA train + live FAST eval (runbook P17)
+- [x] ADR-010 §80 metrics scaffold: `evaluation/_run_adr010_metrics_scaffold.py`
 
 ## Open — ADR-011 clarification-first LLM routing + progressive search
 

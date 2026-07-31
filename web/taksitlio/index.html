@@ -643,8 +643,9 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- ADR-011 progressive search UI modules (event-driven; no fake timers) -->
+  <script src="js/chat-cards.js"></script>
   <script src="js/search-session/client.js"></script>
+  <script src="js/search-session/ui.js"></script>
   <script src="js/search-progress/timeline.js"></script>
   <script src="js/clarification/card.js"></script>
   <script src="js/constraint-chips/chips.js"></script>
@@ -652,29 +653,6 @@
   <script src="js/logo-progress-rail/rail.js"></script>
 
   <script>
-    const DEMO = [
-      {
-        best: true,
-        brand: "Samsung Galaxy A56",
-        meta: "MediaMarkt × Yapı Kredi · 0 faiz",
-        badge: "En uygun",
-        monthly: "3.249 TL",
-        tenure: "12 ay",
-        total: "≈ 38.990 TL",
-        img: "assets/products/phone-1.jpg",
-      },
-      {
-        best: false,
-        brand: "iPhone 15 128GB",
-        meta: "Vatan × Akbank · peşinatlı",
-        badge: null,
-        monthly: "3.499 TL",
-        tenure: "12 ay",
-        total: "≈ 41.990 TL",
-        img: "assets/products/phone-2.jpg",
-      },
-    ];
-
     const els = {
       app: document.getElementById("app"),
       fx: document.getElementById("fx"),
@@ -692,6 +670,13 @@
     const COLORS = ["#9747FF", "#D8FF00", "#B370FF", "#FFFFFF", "#6C1ED0", "#E2C2FF"];
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const searchUi = window.TaksitlioSearchUi
+      ? window.TaksitlioSearchUi.attach({
+          thread: els.thread,
+          botBubble: (html) => botBubble(html),
+          clearTyping: () => clearTyping(),
+        })
+      : null;
 
     function toast(msg) {
       els.toast.textContent = msg;
@@ -835,86 +820,7 @@
     }
 
     function parse(text) {
-      const lower = text.toLocaleLowerCase("tr-TR");
-      let category = null;
-      if (/telefon|iphone|samsung|xiaomi|cep/.test(lower)) category = "Cep telefonu";
-      else if (/tablet|ipad/.test(lower)) category = "Tablet";
-      else if (/saat|watch/.test(lower)) category = "Akıllı saat";
-      else if (/laptop|bilgisayar|macbook/.test(lower)) category = "Laptop";
-      else if (/buzdolab|çamaşır|bulaşık|beyaz/.test(lower)) category = "Beyaz eşya";
-      else if (/koltuk|masa|yatak|mobilya/.test(lower)) category = "Mobilya";
-
-      let budget = null;
-      let m = lower.match(/(\d+[.,]?\d*)\s*(bin|k)\b/);
-      if (m) budget = Math.round(parseFloat(m[1].replace(",", ".")) * 1000);
-      else {
-        m = lower.match(/(\d{1,3}(?:[.,]\d{3})+|\d{4,7})/);
-        if (m) {
-          const n = parseInt(m[1].replace(/[.,]/g, ""), 10);
-          if (n >= 1000) budget = n;
-        }
-      }
-      return { category, budget, raw: text.trim() };
-    }
-
-    function money(n) {
-      return n ? `${n.toLocaleString("tr-TR")} TL` : null;
-    }
-
-    function renderShowroom(need) {
-      const budgetText = money(need.budget) || "bütçene";
-      const wrap = document.createElement("div");
-      wrap.className = "showroom";
-      wrap.innerHTML = `
-        <div class="showroom-head">
-          <div class="eyebrow">Kampanyalar</div>
-          <h2>2 uygun seçenek</h2>
-          <p>${budgetText} için</p>
-        </div>
-        ${DEMO.map(
-          (d, i) => `
-          <article class="offer ${d.best ? "best" : ""}" style="animation-delay:${0.06 + i * 0.1}s">
-            <div class="offer-media"><img src="${d.img}" alt="" /></div>
-            <div class="offer-body">
-              <div>
-                <div class="offer-top">
-                  <div class="offer-name">${d.brand}</div>
-                  ${d.badge ? `<span class="pill">${d.badge}</span>` : ""}
-                </div>
-                <div class="offer-meta">${d.meta}</div>
-              </div>
-              <div class="offer-price">
-                <div class="label">Aylık taksit</div>
-                <div class="n">${d.monthly}</div>
-                <div class="foot">${d.tenure} · Toplam ${d.total}</div>
-              </div>
-            </div>
-          </article>`
-        ).join("")}
-        <div class="cta-card" id="ctaCard">
-          <div>
-            <strong>Üye ol, kampanyadan yararlan</strong>
-            <p>Beğendiğin teklife hemen başvur, ücretsiz üyelikle limitini anında öğren.</p>
-          </div>
-          <button class="cta-btn" type="button" id="btnSignup">
-            <span>Üye ol</span>
-            <span>30 sn →</span>
-          </button>
-        </div>`;
-      els.thread.appendChild(wrap);
-      requestAnimationFrame(() => {
-        [...wrap.querySelectorAll(".offer")].forEach((el) => el.classList.add("on"));
-      });
-      setTimeout(() => {
-        const cta = wrap.querySelector("#ctaCard");
-        if (cta) cta.classList.add("on");
-        window.__burst("finale");
-      }, 420);
-      wrap.querySelector("#btnSignup").addEventListener("click", () => {
-        window.__burst("soft");
-        toast("Üyelik akışı yakında BE’ye bağlanacak");
-      });
-      scrollEnd();
+      return { raw: (text || "").trim() };
     }
 
     async function boot() {
@@ -942,24 +848,18 @@
 
       userBubble(need.raw);
       window.__burst("soft");
-      await wait(280);
       const t = typing();
-      await wait(700);
-      t.remove();
-
-      const budgetBit = money(need.budget)
-        ? `<strong style="color:var(--purple)">${money(need.budget)}</strong> bütçene`
-        : "bütçene";
-      botBubble(
-        `Bankalar ve markalar arasındaki güncel kampanyaları taradım. ${budgetBit} en uygun seçenekler:`
-      );
-      await wait(180);
-      window.__burst("big");
-      renderShowroom(need);
-
-      if (!need.category) {
-        await wait(300);
-        botBubble("İstersen kategoriyi biraz netleştir (telefon, beyaz eşya, mobilya…). Yeni bir cümle yazman yeterli.");
+      try {
+        if (searchUi) {
+          await searchUi.runSearch(need.raw);
+        } else {
+          clearTyping();
+          botBubble("Arama servisi şu an kullanılamıyor.");
+        }
+      } catch (err) {
+        clearTyping();
+        botBubble("İsteğini işlerken bir sorun oluştu. Lütfen tekrar dene.");
+        console.error(err);
       }
 
       busy = false;

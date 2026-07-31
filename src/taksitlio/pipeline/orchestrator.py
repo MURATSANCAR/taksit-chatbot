@@ -17,6 +17,8 @@ from taksitlio.product_query.chat_bridge import (
     run_catalog_search_for_chat,
 )
 from taksitlio.response.grounded import GroundedReply, GroundedResponseGenerator
+from taksitlio.search_sessions.chat_bridge import bridge_search_start
+from taksitlio.search_sessions.orchestrator import SearchOrchestrator
 from taksitlio.understanding.service import UnderstandingService, UnderstoodTurn
 
 
@@ -26,6 +28,7 @@ class ChatRequest:
     message: str
     user_id: str | None = None
     product_phase: str | None = None  # FIRST_CARDS | FINANCE_ENRICHED
+    prefer_search_sessions: bool = True
 
 
 @dataclass(frozen=True)
@@ -41,6 +44,10 @@ class ChatResponse:
     cta: dict[str, Any] | None = None
     diagnostics: dict[str, Any] = field(default_factory=dict)
     latency_ms: float = 0.0
+    search_session_id: str | None = None
+    events_url: str | None = None
+    clarification: dict[str, Any] | None = None
+    chips: list[dict[str, Any]] = field(default_factory=list)
 
 
 class ChatPipeline:
@@ -55,6 +62,7 @@ class ChatPipeline:
         *,
         campaign_repo: Any,
         product_path: ProductPathDeps | None = None,
+        search_orchestrator: SearchOrchestrator | None = None,
     ) -> None:
         self._understanding = understanding
         self._categories = category_matcher
@@ -64,9 +72,38 @@ class ChatPipeline:
         self._responder = responder
         self._campaign_repo = campaign_repo
         self._product_path = product_path
+        self._search_orchestrator = search_orchestrator
 
     async def handle(self, request: ChatRequest) -> ChatResponse:
         started = time.perf_counter()
+
+        # ADR-011: clarification-first product search before legacy understanding LLM.
+        if (
+            request.prefer_search_sessions
+            and self._search_orchestrator is not None
+            and self._looks_like_product_query(request.message)
+        ):
+            bridged = bridge_search_start(
+                self._search_orchestrator,
+                conversation_id=conversation_id_for_session(request.session_id),
+                message=request.message,
+                user_id=request.user_id,
+            )
+            return ChatResponse(
+                session_id=request.session_id,
+                reply=bridged.reply,
+                decision=bridged.decision,
+                need_profile=bridged.need_profile,
+                cards=bridged.cards,
+                phase=bridged.phase,
+                diagnostics=bridged.diagnostics,
+                latency_ms=(time.perf_counter() - started) * 1000.0,
+                search_session_id=bridged.diagnostics.get("search_session_id"),
+                events_url=bridged.diagnostics.get("events_url"),
+                clarification=bridged.diagnostics.get("clarification"),
+                chips=list(bridged.diagnostics.get("chips") or []),
+            )
+
         turn = await self._understanding.process_message(
             session_id=request.session_id,
             message=request.message,
@@ -306,3 +343,51 @@ class ChatPipeline:
             },
             latency_ms=(time.perf_counter() - started) * 1000.0,
         )
+
+    @staticmethod
+    def _looks_like_product_query(message: str) -> bool:
+        lower = (message or "").casefold()
+        cues = (
+            "alacağım",
+            "almak",
+            "arıyorum",
+            "istiyorum",
+            "bakıyorum",
+            "laptop",
+            "telefon",
+            "tablet",
+            "televizyon",
+            "bilgisayar",
+            "cihaz",
+            "ürün",
+            "taksit",
+            "bütçe",
+            "bin",
+            "tl",
+            "ay ",
+            "apple",
+            "samsung",
+            "macbook",
+            "iphone",
+        )
+        return any(c in lower for c in cues)
+
+
+def _is_uuid(value: str) -> bool:
+    import uuid
+
+    try:
+        uuid.UUID(str(value))
+        return True
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+
+def conversation_id_for_session(session_id: str) -> str:
+    """Stable UUID for search_sessions.conversation_id from opaque chat session ids."""
+
+    import uuid
+
+    if _is_uuid(session_id):
+        return str(uuid.UUID(session_id))
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, f"taksitlio:chat:{session_id}"))

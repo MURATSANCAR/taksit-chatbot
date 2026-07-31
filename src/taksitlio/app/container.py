@@ -259,6 +259,9 @@ def build_in_memory_container(
         settings, redis=None, prefer_memory=True
     )
     search_orchestrator = build_demo_orchestrator()
+    from taksitlio.llm_routing.worker import build_default_worker
+
+    llm_worker = build_default_worker(search_orchestrator, health_registry=health)
     if not os.environ.get("MEDIA_STORAGE_ROOT"):
         os.environ.setdefault(
             "MEDIA_STORAGE_ROOT", tempfile.mkdtemp(prefix="taksitlio-media-")
@@ -284,6 +287,7 @@ def build_in_memory_container(
             alias_cache=product_query_caches.alias,
             alias_ttl_seconds=product_query_caches.alias_ttl_seconds,
         ),
+        search_orchestrator=search_orchestrator,
     )
     return AppContainer(
         settings=settings,
@@ -308,6 +312,7 @@ def build_in_memory_container(
             "institution_label_loader": institution_label_loader,
             "institution_labels": institution_labels,
             "search_orchestrator": search_orchestrator,
+            "llm_understanding_worker": llm_worker,
         },
     )
 
@@ -379,6 +384,15 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     finance_option_index = PostgresFinanceOptionIndex(pool)
     institution_label_loader = PostgresInstitutionLabelLoader(pool)
     institution_labels = await load_institution_labels(institution_label_loader)
+    from taksitlio.llm_routing.worker import build_default_worker
+    from taksitlio.search_sessions import build_demo_orchestrator
+    from taksitlio.search_sessions.postgres import PostgresSearchSessionRepository
+
+    search_orchestrator = build_demo_orchestrator()
+    search_pg = PostgresSearchSessionRepository(pool)
+    await search_pg.load_timeout_policy()
+    search_orchestrator.repo.policy = search_pg.policy
+    llm_worker = build_default_worker(search_orchestrator, health_registry=health)
     pipeline = ChatPipeline(
         understanding=understanding,
         category_matcher=matcher,
@@ -395,6 +409,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             alias_cache=product_query_caches.alias,
             alias_ttl_seconds=product_query_caches.alias_ttl_seconds,
         ),
+        search_orchestrator=search_orchestrator,
     )
     return AppContainer(
         settings=settings,
@@ -417,5 +432,8 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "finance_option_index": finance_option_index,
             "institution_label_loader": institution_label_loader,
             "institution_labels": institution_labels,
+            "search_orchestrator": search_orchestrator,
+            "search_session_pg": search_pg,
+            "llm_understanding_worker": llm_worker,
         },
     )
