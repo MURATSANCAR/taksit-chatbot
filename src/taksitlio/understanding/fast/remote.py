@@ -16,6 +16,7 @@ from taksitlio.understanding.fast.errors import (
     FastDeploymentUnavailable,
     FastExtractionError,
     NeedProfileSchemaError,
+    TruncatedNeedProfileError,
 )
 from taksitlio.understanding.fast.protocol import FastExtractionOutcome
 from taksitlio.understanding.fast.schema_utils import validate_need_profile
@@ -27,20 +28,23 @@ _FORBIDDEN_ID_PATTERNS = (
     "cat_",
 )
 
-_DEFAULT_SYSTEM_PROMPT = """You extract Turkish purchase needs as one JSON object only (NeedProfile).
+_DEFAULT_SYSTEM_PROMPT = """You extract Turkish purchase needs as one compact JSON object only (NeedProfile).
 Rules:
+- Output minified JSON on one logical object: no markdown, no pretty-print, no extra whitespace.
+- Keep need_description <= 120 chars; keep arrays short (prefer empty over filler).
 - Never emit category IDs, fixture keys, or UUIDs.
 - intent: {type, confidence}; type enum PRODUCT_PURCHASE|COMPARE_OPTIONS|BUDGET_INQUIRY|INSTALLMENT_INQUIRY|OUT_OF_SCOPE|CLARIFICATION_RESPONSE|OTHER
 - need_description: short Turkish string from the utterance
 - budget: {type, value, minimum, maximum, monthly_payment, currency}; type UNKNOWN/EXACT/APPROXIMATE/RANGE/MONTHLY_PAYMENT; currency TRY; unused numerics null
-- preferences: [{concept, importance}]
-- usage_context: string array
+- preferences: [{concept, importance}] — positive wants only
+- usage_context: string array (usually empty)
 - entities: [{type, value, confidence?}]
-- ambiguities: [{code, description}]
+- ambiguities: [{code, description}] (usually empty)
 - clarification: {required, question_intent}
 - confidence: 0..1
 - semantic_constraints: {positive, negative, corrections} each [{concept, provenance, weight?}]; provenance EXPLICIT|INFERRED|EXPLICIT_NEGATION|USER_CORRECTION|SESSION_CONTEXT
-Put explicit exclusions in semantic_constraints.negative with EXPLICIT_NEGATION.
+Put explicit exclusions ONLY in semantic_constraints.negative with EXPLICIT_NEGATION (not as low-importance preferences).
+Put user corrections in semantic_constraints.corrections with previous_concept+replacement_concept when possible.
 No markdown."""
 
 
@@ -84,7 +88,7 @@ class RemoteFastExtractor:
         model_reference: str,
         timeout_ms: int = 3000,
         temperature: float = 0.0,
-        max_output_tokens: int = 384,
+        max_output_tokens: int = 512,
         chat_path: str = "/v1/chat/completions",
         api_key: Optional[str] = None,
         deployment_code: str = "runtime-fast",
@@ -185,9 +189,27 @@ class RemoteFastExtractor:
                 reason_code="MODEL_NAME_MISMATCH",
             )
 
+        finish_reason = None
+        usage = payload.get("usage") if isinstance(payload, dict) else None
+        try:
+            finish_reason = (payload.get("choices") or [{}])[0].get("finish_reason")
+        except Exception:  # noqa: BLE001
+            finish_reason = None
+        completion_tokens = None
+        if isinstance(usage, Mapping) and isinstance(usage.get("completion_tokens"), (int, float)):
+            completion_tokens = int(usage["completion_tokens"])
+
         try:
             need_profile = json.loads(content)
         except json.JSONDecodeError as exc:
+            if finish_reason == "length" or (
+                completion_tokens is not None
+                and completion_tokens >= self._max_output_tokens
+            ):
+                raise TruncatedNeedProfileError(
+                    f"truncated JSON from FAST at max_tokens={self._max_output_tokens}: {exc}",
+                    issues=[str(exc)],
+                ) from exc
             raise NeedProfileSchemaError(
                 f"invalid JSON from FAST: {exc}", issues=[str(exc)]
             ) from exc
@@ -195,6 +217,11 @@ class RemoteFastExtractor:
         try:
             validate_need_profile(need_profile)
         except NeedProfileSchemaError:
+            if finish_reason == "length":
+                raise TruncatedNeedProfileError(
+                    f"NeedProfile incomplete at max_tokens={self._max_output_tokens}",
+                    issues=["finish_reason=length"],
+                )
             raise
 
         # Forbidden identifier scan across string leaves.
@@ -210,12 +237,6 @@ class RemoteFastExtractor:
         if not isinstance(raw_constraints, Mapping):
             raw_constraints = {}
         constraints = self._validator.validate(raw_constraints)
-        usage = payload.get("usage") if isinstance(payload, dict) else None
-        finish_reason = None
-        try:
-            finish_reason = (payload.get("choices") or [{}])[0].get("finish_reason")
-        except Exception:  # noqa: BLE001
-            finish_reason = None
         return FastExtractionOutcome(
             utterance=utterance,
             need_profile=need_profile,
@@ -283,7 +304,7 @@ def build_remote_fast_from_env() -> RemoteFastExtractor:
     max_tokens = int(
         os.environ.get("FAST_MAX_OUTPUT_TOKENS")
         or os.environ.get("POC_FAST_MAX_OUTPUT_TOKENS")
-        or "384"
+        or "512"
     )
     temperature = float(
         os.environ.get("FAST_TEMPERATURE") or os.environ.get("POC_FAST_TEMPERATURE") or "0"

@@ -22,6 +22,7 @@ from taksitlio.understanding.fast.errors import (
     FastDeploymentUnavailable,
     FastExtractionError,
     NeedProfileSchemaError,
+    TruncatedNeedProfileError,
 )
 from taksitlio.understanding.fast.remote import RemoteFastExtractor
 
@@ -261,6 +262,12 @@ async def extract_one(
             latency_ms=(time.perf_counter() - started) * 1000.0,
             error=str(exc),
         )
+    except TruncatedNeedProfileError as exc:
+        return ExtractResult(
+            status="TRUNCATED",
+            latency_ms=(time.perf_counter() - started) * 1000.0,
+            error=str(exc),
+        )
     except FastDeploymentUnavailable as exc:
         msg = str(exc).lower()
         status = "TIMEOUT" if "timeout" in msg else "PROVIDER_ERROR"
@@ -323,7 +330,7 @@ def scoring_row(
         "TIMEOUT": "TIMEOUT",
         "PROVIDER_ERROR": "PROVIDER_ERROR",
         "EMPTY_OUTPUT": "INVALID_SCHEMA",
-        "TRUNCATED": "INVALID_SCHEMA",
+        "TRUNCATED": "TRUNCATED",
     }
     if result.status != "ok":
         return {
@@ -642,4 +649,4 @@ def default_timeout_ms() -> int:
 
 
 def default_max_tokens() -> int:
-    return int(os.environ.get("FAST_MAX_OUTPUT_TOKENS") or "384")
+    return int(os.environ.get("FAST_MAX_OUTPUT_TOKENS") or "512")

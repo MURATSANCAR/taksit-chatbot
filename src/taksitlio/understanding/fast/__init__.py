@@ -19,6 +19,7 @@ from taksitlio.understanding.fast.errors import (
     FastDeploymentUnavailable,
     FastExtractionError,
     NeedProfileSchemaError,
+    TruncatedNeedProfileError,
 )
 from taksitlio.understanding.fast.protocol import (
     FastExtractionOutcome,
@@ -39,5 +40,6 @@ __all__ = [
     "NeedProfileSchemaError",
     "RemoteFastExtractor",
     "StubRemoteFastExtractor",
+    "TruncatedNeedProfileError",
     "build_remote_fast_from_env",
 ]

@@ -43,6 +43,23 @@ def test_score_fast_extraction_accepts_concept_key_with_turkish_fold() -> None:
     assert metrics.correction_recall == 1.0
 
 
+def test_score_fast_truncation_is_not_schema_failure() -> None:
+    metrics = score_fast_extraction(
+        [
+            {
+                "error": "TRUNCATED",
+                "expected_constraints": {},
+                "predicted_constraints": {},
+                "expected_need_profile": {},
+                "predicted_need_profile": {},
+            }
+        ]
+    )
+    assert metrics.truncated_count == 1
+    assert metrics.invalid_schema_count == 0
+    assert metrics.timeout_count == 0
+
+
 def test_score_fast_timeout_does_not_count_as_schema_failure() -> None:
     metrics = score_fast_extraction(
         [
@@ -57,3 +74,4 @@ def test_score_fast_timeout_does_not_count_as_schema_failure() -> None:
     )
     assert metrics.timeout_count == 1
     assert metrics.invalid_schema_count == 0
+    assert metrics.truncated_count == 0

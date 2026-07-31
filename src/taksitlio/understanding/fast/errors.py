@@ -34,8 +34,22 @@ class NeedProfileSchemaError(FastExtractionError):
         self.issues = issues or []
 
 
+class TruncatedNeedProfileError(FastExtractionError):
+    """Model hit max_tokens before emitting a complete NeedProfile JSON object."""
+
+    def __init__(
+        self,
+        message: str = "FAST output truncated at max_tokens",
+        *,
+        issues: Optional[list[str]] = None,
+    ) -> None:
+        super().__init__(message, reason_code="TRUNCATED_OUTPUT")
+        self.issues = issues or []
+
+
 __all__ = [
     "FastDeploymentUnavailable",
     "FastExtractionError",
     "NeedProfileSchemaError",
+    "TruncatedNeedProfileError",
 ]

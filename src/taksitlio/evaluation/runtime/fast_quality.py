@@ -13,6 +13,7 @@ class FastExtractionMetrics:
     forbidden_identifier_generation_count: int = 0
     fallback_count: int = 0
     timeout_count: int = 0
+    truncated_count: int = 0
 
     intent_correct: int = 0
     intent_total: int = 0
@@ -63,6 +64,7 @@ class FastExtractionMetrics:
             "fallback_count": self.fallback_count,
             "fallback_rate": self.fallback_rate,
             "timeout_count": self.timeout_count,
+            "truncated_count": self.truncated_count,
             "intent_accuracy": self.rate(self.intent_correct, self.intent_total),
             "budget_type_accuracy": self.rate(
                 self.budget_type_correct, self.budget_type_total
@@ -194,6 +196,9 @@ def score_fast_extraction(
         err = row.get("error")
         if err == "TIMEOUT":
             m.timeout_count += 1
+            continue
+        if err == "TRUNCATED":
+            m.truncated_count += 1
             continue
         if err == "FALLBACK":
             m.fallback_count += 1
