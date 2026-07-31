@@ -68,8 +68,8 @@ DEFAULT_ALIASES = {
 }
 
 
-def _sh(cmd: str) -> str:
-    proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
+def _sh(cmd: str, **kwargs: Any) -> str:
+    proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False, **kwargs)
     return ((proc.stdout or "") + (proc.stderr or "")).strip()
 
 
@@ -507,8 +507,9 @@ async def main_async(args: argparse.Namespace) -> int:
         )
         print("=== E2E cached hybrid ===", flush=True)
         e2e = await run_e2e_cached(result["hybrid_by_case"])
-    finally:
+    except Exception:
         _restore_all()
+        raise
 
     hybrid = result["hybrid_metrics"]
     model = result["model_metrics"]
@@ -631,6 +632,7 @@ async def main_async(args: argparse.Namespace) -> int:
             indent=2,
         )
     )
+    _restore_all()
     return 0 if ok else 1
 
 
