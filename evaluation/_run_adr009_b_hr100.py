@@ -496,7 +496,9 @@ async def main_async(args: argparse.Namespace) -> int:
 
     timeout_ms = int(os.environ.get("FAST_TIMEOUT_MS") or args.timeout_ms)
     max_tokens = int(os.environ.get("FAST_MAX_OUTPUT_TOKENS") or args.max_tokens)
-    _isolate_candidate(key)
+    toggle = not bool(getattr(args, "skip_service_toggle", False))
+    if toggle:
+        _isolate_candidate(key)
     try:
         print(f"=== HR100 hybrid quality + warm latency ({key}) ===", flush=True)
         result = await run_hr100(
@@ -507,7 +509,8 @@ async def main_async(args: argparse.Namespace) -> int:
         print("=== E2E cached hybrid ===", flush=True)
         e2e = await run_e2e_cached(result["hybrid_by_case"])
     except Exception:
-        _restore_all()
+        if toggle:
+            _restore_all()
         raise
 
     hybrid = result["hybrid_metrics"]
@@ -631,7 +634,8 @@ async def main_async(args: argparse.Namespace) -> int:
             indent=2,
         )
     )
-    _restore_all()
+    if toggle:
+        _restore_all()
     return 0 if ok else 1
 
 
@@ -640,6 +644,11 @@ def main() -> int:
     p.add_argument("--candidate", choices=["A", "B", "C", "a", "b", "c"], default="B")
     p.add_argument("--timeout-ms", type=int, default=60000)
     p.add_argument("--max-tokens", type=int, default=512)
+    p.add_argument(
+        "--skip-service-toggle",
+        action="store_true",
+        help="Do not stop/start systemd FAST units (use with sidecar LoRA on FAST_C_BASE_URL)",
+    )
     p.add_argument(
         "--lock-on-pass",
         action="store_true",

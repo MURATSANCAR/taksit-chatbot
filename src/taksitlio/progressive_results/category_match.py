@@ -297,6 +297,16 @@ def utterance_name_terms(
         return ("Televizyon", "TV")
     if any(t in u for t in ("buzdolab", "beyaz eşya", "beyaz esya", "çamaşır", "camasir")):
         return ("Buzdolabı", "Beyaz Eşya", "Çamaşır")
+    if any(t in u for t in ("ayakkab", "sneaker", "bot ", " bot", "terlik", "sandalet")):
+        return ("Ayakkabı", "Spor Ayakkabı", "Sneaker", "Bot")
+
+    # Last resort: content tokens from the utterance so catalog search still runs
+    # when the DB category list has not caught up (ADR-010 dynamic resolution).
+    from taksitlio.query_understanding.fast_parser import _free_text_product_nouns
+
+    nouns = _free_text_product_nouns(utterance)
+    if nouns:
+        return tuple(nouns)[:8]
     return ()
 
 

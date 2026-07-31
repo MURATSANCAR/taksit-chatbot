@@ -74,14 +74,30 @@ class FastParseResult:
         }
 
 
+# Require ≥1 thousand-separator group in the first alt so "5000" falls through to \d+
+# (previously \d{1,3}(?:...) * matched "500" and left "0", dropping unformatted budgets).
 _BUDGET_RE = re.compile(
-    r"(?P<num>\d{1,3}(?:[.\s]\d{3})*|\d+)\s*(?:bin)?\s*(?:tl|lira|₺)?",
+    r"(?P<num>\d{1,3}(?:[.\s]\d{3})+|\d+)\s*(?:bin)?\s*(?:tl|lira|₺)?",
     re.IGNORECASE,
 )
 _TERM_RE = re.compile(r"(\d{1,2})\s*ay", re.IGNORECASE)
 _RAM_RE = re.compile(r"(\d+)\s*gb", re.IGNORECASE)
 
 _NEGATION_MARKERS = ("olmasın", "istemiyorum", "istemem", "değil", "hariç", "boşver")
+_MAX_BUDGET_CUES = (
+    "kadar",
+    "altında",
+    "altinda",
+    "en fazla",
+    "aşmasın",
+    "asmasin",
+    "geçmesin",
+    "gecmesin",
+    "üstünü aşma",
+    "ustunu asma",
+    "fazla olmasın",
+    "fazla olmasin",
+)
 _USAGE_CUES = {
     "okul": "education",
     "ödev": "education",
@@ -96,6 +112,86 @@ _USAGE_CUES = {
     "uzun süre": "longevity",
     "uzun yıllar": "longevity",
 }
+# Function/grammar words stripped when recovering a free-text product noun.
+_QUERY_STOPWORDS = frozenset(
+    {
+        "bana",
+        "bir",
+        "bu",
+        "şu",
+        "su",
+        "ve",
+        "ile",
+        "icin",
+        "için",
+        "lazim",
+        "lazım",
+        "istiyorum",
+        "isterim",
+        "istiyoz",
+        "ariyorum",
+        "arıyorum",
+        "bakiyorum",
+        "bakıyorum",
+        "almak",
+        "alacagim",
+        "alacağım",
+        "alabilir",
+        "goster",
+        "göster",
+        "varsa",
+        "olsun",
+        "olmasin",
+        "olmasın",
+        "ama",
+        "de",
+        "da",
+        "mi",
+        "mı",
+        "mu",
+        "mü",
+        "lira",
+        "tl",
+        "bin",
+        "kadar",
+        "asmasin",
+        "aşmasın",
+        "gecmesin",
+        "geçmesin",
+        "altinda",
+        "altında",
+        "en",
+        "fazla",
+        "yaklasik",
+        "yaklaşık",
+        "civari",
+        "civarı",
+        "ay",
+        "taksit",
+        "kredi",
+        "fiyat",
+        "ucuz",
+        "iyi",
+        "guzel",
+        "güzel",
+        "lutfen",
+        "lütfen",
+        "merhaba",
+        "selam",
+        "sey",
+        "şey",
+        "urun",
+        "ürün",
+        "urunler",
+        "ürünler",
+        "model",
+        "modeller",
+    }
+)
+
+
+def _has_max_budget_cue(lower: str) -> bool:
+    return any(cue in lower for cue in _MAX_BUDGET_CUES)
 
 
 def _parse_budget(text: str) -> Optional[dict[str, Any]]:
@@ -105,7 +201,7 @@ def _parse_budget(text: str) -> Optional[dict[str, Any]]:
     if bin_m:
         value = int(bin_m.group(1)) * 1000
         approx = "civarı" in lower or "yaklaşık" in lower
-        if "kadar" in lower or "altında" in lower or "en fazla" in lower:
+        if _has_max_budget_cue(lower):
             return {"maximum": value, "currency": "TRY", "type": "RANGE"}
         if approx:
             return {"value": value, "currency": "TRY", "type": "APPROXIMATE"}
@@ -117,10 +213,27 @@ def _parse_budget(text: str) -> Optional[dict[str, Any]]:
         value = int(raw)
         if value < 1000:
             continue
-        if "kadar" in lower or "altında" in lower:
+        if _has_max_budget_cue(lower):
             return {"maximum": value, "currency": "TRY", "type": "RANGE"}
         return {"value": value, "currency": "TRY", "type": "APPROXIMATE"}
     return None
+
+
+def _free_text_product_nouns(text: str) -> list[str]:
+    """Recover concrete product nouns when catalog category resolution misses."""
+
+    normalized = normalize_turkish(text).value or ""
+    nouns: list[str] = []
+    for tok in normalized.split():
+        t = tok.strip(".,!?;:\"'()[]{}").casefold()
+        if len(t) < 3 or t.isdigit() or t in _QUERY_STOPWORDS:
+            continue
+        if re.fullmatch(r"\d+[a-zğüşıöç]*", t):  # 16gb, 12ay
+            continue
+        nouns.append(tok.strip(".,!?;:\"'()[]{}"))
+    # Prefer longer / more specific tokens first, keep order stable after dedupe
+    nouns = list(dict.fromkeys(nouns))
+    return nouns[:3]
 
 
 def _resolve_one(
@@ -262,6 +375,26 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
                 break
     brands = _dedupe(brands)
 
+    abstract_cues = ("herkes", "yer kapla", "mantıklı", "zorlamasın")
+    abstract_hits = sum(1 for c in abstract_cues if c in lower)
+
+    # Catalog miss (e.g. "ayakkabı" before FOOTWEAR is seeded): keep the noun so we
+    # search products instead of asking electronics product-type clarification.
+    # Skip on abstract multi-need utterances that still need LLM / clarification.
+    if not positive_categories and not brands and abstract_hits < 2:
+        for noun in _free_text_product_nouns(text):
+            slug = normalize_turkish(noun).ascii_fold or noun.casefold()
+            positive_categories.append(
+                ResolvedEntityRef(
+                    resolved_id=f"free_text:{slug}",
+                    display_name=noun,
+                    match_type="FREE_TEXT_PRODUCT",
+                    confidence=0.88,
+                    required=True,
+                )
+            )
+        positive_categories = _dedupe(positive_categories)
+
     preferred_institutions: list[dict[str, Any]] = []
     for cand in catalog.institutions:
         for name in (cand.display_name, cand.canonical_name, *cand.aliases):
@@ -324,8 +457,6 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
     if not positive_categories and not brands and not budget:
         conf = min(conf, 0.45)
     # Abstract multi-dimension household use → likely LLM
-    abstract_cues = ("herkes", "yer kapla", "mantıklı", "zorlamasın")
-    abstract_hits = sum(1 for c in abstract_cues if c in lower)
     requires_llm = False
     if abstract_hits >= 2 and not positive_categories:
         requires_llm = True

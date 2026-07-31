@@ -104,6 +104,11 @@ class SearchOrchestrator:
                     tokens = list(dict.fromkeys(specific))
             if tokens:
                 row["include_tokens"] = tokens
+            else:
+                # FREE_TEXT_PRODUCT / unknown catalog id: filter by display name.
+                dn = str(row.get("display_name") or "").strip()
+                if dn:
+                    row["include_tokens"] = [dn]
             enriched.append(row)
         if enriched:
             constraints["positive_categories"] = enriched
@@ -890,6 +895,13 @@ def build_demo_orchestrator() -> SearchOrchestrator:
                 aliases=("beyaz eşya", "buzdolabı", "çamaşır makinesi", "ev aleti"),
                 entity_type="category",
             ),
+            EntityCandidate(
+                entity_id="FOOTWEAR",
+                display_name="Ayakkabı",
+                canonical_name="FOOTWEAR",
+                aliases=("ayakkabı", "ayakkabi", "spor ayakkabı", "sneaker", "bot", "terlik"),
+                entity_type="category",
+            ),
         ),
         brands=(
             EntityCandidate(
@@ -985,5 +997,6 @@ def build_demo_orchestrator() -> SearchOrchestrator:
             {"id": "category-tablet", "label": "Tablet"},
             {"id": "category-laptop", "label": "Laptop"},
             {"id": "HOME_APPLIANCE", "label": "Beyaz Eşya"},
+            {"id": "FOOTWEAR", "label": "Ayakkabı"},
         ],
     )
