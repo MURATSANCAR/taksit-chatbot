@@ -1247,7 +1247,11 @@ def fetch_koctas(client: httpx.Client, delay: float, limit: int) -> list[dict[st
     except Exception as exc:
         print(f"  koctas extract fail: {exc}")
         return []
-    products = _apply_limit(products, limit)
+    live = merchant_absolute_cap("src-m-koctas", limit)
+    if live is not None:
+        products = products[:live]
+    elif limit and limit > 0:
+        products = products[:limit]
     time.sleep(delay)
     return list({p["id"]: p for p in products}.values())
 

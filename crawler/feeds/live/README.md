@@ -10,6 +10,12 @@ Generated on the **server**, not committed to Git.
 
 See `docs/runbooks/ADR-010-s3-cdn-origin.md`.
 
+## Global product cap
+
+Crawl scripts stop when the sum of `src-m-*.json` product counts reaches
+**1_000_000** (override with `--global-cap` or `CRAWL_GLOBAL_PRODUCT_CAP`;
+`0` disables). Per-merchant `--limit 0` no longer means unbounded total catalog.
+
 ## Scripts
 
 ```bash
@@ -31,6 +37,7 @@ LIVE_FEED_DIR=/var/lib/taksitlio/feeds/live   # optional override
 MEDIA_STORAGE_ROOT=/data/media                # local backend
 CDN_BASE_URL=https://cdn.your-domain.example
 # or OBJECT_STORAGE_BACKEND=s3 + S3_* …
+CRAWL_GLOBAL_PRODUCT_CAP=1000000              # hard stop across all merchants
 ```
 
 ## Blockers seen
