@@ -8,10 +8,18 @@ from taksitlio.evaluation.runtime.comparison import (
     RuntimeQualityComparison,
     compare_to_baseline,
 )
+from taksitlio.evaluation.runtime.fast_ab import (
+    build_isolated_extractor,
+    candidate_specs_from_env,
+    scoring_row,
+)
 
 __all__ = [
     "FastExtractionMetrics",
     "RuntimeQualityComparison",
+    "build_isolated_extractor",
+    "candidate_specs_from_env",
     "compare_to_baseline",
     "score_fast_extraction",
+    "scoring_row",
 ]

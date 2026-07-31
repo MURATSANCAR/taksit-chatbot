@@ -140,26 +140,53 @@ class CandidateSpec:
     quantization: str = "q4_k_m"
 
 
-CANDIDATES: dict[str, CandidateSpec] = {
-    "A": CandidateSpec(
-        code="FAST_A_REAL",
-        role="PRIMARY",
-        base_url="http://127.0.0.1:8021",
-        model_reference="poc-fast-understanding",
-        runtime_alias="poc-fast-understanding",
-        service_name="taksitlio-fast-a",
-        sibling_service="taksitlio-fast-b",
-    ),
-    "B": CandidateSpec(
-        code="FAST_B_REAL",
-        role="CHALLENGER",
-        base_url="http://127.0.0.1:8022",
-        model_reference="poc-fast-challenger",
-        runtime_alias="poc-fast-challenger",
-        service_name="taksitlio-fast-b",
-        sibling_service="taksitlio-fast-a",
-    ),
-}
+def candidate_specs_from_env() -> dict[str, CandidateSpec]:
+    """Build A/B specs from env — never hardcode hosts inside ``src/``."""
+
+    import os
+
+    a_url = (
+        os.environ.get("FAST_A_BASE_URL")
+        or os.environ.get("FAST_PROVIDER_BASE_URL")
+        or ""
+    ).rstrip("/")
+    b_url = (os.environ.get("FAST_B_BASE_URL") or os.environ.get("FAST_CHALLENGER_BASE_URL") or "").rstrip("/")
+    a_model = (
+        os.environ.get("FAST_A_MODEL_REFERENCE")
+        or os.environ.get("FAST_MODEL_REFERENCE")
+        or "poc-fast-understanding"
+    )
+    b_model = (
+        os.environ.get("FAST_B_MODEL_REFERENCE")
+        or os.environ.get("FAST_CHALLENGER_MODEL_REFERENCE")
+        or "poc-fast-challenger"
+    )
+    return {
+        "A": CandidateSpec(
+            code="FAST_A_REAL",
+            role="PRIMARY",
+            base_url=a_url,
+            model_reference=a_model,
+            runtime_alias=os.environ.get("FAST_A_RUNTIME_ALIAS")
+            or os.environ.get("FAST_RUNTIME_ALIAS")
+            or "poc-fast-understanding",
+            service_name=os.environ.get("FAST_A_SERVICE") or "taksitlio-fast-a",
+            sibling_service=os.environ.get("FAST_B_SERVICE") or "taksitlio-fast-b",
+            quantization=os.environ.get("FAST_QUANTIZATION") or "q4_k_m",
+        ),
+        "B": CandidateSpec(
+            code="FAST_B_REAL",
+            role="CHALLENGER",
+            base_url=b_url,
+            model_reference=b_model,
+            runtime_alias=os.environ.get("FAST_B_RUNTIME_ALIAS")
+            or os.environ.get("FAST_CHALLENGER_RUNTIME_ALIAS")
+            or "poc-fast-challenger",
+            service_name=os.environ.get("FAST_B_SERVICE") or "taksitlio-fast-b",
+            sibling_service=os.environ.get("FAST_A_SERVICE") or "taksitlio-fast-a",
+            quantization=os.environ.get("FAST_QUANTIZATION") or "q4_k_m",
+        ),
+    }
 
 
 @dataclass
