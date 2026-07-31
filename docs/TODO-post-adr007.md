@@ -67,13 +67,28 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] `payment_plan` CALCULATED_ESTIMATE / SOURCE_PROVIDED_OFFER (oran uydurma yok)
 - [x] Unit tests
 
-### P4+ (sonraki)
+### P4 — finance projection + fuzzy resolution + ranking
 
-- [ ] product_finance_options projection + fuzzy entity resolution
-- [ ] Chatbot product cards + progressive response
-- [ ] Freshness scheduler + merchant READY/PARTIAL/BLOCKED gates
-- [ ] Task-specific FAST fine-tune / LoRA (ayrı hat; genel model denemesi kapandı)
+- [x] `V019__product_finance_options_and_resolution.sql`
+- [x] `entity_resolution` (katalog adayları; static typo map yok)
+- [x] `product_query` finance projection + ranking modes
+- [x] Unit tests
+
+### P5 — cards + freshness + merchant gates
+
+- [x] `V020__freshness_and_scheduler_jobs.sql`
+- [x] `chatbot_cards` progressive phases (CDN only; `IMAGE_UNAVAILABLE`)
+- [x] `ingestion_scheduler` search-driven freshness enqueue
+- [x] merchant READY/PARTIAL/BLOCKED activation
+- [x] `POST /v1/product-query/progressive-cards`
+- [x] Unit tests
+
+### Sonraki (operasyon / ayrı hat)
+
+- [ ] Task-specific FAST fine-tune / LoRA
 - [ ] İlk gerçek merchant feed bağlama (operatör; kodda merchant adı yok)
+- [ ] Full product-query search HTTP + Redis caches
+- [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
 
 ## Gates
 
@@ -86,6 +101,6 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Campaign (kişisel onay) | CLOSED |
 | Data Ingestion | P1 (generic feed adapter + product schema) |
 | Data Quality | P2 media quality skeleton |
-| Fast Product Path | not started |
+| Fast Product Path | P4 skeleton (resolution + ranking) |
 | Finance Mapping | P3 skeleton (eligibility + payment plan) |
-| Recommendation | not started |
+| Recommendation | P4 ranking safety rules |

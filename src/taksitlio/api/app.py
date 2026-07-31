@@ -15,7 +15,7 @@ from taksitlio.app.container import (
     build_production_container,
 )
 from taksitlio.config.settings import InfraSettings
-from taksitlio.api.routes import admin, chat, health
+from taksitlio.api.routes import admin, chat, health, product_query
 
 _WEB_TAKSITLIO = Path(__file__).resolve().parents[3] / "web" / "taksitlio"
 
@@ -44,6 +44,7 @@ def create_app(container: AppContainer | None = None) -> FastAPI:
         app.state.container = container
     app.include_router(health.router)
     app.include_router(chat.router, prefix="/v1")
+    app.include_router(product_query.router, prefix="/v1")
     app.include_router(admin.router, prefix="/v1/admin")
     if _WEB_TAKSITLIO.is_dir():
         # Guest chatbot UI — later wired to /v1/chat (portal.nanobase.ai/taksitlio)

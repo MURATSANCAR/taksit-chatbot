@@ -134,7 +134,7 @@
       background: linear-gradient(145deg, #A66BFF, var(--purple-deep));
       display: grid; place-items: center;
       box-shadow: 0 16px 40px rgba(151,71,255,0.35);
-      animation: floaty 4.5s ease-in-out infinite; position: relative;
+      position: relative;
     }
     .hero-mark img {
       width: 36px; height: 36px; object-fit: contain;
@@ -660,11 +660,18 @@
     }
 
     function showScreen(name) {
+      const map = { welcome: els.welcome, chat: els.chat, offers: els.offers };
       els.welcome.hidden = name !== "welcome";
       els.chat.hidden = name !== "chat";
       els.offers.hidden = name !== "offers";
       els.composer.classList.toggle("welcome-mode", name === "welcome");
       els.hint.hidden = name !== "welcome";
+      const active = map[name];
+      if (active) {
+        active.classList.remove("swap-in");
+        void active.offsetWidth;
+        active.classList.add("swap-in");
+      }
       if (name !== "offers") els.stage.scrollTop = 0;
     }
 
@@ -685,14 +692,14 @@
     function appendUser(text) {
       els.chatThread.insertAdjacentHTML(
         "beforeend",
-        `<div class="bubble user">${escapeHtml(text)}</div>`
+        `<div class="bubble user anim">${escapeHtml(text)}</div>`
       );
       scrollChat();
     }
 
     function appendBot(html, chips) {
       const chipHtml = chips?.length
-        ? `<div class="actions">${chips
+        ? `<div class="actions anim">${chips
             .map(
               (c) =>
                 `<button class="chip" type="button" data-chip="${escapeHtml(c.value)}" data-label="${escapeHtml(c.label)}">${escapeHtml(c.label)}</button>`
@@ -701,13 +708,13 @@
         : "";
       els.chatThread.insertAdjacentHTML(
         "beforeend",
-        `<div class="row-bot">
+        `<div class="row-bot anim">
           <div class="avatar"><img src="assets/favicon.png" alt="" /></div>
           <div class="bubble bot">${html}</div>
         </div>${chipHtml}`
       );
       els.chatThread.querySelectorAll(".actions:last-of-type .chip").forEach((btn) => {
-        btn.addEventListener("click", () => onChip(btn.dataset.chip, btn.dataset.label));
+        btn.addEventListener("click", () => onChip(btn.dataset.chip, btn.dataset.label, btn));
       });
       scrollChat();
     }
@@ -716,7 +723,7 @@
       const id = `typing-${Date.now()}`;
       els.chatThread.insertAdjacentHTML(
         "beforeend",
-        `<div class="row-bot" id="${id}">
+        `<div class="row-bot anim" id="${id}">
           <div class="avatar"><img src="assets/favicon.png" alt="" /></div>
           <div class="bubble bot"><span class="typing"><span></span><span></span><span></span></span></div>
         </div>`
@@ -795,11 +802,12 @@
       return null;
     }
 
-    function campaignCard(c) {
+    function campaignCard(c, i) {
+      const delay = 0.12 + i * 0.14;
       return `
-        <div class="row-bot">
+        <div class="row-bot offer-block anim" style="animation-delay:${delay}s">
           <div class="avatar ghost"></div>
-          <div class="campaign ${c.best ? "best" : ""}">
+          <div class="campaign anim ${c.best ? "best" : ""}">
             <div class="camp-top">
               <div>
                 <div class="camp-brand">${escapeHtml(c.brand)}</div>
@@ -819,7 +827,7 @@
     function renderOffers() {
       const budgetText = budgetLabel(state.budget || 40000);
       els.offersThread.innerHTML = `
-        <div class="row-bot">
+        <div class="row-bot anim">
           <div class="avatar"><img src="assets/favicon.png" alt="" /></div>
           <div class="bubble bot">
             Bankalar ve markalar arasındaki güncel kampanyaları taradım.
@@ -827,12 +835,12 @@
           </div>
         </div>
         ${DEMO_CAMPAIGNS.map(campaignCard).join("")}
-        <div class="row-bot">
+        <div class="row-bot offer-block anim" style="animation-delay:.42s">
           <div class="avatar ghost"></div>
-          <div class="cta-card">
+          <div class="cta-card anim">
             <h3>Üye ol, kampanyadan yararlan</h3>
             <p>Bu teklifleri kilitlemek ve başvuruya devam etmek için ücretsiz üye olman yeterli. Limit sorgulama da üyelikle açılır.</p>
-            <button class="btn lime" type="button" id="btnSignup">Üye ol · 30 saniye</button>
+            <button class="btn lime breath" type="button" id="btnSignup">Üye ol · 30 saniye</button>
           </div>
         </div>`;
       document.getElementById("btnSignup").onclick = () => showToast("Üyelik akışı yakında BE’ye bağlanacak");
@@ -918,8 +926,12 @@
       els.input.focus();
     }
 
-    async function onChip(value, label) {
+    async function onChip(value, label, el) {
       if (busy) return;
+      if (el) {
+        el.classList.add("is-pressed");
+        await wait(160);
+      }
       clearOpenChips();
       appendUser(label);
       setBusy(true);
