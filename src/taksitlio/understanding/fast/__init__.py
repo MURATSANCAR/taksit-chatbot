@@ -21,6 +21,10 @@ from taksitlio.understanding.fast.errors import (
     NeedProfileSchemaError,
     TruncatedNeedProfileError,
 )
+from taksitlio.understanding.fast.hybrid import (
+    hybrid_final_constraints,
+    merge_constraint_bags,
+)
 from taksitlio.understanding.fast.protocol import (
     FastExtractionOutcome,
     FastNeedUnderstanding,
@@ -42,4 +46,6 @@ __all__ = [
     "StubRemoteFastExtractor",
     "TruncatedNeedProfileError",
     "build_remote_fast_from_env",
+    "hybrid_final_constraints",
+    "merge_constraint_bags",
 ]
