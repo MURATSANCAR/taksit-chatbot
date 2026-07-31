@@ -48,6 +48,7 @@ class RuntimeDependencyReport:
     @property
     def blockers(self) -> list[DependencyCode]:
         out: list[DependencyCode] = []
+        seen: set[DependencyCode] = set()
         for probe in (
             self.redis,
             self.postgres,
@@ -55,8 +56,9 @@ class RuntimeDependencyReport:
             self.fast,
             self.embedding,
         ):
-            if probe.code is not None and not probe.available:
+            if probe.code is not None and not probe.available and probe.code not in seen:
                 out.append(probe.code)
+                seen.add(probe.code)
         return out
 
     @property

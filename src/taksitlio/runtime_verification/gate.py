@@ -164,13 +164,6 @@ def evaluate_provisional_gate(
         violations,
     )
 
-    quality_ready = not any(
-        v.startswith(("oracle_", "e2e_")) or "forbidden" in v or "unsafe" in v
-        for v in violations
-        if "not measured" not in v
-    ) and evidence.oracle_forbidden == 0 and evidence.e2e_forbidden == 0
-
-    # Recompute quality_ready more carefully from floors alone.
     quality_ready = (
         evidence.oracle_top_1 is not None
         and evidence.oracle_top_1 >= _ORACLE_TOP_1

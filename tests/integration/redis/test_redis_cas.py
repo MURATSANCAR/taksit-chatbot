@@ -286,7 +286,7 @@ async def test_redis_unavailable_typed_error_no_in_memory_fallback():
     with pytest.raises(ConversationRepositoryUnavailable):
         await repo.create(state, idle_ttl_seconds=30)
 
-    bad = probe_redis(url="redis://127.0.0.1:1/15")
+    bad = probe_redis(url="redis://invalid-redis-host.invalid:6379/15")
     assert bad.available is False
     assert bad.code is not None
     assert bad.code.value == "REDIS_UNAVAILABLE"

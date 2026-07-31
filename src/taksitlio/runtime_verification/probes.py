@@ -20,7 +20,14 @@ def _env(name: str, default: str = "") -> str:
 def probe_redis(*, url: Optional[str] = None) -> DependencyProbeResult:
     """Ping Redis. Unavailable → REDIS_UNAVAILABLE (never in-memory success)."""
 
-    redis_url = url or _env("REDIS_URL", "redis://127.0.0.1:6379/15")
+    redis_url = url or _env("REDIS_URL")
+    if not redis_url:
+        return DependencyProbeResult(
+            code=DependencyCode.REDIS_UNAVAILABLE,
+            available=False,
+            measured=True,
+            detail="REDIS_URL not set",
+        )
     try:
         import redis  # type: ignore
     except ImportError as exc:
@@ -265,7 +272,7 @@ def probe_all_dependencies(
         probe_pgvector(url=postgres_url)
         if postgres.available
         else DependencyProbeResult(
-            code=DependencyCode.POSTGRES_UNAVAILABLE,
+            code=DependencyCode.PGVECTOR_EXTENSION_UNAVAILABLE,
             available=False,
             measured=True,
             detail="postgres unavailable — pgvector not probed",

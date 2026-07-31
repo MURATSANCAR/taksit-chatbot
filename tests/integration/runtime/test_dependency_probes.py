@@ -19,12 +19,16 @@ def test_probe_all_never_silently_succeeds_without_urls(monkeypatch):
     monkeypatch.delenv("POC_FAST_BASE_URL", raising=False)
     monkeypatch.delenv("EMBEDDING_PROVIDER_BASE_URL", raising=False)
     monkeypatch.delenv("POC_EMBEDDING_BASE_URL", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+    monkeypatch.delenv("PGVECTOR_URL", raising=False)
+    monkeypatch.delenv("DATABASE_URL", raising=False)
     report = probe_all_dependencies(
-        redis_url="redis://127.0.0.1:1/15",
+        redis_url=None,
         postgres_url=None,
         fast_base_url=None,
         embedding_base_url=None,
     )
     assert report.fast.available is False
     assert report.embedding.available is False
+    assert report.redis.available is False
     assert evaluate_runtime_gate(report) == RuntimeGateStatus.BLOCKED_DEPENDENCY

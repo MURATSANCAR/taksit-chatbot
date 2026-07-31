@@ -144,9 +144,13 @@ def test_circuit_breaker_open_half_open_closed() -> None:
     reg.begin_request(dep)
     ctl.record_success(dep, latency_ms=10.0)
     assert reg.get(dep).circuit_state == CircuitState.CLOSED
-    # Config ACTIVE but UNAVAILABLE+OPEN still blocked
+    # Config ACTIVE but UNAVAILABLE+OPEN still blocked (fresh open, no cooldown)
+    import time as _time
+
     reg.mark_unavailable(dep)
     reg.set_circuit(dep, CircuitState.OPEN)
+    ctl._opened_at[dep] = _time.time()  # noqa: SLF001
+    ctl._half_open_probes[dep] = 0  # noqa: SLF001
     assert ctl.is_routable(dep, config_active=True) is False
 
 
@@ -182,7 +186,7 @@ def test_strict_embedder_rejects_empty_and_has_no_lexical_fallback(monkeypatch) 
         build_strict_embedder_from_env()
 
     emb = StrictOpenAICompatibleEmbedder(
-        base_url="http://127.0.0.1:9",
+        base_url="http://embedder.invalid",
         model_reference="alias",
         expected_dimension=4,
     )
