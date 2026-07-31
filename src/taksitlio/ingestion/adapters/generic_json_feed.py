@@ -32,6 +32,7 @@ _CAPABILITIES = (
     IngestionCapability.STOCK,
     IngestionCapability.MEDIA,
     IngestionCapability.ATTRIBUTE,
+    IngestionCapability.CATEGORY,
 )
 
 
@@ -51,6 +52,7 @@ class GenericJsonFeedAdapter:
               "mpn": "...",
               "brand": "...",
               "model": "...",
+              "category": "...",
               "url": "https://...",
               "price": 1000.0,
               "list_price": 1200.0,
@@ -144,6 +146,7 @@ class GenericJsonFeedAdapter:
         row = await self._require(external_product_id)
         name = _as_str(row.get("name") or row.get("title")) or external_product_id
         attrs = row.get("attributes") if isinstance(row.get("attributes"), dict) else {}
+        category = _category_label(row)
         return NormalizedProduct(
             external_product_id=external_product_id,
             display_name=name,
@@ -153,6 +156,7 @@ class GenericJsonFeedAdapter:
             mpn=_as_str(row.get("mpn")),
             brand_name=_as_str(row.get("brand")),
             model_number=_as_str(row.get("model")),
+            category_name=category,
             short_description=_as_str(row.get("short_description")),
             full_description=_as_str(row.get("description")),
             source_url=_as_str(row.get("url")),
@@ -248,6 +252,17 @@ def _as_str(value: Any) -> Optional[str]:
         return None
     text = str(value).strip()
     return text or None
+
+
+def _category_label(row: Mapping[str, Any]) -> Optional[str]:
+    raw = row.get("category")
+    if isinstance(raw, (list, tuple)):
+        parts = [_as_str(x) for x in raw]
+        joined = " / ".join(p for p in parts if p)
+        return joined or None
+    if isinstance(raw, dict):
+        return _as_str(raw.get("name") or raw.get("label") or raw.get("title"))
+    return _as_str(raw)
 
 
 def register_generic_json_feed(

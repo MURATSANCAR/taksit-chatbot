@@ -80,6 +80,9 @@ class StoredProduct:
     data_quality_status: str
     status: str
     attributes: Mapping[str, Any] = field(default_factory=dict)
+    model_number: Optional[str] = None
+    brand_id: Optional[int] = None
+    category_id: Optional[int] = None
     primary_cdn_url: Optional[str] = None
     pending_source_image_url: Optional[str] = None
     primary_media_status: Optional[str] = None
@@ -96,6 +99,21 @@ def _row_to_stored_product(row: Any) -> StoredProduct:
         data_quality_status=str(row["data_quality_status"]),
         status=str(row["status"]),
         attributes=_attrs_dict(row["attributes"]),
+        model_number=(
+            str(row["model_number"])
+            if "model_number" in keys and row["model_number"] is not None
+            else None
+        ),
+        brand_id=(
+            int(row["brand_id"])
+            if "brand_id" in keys and row["brand_id"] is not None
+            else None
+        ),
+        category_id=(
+            int(row["category_id"])
+            if "category_id" in keys and row["category_id"] is not None
+            else None
+        ),
         primary_cdn_url=publicize_cdn_url(
             row["primary_cdn_url"] if "primary_cdn_url" in keys else None,
             storage_key=row["storage_key"] if "storage_key" in keys else None,
@@ -257,6 +275,9 @@ class InMemoryProductCatalogRepository:
             data_quality_status=data_quality_status,
             status=status,
             attributes=dict(plan.attributes),
+            model_number=plan.model_number,
+            brand_id=None if existing is None else existing.brand_id,
+            category_id=None if existing is None else existing.category_id,
             primary_cdn_url=None if existing is None else existing.primary_cdn_url,
             pending_source_image_url=(
                 None if existing is None else existing.pending_source_image_url
@@ -309,6 +330,8 @@ class InMemoryProductCatalogRepository:
         merchant_id: Optional[int] = None,
         limit: int = 100,
     ) -> Sequence[StoredProduct]:
+        from taksitlio.product.taxonomy import haystack_matches_terms, product_search_haystack
+
         terms = [t.casefold() for t in name_terms if t and str(t).strip()]
         rows = list(self._products.values())
         if merchant_id is not None:
@@ -317,7 +340,14 @@ class InMemoryProductCatalogRepository:
             rows = [
                 r
                 for r in rows
-                if any(t in (r.display_name or "").casefold() for t in terms)
+                if haystack_matches_terms(
+                    product_search_haystack(
+                        display_name=r.display_name or "",
+                        model_number=r.model_number,
+                        attributes=r.attributes,
+                    ),
+                    terms,
+                )
             ]
         rows.sort(key=lambda r: r.id)
         return tuple(rows[:limit])
@@ -463,59 +493,72 @@ class PostgresProductCatalogRepository:
         data_quality_status: str,
         status: str,
     ) -> StoredProduct:
+        from taksitlio.product.taxonomy_pg import resolve_product_taxonomy_ids
+
         async with self._pool.acquire() as conn:
-            row = await conn.fetchrow(
-                """
-                INSERT INTO products (
-                    merchant_id, external_product_id, merchant_sku, gtin, ean, mpn,
-                    model_number, display_name, normalized_name,
-                    short_description, full_description, status, data_quality_status,
-                    source_url, content_hash, source_reference, attributes,
-                    last_seen_at, last_verified_at, updated_at
-                ) VALUES (
-                    $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17::jsonb,
-                    NOW(), NOW(), NOW()
+            async with conn.transaction():
+                brand_id, category_id = await resolve_product_taxonomy_ids(
+                    conn,
+                    brand_name=plan.brand_name,
+                    category_name=plan.category_name,
                 )
-                ON CONFLICT (merchant_id, external_product_id) DO UPDATE SET
-                    merchant_sku = EXCLUDED.merchant_sku,
-                    gtin = EXCLUDED.gtin,
-                    ean = EXCLUDED.ean,
-                    mpn = EXCLUDED.mpn,
-                    model_number = EXCLUDED.model_number,
-                    display_name = EXCLUDED.display_name,
-                    normalized_name = EXCLUDED.normalized_name,
-                    short_description = EXCLUDED.short_description,
-                    full_description = EXCLUDED.full_description,
-                    status = EXCLUDED.status,
-                    data_quality_status = EXCLUDED.data_quality_status,
-                    source_url = EXCLUDED.source_url,
-                    content_hash = EXCLUDED.content_hash,
-                    source_reference = EXCLUDED.source_reference,
-                    attributes = EXCLUDED.attributes,
-                    last_seen_at = NOW(),
-                    last_verified_at = NOW(),
-                    updated_at = NOW()
-                RETURNING id, merchant_id, external_product_id, display_name,
-                          content_hash, data_quality_status, status, attributes
-                """,
-                merchant_id,
-                plan.external_product_id,
-                plan.merchant_sku,
-                plan.gtin,
-                plan.ean,
-                plan.mpn,
-                plan.model_number,
-                plan.display_name,
-                plan.normalized_name,
-                plan.short_description,
-                plan.full_description,
-                status,
-                data_quality_status,
-                plan.source_url,
-                plan.content_hash,
-                plan.source_reference,
-                json.dumps(dict(plan.attributes or {})),
-            )
+                row = await conn.fetchrow(
+                    """
+                    INSERT INTO products (
+                        merchant_id, external_product_id, merchant_sku, gtin, ean, mpn,
+                        brand_id, category_id, model_number, display_name, normalized_name,
+                        short_description, full_description, status, data_quality_status,
+                        source_url, content_hash, source_reference, attributes,
+                        last_seen_at, last_verified_at, updated_at
+                    ) VALUES (
+                        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19::jsonb,
+                        NOW(), NOW(), NOW()
+                    )
+                    ON CONFLICT (merchant_id, external_product_id) DO UPDATE SET
+                        merchant_sku = EXCLUDED.merchant_sku,
+                        gtin = EXCLUDED.gtin,
+                        ean = EXCLUDED.ean,
+                        mpn = EXCLUDED.mpn,
+                        brand_id = COALESCE(EXCLUDED.brand_id, products.brand_id),
+                        category_id = COALESCE(EXCLUDED.category_id, products.category_id),
+                        model_number = EXCLUDED.model_number,
+                        display_name = EXCLUDED.display_name,
+                        normalized_name = EXCLUDED.normalized_name,
+                        short_description = EXCLUDED.short_description,
+                        full_description = EXCLUDED.full_description,
+                        status = EXCLUDED.status,
+                        data_quality_status = EXCLUDED.data_quality_status,
+                        source_url = EXCLUDED.source_url,
+                        content_hash = EXCLUDED.content_hash,
+                        source_reference = EXCLUDED.source_reference,
+                        attributes = EXCLUDED.attributes,
+                        last_seen_at = NOW(),
+                        last_verified_at = NOW(),
+                        updated_at = NOW()
+                    RETURNING id, merchant_id, external_product_id, display_name,
+                              model_number, brand_id, category_id,
+                              content_hash, data_quality_status, status, attributes
+                    """,
+                    merchant_id,
+                    plan.external_product_id,
+                    plan.merchant_sku,
+                    plan.gtin,
+                    plan.ean,
+                    plan.mpn,
+                    brand_id,
+                    category_id,
+                    plan.model_number,
+                    plan.display_name,
+                    plan.normalized_name,
+                    plan.short_description,
+                    plan.full_description,
+                    status,
+                    data_quality_status,
+                    plan.source_url,
+                    plan.content_hash,
+                    plan.source_reference,
+                    json.dumps(dict(plan.attributes or {})),
+                )
         attrs = row["attributes"]
         if isinstance(attrs, str):
             attrs = json.loads(attrs)
@@ -528,6 +571,13 @@ class PostgresProductCatalogRepository:
             data_quality_status=str(row["data_quality_status"]),
             status=str(row["status"]),
             attributes=dict(attrs or {}),
+            model_number=(
+                str(row["model_number"]) if row["model_number"] is not None else None
+            ),
+            brand_id=int(row["brand_id"]) if row["brand_id"] is not None else None,
+            category_id=(
+                int(row["category_id"]) if row["category_id"] is not None else None
+            ),
         )
 
     async def upsert_offer(
@@ -705,13 +755,42 @@ class PostgresProductCatalogRepository:
         terms = [str(t).strip() for t in name_terms if t and str(t).strip()]
         if not terms:
             return await self.list_products(merchant_id=merchant_id, limit=limit)
-        # ILIKE any term; prefer finance-ready + media, then id.
+        # Match display_name, model, brand, category (attrs + joined tables).
         patterns = [f"%{t}%" for t in terms]
-        async with self._pool.acquire() as conn:
-            if merchant_id is None:
-                rows = await conn.fetch(
-                    """
+        match_sql = """
+                      AND (
+                        SELECT bool_or(
+                          p.display_name ILIKE x
+                          OR COALESCE(p.normalized_name, '') ILIKE x
+                          OR COALESCE(p.model_number, '') ILIKE x
+                          OR COALESCE(p.attributes->>'brand', '') ILIKE x
+                          OR COALESCE(p.attributes->>'model', '') ILIKE x
+                          OR COALESCE(p.attributes->>'category', '') ILIKE x
+                          OR COALESCE(b.display_name, '') ILIKE x
+                          OR COALESCE(b.normalized_name, '') ILIKE x
+                          OR COALESCE(c.display_name, '') ILIKE x
+                          OR EXISTS (
+                            SELECT 1
+                            FROM unnest(COALESCE(c.synonyms, '{}'::text[])) AS syn
+                            WHERE syn ILIKE x
+                          )
+                          OR EXISTS (
+                            SELECT 1
+                            FROM brand_aliases ba
+                            WHERE ba.brand_id = b.id
+                              AND ba.status = 'ACTIVE'
+                              AND (
+                                ba.alias_text ILIKE x
+                                OR ba.normalized_alias ILIKE x
+                              )
+                          )
+                        )
+                        FROM unnest($PATTERNS$::text[]) AS x
+                      )
+        """
+        select_cols = """
                     SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                           p.model_number, p.brand_id, p.category_id,
                            p.content_hash, p.data_quality_status, p.status, p.attributes,
                            COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
                            COALESCE(p.metadata->>'primary_media_status', ma.status)
@@ -719,14 +798,21 @@ class PostgresProductCatalogRepository:
                            p.metadata->>'pending_source_image_url' AS pending_source_image_url,
                            ma.storage_key AS storage_key
                     FROM products p
+                    LEFT JOIN brands b ON b.id = p.brand_id
+                    LEFT JOIN categories c ON c.id = p.category_id
                     LEFT JOIN product_media_links pml
                       ON pml.product_id = p.id AND pml.is_primary = TRUE
                     LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+        """
+        async with self._pool.acquire() as conn:
+            if merchant_id is None:
+                sql = (
+                    select_cols
+                    + """
                     WHERE p.status = 'ACTIVE'
-                      AND (
-                        SELECT bool_or(p.display_name ILIKE x)
-                        FROM unnest($1::text[]) AS x
-                      )
+                    """
+                    + match_sql.replace("$PATTERNS$", "$1")
+                    + """
                     ORDER BY
                       CASE WHEN EXISTS (
                         SELECT 1
@@ -740,37 +826,23 @@ class PostgresProductCatalogRepository:
                            THEN 0 ELSE 1 END,
                       p.id ASC
                     LIMIT $2
-                    """,
-                    patterns,
-                    limit,
-                )
-            else:
-                rows = await conn.fetch(
                     """
-                    SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
-                           p.content_hash, p.data_quality_status, p.status, p.attributes,
-                           COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
-                           COALESCE(p.metadata->>'primary_media_status', ma.status)
-                             AS primary_media_status,
-                           p.metadata->>'pending_source_image_url' AS pending_source_image_url,
-                           ma.storage_key AS storage_key
-                    FROM products p
-                    LEFT JOIN product_media_links pml
-                      ON pml.product_id = p.id AND pml.is_primary = TRUE
-                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                )
+                rows = await conn.fetch(sql, patterns, limit)
+            else:
+                sql = (
+                    select_cols
+                    + """
                     WHERE p.merchant_id = $1
                       AND p.status = 'ACTIVE'
-                      AND (
-                        SELECT bool_or(p.display_name ILIKE x)
-                        FROM unnest($2::text[]) AS x
-                      )
+                    """
+                    + match_sql.replace("$PATTERNS$", "$2")
+                    + """
                     ORDER BY p.id ASC
                     LIMIT $3
-                    """,
-                    merchant_id,
-                    patterns,
-                    limit,
+                    """
                 )
+                rows = await conn.fetch(sql, merchant_id, patterns, limit)
         return tuple(_row_to_stored_product(row) for row in rows)
 
     async def get_product(self, product_id: int) -> Optional[StoredProduct]:

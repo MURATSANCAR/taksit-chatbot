@@ -10,6 +10,7 @@ from taksitlio.product.canonical import CanonicalKey, resolve_canonical_key
 from taksitlio.product.hashing import content_hash
 from taksitlio.product.models import FreshnessStatus, StockStatus
 from taksitlio.product.normalize import normalize_display_name
+from taksitlio.product.taxonomy import enrich_product_attributes
 
 
 @dataclass(frozen=True)
@@ -23,6 +24,7 @@ class ProductUpsertPlan:
     mpn: Optional[str]
     brand_name: Optional[str]
     model_number: Optional[str]
+    category_name: Optional[str]
     short_description: Optional[str]
     full_description: Optional[str]
     source_url: Optional[str]
@@ -53,6 +55,12 @@ def plan_product_upsert(
     *,
     previous_content_hash: Optional[str] = None,
 ) -> ProductUpsertPlan:
+    attrs = enrich_product_attributes(
+        product.attributes,
+        brand_name=product.brand_name,
+        model_number=product.model_number,
+        category_name=product.category_name,
+    )
     payload = {
         "external_product_id": product.external_product_id,
         "display_name": product.display_name,
@@ -62,10 +70,11 @@ def plan_product_upsert(
         "mpn": product.mpn,
         "brand_name": product.brand_name,
         "model_number": product.model_number,
+        "category_name": product.category_name,
         "short_description": product.short_description,
         "full_description": product.full_description,
         "source_url": product.source_url,
-        "attributes": dict(product.attributes or {}),
+        "attributes": attrs,
     }
     digest = product.content_hash or content_hash(payload)
     action = "SKIP_UNCHANGED" if previous_content_hash and previous_content_hash == digest else "UPSERT"
@@ -87,10 +96,11 @@ def plan_product_upsert(
         mpn=product.mpn,
         brand_name=product.brand_name,
         model_number=product.model_number,
+        category_name=product.category_name,
         short_description=product.short_description,
         full_description=product.full_description,
         source_url=product.source_url,
-        attributes=dict(product.attributes or {}),
+        attributes=attrs,
         content_hash=digest,
         source_reference=product.source_reference,
         canonical=canonical,

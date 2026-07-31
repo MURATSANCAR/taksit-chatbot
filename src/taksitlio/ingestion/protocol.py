@@ -30,6 +30,7 @@ class NormalizedProduct:
     mpn: Optional[str] = None
     brand_name: Optional[str] = None
     model_number: Optional[str] = None
+    category_name: Optional[str] = None
     short_description: Optional[str] = None
     full_description: Optional[str] = None
     source_url: Optional[str] = None
