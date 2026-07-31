@@ -166,14 +166,28 @@ async def run_ingestion_dry(
 
     diagnostics: dict[str, Any] = {"limit": limit, "dry_run": True}
     # ADR-012 SCHEMA_DRIFT_GATE + quality circuit breaker (source-scoped)
-    from taksitlio.recommendation_safety import (
-        BreakerAction,
-        BreakerScope,
-        DriftSignals,
-        QualityCircuitBreaker,
-        decide_breaker,
-        evaluate_schema_drift,
-    )
+    try:
+        from taksitlio.recommendation_safety import (
+            BreakerAction,
+            BreakerScope,
+            DriftSignals,
+            QualityCircuitBreaker,
+            decide_breaker,
+            evaluate_schema_drift,
+        )
+    except ImportError:
+        # Keep dry-run usable if recommendation_safety has a circular import in some deploys.
+        return IngestionRunResult(
+            source_code=binding.source_code,
+            adapter_code=binding.adapter_code,
+            discovered=discovered,
+            succeeded=succeeded,
+            failed=failed,
+            quarantined=quarantined,
+            chatbot_visible=visible,
+            items=tuple(items),
+            diagnostics={**diagnostics, "adr012_breaker": "skipped_import_error"},
+        )
 
     failed_rate = (failed / discovered) if discovered else 0.0
     prices = [
