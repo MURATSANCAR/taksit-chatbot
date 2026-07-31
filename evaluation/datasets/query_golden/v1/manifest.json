@@ -1,0 +1,41 @@
+{
+  "version": "v1",
+  "dataset_id": "taksitlio-query-golden-v1",
+  "description": "ADR-013 Query Golden Set v1 — product/merchant/bank/route understanding",
+  "locale": "tr-TR",
+  "immutable": false,
+  "total_cases": 1000,
+  "bucket_targets": {
+    "fast_path": 300,
+    "typo_fuzzy": 200,
+    "negation_correction": 150,
+    "clarification": 150,
+    "llm_required": 100,
+    "adversarial": 100
+  },
+  "annotation_targets": {
+    "human_reviewed_seed": 100,
+    "draft": 900
+  },
+  "lanes": [
+    "parser",
+    "retrieval",
+    "finance",
+    "e2e"
+  ],
+  "schema": "evaluation/schemas/query_golden_case.schema.json",
+  "gates_config": "evaluation/config/query_golden_gates.v1.json",
+  "notes": "Bootstrap: DRAFT-heavy. Lock immutable=true only after HR review freeze; then cut v2 for changes.",
+  "bucket_counts": {
+    "fast_path": 300,
+    "typo_fuzzy": 200,
+    "negation_correction": 150,
+    "clarification": 150,
+    "llm_required": 100,
+    "adversarial": 100
+  },
+  "annotation_counts": {
+    "HUMAN_REVIEWED": 100,
+    "DRAFT": 900
+  }
+}

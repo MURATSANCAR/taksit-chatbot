@@ -1,0 +1,241 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://taksitlio.dev/schemas/evaluation/query_golden_case.schema.json",
+  "title": "QueryGoldenCase",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "bucket",
+    "locale",
+    "message",
+    "expected",
+    "dimensions",
+    "privacy",
+    "annotation"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^qg-v1-[0-9]{4}$"
+    },
+    "bucket": {
+      "type": "string",
+      "enum": [
+        "fast_path",
+        "typo_fuzzy",
+        "negation_correction",
+        "clarification",
+        "llm_required",
+        "adversarial"
+      ]
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[a-z]{2}-[A-Z]{2}$"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 800
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "llm_required", "clarification"],
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": [
+            "PRODUCT_SEARCH",
+            "PRODUCT_WITH_FINANCE",
+            "INSTALLMENT_INQUIRY",
+            "COMPARE_OPTIONS",
+            "OUT_OF_SCOPE"
+          ]
+        },
+        "route": {
+          "type": "string",
+          "enum": [
+            "FAST",
+            "CLARIFICATION",
+            "LLM",
+            "DEGRADED",
+            "OUT_OF_SCOPE"
+          ]
+        },
+        "merchant": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "display_name": {"type": "string", "minLength": 1, "maxLength": 120},
+            "match_required": {"type": "boolean"}
+          },
+          "required": ["display_name"]
+        },
+        "institutions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["display_name"],
+            "properties": {
+              "display_name": {"type": "string", "minLength": 1, "maxLength": 120},
+              "match_required": {"type": "boolean"}
+            }
+          },
+          "maxItems": 5
+        },
+        "brands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["display_name"],
+            "properties": {
+              "display_name": {"type": "string", "minLength": 1, "maxLength": 120},
+              "match_required": {"type": "boolean"}
+            }
+          },
+          "maxItems": 5
+        },
+        "category": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "display_name": {"type": "string", "minLength": 1, "maxLength": 120},
+            "match_required": {"type": "boolean"}
+          },
+          "required": ["display_name"]
+        },
+        "budget": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["EXACT", "APPROXIMATE", "RANGE", "MONTHLY_PAYMENT", "UNKNOWN"]
+            },
+            "value": {"type": "number"},
+            "minimum": {"type": "number"},
+            "maximum": {"type": "number"},
+            "monthly_payment": {"type": "number"},
+            "currency": {"type": "string", "enum": ["TRY"]}
+          }
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["attribute_id", "operator", "value"],
+            "properties": {
+              "attribute_id": {"type": "string"},
+              "operator": {"type": "string", "enum": ["EQ", "GTE", "LTE", "RANGE"]},
+              "value": {"type": ["number", "string", "boolean"]},
+              "unit": {"type": "string"}
+            }
+          },
+          "maxItems": 10
+        },
+        "requested_terms": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 1, "maximum": 60},
+          "maxItems": 5
+        },
+        "exclusions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "negative_categories": {
+              "type": "array",
+              "items": {"type": "string", "minLength": 1},
+              "maxItems": 10
+            },
+            "cancelled": {
+              "type": "array",
+              "items": {"type": "string", "minLength": 1},
+              "maxItems": 10
+            }
+          }
+        },
+        "clarification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["should_ask"],
+          "properties": {
+            "should_ask": {"type": "boolean"},
+            "question_id": {"type": ["string", "null"]},
+            "max_questions": {"type": "integer", "minimum": 1, "maximum": 2}
+          }
+        },
+        "llm_required": {"type": "boolean"}
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tags", "difficulty"],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "open_product",
+              "typo",
+              "merchant",
+              "merchant_typo",
+              "brand",
+              "institution",
+              "institution_typo",
+              "price_term",
+              "budget",
+              "ram",
+              "negation",
+              "correction",
+              "clarification",
+              "llm",
+              "adversarial",
+              "conflict",
+              "abstract_usage"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 12
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["EASY", "MEDIUM", "HARD"]
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["synthetic"],
+      "properties": {
+        "synthetic": {"type": "boolean"},
+        "contains_pii": {"type": "boolean"},
+        "source": {"type": "string", "maxLength": 120}
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["DRAFT", "SINGLE_REVIEWED", "HUMAN_REVIEWED"]
+        },
+        "reviewers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "maxItems": 5
+        },
+        "notes_hash": {"type": "string", "maxLength": 64}
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "merchants": [
+    {
+      "entity_id": "merchant-teknosa",
+      "display_name": "Teknosa",
+      "canonical_name": "Teknosa",
+      "aliases": ["teknoksa", "teknossa", "teknosa"],
+      "entity_type": "merchant"
+    },
+    {
+      "entity_id": "merchant-mediamarkt",
+      "display_name": "MediaMarkt",
+      "canonical_name": "MediaMarkt",
+      "aliases": ["medya markt", "mediamarkt", "media markt"],
+      "entity_type": "merchant"
+    },
+    {
+      "entity_id": "merchant-vatan",
+      "display_name": "Vatan Bilgisayar",
+      "canonical_name": "Vatan Bilgisayar",
+      "aliases": ["vatan", "vatan bilgisaya", "vatan bilgisayar"],
+      "entity_type": "merchant"
+    },
+    {
+      "entity_id": "merchant-flo",
+      "display_name": "Flo",
+      "canonical_name": "Flo",
+      "aliases": ["flo", "floo"],
+      "entity_type": "merchant"
+    }
+  ],
+  "categories": [
+    {
+      "entity_id": "category-laptop",
+      "display_name": "Dizüstü Bilgisayar",
+      "canonical_name": "Laptop",
+      "aliases": ["laptop", "notebook", "bilgisayar", "macbook"],
+      "entity_type": "category"
+    },
+    {
+      "entity_id": "category-phone",
+      "display_name": "Cep Telefonu",
+      "canonical_name": "Phone",
+      "aliases": ["telefon", "iphone", "cep telefonu"],
+      "entity_type": "category"
+    },
+    {
+      "entity_id": "category-tablet",
+      "display_name": "Tablet",
+      "canonical_name": "Tablet",
+      "aliases": ["tablet", "ipad"],
+      "entity_type": "category"
+    },
+    {
+      "entity_id": "category-tv",
+      "display_name": "Televizyon",
+      "canonical_name": "TV",
+      "aliases": ["televizyon", "tv"],
+      "entity_type": "category"
+    },
+    {
+      "entity_id": "FOOTWEAR",
+      "display_name": "Ayakkabı",
+      "canonical_name": "FOOTWEAR",
+      "aliases": ["ayakkabı", "ayakkabi", "spor ayakkabı", "sneaker", "bot", "terlik"],
+      "entity_type": "category"
+    },
+    {
+      "entity_id": "HOME_APPLIANCE",
+      "display_name": "Beyaz Eşya",
+      "canonical_name": "HOME_APPLIANCE",
+      "aliases": ["beyaz eşya", "buzdolabı", "çamaşır makinesi", "ev aleti"],
+      "entity_type": "category"
+    }
+  ],
+  "brands": [
+    {
+      "entity_id": "brand-apple",
+      "display_name": "Apple",
+      "canonical_name": "Apple",
+      "aliases": ["apple"],
+      "entity_type": "brand"
+    },
+    {
+      "entity_id": "brand-samsung",
+      "display_name": "Samsung",
+      "canonical_name": "Samsung",
+      "aliases": ["samsung"],
+      "entity_type": "brand"
+    },
+    {
+      "entity_id": "brand-lenovo",
+      "display_name": "Lenovo",
+      "canonical_name": "Lenovo",
+      "aliases": ["lenovo"],
+      "entity_type": "brand"
+    },
+    {
+      "entity_id": "brand-hp",
+      "display_name": "HP",
+      "canonical_name": "HP",
+      "aliases": ["hp"],
+      "entity_type": "brand"
+    },
+    {
+      "entity_id": "brand-xiaomi",
+      "display_name": "Xiaomi",
+      "canonical_name": "Xiaomi",
+      "aliases": ["xiaomi"],
+      "entity_type": "brand"
+    },
+    {
+      "entity_id": "brand-asus",
+      "display_name": "Asus",
+      "canonical_name": "Asus",
+      "aliases": ["asus"],
+      "entity_type": "brand"
+    }
+  ],
+  "institutions": [
+    {
+      "entity_id": "institution-kuveyt",
+      "display_name": "Kuveyt Türk",
+      "canonical_name": "Kuveyt Türk",
+      "aliases": ["kuveyt türk", "kuveyt turk", "kuveytturk"],
+      "entity_type": "institution"
+    },
+    {
+      "entity_id": "institution-fibabanka",
+      "display_name": "Fibabanka",
+      "canonical_name": "Fibabanka",
+      "aliases": ["fibabnka", "fibabanka"],
+      "entity_type": "institution"
+    },
+    {
+      "entity_id": "institution-yapikredi",
+      "display_name": "Yapı Kredi",
+      "canonical_name": "Yapı Kredi",
+      "aliases": ["yapi kredi", "yapıkredi", "yapikredi"],
+      "entity_type": "institution"
+    }
+  ]
+}

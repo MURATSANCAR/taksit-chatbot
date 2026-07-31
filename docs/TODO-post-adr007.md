@@ -1,6 +1,6 @@
-# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010 / ADR-011 / ADR-012
+# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010 / ADR-011 / ADR-012 / ADR-013
 
-Status date: 2026-07-31
+Status date: 2026-08-01
 
 ## Closed — ADR-007 safety
 
@@ -282,6 +282,27 @@ nanobase’te uygulandı (V022–V024, 2026-08-01); smoke write OK. Ops runbook:
       chat/search loads sponsored + breakers from container stores
 - [x] Ops runbook: migrate V023/V024 + breaker/sponsored/feedback smoke
 
+## Open — ADR-013 layered verification + Query Golden Set v1
+
+ADR: [`docs/adr/ADR-013-layered-verification-and-release-gates.md`](adr/ADR-013-layered-verification-and-release-gates.md)
+
+Runbook: [`docs/runbooks/ADR-013-layered-verification.md`](runbooks/ADR-013-layered-verification.md)
+
+### P0 — Query Golden v1 bootstrap
+
+- [x] ADR-013 + runbook
+- [x] `query_golden_case.schema.json` + manifest + gate thresholds
+- [x] Generator → 1000 cases (~100 HUMAN_REVIEWED + ~900 DRAFT)
+- [x] Loader / metrics + `evaluation/_run_query_golden_v1.py` parser lane
+- [x] Data-driven fuzzy acceptance (no static typo map)
+- [x] Retrieval / finance / E2E lanes on **TEST** fixtures (product pool + finance scenarios)
+- [ ] HUMAN_REVIEWED growth toward promotion bar (`DRAFT=0` + thresholds)
+- [ ] Retrieval / finance / E2E on **staging** (real merchant data; nanobase)
+- [ ] Staging product golden (controlled 100 SKUs × 3 merchant types)
+- [ ] Payment plan golden dataset expansion + bank mapping verification table
+- [ ] Shadow mode ≥1000 anonymous queries
+- [ ] Perf / chaos / UAT gates for general open
+
 ## Gates
 
 | Gate | Status |
@@ -313,3 +334,8 @@ nanobase’te uygulandı (V022–V024, 2026-08-01); smoke write OK. Ops runbook:
 | Source Conflict | ADR-012 PASS |
 | Schema Drift | ADR-012 PASS |
 | Prompt Injection | ADR-012 PASS |
+| Query Golden / Parser (ADR-013) | P0 bootstrap (1000 cases; DRAFT-heavy; parser BOOTSTRAP) |
+| Query Golden Retrieval/Finance TEST (ADR-013) | PASS (fixture lanes; staging open) |
+| Clarification Gate (ADR-013 L2) | unit/acceptance skeleton; golden growth open |
+| Real Product / Finance / Payment / Rec / Progress (ADR-013 L3–L8) | staging datasets open |
+| Shadow / Perf / UAT (ADR-013) | open |

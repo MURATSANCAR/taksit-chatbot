@@ -844,98 +844,16 @@ def build_empty_orchestrator() -> SearchOrchestrator:
 
 
 def build_demo_orchestrator() -> SearchOrchestrator:
-    """Test-only synthetic catalog (do not use in production containers)."""
+    """Test-only synthetic catalog (do not use in production containers).
 
-    from taksitlio.entity_resolution import EntityCandidate
+    Entity aliases (including typo forms) load from evaluation fixture JSON —
+    not hardcoded query→entity maps in this module (ADR-010 §32 / ADR-013).
+    """
+
+    from taksitlio.evaluation.query_golden.catalog import build_query_golden_test_catalog
     from taksitlio.progressive_results.category_match import CATEGORY_FAMILIES
 
-    catalog = CatalogHints(
-        merchants=(
-            EntityCandidate(
-                entity_id="merchant-teknosa",
-                display_name="Teknosa",
-                canonical_name="Teknosa",
-                aliases=("teknoksa", "teknosa"),
-                entity_type="merchant",
-            ),
-        ),
-        categories=(
-            EntityCandidate(
-                entity_id="category-laptop",
-                display_name="Dizüstü Bilgisayar",
-                canonical_name="Laptop",
-                aliases=("laptop", "notebook", "bilgisayar", "macbook"),
-                entity_type="category",
-            ),
-            EntityCandidate(
-                entity_id="category-phone",
-                display_name="Cep Telefonu",
-                canonical_name="Phone",
-                aliases=("telefon", "iphone", "cep telefonu"),
-                entity_type="category",
-            ),
-            EntityCandidate(
-                entity_id="category-tablet",
-                display_name="Tablet",
-                canonical_name="Tablet",
-                aliases=("tablet", "ipad"),
-                entity_type="category",
-            ),
-            EntityCandidate(
-                entity_id="category-tv",
-                display_name="Televizyon",
-                canonical_name="TV",
-                aliases=("televizyon", "tv"),
-                entity_type="category",
-            ),
-            EntityCandidate(
-                entity_id="HOME_APPLIANCE",
-                display_name="Beyaz Eşya",
-                canonical_name="HOME_APPLIANCE",
-                aliases=("beyaz eşya", "buzdolabı", "çamaşır makinesi", "ev aleti"),
-                entity_type="category",
-            ),
-            EntityCandidate(
-                entity_id="FOOTWEAR",
-                display_name="Ayakkabı",
-                canonical_name="FOOTWEAR",
-                aliases=("ayakkabı", "ayakkabi", "spor ayakkabı", "sneaker", "bot", "terlik"),
-                entity_type="category",
-            ),
-        ),
-        brands=(
-            EntityCandidate(
-                entity_id="brand-apple",
-                display_name="Apple",
-                canonical_name="Apple",
-                aliases=("apple",),
-                entity_type="brand",
-            ),
-            EntityCandidate(
-                entity_id="brand-samsung",
-                display_name="Samsung",
-                canonical_name="Samsung",
-                aliases=("samsung",),
-                entity_type="brand",
-            ),
-        ),
-        institutions=(
-            EntityCandidate(
-                entity_id="institution-kuveyt",
-                display_name="Kuveyt Türk",
-                canonical_name="Kuveyt Türk",
-                aliases=("kuveyt türk", "kuveyt turk"),
-                entity_type="institution",
-            ),
-            EntityCandidate(
-                entity_id="institution-fibabanka",
-                display_name="Fibabanka",
-                canonical_name="Fibabanka",
-                aliases=("fibabnka", "fibabanka"),
-                entity_type="institution",
-            ),
-        ),
-    )
+    catalog = build_query_golden_test_catalog()
     products = [
         {
             "product_id": "p-laptop-1",

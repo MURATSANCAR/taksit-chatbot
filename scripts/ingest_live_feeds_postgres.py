@@ -71,11 +71,22 @@ async def attach_product_images(
     import os
 
     from taksitlio.media.pipeline import download_image, ingest_image_bytes
-    from taksitlio.media.storage import LocalObjectStorage
+    from taksitlio.media.quality import MediaQualityPolicy
+    from taksitlio.media.s3_storage import build_object_storage_from_env
 
-    root = os.environ.get("MEDIA_STORAGE_ROOT", "/tmp/taksitlio-media")
-    cdn = os.environ.get("CDN_BASE_URL", "http://localhost:8000/cdn")
-    storage = LocalObjectStorage(root, cdn_base_url=cdn)
+    storage = build_object_storage_from_env(
+        default_local_root=os.environ.get(
+            "MEDIA_STORAGE_ROOT", str(ROOT / "var" / "media")
+        )
+    )
+    # Listing thumbs often <600px; keep usable for catalog cards.
+    policy = MediaQualityPolicy(
+        min_width=250,
+        min_height=250,
+        preferred_width=600,
+        aspect_min=0.5,
+        aspect_max=2.0,
+    )
 
     by_ext = {
         i.external_product_id: i.product_id
@@ -110,9 +121,15 @@ async def attach_product_images(
                     source_url=source_url,
                     storage=storage,
                     known_sha256=known,
+                    policy=policy,
                     source_reference=ingestion.source_code,
                 )
                 draft = outcome.draft
+                status = (
+                    draft.status.value
+                    if hasattr(draft.status, "value")
+                    else str(draft.status)
+                )
                 if outcome.skipped_duplicate_sha:
                     mid = await conn.fetchval(
                         "SELECT id FROM media_assets WHERE sha256=$1", draft.sha256
@@ -129,7 +146,11 @@ async def attach_product_images(
                         )
                         ON CONFLICT (sha256) DO UPDATE SET
                           updated_at = NOW(),
-                          last_verified_at = NOW()
+                          last_verified_at = NOW(),
+                          status = EXCLUDED.status,
+                          quality_score = EXCLUDED.quality_score,
+                          cdn_url = COALESCE(EXCLUDED.cdn_url, media_assets.cdn_url),
+                          storage_key = COALESCE(EXCLUDED.storage_key, media_assets.storage_key)
                         RETURNING id
                         """,
                         draft.source_url,
@@ -142,7 +163,7 @@ async def attach_product_images(
                         draft.sha256,
                         draft.perceptual_hash,
                         draft.quality_score,
-                        draft.status.value if hasattr(draft.status, "value") else str(draft.status),
+                        status,
                         draft.source_reference,
                     )
                     known.add(draft.sha256)
@@ -164,29 +185,20 @@ async def attach_product_images(
                             v["cdn_url"],
                             v.get("file_size"),
                         )
-                await conn.execute(
-                    """
-                    INSERT INTO product_media_links (
-                      product_id, media_asset_id, media_role, display_order, is_primary
-                    ) VALUES ($1,$2,'PRIMARY',0,TRUE)
-                    ON CONFLICT (product_id, media_asset_id, media_role) DO UPDATE
-                      SET is_primary = TRUE
-                    """,
+                await catalog.attach_primary_media(
                     product_id,
-                    mid,
-                )
-                # clear pending once attached
-                await conn.execute(
-                    """
-                    UPDATE products SET metadata =
-                      COALESCE(metadata,'{}'::jsonb) - 'pending_source_image_url',
-                      updated_at = NOW()
-                    WHERE id=$1
-                    """,
-                    product_id,
+                    cdn_url=draft.cdn_url,
+                    sha256=draft.sha256,
+                    status=status,
+                    source_url=source_url,
+                    storage_key=draft.storage_key,
+                    mime_type=draft.mime_type,
+                    width=draft.width,
+                    height=draft.height,
+                    file_size=draft.file_size,
                 )
                 stats["downloaded"] += 1
-                if str(draft.status).endswith("READY") or getattr(draft.status, "value", "") == "READY":
+                if status == "READY":
                     stats["ready"] += 1
             except Exception:
                 stats["failed"] += 1
@@ -210,8 +222,36 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
     }
     reports = []
     catalog = PostgresProductCatalogRepository(pool)
+    only = {
+        x.strip()
+        for x in (os.environ.get("_INGEST_ONLY") or "").split(",")
+        if x.strip()
+    }
+    skip = {
+        x.strip()
+        for x in (os.environ.get("_INGEST_SKIP") or "").split(",")
+        if x.strip()
+    }
+    skip_media = (os.environ.get("_INGEST_SKIP_MEDIA") or "").strip() in {
+        "1",
+        "true",
+        "yes",
+    }
+
+    def _wanted(stem: str) -> bool:
+        short = stem.replace("src-m-", "").replace("src-", "")
+        keys = {stem, short, f"m-{short}" if not short.startswith("m-") else short}
+        if only and not (keys & only):
+            return False
+        if skip and (keys & skip):
+            return False
+        return True
+
     async with pool.acquire() as conn:
         for path in sorted(LIVE.glob("src-m-*.json")):
+            if not _wanted(path.stem):
+                reports.append({"file": path.name, "skipped": "filter"})
+                continue
             meta = name_by_code.get(path.stem)
             if meta is None:
                 # Derive opaque code from stem: src-m-foo -> m-foo
@@ -237,9 +277,12 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
             applied = await apply_ingestion_to_catalog(
                 result, merchant_id=merchant_id, catalog=catalog
             )
-            media_stats = await attach_product_images(
-                pool, ingestion=result, applied=applied, catalog=catalog
-            )
+            if skip_media:
+                media_stats = {"skipped": "skip_media"}
+            else:
+                media_stats = await attach_product_images(
+                    pool, ingestion=result, applied=applied, catalog=catalog
+                )
             reports.append(
                 {
                     "file": path.name,
@@ -303,7 +346,25 @@ async def ingest_campaigns(pool, *, activate: bool = False) -> list[dict[str, An
 
 
 async def main() -> None:
+    import argparse
     import asyncpg
+
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--merchants",
+        default="",
+        help="comma stems or codes e.g. flo,src-m-vatan (empty=all)",
+    )
+    ap.add_argument(
+        "--skip-merchants",
+        default="",
+        help="comma stems to skip e.g. flo",
+    )
+    ap.add_argument("--skip-campaigns", action="store_true")
+    ap.add_argument("--skip-media", action="store_true", help="upsert products only")
+    args = ap.parse_args()
+    only = {x.strip() for x in args.merchants.split(",") if x.strip()}
+    skip = {x.strip() for x in args.skip_merchants.split(",") if x.strip()}
 
     dsn = os.environ.get("DATABASE_URL")
     if not dsn:
@@ -312,8 +373,15 @@ async def main() -> None:
     dsn = dsn.replace("postgresql+asyncpg://", "postgresql://")
     pool = await asyncpg.create_pool(dsn, min_size=1, max_size=4)
     try:
+        # Stash filters for ingest_products via env (minimal change surface)
+        os.environ["_INGEST_ONLY"] = ",".join(sorted(only))
+        os.environ["_INGEST_SKIP"] = ",".join(sorted(skip))
+        if args.skip_media:
+            os.environ["_INGEST_SKIP_MEDIA"] = "1"
         product_reports = await ingest_products(pool)
-        campaign_reports = await ingest_campaigns(pool, activate=True)
+        campaign_reports = (
+            [] if args.skip_campaigns else await ingest_campaigns(pool, activate=True)
+        )
         async with pool.acquire() as conn:
             counts = {
                 "merchants": await conn.fetchval("SELECT count(*) FROM merchants"),

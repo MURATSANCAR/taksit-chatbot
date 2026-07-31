@@ -1,0 +1,49 @@
+{
+  "version": "v1",
+  "dataset_id": "taksitlio-query-golden-v1",
+  "notes": "ADR-013 gate thresholds. Parser full ACCEPT requires DRAFT=0 + HR bar. Retrieval/finance TEST lanes use zero-tolerance integrity counts.",
+  "minimum_human_reviewed": 100,
+  "parser_gate_thresholds": {
+    "merchant_precision": {"min": 0.98},
+    "institution_precision": {"min": 0.99},
+    "category_precision": {"min": 0.95},
+    "price_extraction_accuracy": {"min": 0.98},
+    "term_extraction_accuracy": {"min": 0.98},
+    "negation_recall": {"min": 0.95},
+    "correction_recall": {"min": 0.90},
+    "clarification_accuracy": {"min": 0.90},
+    "llm_routing_accuracy": {"min": 0.95},
+    "false_auto_resolution_count": {"max_count": 0},
+    "unnecessary_llm_on_fast_count": {"max_count": 0},
+    "unnecessary_llm_on_clarification_count": {"max_count": 0}
+  },
+  "retrieval_gate_thresholds": {
+    "budget_filter_violations": {"max_count": 0},
+    "merchant_filter_violations": {"max_count": 0},
+    "negation_leak_count": {"max_count": 0},
+    "ram_filter_violations": {"max_count": 0}
+  },
+  "finance_gate_thresholds": {
+    "wrong_eligible_shown": {"max_count": 0},
+    "expired_campaign_shown_active": {"max_count": 0},
+    "no_agreement_shown": {"max_count": 0},
+    "wrong_monthly_payment": {"max_count": 0},
+    "wrong_total_repayment": {"max_count": 0},
+    "eligibility_accuracy": {"min": 1.0}
+  },
+  "clarification_gate_thresholds": {
+    "llm_avoided_by_clarification_rate": {"min": 0.60},
+    "max_questions_per_message": {"max_count": 1},
+    "max_consecutive_questions": {"max_count": 2}
+  },
+  "zero_tolerance": [
+    "wrong_bank_mapping",
+    "wrong_campaign_mapping",
+    "wrong_payment_calculation",
+    "wrong_product_variant",
+    "llm_invented_finance",
+    "expired_campaign_shown_active",
+    "wrong_best_offer_label",
+    "fake_progress_message"
+  ]
+}

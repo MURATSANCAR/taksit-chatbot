@@ -26,7 +26,7 @@ async def main() -> None:
 
     from taksitlio.media.pipeline import ingest_image_bytes
     from taksitlio.media.quality import MediaQualityPolicy
-    from taksitlio.media.storage import LocalObjectStorage
+    from taksitlio.media.s3_storage import build_object_storage_from_env
 
     if not MANIFEST.exists():
         raise SystemExit(f"missing {MANIFEST}")
@@ -38,9 +38,11 @@ async def main() -> None:
         raise SystemExit("DATABASE_URL required")
     dsn = dsn.replace("postgresql+asyncpg://", "postgresql://")
 
-    root = os.environ.get("MEDIA_STORAGE_ROOT", "/tmp/taksitlio-media")
-    cdn = os.environ.get("CDN_BASE_URL", "http://127.0.0.1:8000/cdn")
-    storage = LocalObjectStorage(root, cdn_base_url=cdn)
+    storage = build_object_storage_from_env(
+        default_local_root=os.environ.get(
+            "MEDIA_STORAGE_ROOT", str(ROOT / "var" / "media")
+        )
+    )
     # Listing feeds often ship ~300px thumbs; keep them usable for catalog cards.
     policy = MediaQualityPolicy(
         min_width=250,
@@ -61,6 +63,18 @@ async def main() -> None:
         "src-m-mediamarkt": "m-mediamarkt",
         "src-m-koctas": "m-koctas",
         "src-m-dr": "m-dr",
+        "src-m-teknosa": "m-teknosa",
+        "src-m-flo": "m-flo",
+        "src-m-n11": "m-n11",
+        "src-m-trendyol": "m-trendyol",
+        "src-m-network": "m-network",
+        "src-m-civil": "m-civil",
+        "src-m-arcelik": "m-arcelik",
+        "src-m-beko": "m-beko",
+        "src-m-evofone": "m-evofone",
+        "src-m-hepsiburada": "m-hepsiburada",
+        "src-m-vivense": "m-vivense",
+        "src-m-decathlon": "m-decathlon",
     }
 
     try:
