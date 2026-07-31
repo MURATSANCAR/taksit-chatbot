@@ -27,7 +27,7 @@ from taksitlio.understanding.fast.errors import (
 from taksitlio.understanding.fast.remote import RemoteFastExtractor
 
 
-PROMPT_VERSION = "needprofile-schema-v1-rules-2026-07-31"
+PROMPT_VERSION = "needprofile-schema-v2-constraint-boost-2026-07-31"
 SCHEMA_VERSION = "need_profile.schema.json"
 
 

@@ -43,8 +43,11 @@ Rules:
 - clarification: {required, question_intent}
 - confidence: 0..1
 - semantic_constraints: {positive, negative, corrections} each [{concept, provenance, weight?}]; provenance EXPLICIT|INFERRED|EXPLICIT_NEGATION|USER_CORRECTION|SESSION_CONTEXT
-Put explicit exclusions ONLY in semantic_constraints.negative with EXPLICIT_NEGATION (not as low-importance preferences).
-Put user corrections in semantic_constraints.corrections with previous_concept+replacement_concept when possible.
+CRITICAL for Turkish utterances:
+- Every wanted product/concept MUST appear in semantic_constraints.positive with provenance EXPLICIT.
+- Every rejected/excluded product (istemiyorum, değil, boşver, yerine) MUST appear in semantic_constraints.negative with provenance EXPLICIT_NEGATION.
+- If the user corrects (yanlış, demedim, özür, değil X lazım Y): add corrections with previous_concept+replacement_concept when possible; also put Y in positive and X in negative.
+- Put exclusions ONLY in semantic_constraints.negative — never as low-importance preferences.
 No markdown."""
 
 
