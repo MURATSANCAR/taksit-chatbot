@@ -1,4 +1,4 @@
-# TODO — post ADR-007 / ADR-008
+# TODO — post ADR-007 / ADR-008 / ADR-009
 
 Status date: 2026-07-31
 
@@ -21,33 +21,34 @@ Status date: 2026-07-31
 
 ## Closed — ADR-008 P0.1 residual closeout
 
-- [x] Soft-exclude expansion (strong + soft + catalog-compatible)
-- [x] `ConceptCoverageScorer` bonus (semantic_description / use_case fallback)
-- [x] `diversify_top_k` + parent-demotion + sibling-diversity
-- [x] `force_parent_child_collapse_on_direct_alias`
-- [x] Policy fields + `__post_init__` range validation
+- [x] Soft-exclude expansion + concept coverage + diversify Top-K
 - [x] V014 top-K diversification policy migration
-- [x] `RetrievalDiagnostic` reason codes (RANKED_3, SIBLING_MISSING, PARENT_CROWDS_OUT_CHILD, ...)
-- [x] Residual analysis report (`evaluation/reports/adr008-p01-residual-analysis.json`)
-- [x] E2E top_1 ≥ 0.65 (now 0.684)
-- [x] E2E top_2 ≥ 0.90 (now 0.904)
-- [x] E2E required_recall ≥ 0.88 (now 0.880)
+- [x] E2E top_1 ≥ 0.65 / top_2 ≥ 0.90 / required ≥ 0.88
 
-## Open — P1 runtime
+## In progress — ADR-008 P1 / ADR-009 runtime verification
 
-- [ ] Real FAST deployment + measured latency / recall
-- [ ] Real CATEGORY_EMBEDDING (else BLOCKED_DEPENDENCY)
-- [ ] pgvector integration skip=0 + scale benchmarks
-- [ ] Redis integration skip=0 in CI/local RC
-- [ ] PROVISIONAL_ACCEPT after runtime green
+- [x] ADR-009 accepted (real runtime ≠ test-double)
+- [x] Runtime dependency probes + provisional / campaign gates
+- [x] Redis integration suite under `tests/integration/redis` (CI skip=0)
+- [x] pgvector integration suite under `tests/integration/pgvector` (CI skip=0)
+- [x] `RemoteFastExtractor` + `StrictOpenAICompatibleEmbedder` (no silent fallback)
+- [x] Bootstrap templates: `poc-fast-understanding.sql`, `poc-category-embedding.sql`
+- [x] `docker/docker-compose.runtime.yml` (redis + pgvector/pg16 profile)
+- [x] `.github/workflows/runtime-verification.yml`
+- [ ] Live FAST deployment health + Turkish extraction eval (env-configured)
+- [ ] Live CATEGORY_EMBEDDING rebuild + quality comparison
+- [ ] pgvector 100 / 1k / 10k benchmarks measured
+- [ ] Full Redis+FAST+embedding+pgvector E2E latency stages
+- [ ] `PROVISIONAL_ACCEPT` after all `real_*_measured=true`
+- [ ] Campaign Gate `READY_TO_OPEN` (no campaign code in this sprint)
 
 ## Gates
 
 | Gate | Status |
 |---|---|
-| Safety | PASS |
-| Oracle Quality | PASS (top_2=1.00, required=1.00) |
-| E2E Quality | PASS (top_1=0.684, top_2=0.904, required=0.880, status=0.842) |
-| Runtime Dependency | BLOCKED_DEPENDENCY |
-| Campaign | CLOSED |
-| Sprint gate | QUALITY_READY_RUNTIME_BLOCKED — not PROVISIONAL_ACCEPT |
+| Safety | PASS (test-double baseline) |
+| Oracle Quality | PASS (baseline retained) |
+| E2E Quality | PASS (baseline retained) |
+| Runtime Dependency | BLOCKED_DEPENDENCY until live FAST+embedding+Redis+pgvector measured |
+| Provisional | deferred — see `evaluation/reports/adr008-p1-gate.json` |
+| Campaign | CLOSED (opens only after PROVISIONAL_ACCEPT) |

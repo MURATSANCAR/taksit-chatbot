@@ -27,13 +27,14 @@ jobs:
           python-version: "3.11"
       - name: Install
         run: pip install -e ".[dev]"
-      - name: Unit + integration (Redis required)
+      - name: Unit + Redis integration (required)
         run: |
-          pytest -q
-          pytest -m integration tests/integration -q --tb=short
-          # Dynamic catalog acceptance lives under tests/integration/semantic_matching
-          # and is collected by the full suite above (not Redis-gated).
-      - name: Validate evaluation datasets (v1 + v2 + v3)
+          pytest -q --ignore=tests/integration
+          pytest -m integration tests/integration/conversation_state tests/integration/redis -q --tb=short
+          # Must not soft-skip Redis when service is up.
+          out=$(pytest -m integration tests/integration/redis -q)
+          echo "$out" | grep -E "[1-9][0-9]* skipped" && exit 1 || true
+      - name: Validate evaluation datasets (v1 + v2 + v3 + v4)
         run: |
           python -m taksitlio.evaluation.cli validate-dataset \
             --dataset evaluation/datasets/development/tr-category-dev.v1.jsonl \
@@ -52,10 +53,14 @@ jobs:
             --dataset evaluation/datasets/development/tr-category-dev.v3.jsonl
           python -m taksitlio.evaluation.cli validate-dataset \
             --dataset evaluation/datasets/validation/tr-category-validation.v3.jsonl
-      - name: Smoke evaluation (tiny subset — non-blocking gate)
+          # ADR-008 v4 morphology / residual datasets.
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/development/tr-category-dev.v4.jsonl || true
+          python -m taksitlio.evaluation.cli validate-dataset \
+            --dataset evaluation/datasets/validation/tr-category-validation.v4.jsonl || true
+      - name: Smoke evaluation + ADR-009 runtime gate unit tests
         run: |
-          # Uses validation split, small sample; asserts report structure only.
-          pytest tests/acceptance/evaluation -q --tb=short
+          pytest tests/acceptance/evaluation tests/acceptance/runtime -q --tb=short
       - name: Real embedding challenger dry-run (must reject lexical fallback)
         run: |
           # Challenger exits non-zero when no real deployment is available;
@@ -70,16 +75,9 @@ jobs:
             echo "compare-embeddings must NOT return OK for lexical/unavailable gateways" >&2
             exit 1
           fi
-      - name: pgvector integration (legacy env-gated smoke — informational)
-        env:
-          INTEGRATION_REQUIRE_PG: ""
-          PGVECTOR_URL: ""
+      - name: Other non-Redis integration (fixture catalog etc.)
         run: |
-          echo "::notice ::main test job runs against the pgvector service in the pgvector-integration job below"
-          pytest -m integration tests/integration/category_embedding -q --tb=short || {
-            echo "pgvector job skipped without a database in main job; treating as informational"
-            exit 0
-          }
+          pytest -m integration tests/integration/semantic_matching tests/integration/evaluation -q --tb=short
 
   pgvector-integration:
     runs-on: ubuntu-latest
@@ -113,4 +111,7 @@ jobs:
           psql "$PGVECTOR_URL" -f db/bootstrap/poc-embedding-model.sql
       - name: pgvector integration (REQUIRED — must not skip)
         run: |
-          pytest -m integration tests/integration/category_embedding -q --tb=short
+          out=$(pytest -m integration tests/integration/category_embedding tests/integration/pgvector -q --tb=short)
+          echo "$out"
+          echo "$out" | grep -E "[1-9][0-9]* skipped" && exit 1 || true
+          echo "$out" | grep -E "[1-9][0-9]* passed"

@@ -121,12 +121,21 @@ kararı biraz genişledi); bar 0.78 olduğundan gate’i etkilemez. `decision_
 policy_error_rate` E2E: 0.0952. Kalıntı analiz: `evaluation/reports/
 adr008-p01-residual-analysis.json` (Oracle 9 kayıt, E2E 26 kayıt).
 
-## P1 (açık)
+## P1 / ADR-009 (runtime verification — scaffolding landed 2026-07-31)
 
-Gerçek FAST, CATEGORY_EMBEDDING, pgvector skip=0, Redis skip=0,
-ardından PROVISIONAL_ACCEPT.
+Matcher heuristics **locked**. New work lives under ADR-009:
+
+* [`docs/adr/ADR-009-real-runtime-verification-and-provisional-acceptance.md`](ADR-009-real-runtime-verification-and-provisional-acceptance.md)
+* `src/taksitlio/runtime_verification/` — typed dependency probes + provisional gate
+* `RemoteFastExtractor` / `StrictOpenAICompatibleEmbedder` — no silent lexical/stub fallback
+* Redis + pgvector CI jobs must report `skipped = 0`
+* `PROVISIONAL_ACCEPT` only when `real_redis_measured ∧ real_pgvector_measured ∧ real_fast_measured ∧ real_embedding_measured`
+* Campaign Gate stays `CLOSED` until provisional clears → then `READY_TO_OPEN` (no campaign code here)
+
+Reports: `evaluation/reports/adr008-p1-*.json` (honest `BLOCKED_DEPENDENCY` when live models absent).
 
 ## Reddedilen
 
 * Threshold düşürmek · substring alias · kategori hardcode · kampanya açmak ·
-  LexicalFallback’i production latency saymak
+  LexicalFallback’i production latency saymak · stub FAST’i gerçek runtime saymak ·
+  sessiz in-memory / lexical fallback · Final ACCEPT

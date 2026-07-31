@@ -2,6 +2,9 @@ version: "3.9"
 
 services:
   postgres:
+    # Prefer pgvector image for local runtime verification; plain postgres:16
+    # remains fine for schema-only boots. Full stack:
+    #   docker compose -f docker/docker-compose.runtime.yml --profile runtime-verification up -d
     image: postgres:16-alpine
     environment:
       POSTGRES_USER: taksitlio

@@ -51,5 +51,5 @@ asyncio_mode = "auto"
 pythonpath = ["src"]
 testpaths = ["tests"]
 markers = [
-  "integration: requires external Redis (set REDIS_URL)",
+  "integration: requires external Redis and/or PostgreSQL/pgvector (set REDIS_URL / PGVECTOR_URL)",
 ]
