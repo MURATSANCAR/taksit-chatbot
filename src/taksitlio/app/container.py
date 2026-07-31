@@ -288,6 +288,9 @@ def build_in_memory_container(
     product_catalog = InMemoryProductCatalogRepository()
     merchant_directory = InMemoryMerchantDirectory()
     finance_option_index = InMemoryFinanceOptionIndex()
+    from taksitlio.campaign_catalog.feed_apply import InMemoryCampaignCatalog
+
+    campaign_catalog = InMemoryCampaignCatalog()
     institution_label_loader = InMemoryInstitutionLabelLoader()
     institution_labels = InstitutionLabelResolver(labels={})
     circuit_breaker_store = InMemoryCircuitBreakerStore()
@@ -333,6 +336,7 @@ def build_in_memory_container(
             "media_storage": build_object_storage_from_env(),
             "merchant_directory": merchant_directory,
             "finance_option_index": finance_option_index,
+            "campaign_catalog": campaign_catalog,
             "institution_label_loader": institution_label_loader,
             "institution_labels": institution_labels,
             "search_orchestrator": search_orchestrator,

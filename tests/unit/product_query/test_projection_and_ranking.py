@@ -59,6 +59,35 @@ def test_finance_projection_eligible_zero_rate() -> None:
     assert rows[0].monthly_payment == 1000.0
 
 
+def test_finance_projection_allows_unknown_stock() -> None:
+    offer = OfferFinanceContext(
+        product_offer_id="o1",
+        merchant_id="1",
+        merchant_code="m1",
+        purchase_price=9000,
+        stock_status="UNKNOWN",
+        price_freshness="FRESH",
+    )
+    rate = RateSnapshotRecord(
+        financial_product_code="fp",
+        rate_type=RateType.ZERO_RATE,
+        freshness_status="FRESH",
+    )
+    rows = rebuild_finance_options(
+        offer,
+        (
+            InstitutionTermOption(
+                institution_id="i1",
+                financial_product_code="fp",
+                term_months=9,
+                rate_snapshot=rate,
+            ),
+        ),
+    )
+    assert rows[0].eligibility_status == "ELIGIBLE"
+    assert rows[0].monthly_payment == 1000.0
+
+
 def test_finance_projection_blocks_stale_price() -> None:
     offer = OfferFinanceContext(
         product_offer_id="o1",

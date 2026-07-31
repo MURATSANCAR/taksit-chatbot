@@ -86,21 +86,24 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                 stock = "AVAILABLE"
             elif "OutOfStock" in avail:
                 stock = "OUT_OF_STOCK"
-            img = it.get("image")
-            if isinstance(img, list):
-                img = img[0] if img else None
+            img = _normalize_image_url(it.get("image"))
             attrs: dict[str, Any] = {}
             for ap in it.get("additionalProperty") or []:
                 if isinstance(ap, dict) and ap.get("name") is not None:
                     attrs[str(ap["name"])] = ap.get("value")
             clean_name = _clean_product_name(str(name).strip())
+            pid = str(
+                it.get("sku")
+                or it.get("productID")
+                or it.get("mpn")
+                or url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
+            )
+            # Prefer stable numeric id from -p- / /urun/ slug when sku is noisy
+            m_pid = re.search(r"-p-(\d+)\b", url) or re.search(r"-(\d{6,})\s*$", url.rstrip("/"))
+            if m_pid and (not pid.isdigit() or len(pid) < 5):
+                pid = m_pid.group(1)
             return {
-                "id": str(
-                    it.get("sku")
-                    or it.get("productID")
-                    or it.get("mpn")
-                    or url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
-                ),
+                "id": pid,
                 "name": clean_name,
                 "sku": it.get("sku"),
                 "gtin": it.get("gtin13") or it.get("gtin") or it.get("gtin14"),
@@ -111,7 +114,7 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                 "url": url,
                 "price": price,
                 "list_price": _opt_float(offers.get("highPrice") or offers.get("listPrice")),
-                "currency": offers.get("priceCurrency") or "TRY",
+                "currency": str(offers.get("priceCurrency") or "TRY").upper(),
                 "stock_status": stock,
                 "image_url": img,
                 "attributes": attrs,
@@ -151,6 +154,270 @@ def _opt_float(v: Any) -> Optional[float]:
         return float(str(v).replace(",", "."))
     except (TypeError, ValueError):
         return None
+
+
+def _normalize_image_url(img: Any) -> Optional[str]:
+    if img is None:
+        return None
+    if isinstance(img, list):
+        return _normalize_image_url(img[0] if img else None)
+    if isinstance(img, dict):
+        for key in ("url", "contentUrl", "@id"):
+            val = img.get(key)
+            if isinstance(val, list) and val:
+                return _normalize_image_url(val[0])
+            if isinstance(val, str) and val.startswith("http"):
+                return val
+        return None
+    if isinstance(img, str) and img.startswith("http"):
+        return img
+    return None
+
+
+def _load_existing_feed(source_code: str) -> dict[str, dict[str, Any]]:
+    path = OUT / f"{source_code}.json"
+    if not path.exists():
+        return {}
+    try:
+        prev = json.loads(path.read_text(encoding="utf-8")).get("products") or []
+        return {str(p["id"]): p for p in prev if p.get("id")}
+    except Exception as exc:
+        print(f"  resume skip {source_code}: {exc}")
+        return {}
+
+
+def _collect_sitemap_locs(
+    client: httpx.Client,
+    *,
+    index_url: Optional[str] = None,
+    map_urls: Optional[list[str]] = None,
+    map_filter: Optional[Callable[[str], bool]] = None,
+    delay: float = 0.2,
+) -> list[str]:
+    """Collect product page URLs from sitemap index and/or direct sitemap list."""
+    maps: list[str] = list(map_urls or [])
+    if index_url:
+        r = client.get(index_url)
+        if r.status_code != 200:
+            print(f"  sitemap index HTTP {r.status_code} {index_url}")
+        else:
+            children = re.findall(r"<loc>([^<]+)</loc>", r.text)
+            for u in children:
+                u = unescape(u)
+                if map_filter and not map_filter(u):
+                    continue
+                if u not in maps:
+                    maps.append(u)
+    urls: list[str] = []
+    seen: set[str] = set()
+    for sm in maps:
+        time.sleep(max(delay, 0.05))
+        r = client.get(sm)
+        if r.status_code != 200:
+            print(f"  sitemap fail {sm} -> {r.status_code}")
+            continue
+        batch = 0
+        for u in re.findall(r"<loc>([^<]+)</loc>", r.text):
+            u = unescape(u).split("?")[0]
+            if u.endswith(".xml"):
+                continue
+            if u not in seen:
+                seen.add(u)
+                urls.append(u)
+                batch += 1
+        print(f"  sitemap {sm.rsplit('/', 1)[-1][:60]} +{batch} total={len(urls)}")
+    return urls
+
+
+def fetch_sitemap_jsonld_catalog(
+    client: httpx.Client,
+    *,
+    source_code: str,
+    delay: float,
+    limit: int,
+    index_url: Optional[str] = None,
+    map_urls: Optional[list[str]] = None,
+    map_filter: Optional[Callable[[str], bool]] = None,
+    workers: int = 6,
+    use_cloudscraper: bool = False,
+    url_filter: Optional[Callable[[str], bool]] = None,
+) -> list[dict[str, Any]]:
+    """Generic sitemap → PDP JSON-LD catalog with resume + checkpoint."""
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    product_urls = _collect_sitemap_locs(
+        client,
+        index_url=index_url,
+        map_urls=map_urls,
+        map_filter=map_filter,
+        delay=delay,
+    )
+    if url_filter:
+        product_urls = [u for u in product_urls if url_filter(u)]
+    by_id = _load_existing_feed(source_code)
+    if by_id:
+        print(f"  {source_code} resume {len(by_id)} products")
+    done_urls = {str(p.get("url")) for p in by_id.values() if p.get("url")}
+    todo = [u for u in product_urls if u not in done_urls]
+    todo = _apply_limit(todo, limit)
+    print(f"  {source_code} todo={len(todo)} / catalog={len(product_urls)} workers={workers}")
+
+    lock = threading.Lock()
+    fail = 0
+    done_n = 0
+    tls = threading.local()
+
+    def _session():
+        if use_cloudscraper:
+            s = getattr(tls, "scraper", None)
+            if s is None:
+                from browser_fetch import create_cloudscraper
+
+                s = create_cloudscraper()
+                tls.scraper = s
+            return s
+        return client
+
+    def _one(url: str) -> Optional[dict[str, Any]]:
+        local = _session()
+        try:
+            r = local.get(url, timeout=60)
+        except Exception:
+            return None
+        if getattr(r, "status_code", 0) != 200:
+            return None
+        try:
+            return parse_jsonld_product(r.text, url)
+        except Exception:
+            return None
+
+    batch_size = 400
+    try:
+        for batch_start in range(0, len(todo), batch_size):
+            batch = todo[batch_start : batch_start + batch_size]
+            print(
+                f"  {source_code} batch {batch_start}-{batch_start + len(batch) - 1}",
+                flush=True,
+            )
+            with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+                futs = {ex.submit(_one, u): u for u in batch}
+                for fut in as_completed(futs):
+                    try:
+                        p = fut.result()
+                    except Exception:
+                        p = None
+                    with lock:
+                        done_n += 1
+                        if p and p.get("id"):
+                            by_id[str(p["id"])] = p
+                        else:
+                            fail += 1
+                        if done_n % 200 == 0 or done_n == len(todo):
+                            write_feed(
+                                source_code,
+                                list(by_id.values()),
+                                f"{source_code} sitemap+jsonld (checkpoint)",
+                            )
+                            print(
+                                f"    ... {done_n}/{len(todo)} fetched, "
+                                f"{len(by_id)} products, fail={fail}",
+                                flush=True,
+                            )
+            if delay > 0:
+                time.sleep(delay)
+    except Exception as exc:
+        import traceback
+
+        print(f"  {source_code} aborted: {exc}", flush=True)
+        traceback.print_exc()
+        write_feed(
+            source_code,
+            list(by_id.values()),
+            f"{source_code} sitemap+jsonld (aborted checkpoint)",
+        )
+    return list(by_id.values())
+
+
+def fetch_flo(client: httpx.Client, delay: float, limit: int, *, workers: int = 6) -> list[dict[str, Any]]:
+    return fetch_sitemap_jsonld_catalog(
+        client,
+        source_code="src-m-flo",
+        delay=delay,
+        limit=limit,
+        index_url="https://www.flo.com.tr/products.xml",
+        workers=workers,
+        url_filter=lambda u: "/urun/" in u,
+    )
+
+
+def fetch_evofone(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 4
+) -> list[dict[str, Any]]:
+    return fetch_sitemap_jsonld_catalog(
+        client,
+        source_code="src-m-evofone",
+        delay=delay,
+        limit=limit,
+        map_urls=["https://evofone.com/sitemap/products/0.xml"],
+        workers=workers,
+    )
+
+
+def fetch_network(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 6
+) -> list[dict[str, Any]]:
+    return fetch_sitemap_jsonld_catalog(
+        client,
+        source_code="src-m-network",
+        delay=delay,
+        limit=limit,
+        index_url="https://www.network.com.tr/sitemap.xml",
+        map_filter=lambda u: re.search(r"/product_\d+\.xml$", u) is not None,
+        workers=workers,
+        url_filter=lambda u: "-p-" in u and "/en/" not in u,
+    )
+
+
+def fetch_civil(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 4
+) -> list[dict[str, Any]]:
+    """Civil storefront is civilim.com (public Shopify)."""
+    idx = client.get("https://www.civilim.com/sitemap.xml")
+    maps: list[str] = []
+    if idx.status_code == 200:
+        for u in re.findall(r"<loc>([^<]+)</loc>", idx.text):
+            u = unescape(u)
+            if "sitemap_products_" in u:
+                maps.append(u)
+    return fetch_sitemap_jsonld_catalog(
+        client,
+        source_code="src-m-civil",
+        delay=delay,
+        limit=limit,
+        map_urls=maps,
+        workers=workers,
+        url_filter=lambda u: "/products/" in u and u.rstrip("/") != "https://www.civilim.com",
+    )
+
+
+def fetch_trendyol(
+    client: httpx.Client, delay: float, limit: int, *, workers: int = 8
+) -> list[dict[str, Any]]:
+    """Trendyol TR product sitemaps (bare /sitemap_productsN.xml). Very large catalog."""
+    return fetch_sitemap_jsonld_catalog(
+        client,
+        source_code="src-m-trendyol",
+        delay=delay,
+        limit=limit,
+        index_url="https://www.trendyol.com/sitemap_index.xml",
+        map_filter=lambda u: re.search(
+            r"https://www\.trendyol\.com/sitemap_products\d+\.xml$", u
+        )
+        is not None,
+        workers=workers,
+        url_filter=lambda u: "-p-" in u and "trendyol.com/" in u,
+    )
 
 
 def _clean_product_name(name: str) -> str:
@@ -510,6 +777,11 @@ def fetch_teknosa(
     idx = scraper.get("https://www.teknosa.com/siteharitasi.xml", timeout=120)
     if idx.status_code != 200:
         print(f"  teknosa sitemap index HTTP {idx.status_code}")
+        # Do not wipe existing feed on transient WAF failure
+        existing = _load_existing_feed("src-m-teknosa")
+        if existing:
+            print(f"  teknosa keeping existing {len(existing)} products")
+            return list(existing.values())
         return []
     children = re.findall(r"<loc>([^<]+)</loc>", idx.text)
     maps = [
@@ -648,6 +920,21 @@ FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
     "teknosa": lambda c, d, lim, **kw: fetch_teknosa(
         c, d, lim, workers=int(kw.get("workers", 6))
     ),
+    "flo": lambda c, d, lim, **kw: fetch_flo(
+        c, d, lim, workers=int(kw.get("workers", 6))
+    ),
+    "evofone": lambda c, d, lim, **kw: fetch_evofone(
+        c, d, lim, workers=int(kw.get("workers", 4))
+    ),
+    "network": lambda c, d, lim, **kw: fetch_network(
+        c, d, lim, workers=int(kw.get("workers", 6))
+    ),
+    "civil": lambda c, d, lim, **kw: fetch_civil(
+        c, d, lim, workers=int(kw.get("workers", 4))
+    ),
+    "trendyol": lambda c, d, lim, **kw: fetch_trendyol(
+        c, d, lim, workers=int(kw.get("workers", 8))
+    ),
 }
 
 
@@ -656,7 +943,7 @@ def main() -> None:
     p.add_argument(
         "--merchants",
         default="vatan,mediamarkt,koctas,dr,teknosa",
-        help="comma list: vatan,mediamarkt,koctas,dr,teknosa",
+        help="comma list: vatan,mediamarkt,koctas,dr,teknosa,flo,evofone,network,civil,trendyol",
     )
     p.add_argument("--delay", type=float, default=2.0)
     p.add_argument(
@@ -684,6 +971,9 @@ def main() -> None:
                 products = FETCHERS[code](
                     client, args.delay, args.limit, workers=args.workers
                 )
+                if not products:
+                    print(f"  {code}: empty result — keeping existing feed if any")
+                    continue
                 path = write_feed(f"src-m-{code}", products, f"{code} live capture")
                 print(f"  {len(products)} -> {path}")
             except Exception as exc:

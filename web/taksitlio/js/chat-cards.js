@@ -50,12 +50,14 @@
     }
     if (card.stock_status === "AVAILABLE") metaParts.push("Stokta");
 
-    let primary = formatMoney(card.price, card.currency) || "—";
-    let secondary = "Ürün fiyatı";
+    const productPrice = formatMoney(card.price, card.currency) || "—";
+    let financeLine = null;
     let hint = null;
     if (finance && finance.monthly_payment != null && finance.term_months != null) {
-      primary = formatMoney(finance.monthly_payment, card.currency) || primary;
-      secondary = `${finance.term_months} ay taksit`;
+      const monthly = formatMoney(finance.monthly_payment, card.currency);
+      financeLine = monthly
+        ? `${monthly} × ${finance.term_months} ay`
+        : `${finance.term_months} ay taksit`;
       hint = finance.display_label || "Tahmini aylık ödeme";
     }
 
@@ -65,8 +67,9 @@
       name: card.display_name || "Ürün",
       meta: metaParts.filter(Boolean).join(" · "),
       badge: index === 0 ? "Öne çıkan" : card.ranking_label || "Seçenek",
-      primary,
-      secondary,
+      primary: productPrice,
+      secondary: "Ürün fiyatı",
+      financeLine,
       hint,
       img: imageReady ? card.image.thumbnail_cdn_url : null,
       productUrl: card.product_url || null,
@@ -90,8 +93,9 @@
       name: c.title || c.product_name || "Kampanya",
       meta: [c.brand, c.summary].filter(Boolean).join(" · ").slice(0, 120),
       badge: index === 0 ? "Öne çıkan" : "Kampanya",
-      primary: monthly || price || "—",
-      secondary: monthly && tenure ? `/ ${tenure}` : price ? "liste fiyatı" : "",
+      primary: price || monthly || "—",
+      secondary: price ? "liste fiyatı" : "",
+      financeLine: monthly && tenure ? `${monthly} / ${tenure}` : monthly,
       hint: monthly ? "Kampanya kaydı (katalog dışı)" : null,
       img: null,
       productUrl: null,
@@ -126,6 +130,13 @@
       ? `<span class="hint">${escapeHtml(d.hint)}</span>`
       : "";
     const priceLabel = escapeHtml(d.secondary || "Ürün fiyatı");
+    const financeBlock = d.financeLine
+      ? `<div class="deal-finance">
+            <div class="fl">Taksit seçeneği</div>
+            <div class="fn">${escapeHtml(d.financeLine)}</div>
+            ${hint}
+          </div>`
+      : hint;
     return `
       <article class="deal ${d.best ? "best" : ""}" style="animation-delay:${0.06 + i * 0.1}s">
         ${media}
@@ -137,7 +148,7 @@
           <div class="deal-price">
             <div class="l">${priceLabel}</div>
             <div class="n">${escapeHtml(d.primary)}</div>
-            ${hint}
+            ${financeBlock}
           </div>
         </div>
       </article>`;

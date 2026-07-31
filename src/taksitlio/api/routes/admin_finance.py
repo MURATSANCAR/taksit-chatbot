@@ -205,3 +205,85 @@ async def reload_institution_labels(request: Request) -> Dict[str, Any]:
     resolver = await load_institution_labels(loader)
     container.extras["institution_labels"] = resolver
     return {"label_count": len(resolver.labels)}
+
+
+class RebuildFromCatalogIn(BaseModel):
+    product_id: str = Field(..., min_length=1)
+    product_offer_id: str
+    merchant_id: str
+    merchant_code: str
+    purchase_price: float = Field(..., gt=0)
+    stock_status: str = "AVAILABLE"
+    price_freshness: str = "FRESH"
+    category_id: Optional[int] = None
+    use_postgres: bool = False
+
+
+@router.post("/finance-options/rebuild-from-catalog")
+async def rebuild_finance_from_catalog(
+    payload: RebuildFromCatalogIn, request: Request
+) -> Dict[str, Any]:
+    """Rebuild projection from campaign catalog (memory or Postgres).
+
+    Fills product_finance_options so search cards can set best_finance.
+    Does not open personalized Campaign Gate.
+    """
+
+    from taksitlio.product_query.finance_projection import OfferFinanceContext
+    from taksitlio.product_query.finance_sync import (
+        sync_finance_from_memory_catalog,
+        sync_finance_from_postgres,
+    )
+
+    container = container_from(request)
+    index = container.extras.get("finance_option_index")
+    if index is None:
+        raise HTTPException(status_code=501, detail="finance_option_index not configured")
+
+    offer = OfferFinanceContext(
+        product_offer_id=payload.product_offer_id,
+        merchant_id=payload.merchant_id,
+        merchant_code=payload.merchant_code,
+        purchase_price=payload.purchase_price,
+        stock_status=payload.stock_status,
+        price_freshness=payload.price_freshness,
+        category_id=payload.category_id,
+    )
+
+    if payload.use_postgres:
+        pool = container.extras.get("pool")
+        if pool is None:
+            raise HTTPException(status_code=501, detail="db pool not configured")
+        async with pool.acquire() as conn:
+            rows = await sync_finance_from_postgres(
+                index, conn, product_id=payload.product_id, offer=offer
+            )
+    else:
+        catalog = container.extras.get("campaign_catalog")
+        if catalog is None:
+            raise HTTPException(
+                status_code=501,
+                detail="campaign_catalog not configured; use use_postgres=true or seed extras",
+            )
+        rows = await sync_finance_from_memory_catalog(
+            index, catalog, product_id=payload.product_id, offer=offer
+        )
+
+    return {
+        "product_id": payload.product_id,
+        "option_count": len(rows),
+        "eligible_count": sum(1 for r in rows if r.eligibility_status == "ELIGIBLE"),
+        "options": [
+            {
+                "institution_id": r.institution_id,
+                "term_months": r.term_months,
+                "monthly_payment": r.monthly_payment,
+                "total_repayment": r.total_repayment,
+                "eligibility_status": r.eligibility_status,
+                "freshness_status": r.freshness_status,
+                "display_label": r.display_label,
+                "ineligible_reasons": list(r.ineligible_reasons),
+            }
+            for r in rows
+        ],
+    }

@@ -283,6 +283,126 @@ async def campaign_feed_dry_run(
     }
 
 
+class CampaignFeedPersistIn(CampaignFeedDryIn):
+    activate: bool = Field(
+        default=False,
+        description="Mark campaigns ACTIVE for estimate projection (not personal approval)",
+    )
+    persist_postgres: bool = Field(
+        default=False,
+        description="Write V018 tables when db pool is available",
+    )
+
+
+@router.post("/ingestion/campaign-persist")
+async def campaign_feed_persist(
+    payload: CampaignFeedPersistIn, request: Request
+) -> Dict[str, Any]:
+    """Apply campaign feed: memory catalog always; optional Postgres + activate."""
+
+    from taksitlio.campaign_catalog.feed_apply import (
+        InMemoryCampaignCatalog,
+        apply_campaign_feed_result,
+    )
+    from taksitlio.ingestion.adapters.generic_campaign_feed import run_campaign_feed_dry
+    from taksitlio.ingestion.binding import (
+        SourceBinding,
+        build_default_registry,
+        instantiate_campaign_adapter,
+    )
+
+    if payload.config.get("authorization") or payload.config.get("api_key"):
+        raise HTTPException(
+            status_code=400,
+            detail="Inline secrets forbidden; use credential_ref",
+        )
+    if payload.adapter_code != "generic.campaign_feed.v1":
+        raise HTTPException(status_code=400, detail="unsupported campaign adapter_code")
+
+    container = container_from(request)
+    binding = SourceBinding(
+        source_code=payload.source_code,
+        adapter_code=payload.adapter_code,
+        merchant_id=payload.merchant_id,
+        credential_ref=payload.credential_ref,
+        config=payload.config,
+    )
+    try:
+        adapter = instantiate_campaign_adapter(
+            binding, registry=build_default_registry()
+        )
+        result = await run_campaign_feed_dry(adapter)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    catalog = container.extras.get("campaign_catalog")
+    if catalog is None:
+        catalog = InMemoryCampaignCatalog()
+        container.extras["campaign_catalog"] = catalog
+    applied = apply_campaign_feed_result(
+        catalog,
+        result,
+        institution_display_name=payload.institution_display_name,
+        activate=payload.activate,
+    )
+
+    # Refresh institution labels for best_finance display names.
+    loader = container.extras.get("institution_label_loader")
+    if loader is not None and hasattr(loader, "set_labels"):
+        labels = dict(getattr(loader, "_labels", {}) or {})
+        for code, name in catalog.institutions.items():
+            labels[code] = name
+        loader.set_labels(labels)
+        from taksitlio.product_query.finance_index import load_institution_labels
+
+        container.extras["institution_labels"] = await load_institution_labels(loader)
+
+    pg_stats: Optional[Dict[str, Any]] = None
+    if payload.persist_postgres:
+        pool = container.extras.get("pool")
+        if pool is None:
+            raise HTTPException(status_code=501, detail="db pool not configured")
+        from taksitlio.campaign_catalog.postgres import persist_campaign_feed
+
+        names = {
+            c.institution_code: (
+                payload.institution_display_name or c.institution_code
+            )
+            for c in result.campaigns
+        }
+        async with pool.acquire() as conn:
+            async with conn.transaction():
+                stats = await persist_campaign_feed(
+                    conn,
+                    result,
+                    institution_display_names=names,
+                    activate=payload.activate,
+                )
+        pg_stats = {
+            "institutions_upserted": stats.institutions_upserted,
+            "campaigns_upserted": stats.campaigns_upserted,
+            "terms_upserted": stats.terms_upserted,
+            "merchants_linked": stats.merchants_linked,
+            "agreements_upserted": stats.agreements_upserted,
+            "rates_upserted": stats.rates_upserted,
+            "financial_products_upserted": stats.financial_products_upserted,
+            "activated": stats.activated,
+        }
+
+    return {
+        "source_code": payload.source_code,
+        "adapter_code": result.adapter_code,
+        "campaigns": len(result.campaigns),
+        "rates": len(result.rates),
+        "rates_skipped_no_explicit_rate": result.rates_skipped_no_explicit_rate,
+        "applied": applied,
+        "activate": payload.activate,
+        "postgres": pg_stats,
+    }
+
+
 class UpsertSourceIn(BaseModel):
     merchant_id: int = Field(..., ge=1)
     source_code: str = Field(..., min_length=1, max_length=64)

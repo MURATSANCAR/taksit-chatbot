@@ -5,6 +5,7 @@ Reads/writes ``product_finance_options`` joined to ``product_offers.product_id``
 
 from __future__ import annotations
 
+import json
 from typing import Any, Optional, Sequence
 
 from taksitlio.product_query.finance_projection import ProductFinanceOptionRow
@@ -127,7 +128,7 @@ class PostgresFinanceOptionIndex:
                         if row.rate_snapshot_id is None
                         else int(row.rate_snapshot_id),
                         row.freshness_status,
-                        meta,
+                        json.dumps(meta, ensure_ascii=False),
                     )
 
 

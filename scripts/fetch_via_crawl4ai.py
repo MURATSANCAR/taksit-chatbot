@@ -346,9 +346,143 @@ async def fetch_dr(limit: int, delay: float) -> list[dict[str, Any]]:
     return list({p["id"]: p for p in out}.values())
 
 
+def _extract_hrefs(html: str, pattern: str, base: str) -> list[str]:
+    found: list[str] = []
+    for u in re.findall(pattern, html):
+        full = urljoin(base, u.split("?")[0])
+        if full not in found:
+            found.append(full)
+    return found
+
+
+async def _crawl_listing_then_pdp(
+    *,
+    source_code: str,
+    seeds: list[str],
+    href_re: str,
+    base: str,
+    delay: float,
+    limit: int,
+    max_pdp: int = 5000,
+) -> list[dict[str, Any]]:
+    """Category pages via crawl4ai → collect PDP URLs → JSON-LD parse."""
+    products: list[dict[str, Any]] = []
+    pdp_urls: list[str] = []
+    for seed in seeds:
+        print(f"  crawl4ai listing {seed}")
+        ok, html, status = await crawl_html(seed, wait_ms=2500)
+        if not ok:
+            print(f"    blocked status={status}; trying undetected-chrome")
+            html2 = fetch_html_undetected(seed, wait_s=6)
+            if not html2:
+                continue
+            html = html2
+        hrefs = _extract_hrefs(html, href_re, base)
+        print(f"    links={len(hrefs)}")
+        for u in hrefs:
+            if u not in pdp_urls:
+                pdp_urls.append(u)
+        # Also try JSON-LD Product already on listing
+        for block in re.findall(
+            r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+            html,
+            re.I | re.S,
+        ):
+            mini = f'<script type="application/ld+json">{block}</script>'
+            p = parse_jsonld_product(mini, seed)
+            if p:
+                products.append(p)
+        await asyncio.sleep(delay)
+
+    if limit > 0:
+        pdp_urls = pdp_urls[:limit]
+    else:
+        pdp_urls = pdp_urls[:max_pdp]
+
+    by_id = {str(p["id"]): p for p in products if p.get("id")}
+    for i, url in enumerate(pdp_urls, 1):
+        ok, html, _ = await crawl_html(url, wait_ms=1500)
+        if not ok:
+            html2 = fetch_html_undetected(url, wait_s=4)
+            if not html2:
+                continue
+            html = html2
+        p = parse_jsonld_product(html, url)
+        if p:
+            by_id[str(p["id"])] = p
+        if i % 25 == 0:
+            print(f"    pdp {i}/{len(pdp_urls)} ok={len(by_id)}")
+            write_feed(
+                source_code,
+                list(by_id.values()),
+                f"{source_code} crawl4ai checkpoint",
+            )
+        await asyncio.sleep(delay)
+    return list(by_id.values())
+
+
+async def fetch_n11(limit: int, delay: float) -> list[dict[str, Any]]:
+    seeds = [
+        "https://www.n11.com/bilgisayar/dizustu-bilgisayar",
+        "https://www.n11.com/telefon-ve-aksesuarlari/cep-telefonu",
+        "https://www.n11.com/elektronik/televizyon",
+        "https://www.n11.com/beyaz-esya-ankastre",
+        "https://www.n11.com/spor-outdoor",
+    ]
+    return await _crawl_listing_then_pdp(
+        source_code="src-m-n11",
+        seeds=seeds,
+        href_re=r'href="(https://www\.n11\.com/urun/[^"?]+|/urun/[^"?]+)"',
+        base="https://www.n11.com",
+        delay=delay,
+        limit=limit,
+        max_pdp=8000,
+    )
+
+
+async def fetch_hepsiburada(limit: int, delay: float) -> list[dict[str, Any]]:
+    seeds = [
+        "https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98",
+        "https://www.hepsiburada.com/cep-telefonlari-c-371965",
+        "https://www.hepsiburada.com/televizyonlar-c-3013100",
+        "https://www.hepsiburada.com/beyaz-esya-c-60002028",
+    ]
+    return await _crawl_listing_then_pdp(
+        source_code="src-m-hepsiburada",
+        seeds=seeds,
+        href_re=r'href="(https://www\.hepsiburada\.com/[^"?]+-p-[A-Z0-9]+|/[^"?]+-p-[A-Z0-9]+)"',
+        base="https://www.hepsiburada.com",
+        delay=delay,
+        limit=limit,
+        max_pdp=8000,
+    )
+
+
+async def fetch_vivense(limit: int, delay: float) -> list[dict[str, Any]]:
+    seeds = [
+        "https://www.vivense.com/",
+        "https://www.vivense.com/oturma-odasi.html",
+        "https://www.vivense.com/yatak-odasi.html",
+        "https://www.vivense.com/yemek-odasi.html",
+        "https://www.vivense.com/bahce-balkon.html",
+    ]
+    return await _crawl_listing_then_pdp(
+        source_code="src-m-vivense",
+        seeds=seeds,
+        href_re=r'href="(/[^"?]+(?:-\d+|modeli)\.html)"',
+        base="https://www.vivense.com",
+        delay=delay,
+        limit=limit,
+        max_pdp=5000,
+    )
+
+
 async def amain() -> None:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--merchants", default="teknosa,koctas,dr")
+    p.add_argument(
+        "--merchants",
+        default="teknosa,koctas,dr,n11,hepsiburada,vivense",
+    )
     p.add_argument("--delay", type=float, default=0.6)
     p.add_argument("--limit", type=int, default=100, help="0 = uncapped where supported")
     args = p.parse_args()
@@ -359,6 +493,9 @@ async def amain() -> None:
         "teknosa": fetch_teknosa,
         "koctas": fetch_koctas,
         "dr": fetch_dr,
+        "n11": fetch_n11,
+        "hepsiburada": fetch_hepsiburada,
+        "vivense": fetch_vivense,
     }
     for code in wanted:
         if code not in fetchers:

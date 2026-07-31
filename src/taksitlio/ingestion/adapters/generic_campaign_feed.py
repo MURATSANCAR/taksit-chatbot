@@ -35,6 +35,7 @@ _VALID_TYPES = {t.value for t in CampaignType}
 class NormalizedCampaignTerm:
     months: Optional[int] = None
     rate_apr: Optional[float] = None
+    monthly_rate_pct: Optional[float] = None
     fee: Optional[float] = None
 
 
@@ -164,11 +165,23 @@ def _parse_row(
                 rate = _as_float(t.get("annual_cost_rate"))
             else:
                 rate = None
+            monthly_pct = (
+                _as_float(t.get("monthly_rate_pct"))
+                if "monthly_rate_pct" in t
+                else None
+            )
             fee = _as_float(t.get("fee")) if "fee" in t else None
             # Keep term only if at least one explicit field present (no invent).
-            if months is None and rate is None and fee is None:
+            if months is None and rate is None and monthly_pct is None and fee is None:
                 continue
-            terms.append(NormalizedCampaignTerm(months=months, rate_apr=rate, fee=fee))
+            terms.append(
+                NormalizedCampaignTerm(
+                    months=months,
+                    rate_apr=rate,
+                    monthly_rate_pct=monthly_pct,
+                    fee=fee,
+                )
+            )
 
     merchants = _as_str_tuple(row.get("merchant_codes"))
     categories = _as_str_tuple(row.get("category_codes"))
@@ -223,25 +236,62 @@ def to_rate_snapshots(campaign: NormalizedCampaign) -> list[RateSnapshotRecord]:
     """Build rate snapshots only when source provided an explicit rate — never invent."""
 
     out: list[RateSnapshotRecord] = []
+    name_l = (campaign.display_name or "").casefold()
+    pesin_zero = "peşin fiyatına" in name_l or "pesin fiyatina" in name_l
     for term in campaign.terms:
-        if term.rate_apr is None and term.fee is None:
+        if (
+            term.rate_apr is None
+            and term.monthly_rate_pct is None
+            and term.fee is None
+            and not (pesin_zero and term.months)
+            and campaign.campaign_type != "ZERO_RATE"
+        ):
             continue
+
+        is_zero = (
+            campaign.campaign_type == "ZERO_RATE"
+            or term.rate_apr == 0.0
+            or term.monthly_rate_pct == 0.0
+            or (pesin_zero and term.monthly_rate_pct is None and term.rate_apr is None)
+        )
+        if is_zero:
+            out.append(
+                RateSnapshotRecord(
+                    financial_product_code=f"{campaign.institution_code}-default",
+                    rate_type=RateType.ZERO_RATE,
+                    annual_cost_rate=0.0,
+                    monthly_rate=0.0,
+                    minimum_term=term.months,
+                    maximum_term=term.months,
+                    term_rates={term.months: 0.0} if term.months else {},
+                    freshness_status="FRESH",
+                    verification_status=VerificationStatus.UNVERIFIED,
+                    source_reference=campaign.source_reference or campaign.source_url,
+                    campaign_code=campaign.external_campaign_id,
+                )
+            )
+            continue
+
+        if term.monthly_rate_pct is None:
+            # Annual-only without monthly — do not invent a monthly conversion.
+            continue
+
+        monthly = float(term.monthly_rate_pct) / 100.0
         term_rates: dict[int, float] = {}
-        if term.months is not None and term.rate_apr is not None:
-            # Store as annual cost; monthly left None unless source gave monthly.
-            term_rates[term.months] = term.rate_apr
-        rate_type = RateType.ZERO_RATE if (term.rate_apr == 0.0) else RateType.INTEREST
-        if term.rate_apr is None:
-            rate_type = RateType.UNKNOWN
+        if term.months is not None:
+            term_rates[term.months] = monthly
         out.append(
             RateSnapshotRecord(
                 financial_product_code=f"{campaign.institution_code}-default",
-                rate_type=rate_type,
-                annual_cost_rate=term.rate_apr,
+                rate_type=RateType.INTEREST,
+                monthly_rate=monthly,
+                annual_cost_rate=(
+                    float(term.rate_apr) / 100.0 if term.rate_apr is not None else None
+                ),
                 minimum_term=term.months,
                 maximum_term=term.months,
                 term_rates=term_rates,
-                freshness_status="UNVERIFIED",
+                freshness_status="FRESH",
                 verification_status=VerificationStatus.UNVERIFIED,
                 source_reference=campaign.source_reference or campaign.source_url,
                 campaign_code=campaign.external_campaign_id,

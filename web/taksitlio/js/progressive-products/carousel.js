@@ -38,6 +38,23 @@
       '</div><div class="partial-carousel">';
     products.forEach(function (p, i) {
       var featured = i === 0;
+      var finance = p.best_finance_summary || p.best_finance || null;
+      var financeHtml = "";
+      if (
+        finance &&
+        finance.monthly_payment != null &&
+        finance.term_months != null
+      ) {
+        financeHtml =
+          '<p class="partial-finance">' +
+          escapeHtml(formatPrice(finance.monthly_payment)) +
+          " TL × " +
+          escapeHtml(String(finance.term_months)) +
+          " ay</p>" +
+          '<span class="partial-finance-hint">' +
+          escapeHtml(finance.display_label || "Tahmini aylık ödeme") +
+          "</span>";
+      }
       html +=
         '<article class="partial-card' +
         (featured ? " is-featured" : "") +
@@ -58,7 +75,9 @@
         escapeHtml(p.merchant_display_name || "") +
         "</p><p class=\"partial-price\">" +
         escapeHtml(formatPrice(p.price)) +
-        " TL</p></article>";
+        " TL</p>" +
+        financeHtml +
+        "</article>";
     });
     html += "</div></div>";
     container.innerHTML = html;

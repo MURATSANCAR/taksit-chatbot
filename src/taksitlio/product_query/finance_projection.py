@@ -63,7 +63,9 @@ def build_finance_option(
     option: InstitutionTermOption,
 ) -> ProductFinanceOptionRow:
     reasons: list[str] = []
-    if offer.stock_status not in {"AVAILABLE", "LIMITED"}:
+    # Crawl catalogs often lack live stock; UNKNOWN still allows estimate projection.
+    # OUT_OF_STOCK / UNAVAILABLE remain blocked. Ranking still prefers real stock.
+    if offer.stock_status not in {"AVAILABLE", "LIMITED", "UNKNOWN"}:
         reasons.append("stock_not_available")
     if offer.price_freshness not in {"FRESH"}:
         reasons.append("price_not_fresh")

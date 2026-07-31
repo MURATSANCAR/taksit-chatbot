@@ -14,6 +14,10 @@ from taksitlio.campaign_catalog.models import (
     RateType,
     VerificationStatus,
 )
+from taksitlio.campaign_catalog.term_options import (
+    activate_campaign_for_projection,
+    build_term_options,
+)
 
 ADR_SCOPE = "ADR-010"
 PACKAGE_STATUS = "P3"
@@ -28,5 +32,7 @@ __all__ = [
     "RateSnapshotRecord",
     "RateType",
     "VerificationStatus",
+    "activate_campaign_for_projection",
+    "build_term_options",
     "evaluate_campaign_eligibility",
 ]
