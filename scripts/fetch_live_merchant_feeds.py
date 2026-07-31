@@ -560,66 +560,42 @@ def fetch_sitemap_jsonld_catalog(
     curl_impersonate: str = "chrome124",
     url_filter: Optional[Callable[[str], bool]] = None,
 ) -> list[dict[str, Any]]:
-    """Generic sitemap → PDP JSON-LD catalog with resume + checkpoint."""
+    """Sitemap → PDP JSON-LD. Streams map-by-map (no multi-million URL lists)."""
     import threading
     from concurrent.futures import ThreadPoolExecutor, as_completed
     from html import unescape as _ue
 
-    if use_curl_cffi:
-        # Collect maps/locs via curl_cffi (Akamai/CF-safe)
-        maps: list[str] = list(map_urls or [])
-        if index_url:
+    maps: list[str] = list(map_urls or [])
+    if index_url:
+        if use_curl_cffi:
             idx = _curl_get(index_url, impersonate=curl_impersonate)
             if not idx:
                 print(f"  {source_code} sitemap index blocked")
                 return list(_load_existing_feed(source_code).values())
-            for u in re.findall(r"<loc>([^<]+)</loc>", idx):
-                u = _ue(u)
-                if map_filter and not map_filter(u):
-                    continue
-                if u not in maps:
-                    maps.append(u)
-        product_urls: list[str] = []
-        seen: set[str] = set()
-        for sm in maps:
-            time.sleep(max(delay, 0.05))
-            body = _curl_get(sm, impersonate=curl_impersonate)
-            if not body:
-                print(f"  {source_code} map fail {sm.rsplit('/', 1)[-1][:50]}")
+            children = re.findall(r"<loc>([^<]+)</loc>", idx)
+        else:
+            r = client.get(index_url)
+            if r.status_code != 200:
+                print(f"  {source_code} sitemap index HTTP {r.status_code}")
+                return list(_load_existing_feed(source_code).values())
+            children = re.findall(r"<loc>([^<]+)</loc>", r.text)
+        for u in children:
+            u = _ue(u)
+            if map_filter and not map_filter(u):
                 continue
-            batch = 0
-            for u in re.findall(r"<loc>([^<]+)</loc>", body):
-                u = _ue(u).split("?")[0]
-                if u.endswith(".xml"):
-                    continue
-                if u not in seen:
-                    seen.add(u)
-                    product_urls.append(u)
-                    batch += 1
-            print(f"  {source_code} sitemap +{batch} total={len(product_urls)}")
-    else:
-        product_urls = _collect_sitemap_locs(
-            client,
-            index_url=index_url,
-            map_urls=map_urls,
-            map_filter=map_filter,
-            delay=delay,
-        )
-    if url_filter:
-        product_urls = [u for u in product_urls if url_filter(u)]
+            if u not in maps:
+                maps.append(u)
+    print(f"  {source_code} maps={len(maps)} workers={workers} curl={use_curl_cffi}")
+
     by_id = _load_existing_feed(source_code)
     if by_id:
         print(f"  {source_code} resume {len(by_id)} products")
     done_urls = {str(p.get("url")) for p in by_id.values() if p.get("url")}
-    todo = [u for u in product_urls if u not in done_urls]
-    todo = _apply_limit(todo, limit)
-    print(f"  {source_code} todo={len(todo)} / catalog={len(product_urls)} workers={workers}")
-
     lock = threading.Lock()
     fail = 0
-    done_n = 0
+    fetched = 0
     tls = threading.local()
-    rate_limited = 0
+    budget = limit if limit and limit > 0 else None
 
     def _session():
         if use_cloudscraper:
@@ -633,7 +609,6 @@ def fetch_sitemap_jsonld_catalog(
         return client
 
     def _one(url: str) -> Optional[dict[str, Any]]:
-        nonlocal rate_limited
         if use_curl_cffi:
             html = _curl_get(url, impersonate=curl_impersonate)
             if not html:
@@ -646,7 +621,6 @@ def fetch_sitemap_jsonld_catalog(
             return None
         code = getattr(r, "status_code", 0)
         if code == 429:
-            rate_limited += 1
             time.sleep(2.0)
             return None
         if code != 200:
@@ -655,6 +629,101 @@ def fetch_sitemap_jsonld_catalog(
             return parse_jsonld_product(r.text, url)
         except Exception:
             return None
+
+    def _process_urls(todo: list[str], label: str) -> bool:
+        """Fetch PDPs; return False if limit budget exhausted."""
+        nonlocal fail, fetched
+        if not todo:
+            return True
+        print(f"  {source_code} {label} todo={len(todo)} have={len(by_id)}", flush=True)
+        batch_size = 300
+        for start in range(0, len(todo), batch_size):
+            if budget is not None and len(by_id) >= budget:
+                return False
+            batch = todo[start : start + batch_size]
+            if budget is not None:
+                remain = budget - len(by_id)
+                if remain <= 0:
+                    return False
+                batch = batch[:remain]
+            with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+                futs = {ex.submit(_one, u): u for u in batch}
+                for fut in as_completed(futs):
+                    try:
+                        p = fut.result()
+                    except Exception:
+                        p = None
+                    with lock:
+                        fetched += 1
+                        if p and p.get("id"):
+                            by_id[str(p["id"])] = p
+                            done_urls.add(str(p.get("url") or ""))
+                        else:
+                            fail += 1
+                        if fetched % 150 == 0:
+                            write_feed(
+                                source_code,
+                                list(by_id.values()),
+                                f"{source_code} sitemap stream (checkpoint)",
+                            )
+                            print(
+                                f"    ... fetched={fetched} ok={len(by_id)} fail={fail}",
+                                flush=True,
+                            )
+            write_feed(
+                source_code,
+                list(by_id.values()),
+                f"{source_code} sitemap stream (checkpoint)",
+            )
+            if delay > 0:
+                time.sleep(delay)
+        return True
+
+    try:
+        for mi, sm in enumerate(maps, 1):
+            if budget is not None and len(by_id) >= budget:
+                break
+            time.sleep(max(delay, 0.05))
+            if use_curl_cffi:
+                body = _curl_get(sm, impersonate=curl_impersonate)
+            else:
+                r = client.get(sm)
+                body = r.text if r.status_code == 200 else None
+            if not body:
+                print(f"  {source_code} map fail {sm.rsplit('/', 1)[-1][:50]}")
+                continue
+            urls: list[str] = []
+            for u in re.findall(r"<loc>([^<]+)</loc>", body):
+                u = _ue(u).split("?")[0]
+                if u.endswith(".xml"):
+                    continue
+                if url_filter and not url_filter(u):
+                    continue
+                if u in done_urls:
+                    continue
+                urls.append(u)
+            print(
+                f"  {source_code} map {mi}/{len(maps)} {sm.rsplit('/', 1)[-1][:40]} "
+                f"new={len(urls)}",
+                flush=True,
+            )
+            if not _process_urls(urls, f"map{mi}"):
+                break
+    except Exception as exc:
+        import traceback
+
+        print(f"  {source_code} aborted: {exc}", flush=True)
+        traceback.print_exc()
+        write_feed(
+            source_code,
+            list(by_id.values()),
+            f"{source_code} sitemap stream (aborted)",
+        )
+
+    out = list(by_id.values())
+    if budget is not None:
+        out = out[:budget]
+    return out
 
     batch_size = 400
     try:

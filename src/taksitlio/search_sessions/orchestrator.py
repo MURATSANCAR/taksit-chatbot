@@ -56,6 +56,7 @@ class SearchOrchestrator:
     catalog: CatalogHints = field(default_factory=CatalogHints)
     product_pool: list[dict[str, Any]] = field(default_factory=list)
     category_clarify_options: list[dict[str, str]] = field(default_factory=list)
+    category_token_map: dict[str, tuple[str, ...]] = field(default_factory=dict)
     states: dict[str, QueryNeedState] = field(default_factory=dict)
     parses: dict[str, Any] = field(default_factory=dict)
     clarifications: dict[str, dict[str, Any]] = field(default_factory=dict)
@@ -64,6 +65,21 @@ class SearchOrchestrator:
     started_mono: dict[str, float] = field(default_factory=dict)
     circuit_open: bool = False
     logo_resolver: Any = None
+
+    def _constraints_with_category_tokens(self, parse: Any) -> dict[str, Any]:
+        constraints = parse.to_dict() if hasattr(parse, "to_dict") else dict(parse or {})
+        cats = list(constraints.get("positive_categories") or [])
+        enriched: list[dict[str, Any]] = []
+        for cat in cats:
+            row = dict(cat) if isinstance(cat, dict) else {"display_name": str(cat)}
+            rid = str(row.get("resolved_id") or "")
+            tokens = self.category_token_map.get(rid)
+            if tokens:
+                row["include_tokens"] = list(tokens)
+            enriched.append(row)
+        if enriched:
+            constraints["positive_categories"] = enriched
+        return constraints
 
     def _logo_url(self, kind: str, entity_id: Optional[str]) -> Optional[str]:
         resolver = self.logo_resolver
@@ -289,7 +305,7 @@ class SearchOrchestrator:
         if can_transition(session.status, SearchSessionStatus.FAST_RETRIEVAL):
             self.repo.set_status(session.id, SearchSessionStatus.FAST_RETRIEVAL)
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
-        constraints = parse.to_dict()
+        constraints = self._constraints_with_category_tokens(parse)
         partial = build_partial_snapshot(
             query_version=session.active_query_version,
             products=self.product_pool,
@@ -416,7 +432,7 @@ class SearchOrchestrator:
         self._emit(session, SearchProgressEventType.LLM_JOB_STARTED, payload={"job_id": job.id})
 
         # Progressive retrieval in parallel (do not wait for LLM)
-        constraints = parse.to_dict()
+        constraints = self._constraints_with_category_tokens(parse)
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
         partial = build_partial_snapshot(
             query_version=session.active_query_version,
@@ -783,10 +799,17 @@ class SearchOrchestrator:
         return out
 
 
+def build_empty_orchestrator() -> SearchOrchestrator:
+    """Production-safe orchestrator with no synthetic catalog or products."""
+
+    return SearchOrchestrator(repo=InMemorySearchSessionRepository())
+
+
 def build_demo_orchestrator() -> SearchOrchestrator:
-    """In-memory orchestrator with synthetic catalog candidates (tests only)."""
+    """Test-only synthetic catalog (do not use in production containers)."""
 
     from taksitlio.entity_resolution import EntityCandidate
+    from taksitlio.progressive_results.category_match import CATEGORY_FAMILIES
 
     catalog = CatalogHints(
         merchants=(
@@ -825,6 +848,13 @@ def build_demo_orchestrator() -> SearchOrchestrator:
                 display_name="Televizyon",
                 canonical_name="TV",
                 aliases=("televizyon", "tv"),
+                entity_type="category",
+            ),
+            EntityCandidate(
+                entity_id="HOME_APPLIANCE",
+                display_name="Beyaz Eşya",
+                canonical_name="HOME_APPLIANCE",
+                aliases=("beyaz eşya", "buzdolabı", "çamaşır makinesi", "ev aleti"),
                 entity_type="category",
             ),
         ),
@@ -894,15 +924,33 @@ def build_demo_orchestrator() -> SearchOrchestrator:
             "has_primary_image": True,
             "query_relevance": 0.7,
         },
+        {
+            "product_id": "p-fridge-1",
+            "display_name": "No-Frost Buzdolabı",
+            "merchant_display_name": "Teknosa",
+            "merchant_id": "merchant-teknosa",
+            "price": 27999,
+            "stock_status": "AVAILABLE",
+            "price_freshness": "FRESH",
+            "has_primary_image": True,
+            "query_relevance": 0.8,
+        },
     ]
+    token_map: dict[str, tuple[str, ...]] = {}
+    for cand in catalog.categories:
+        legacy = CATEGORY_FAMILIES.get(cand.entity_id, {}).get("include") or ()
+        token_map[cand.entity_id] = tuple(
+            dict.fromkeys([*(a.casefold() for a in cand.aliases), cand.display_name.casefold(), *legacy])
+        )
     return SearchOrchestrator(
         repo=InMemorySearchSessionRepository(),
         catalog=catalog,
         product_pool=products,
+        category_token_map=token_map,
         category_clarify_options=[
-            {"id": "category-phone", "label": "iPhone"},
-            {"id": "category-tablet", "label": "iPad"},
-            {"id": "category-laptop", "label": "MacBook"},
-            {"id": "other", "label": "Diğer"},
+            {"id": "category-phone", "label": "Telefon"},
+            {"id": "category-tablet", "label": "Tablet"},
+            {"id": "category-laptop", "label": "Laptop"},
+            {"id": "HOME_APPLIANCE", "label": "Beyaz Eşya"},
         ],
     )

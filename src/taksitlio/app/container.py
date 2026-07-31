@@ -53,31 +53,53 @@ class AppContainer:
             await redis.aclose()
 
 
-def build_demo_categories() -> list[Category]:
+def build_seed_categories() -> list[Category]:
+    """Offline/test seed mirroring V003 ACTIVE categories (not production path)."""
+
     raw = [
         Category(
             id=1,
             category_code="MOBILE_PHONE",
             display_name="Cep Telefonu",
             description="Akıllı telefon, mobil cihaz, cep telefonu ürünleri",
-            synonyms=("telefon", "cep telefonu", "akıllı telefon", "mobil"),
+            synonyms=("telefon", "cep telefonu", "akıllı telefon", "mobil", "iphone", "samsung"),
         ),
         Category(
             id=2,
             category_code="LAPTOP",
             display_name="Dizüstü Bilgisayar",
             description="Laptop, notebook, dizüstü bilgisayar ürünleri",
-            synonyms=("laptop", "notebook", "dizüstü", "bilgisayar"),
+            synonyms=("laptop", "notebook", "dizüstü", "bilgisayar", "pc"),
         ),
         Category(
             id=3,
             category_code="TABLET",
             display_name="Tablet",
             description="Tablet bilgisayar ve benzeri taşınabilir ekranlı cihazlar",
-            synonyms=("tablet",),
+            synonyms=("tablet", "ipad"),
+        ),
+        Category(
+            id=4,
+            category_code="HOME_APPLIANCE",
+            display_name="Beyaz Eşya",
+            description="Buzdolabı, çamaşır makinesi ve diğer ev aletleri",
+            synonyms=("beyaz eşya", "buzdolabı", "çamaşır makinesi", "ev aleti"),
+        ),
+        Category(
+            id=5,
+            category_code="FURNITURE",
+            display_name="Mobilya",
+            description="Ev ve ofis mobilyası ürünleri",
+            synonyms=("mobilya", "koltuk", "yatak", "masa"),
         ),
     ]
     return [bootstrap_category_with_lexical_embedding(c) for c in raw]
+
+
+def build_demo_categories() -> list[Category]:
+    """Deprecated alias — use build_seed_categories."""
+
+    return build_seed_categories()
 
 
 def build_demo_campaigns() -> list[Campaign]:
@@ -251,7 +273,8 @@ def build_in_memory_container(
         InMemoryInstitutionLabelLoader,
         InstitutionLabelResolver,
     )
-    from taksitlio.search_sessions import build_demo_orchestrator
+    from taksitlio.search_sessions import build_empty_orchestrator
+    from taksitlio.search_sessions.catalog_pool import apply_catalog_hints
     from taksitlio.answer_integrity.policy_store import (
         InMemoryCircuitBreakerStore,
         InMemoryFeedbackStore,
@@ -265,17 +288,12 @@ def build_in_memory_container(
     product_query_caches = build_product_query_caches(
         settings, redis=None, prefer_memory=True
     )
-    search_orchestrator = build_demo_orchestrator()
+    search_orchestrator = build_empty_orchestrator()
+    apply_catalog_hints(search_orchestrator, categories=build_seed_categories())
     from taksitlio.llm_routing.worker import build_default_worker
     from taksitlio.media.logo_resolver import InMemoryLogoCatalog
 
     logo_catalog = InMemoryLogoCatalog()
-    # Demo logos only for synthetic merchant/brand/institution ids used in tests
-    logo_catalog.put_merchant("merchant-teknosa", "https://cdn.test/merchants/teknosa.webp")
-    logo_catalog.put_brand("brand-apple", "https://cdn.test/brands/apple.webp")
-    logo_catalog.put_brand("brand-samsung", "https://cdn.test/brands/samsung.webp")
-    logo_catalog.put_institution("institution-kuveyt", "https://cdn.test/banks/kuveyt.webp")
-    logo_catalog.put_institution("institution-fibabanka", "https://cdn.test/banks/fibabanka.webp")
     search_orchestrator.logo_resolver = logo_catalog.resolver
 
     llm_worker = build_default_worker(
@@ -421,7 +439,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     institution_labels = await load_institution_labels(institution_label_loader)
     from taksitlio.llm_routing.worker import build_default_worker
     from taksitlio.media.logo_resolver import PostgresLogoCatalog
-    from taksitlio.search_sessions import build_demo_orchestrator
+    from taksitlio.search_sessions import build_empty_orchestrator
     from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
     from taksitlio.search_sessions.persist import SearchSessionStatePersister
     from taksitlio.search_sessions.postgres import PostgresSearchSessionRepository
@@ -434,7 +452,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     from taksitlio.recommendation_safety import QualityCircuitBreaker
     from taksitlio.recommendation_safety.sponsored import PostgresSponsoredPlacementStore
 
-    search_orchestrator = build_demo_orchestrator()
+    search_orchestrator = build_empty_orchestrator()
     search_pg = PostgresSearchSessionRepository(pool)
     await search_pg.load_timeout_policy()
     search_orchestrator.repo.policy = search_pg.policy
@@ -460,6 +478,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         finance_index=finance_option_index,
         institutions=institution_labels,
         logos=logo_resolver,
+        categories=category_repo,
         utterance="",
     )
     search_persister = SearchSessionStatePersister(search_pg)
@@ -528,6 +547,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "llm_understanding_worker": llm_worker,
             "logo_catalog": logo_catalog,
             "logo_resolver": logo_resolver,
+            "category_repo": category_repo,
             "precedence_policy_loader": precedence_loader,
             "circuit_breaker_store": circuit_breaker_store,
             "feedback_store": PostgresFeedbackStore(pool=pool),

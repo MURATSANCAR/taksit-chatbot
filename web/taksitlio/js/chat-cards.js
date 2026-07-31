@@ -34,6 +34,17 @@
     }
   }
 
+  function resolveLogo(name, cdnUrl, code) {
+    if (global.TaksitlioEntityLogos && global.TaksitlioEntityLogos.resolve) {
+      return global.TaksitlioEntityLogos.resolve({
+        name: name,
+        cdnUrl: cdnUrl,
+        code: code,
+      });
+    }
+    return cdnUrl || null;
+  }
+
   /** Map API product card → deal view model. CDN URL only; never invent finance. */
   function cardToDeal(card, index) {
     const imageReady =
@@ -44,11 +55,32 @@
     const finance = card && card.best_finance ? card.best_finance : null;
     const merchant =
       (card.merchant && card.merchant.display_name) || "";
-    const metaParts = [merchant];
-    if (finance && finance.institution_display_name) {
-      metaParts.push(finance.institution_display_name);
+    const merchantLogo = resolveLogo(
+      merchant,
+      (card.merchant &&
+        (card.merchant.logo_cdn_url || card.merchant_logo_cdn_url)) ||
+        card.merchant_logo_cdn_url ||
+        null,
+      card.merchant && card.merchant.code
+    );
+    const bankName =
+      (finance && finance.institution_display_name) || "";
+    const bankLogo = resolveLogo(
+      bankName,
+      (finance && finance.institution_logo_cdn_url) || null,
+      finance && finance.institution_code
+    );
+    const metaItems = [];
+    if (merchant) {
+      metaItems.push({ label: merchant, src: merchantLogo });
     }
-    if (card.stock_status === "AVAILABLE") metaParts.push("Stokta");
+    if (bankName) {
+      metaItems.push({ label: bankName, src: bankLogo });
+    }
+    const stockLabel = card.stock_status === "AVAILABLE" ? "Stokta" : null;
+    const metaFallback = [merchant, bankName, stockLabel]
+      .filter(Boolean)
+      .join(" · ");
 
     const productPrice = formatMoney(card.price, card.currency) || "—";
     let financeLine = null;
@@ -65,7 +97,9 @@
       kind: "product",
       best: index === 0,
       name: card.display_name || "Ürün",
-      meta: metaParts.filter(Boolean).join(" · "),
+      meta: metaFallback,
+      metaItems: metaItems,
+      stockLabel: stockLabel,
       badge: index === 0 ? "Öne çıkan" : card.ranking_label || "Seçenek",
       primary: productPrice,
       secondary: "Ürün fiyatı",
@@ -137,13 +171,26 @@
             ${hint}
           </div>`
       : hint;
+    let metaHtml = "";
+    if (
+      global.TaksitlioEntityLogos &&
+      global.TaksitlioEntityLogos.metaRowHtml &&
+      (d.metaItems || []).length
+    ) {
+      metaHtml = global.TaksitlioEntityLogos.metaRowHtml(
+        d.metaItems,
+        d.stockLabel || null
+      );
+    } else if (d.meta) {
+      metaHtml = `<div class="deal-meta">${escapeHtml(d.meta)}</div>`;
+    }
     return `
       <article class="deal ${d.best ? "best" : ""}" style="animation-delay:${0.06 + i * 0.1}s">
         ${media}
         <div class="deal-body">
           <div class="deal-copy">
             <div class="deal-name">${escapeHtml(d.name)}</div>
-            <div class="deal-meta">${escapeHtml(d.meta)}</div>
+            ${metaHtml}
           </div>
           <div class="deal-price">
             <div class="l">${priceLabel}</div>

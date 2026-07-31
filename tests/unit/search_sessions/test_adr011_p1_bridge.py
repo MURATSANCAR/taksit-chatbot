@@ -43,7 +43,7 @@ async def test_chat_api_uses_search_sessions_path() -> None:
             "/v1/chat",
             json={
                 "session_id": "guest-session-1",
-                "message": "40 bin liraya televizyon istiyorum",
+                "message": "40 bin liraya laptop istiyorum",
             },
         )
     assert resp.status_code == 200

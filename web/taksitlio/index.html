@@ -534,6 +534,66 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .deal-meta-logos {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      max-width: 100%;
+      min-width: 0;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .deal-meta-logos .meta-logo {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .deal-meta-logos .meta-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .deal-meta-logos .meta-dot {
+      flex: 0 0 auto;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(80, 70, 100, 0.35);
+    }
+    .deal-meta-logos .meta-text {
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 42%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .deal-meta-logos .meta-pill {
+      flex: 0 0 auto;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(151, 71, 255, 0.1);
+      color: var(--purple-deep);
+      line-height: 1.2;
+    }
+    .partial-card .deal-meta-logos {
+      margin: 4px 0 2px;
+    }
     .pill {
       flex: none;
       font-size: 10px;
@@ -1214,6 +1274,7 @@
   <div class="toast" id="toast"></div>
 
   <script src="js/public-facing.js"></script>
+  <script src="js/entity-logos.js"></script>
   <script src="js/chat-cards.js"></script>
   <script src="js/search-session/client.js"></script>
   <script src="js/search-session/ui.js"></script>

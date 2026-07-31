@@ -186,7 +186,7 @@ async def test_search_sessions_api_and_sse() -> None:
             "/v1/search-sessions",
             json={
                 "conversation_id": "00000000-0000-0000-0000-000000000099",
-                "message": "40 bin liraya televizyon",
+                "message": "40 bin liraya laptop",
             },
         )
         assert resp.status_code == 200
@@ -210,17 +210,20 @@ async def test_clarification_api() -> None:
             "/v1/search-sessions",
             json={
                 "conversation_id": "00000000-0000-0000-0000-000000000098",
-                "message": "Apple almak istiyorum.",
+                "message": "Bir şey almak istiyorum.",
             },
         )
         body = start.json()
         assert body["route"] == "CLARIFICATION"
         clar = body["clarification"]
+        option_id = next(
+            o["option_id"] for o in clar["options"] if o["option_id"] != "other" and o["option_id"] != "undecided"
+        )
         ans = await client.post(
             f"/v1/search-sessions/{body['search_session_id']}/clarifications",
             json={
                 "clarification_id": clar["clarification_id"],
-                "selected_option_ids": ["category-laptop"],
+                "selected_option_ids": [option_id],
                 "expected_query_version": body["query_version"],
             },
         )

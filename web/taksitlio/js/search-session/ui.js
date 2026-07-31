@@ -70,19 +70,25 @@
   function productsToCards(snapshot) {
     var products = (snapshot && snapshot.products) || [];
     return products.map(function (p) {
+      var finance = p.best_finance_summary || p.best_finance || null;
       return {
         product_id: p.product_id,
         display_name: p.display_name,
-        merchant: { display_name: p.merchant_display_name },
+        merchant: {
+          display_name: p.merchant_display_name,
+          logo_cdn_url: p.merchant_logo_cdn_url || null,
+          code: p.merchant_code || null,
+        },
+        merchant_logo_cdn_url: p.merchant_logo_cdn_url || null,
         price: p.price,
         currency: "TRY",
-        stock_status: "AVAILABLE",
+        stock_status: p.stock_status || "AVAILABLE",
         ranking_label: (snapshot && snapshot.label) || "Ön sonuçlar",
         image: {
           status: p.thumbnail_cdn_url ? "READY" : "IMAGE_UNAVAILABLE",
           thumbnail_cdn_url: p.thumbnail_cdn_url || null,
         },
-        best_finance: p.best_finance_summary || null,
+        best_finance: finance,
       };
     });
   }

@@ -101,6 +101,7 @@ class ChatPipeline:
             and not request.product_phase
             and self._looks_like_product_query(request.message)
         ):
+            await self._refresh_search_catalog(request.message)
             bridged = bridge_search_start(
                 self._search_orchestrator,
                 conversation_id=conversation_id_for_session(request.session_id),
@@ -389,8 +390,37 @@ class ChatPipeline:
             "samsung",
             "macbook",
             "iphone",
+            "buzdolab",
+            "beyaz eşya",
+            "çamaşır",
+            "camasir",
+            "bulaşık",
+            "bulasik",
+            "klima",
+            "mobilya",
         )
         return any(c in lower for c in cues)
+
+    async def _refresh_search_catalog(self, utterance: str) -> None:
+        """Reload product pool + category hints from live catalog before search."""
+
+        orch = self._search_orchestrator
+        path = self._product_path
+        if orch is None or path is None or path.catalog is None:
+            return
+        from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
+
+        category_source = getattr(self._categories, "_repo", None)
+        await refresh_orchestrator_from_catalog(
+            orch,
+            catalog=path.catalog,
+            merchants=path.merchant_directory,
+            finance_index=path.finance_index,
+            institutions=path.institution_labels,
+            logos=getattr(orch, "logo_resolver", None),
+            categories=category_source,
+            utterance=utterance,
+        )
 
 
 def _is_uuid(value: str) -> bool:

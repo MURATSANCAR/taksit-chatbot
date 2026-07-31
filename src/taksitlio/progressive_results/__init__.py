@@ -19,6 +19,9 @@ class PartialProduct:
     price: float
     score: float
     thumbnail_cdn_url: Optional[str] = None
+    merchant_logo_cdn_url: Optional[str] = None
+    merchant_code: Optional[str] = None
+    stock_status: Optional[str] = None
     best_finance_summary: Optional[dict[str, Any]] = None
 
 
@@ -39,6 +42,9 @@ class PartialResultSnapshot:
                     "product_id": p.product_id,
                     "display_name": p.display_name,
                     "merchant_display_name": p.merchant_display_name,
+                    "merchant_logo_cdn_url": p.merchant_logo_cdn_url,
+                    "merchant_code": p.merchant_code,
+                    "stock_status": p.stock_status,
                     "price": p.price,
                     "score": p.score,
                     "thumbnail_cdn_url": p.thumbnail_cdn_url,
@@ -149,6 +155,9 @@ def build_partial_snapshot(
             price=float(p.get("price") or 0),
             score=score_partial_candidate(p, constraints),
             thumbnail_cdn_url=p.get("thumbnail_cdn_url"),
+            merchant_logo_cdn_url=p.get("merchant_logo_cdn_url"),
+            merchant_code=str(p["merchant_code"]) if p.get("merchant_code") else None,
+            stock_status=str(p["stock_status"]) if p.get("stock_status") else None,
             best_finance_summary=p.get("best_finance"),
         )
         for p in ranked

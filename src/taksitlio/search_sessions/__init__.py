@@ -7,7 +7,11 @@ from taksitlio.search_sessions.chat_bridge import (
     bridge_search_start,
 )
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS, MetricsRegistry
-from taksitlio.search_sessions.orchestrator import SearchOrchestrator, build_demo_orchestrator
+from taksitlio.search_sessions.orchestrator import (
+    SearchOrchestrator,
+    build_demo_orchestrator,
+    build_empty_orchestrator,
+)
 from taksitlio.search_sessions.persist import SearchSessionStatePersister
 from taksitlio.search_sessions.postgres import PostgresSearchSessionRepository
 from taksitlio.search_sessions.repository import (
@@ -41,6 +45,7 @@ __all__ = [
     "bridge_clarification_answer",
     "bridge_search_start",
     "build_demo_orchestrator",
+    "build_empty_orchestrator",
     "can_transition",
     "refresh_orchestrator_from_catalog",
     "transition",

@@ -28,3 +28,10 @@ def test_adr011_scripts_referenced_in_html() -> None:
     assert "js/search-session/ui.js" in html
     assert "js/search-progress/timeline.js" in html
     assert "js/clarification/card.js" in html
+    assert "js/entity-logos.js" in html
+    logos = ROOT / "web" / "taksitlio" / "assets" / "logos"
+    assert (logos / "m-mediamarkt.png").is_file()
+    assert (logos / "fi-isbank.jpg").is_file()
+    entity = (JS / "entity-logos.js").read_text(encoding="utf-8")
+    assert "m-mediamarkt.png" in entity
+    assert "fi-isbank.jpg" in entity

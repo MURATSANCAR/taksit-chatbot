@@ -96,20 +96,23 @@ merchants_verified_public:
   - merchant_code: m-n11
     display_name: n11
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: CRAWL4AI_CATEGORY
+    crawl_status: CURL_CFFI_SITEMAP
     source_code: src-m-n11
-    seed_urls: [https://www.n11.com/]
-    notes: Product sitemap index HTTP 403; crawl4ai category→PDP path.
+    seed_urls: [https://www.n11.com/, https://www.n11.com/sitemap/product/sitemap-index.xml]
+    notes: |
+      Product sitemap (~1050 shards × ~18k URLs). curl_cffi chrome124.
+      Price via SPA displayPriceNumber+groupId (JSON-LD offers often empty).
+      python scripts/fetch_live_merchant_feeds.py --merchants n11 --delay 0.15 --workers 6 --limit 0
 
   - merchant_code: m-trendyol
     display_name: Trendyol
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: LIVE_SITEMAP
+    crawl_status: CURL_CFFI_SITEMAP
     source_code: src-m-trendyol
     seed_urls: [https://www.trendyol.com/, https://www.trendyol.com/sitemap_index.xml]
     notes: |
-      Bare /sitemap_productsN.xml (~7M+ TR URLs). JSON-LD PDPs.
-      python scripts/fetch_live_merchant_feeds.py --merchants trendyol --delay 0.15 --workers 10 --limit 0
+      Bare /sitemap_productsN.xml (~7M+ TR URLs). httpx hits 429 — use curl_cffi, low workers.
+      python scripts/fetch_live_merchant_feeds.py --merchants trendyol --delay 0.35 --workers 3 --limit 0
 
   - merchant_code: m-evofone
     display_name: Evofone

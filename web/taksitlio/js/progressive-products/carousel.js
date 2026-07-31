@@ -55,6 +55,36 @@
           escapeHtml(finance.display_label || "Tahmini aylık ödeme") +
           "</span>";
       }
+      var metaItems = [];
+      if (p.merchant_display_name) {
+        var mSrc =
+          global.TaksitlioEntityLogos && global.TaksitlioEntityLogos.resolve
+            ? global.TaksitlioEntityLogos.resolve({
+                name: p.merchant_display_name,
+                cdnUrl: p.merchant_logo_cdn_url || null,
+                code: p.merchant_code || null,
+              })
+            : p.merchant_logo_cdn_url || null;
+        metaItems.push({ label: p.merchant_display_name, src: mSrc });
+      }
+      if (finance && finance.institution_display_name) {
+        var bSrc =
+          global.TaksitlioEntityLogos && global.TaksitlioEntityLogos.resolve
+            ? global.TaksitlioEntityLogos.resolve({
+                name: finance.institution_display_name,
+                cdnUrl: finance.institution_logo_cdn_url || null,
+              })
+            : finance.institution_logo_cdn_url || null;
+        metaItems.push({
+          label: finance.institution_display_name,
+          src: bSrc,
+        });
+      }
+      var stockLabel = p.stock_status === "AVAILABLE" ? "Stokta" : null;
+      var metaHtml =
+        global.TaksitlioEntityLogos && global.TaksitlioEntityLogos.metaRowHtml
+          ? global.TaksitlioEntityLogos.metaRowHtml(metaItems, stockLabel)
+          : "<p>" + escapeHtml(p.merchant_display_name || "") + "</p>";
       html +=
         '<article class="partial-card' +
         (featured ? " is-featured" : "") +
@@ -71,9 +101,9 @@
         "</div>" +
         "<h4>" +
         escapeHtml(p.display_name) +
-        "</h4><p>" +
-        escapeHtml(p.merchant_display_name || "") +
-        "</p><p class=\"partial-price\">" +
+        "</h4>" +
+        metaHtml +
+        '<p class="partial-price">' +
         escapeHtml(formatPrice(p.price)) +
         " TL</p>" +
         financeHtml +

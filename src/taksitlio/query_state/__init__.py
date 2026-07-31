@@ -107,23 +107,6 @@ def cancel_constraint(state: QueryNeedState, *, constraint_key: str, value: Any)
 
 
 def chips_from_state(state: QueryNeedState) -> list[dict[str, Any]]:
-    """UI chips for confirmed preferences only — no budget or uncertainty noise."""
-    chips: list[dict[str, Any]] = []
-    for c in state.active_categories:
-        chips.append(
-            {
-                "id": f"cat:{c.get('resolved_id') or c.get('display_name')}",
-                "label": c.get("display_name") or "Kategori",
-                "kind": "category",
-            }
-        )
-    for u in state.usage_contexts:
-        label = {"education": "Okul", "gaming": "Oyun", "business": "İş", "media": "Film"}.get(u, u)
-        chips.append({"id": f"usage:{u}", "label": label, "kind": "usage"})
-    for p in state.preferences:
-        label = {"lightweight": "Hafif", "portable": "Taşınabilir", "longevity": "Uzun süreli kullanım"}.get(p, p)
-        chips.append({"id": f"pref:{p}", "label": label, "kind": "preference"})
-    for a in state.required_attributes:
-        if a.get("attribute_id") == "ram_gb":
-            chips.append({"id": "attr:ram", "label": f"{a.get('value')} GB RAM", "kind": "attribute"})
-    return chips
+    """Guest UI no longer shows constraint chips (budget/category/etc.)."""
+    del state  # state still drives search; chips are intentionally unused
+    return []

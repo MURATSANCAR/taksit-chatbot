@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from taksitlio.api.deps import container_from
 from taksitlio.llm_routing.worker import schedule_llm_job
-from taksitlio.search_sessions import SearchOrchestrator, build_demo_orchestrator
+from taksitlio.search_sessions import SearchOrchestrator, build_empty_orchestrator
 from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
 from taksitlio.search_sessions.hydrate import ensure_session_loaded
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
@@ -24,7 +24,7 @@ def _orchestrator(request: Request) -> SearchOrchestrator:
     container = container_from(request)
     orch = container.extras.get("search_orchestrator")
     if orch is None:
-        orch = build_demo_orchestrator()
+        orch = build_empty_orchestrator()
         container.extras["search_orchestrator"] = orch
     return orch  # type: ignore[no-any-return]
 
@@ -55,6 +55,7 @@ async def _maybe_refresh_catalog(request: Request, orch: SearchOrchestrator, utt
         finance_index=container.extras.get("finance_option_index"),
         institutions=container.extras.get("institution_labels"),
         logos=logos,
+        categories=container.extras.get("category_repo"),
         utterance=utterance,
     )
 

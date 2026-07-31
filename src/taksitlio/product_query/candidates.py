@@ -6,7 +6,7 @@ Merchant labels and finance come from catalog indexes — never hardcoded brands
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional, Sequence
 
 from taksitlio.merchant.directory import (
     MerchantDirectory,
@@ -107,10 +107,13 @@ async def load_search_candidates_from_catalog(
     merchants: Optional[MerchantDirectory] = None,
     finance_index: Optional[FinanceOptionIndex] = None,
     institutions: Optional[InstitutionLabelResolver] = None,
+    category_candidates: Optional[Sequence[Any]] = None,
 ) -> tuple[SearchProductCandidate, ...]:
     from taksitlio.progressive_results.category_match import utterance_name_terms
 
-    terms = utterance_name_terms(utterance)
+    terms = utterance_name_terms(
+        utterance, category_candidates=category_candidates or ()
+    )
     if terms and hasattr(catalog, "list_products_matching"):
         products = await catalog.list_products_matching(
             name_terms=terms, merchant_id=merchant_id, limit=limit
