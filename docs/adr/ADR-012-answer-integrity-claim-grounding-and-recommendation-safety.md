@@ -2,7 +2,7 @@
 
 ## Durum
 
-**Proposed — design (2026-07-31).**
+**Accepted — P0 skeleton + zero-tolerance gates (2026-07-31).**
 
 Bu ADR, ADR-010 (gerçek katalog / kampanya / ödeme) ve ADR-011
 (clarification-first / LLM routing) üzerine **cevap bütünlüğü** katmanını
@@ -10,8 +10,15 @@ tanımlar. Ürün araması çalışır; finansal ürün sunan kurumsal güven se
 için claim grounding, alan bazlı güven, deterministik response composer ve
 recommendation safety zorunludur.
 
-Kod iskeleti bu ADR kabul edildikten sonra P0 olarak ayrı sprintte başlar.
-Bu belge yalnız bağlayıcı tasarımı sabitler.
+P0 kod iskeleti land edildi:
+
+- `src/taksitlio/answer_integrity/`
+- `src/taksitlio/claim_validation/`
+- `src/taksitlio/recommendation_safety/`
+- `db/migrations/V023__answer_integrity_claim_grounding.sql`
+
+`GroundedResponseGenerator` Final Claim Validator + template fallback ile
+bağlandı. Sıfır-tolerans unit/acceptance testleri mevcut.
 
 ## Bağlam
 
@@ -732,4 +739,5 @@ campaign_version / payment_calculation satırlarına FK ile bağlanır.
   güvenilirliğini bağlar.
 - LLM anlamaya yardım eder; iddia üretmez.
 - Sıfır-tolerans finansal claim’ler gate’lerle ölçülür.
-- Kod P0’ı bu belgenin kabulünden sonra başlar.
+- Kod P0’ı land edildi; sıfır-tolerans gate testleri zorunlu kalır.
+- P1+: shadow/feedback API wiring, golden/metamorphic genişletme, DB policy loaders.

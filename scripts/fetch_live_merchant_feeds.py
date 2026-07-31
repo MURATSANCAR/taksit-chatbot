@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""Polite live merchant HTML/JSON-LD → ADR-010 product feeds.
+"""Expand live merchant feeds for publicly verified alışveriş-kredisi partners.
 
-- Honors crawl delay (default 2s)
-- Does not invent price/stock
-- Writes ``crawler/feeds/live/{source_code}.json``
-
-This is an ops tool for building feeds when merchant APIs are unavailable.
-Production chatbot never calls this synchronously.
+IMPORTANT: Fibabanka/Taksitlio claim 60+ brands, but the named roster is NOT
+published on the open web (mobile-app / partner CRM only). This script only
+crawls merchants verified from public bank/merchant pages — never invents
+partner membership or prices/rates.
 """
 
 from __future__ import annotations
@@ -17,18 +15,18 @@ import re
 import time
 from html import unescape
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 from urllib.parse import urljoin
 
 import httpx
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "crawler" / "feeds" / "live"
-UA = "TaksitlioBot/0.1 (+ADR-010 catalog research; polite; ops)"
+OUT = ROOT / "crawler" / "feeds" / "live"
+UA = "TaksitlioBot/0.1 (+ADR-010 polite catalog; ops research)"
 
 
 def parse_tr_price(raw: str) -> Optional[float]:
-    text = raw.strip().replace("TL", "").strip()
+    text = raw.strip().replace("TL", "").replace("₺", "").strip()
     if re.match(r"^\d{1,3}(\.\d{3})+(,\d+)?$", text):
         text = text.replace(".", "").replace(",", ".")
     else:
@@ -36,6 +34,92 @@ def parse_tr_price(raw: str) -> Optional[float]:
     try:
         return float(re.sub(r"[^\d.]", "", text))
     except ValueError:
+        return None
+
+
+def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
+    for block in re.findall(
+        r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+        html,
+        re.I | re.S,
+    ):
+        try:
+            data = json.loads(block.strip())
+        except json.JSONDecodeError:
+            continue
+        items = data if isinstance(data, list) else [data]
+        # unwrap @graph
+        expanded: list[Any] = []
+        for it in items:
+            if isinstance(it, dict) and "@graph" in it:
+                expanded.extend(it["@graph"] if isinstance(it["@graph"], list) else [])
+            else:
+                expanded.append(it)
+        for it in expanded:
+            if not isinstance(it, dict):
+                continue
+            t = it.get("@type")
+            types = t if isinstance(t, list) else [t]
+            if "Product" not in {str(x) for x in types if x}:
+                continue
+            offers = it.get("offers") or {}
+            if isinstance(offers, list):
+                offers = offers[0] if offers else {}
+            try:
+                price = float(str(offers.get("price")).replace(",", "."))
+            except (TypeError, ValueError):
+                continue
+            name = it.get("name")
+            if not name:
+                continue
+            brand = it.get("brand")
+            if isinstance(brand, dict):
+                brand = brand.get("name")
+            avail = str(offers.get("availability") or "")
+            stock = "UNKNOWN"
+            if "InStock" in avail:
+                stock = "AVAILABLE"
+            elif "OutOfStock" in avail:
+                stock = "OUT_OF_STOCK"
+            img = it.get("image")
+            if isinstance(img, list):
+                img = img[0] if img else None
+            attrs: dict[str, Any] = {}
+            for ap in it.get("additionalProperty") or []:
+                if isinstance(ap, dict) and ap.get("name") is not None:
+                    attrs[str(ap["name"])] = ap.get("value")
+            return {
+                "id": str(
+                    it.get("sku")
+                    or it.get("productID")
+                    or it.get("mpn")
+                    or url.rstrip("/").rsplit("/", 1)[-1]
+                ),
+                "name": str(name).strip(),
+                "sku": it.get("sku"),
+                "gtin": it.get("gtin13") or it.get("gtin") or it.get("gtin14"),
+                "ean": it.get("gtin13") or it.get("ean"),
+                "mpn": it.get("mpn"),
+                "brand": brand,
+                "model": it.get("model"),
+                "url": url,
+                "price": price,
+                "list_price": _opt_float(offers.get("highPrice") or offers.get("listPrice")),
+                "currency": offers.get("priceCurrency") or "TRY",
+                "stock_status": stock,
+                "image_url": img,
+                "attributes": attrs,
+                "category": it.get("category"),
+            }
+    return None
+
+
+def _opt_float(v: Any) -> Optional[float]:
+    if v is None or v == "":
+        return None
+    try:
+        return float(str(v).replace(",", "."))
+    except (TypeError, ValueError):
         return None
 
 
@@ -92,156 +176,161 @@ def parse_vatan_listing(html: str) -> list[dict[str, Any]]:
                 "attributes": attrs,
             }
         )
-    uniq = {p["id"]: p for p in products}
-    return list(uniq.values())
+    return list({p["id"]: p for p in products}.values())
 
 
-def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
-    for block in re.findall(
-        r'<script[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',
-        html,
-        re.I | re.S,
-    ):
-        try:
-            data = json.loads(block.strip())
-        except json.JSONDecodeError:
-            continue
-        items = data if isinstance(data, list) else [data]
-        for it in items:
-            if not isinstance(it, dict):
-                continue
-            t = it.get("@type")
-            types = t if isinstance(t, list) else [t]
-            if "Product" not in types:
-                continue
-            offers = it.get("offers") or {}
-            if isinstance(offers, list):
-                offers = offers[0] if offers else {}
-            try:
-                price = float(offers.get("price"))
-            except (TypeError, ValueError):
-                continue
-            name = it.get("name")
-            if not name:
-                continue
-            brand = it.get("brand")
-            if isinstance(brand, dict):
-                brand = brand.get("name")
-            avail = str(offers.get("availability") or "")
-            stock = "UNKNOWN"
-            if "InStock" in avail:
-                stock = "AVAILABLE"
-            elif "OutOfStock" in avail:
-                stock = "OUT_OF_STOCK"
-            img = it.get("image")
-            if isinstance(img, list):
-                img = img[0] if img else None
-            attrs: dict[str, Any] = {}
-            for ap in it.get("additionalProperty") or []:
-                if isinstance(ap, dict) and ap.get("name") is not None:
-                    attrs[str(ap["name"])] = ap.get("value")
-            return {
-                "id": str(
-                    it.get("sku")
-                    or it.get("productID")
-                    or url.rsplit("-", 1)[-1].replace(".html", "")
-                ),
-                "name": name,
-                "sku": it.get("sku"),
-                "gtin": it.get("gtin13") or it.get("gtin"),
-                "mpn": it.get("mpn"),
-                "brand": brand,
-                "url": url,
-                "price": price,
-                "currency": offers.get("priceCurrency") or "TRY",
-                "stock_status": stock,
-                "image_url": img,
-                "attributes": attrs,
-            }
-    return None
-
-
-def fetch_vatan(client: httpx.Client, delay: float) -> list[dict[str, Any]]:
-    categories = [
-        "https://www.vatanbilgisayar.com/notebook/",
-        "https://www.vatanbilgisayar.com/cep-telefonu-modelleri/",
-    ]
-    out: list[dict[str, Any]] = []
-    for url in categories:
-        r = client.get(url)
-        r.raise_for_status()
-        out.extend(parse_vatan_listing(r.text))
-        time.sleep(delay)
-    uniq = {p["id"]: p for p in out}
-    return list(uniq.values())
-
-
-def fetch_mediamarkt(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
-    cats = [
-        "https://www.mediamarkt.com.tr/tr/category/laptop-504926.html",
-        "https://www.mediamarkt.com.tr/tr/category/cep-telefonlari-504171.html",
-        "https://www.mediamarkt.com.tr/tr/category/tabletler-639520.html",
-    ]
+def fetch_listing_then_jsonld(
+    client: httpx.Client,
+    *,
+    category_urls: list[str],
+    product_href_re: str,
+    delay: float,
+    limit: int,
+    base: str = "",
+) -> list[dict[str, Any]]:
     product_urls: list[str] = []
-    for cat in cats:
+    for cat in category_urls:
         r = client.get(cat)
-        r.raise_for_status()
-        links = re.findall(
-            r'href="(https://www\.mediamarkt\.com\.tr/tr/product/[^"#?]+)"', r.text
-        )
-        links += [
-            urljoin("https://www.mediamarkt.com.tr", u)
-            for u in re.findall(r'href="(/tr/product/[^"#?]+)"', r.text)
-        ]
-        for u in links:
+        if r.status_code != 200:
+            time.sleep(delay)
+            continue
+        found = re.findall(product_href_re, r.text)
+        for u in found:
+            if u.startswith("/"):
+                u = urljoin(base or cat, u)
             if u not in product_urls:
                 product_urls.append(u)
         time.sleep(delay)
     product_urls = product_urls[:limit]
-    products: list[dict[str, Any]] = []
+    out: list[dict[str, Any]] = []
     for url in product_urls:
         r = client.get(url)
-        if r.status_code != 200:
-            time.sleep(delay)
-            continue
-        parsed = parse_jsonld_product(r.text, url)
-        if parsed:
-            products.append(parsed)
+        if r.status_code == 200:
+            p = parse_jsonld_product(r.text, url)
+            if p:
+                out.append(p)
         time.sleep(delay)
-    uniq = {p["id"]: p for p in products}
-    return list(uniq.values())
+    return list({p["id"]: p for p in out}.values())
+
+
+def fetch_vatan(client: httpx.Client, delay: float) -> list[dict[str, Any]]:
+    cats = [
+        "https://www.vatanbilgisayar.com/notebook/",
+        "https://www.vatanbilgisayar.com/cep-telefonu-modelleri/",
+        "https://www.vatanbilgisayar.com/tablet/",
+        "https://www.vatanbilgisayar.com/televizyon/",
+        "https://www.vatanbilgisayar.com/beyaz-esya/",
+        "https://www.vatanbilgisayar.com/oyun-bilgisayari/",
+    ]
+    out: list[dict[str, Any]] = []
+    for url in cats:
+        r = client.get(url)
+        if r.status_code == 200:
+            out.extend(parse_vatan_listing(r.text))
+        time.sleep(delay)
+    return list({p["id"]: p for p in out}.values())
+
+
+def fetch_mediamarkt(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
+    return fetch_listing_then_jsonld(
+        client,
+        category_urls=[
+            "https://www.mediamarkt.com.tr/tr/category/laptop-504926.html",
+            "https://www.mediamarkt.com.tr/tr/category/cep-telefonlari-504171.html",
+            "https://www.mediamarkt.com.tr/tr/category/tabletler-639520.html",
+            "https://www.mediamarkt.com.tr/tr/category/televizyonlar-504172.html",
+            "https://www.mediamarkt.com.tr/tr/category/oyuncu-laptop-878043.html",
+        ],
+        product_href_re=r'href="((?:https://www\.mediamarkt\.com\.tr)?/tr/product/[^"#?]+)"',
+        delay=delay,
+        limit=limit,
+        base="https://www.mediamarkt.com.tr",
+    )
+
+
+def fetch_koctas(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
+    return fetch_listing_then_jsonld(
+        client,
+        category_urls=[
+            "https://www.koctas.com.tr/beyaz-esya-c-200001",
+            "https://www.koctas.com.tr/elektronik-c-200002",
+            "https://www.koctas.com.tr/mobilya-c-100001",
+        ],
+        product_href_re=r'href="(https://www\.koctas\.com\.tr/[^"#?]+\.html)"',
+        delay=delay,
+        limit=limit,
+        base="https://www.koctas.com.tr",
+    )
+
+
+def fetch_dr(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
+    return fetch_listing_then_jsonld(
+        client,
+        category_urls=[
+            "https://www.dr.com.tr/kategori/elektronik",
+            "https://www.dr.com.tr/kategori/kitap",
+        ],
+        product_href_re=r'href="(https://www\.dr\.com\.tr/[^"#?]+)"',
+        delay=delay,
+        limit=limit,
+        base="https://www.dr.com.tr",
+    )
 
 
 def write_feed(source_code: str, products: list[dict[str, Any]], source: str) -> Path:
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    path = OUT_DIR / f"{source_code}.json"
-    payload = {
-        "products": products,
-        "source": source,
-        "count": len(products),
-    }
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    OUT.mkdir(parents=True, exist_ok=True)
+    path = OUT / f"{source_code}.json"
+    # Drop incomplete rows (no invent)
+    clean = [p for p in products if p.get("name") and p.get("price") is not None and p.get("url")]
+    path.write_text(
+        json.dumps(
+            {
+                "products": clean,
+                "source": source,
+                "count": len(clean),
+                "quality": "live_polite_capture",
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     return path
 
 
+FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
+    "vatan": lambda c, d, lim: fetch_vatan(c, d),
+    "mediamarkt": lambda c, d, lim: fetch_mediamarkt(c, d, lim),
+    "koctas": lambda c, d, lim: fetch_koctas(c, d, lim),
+    "dr": lambda c, d, lim: fetch_dr(c, d, lim),
+}
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--merchant", choices=["vatan", "mediamarkt", "all"], default="all")
-    parser.add_argument("--delay", type=float, default=2.0)
-    parser.add_argument("--mm-limit", type=int, default=45)
-    args = parser.parse_args()
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument(
+        "--merchants",
+        default="vatan,mediamarkt,koctas,dr",
+        help="comma list: vatan,mediamarkt,koctas,dr",
+    )
+    p.add_argument("--delay", type=float, default=2.0)
+    p.add_argument("--limit", type=int, default=40)
+    args = p.parse_args()
+    wanted = [m.strip() for m in args.merchants.split(",") if m.strip()]
 
     with httpx.Client(timeout=40.0, headers={"User-Agent": UA}, follow_redirects=True) as client:
-        if args.merchant in {"vatan", "all"}:
-            products = fetch_vatan(client, args.delay)
-            path = write_feed("src-m-vatan", products, "vatanbilgisayar.com listing HTML")
-            print(f"vatan: {len(products)} -> {path}")
-        if args.merchant in {"mediamarkt", "all"}:
-            products = fetch_mediamarkt(client, args.delay, args.mm_limit)
-            path = write_feed(
-                "src-m-mediamarkt", products, "mediamarkt.com.tr category+PDP JSON-LD"
-            )
-            print(f"mediamarkt: {len(products)} -> {path}")
+        for code in wanted:
+            if code not in FETCHERS:
+                print(f"skip unknown {code}")
+                continue
+            print(f"fetch {code} ...")
+            try:
+                products = FETCHERS[code](client, args.delay, args.limit)
+                path = write_feed(f"src-m-{code}", products, f"{code} live capture")
+                print(f"  {len(products)} -> {path}")
+            except Exception as exc:
+                print(f"  FAIL {exc}")
 
 
 if __name__ == "__main__":

@@ -15,8 +15,10 @@ from taksitlio.answer_integrity.facts import FactEnvelope, FactType
 from taksitlio.answer_integrity.truth_status import CostKind, FieldTruthStatus
 
 
+# Prefer plain integers / decimals first; thousands-separated form requires
+# at least one separator group so "4281" is not truncated to "428".
 _MONEY_RE = re.compile(
-    r"(?<!\d)(\d{1,3}(?:[.\s]\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:TL|TRY|₺)?",
+    r"(?<!\d)(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*(?:TL|TRY|₺)?",
     re.IGNORECASE,
 )
 _TERM_RE = re.compile(r"(?<!\d)(\d{1,3})\s*(?:ay|aylık|months?)\b", re.IGNORECASE)

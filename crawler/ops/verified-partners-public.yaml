@@ -1,0 +1,182 @@
+# Publicly verified alışveriş-kredisi / Taksitlio-adjacent partners.
+#
+# Fibabanka annual report: "60+ brands / 10k+ points" — NAMED roster is NOT on
+# the open web (Taksitlio mobile app / partner CRM). Entries below are only from
+# public bank/merchant pages. Do NOT mark unverified brands as Taksitlio partners.
+#
+# verification:
+#   PUBLIC_BANK_PAGE — listed on a bank alışveriş kredisi page
+#   PUBLIC_MERCHANT_PAGE — merchant page mentions Fibabanka/Taksitlio/Alışgidiş
+#   PRESS — named in press with Taksitlio/Alışgidiş context
+#   PENDING_OFFICIAL_EXPORT — slot reserved until ops provides official list
+
+version: 2
+official_claim:
+  source: "Fibabanka 2025 faaliyet raporu / basın"
+  brands_claimed: "60+"
+  points_claimed: "10000+"
+  named_public_roster: false
+
+merchants_verified_public:
+  - merchant_code: m-teknosa
+    display_name: Teknosa
+    verification: [PUBLIC_MERCHANT_PAGE, PRESS]
+    crawl_status: BLOCKED_CLOUDFLARE
+    seed_urls: [https://www.teknosa.com/]
+
+  - merchant_code: m-vatan
+    display_name: Vatan Bilgisayar
+    verification: [PUBLIC_BANK_PAGE, PRESS]
+    crawl_status: LIVE_FEED
+    source_code: src-m-vatan
+    seed_urls: [https://www.vatanbilgisayar.com/]
+
+  - merchant_code: m-mediamarkt
+    display_name: MediaMarkt
+    verification: [PUBLIC_BANK_PAGE, PRESS]
+    crawl_status: LIVE_FEED
+    source_code: src-m-mediamarkt
+    seed_urls: [https://www.mediamarkt.com.tr/]
+
+  - merchant_code: m-koctas
+    display_name: Koçtaş
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: ATTEMPT
+    source_code: src-m-koctas
+    seed_urls: [https://www.koctas.com.tr/]
+
+  - merchant_code: m-arcelik
+    display_name: Arçelik
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: BLOCKED_HTTP_403
+    seed_urls: [https://www.arcelik.com.tr/]
+
+  - merchant_code: m-beko
+    display_name: Beko
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: BLOCKED_HTTP_403
+    seed_urls: [https://www.beko.com.tr/]
+
+  - merchant_code: m-decathlon
+    display_name: Decathlon
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: BLOCKED_HTTP_403
+    seed_urls: [https://www.decathlon.com.tr/]
+
+  - merchant_code: m-hepsiburada
+    display_name: Hepsiburada
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: BLOCKED_HTTP_403
+    seed_urls: [https://www.hepsiburada.com/]
+
+  - merchant_code: m-n11
+    display_name: n11
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: ROBOTS_OK_PARSE_PENDING
+    seed_urls: [https://www.n11.com/]
+
+  - merchant_code: m-trendyol
+    display_name: Trendyol
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: ROBOTS_OK_PARSE_PENDING
+    seed_urls: [https://www.trendyol.com/]
+
+  - merchant_code: m-vivense
+    display_name: Vivense
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: BLOCKED_HTTP_403
+    seed_urls: [https://www.vivense.com/]
+
+  - merchant_code: m-flo
+    display_name: FLO
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: ROBOTS_OK_PARSE_PENDING
+    seed_urls: [https://www.flo.com.tr/]
+
+  - merchant_code: m-dr
+    display_name: D&R
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: ATTEMPT
+    source_code: src-m-dr
+    seed_urls: [https://www.dr.com.tr/]
+
+  - merchant_code: m-civil
+    display_name: Civil
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-fujifilm
+    display_name: Fujifilm
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-gurgenciler
+    display_name: Gürgençler
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-ets
+    display_name: ETS
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-generalmobile
+    display_name: General Mobile
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-network
+    display_name: Network
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-setur
+    display_name: Setur
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-troy
+    display_name: Troy
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-vivo
+    display_name: Vivo
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+  - merchant_code: m-zuhalmuzik
+    display_name: Zuhal Müzik
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: PENDING_PARSER
+    seed_urls: []
+
+banks_verified_public:
+  - institution_code: fi-fibabanka
+    display_name: Fibabanka
+    verification: [PUBLIC_MERCHANT_PAGE, PRESS]
+  - institution_code: fi-kuveytturk
+    display_name: Kuveyt Türk
+    verification: [PUBLIC_BANK_PAGE]
+  - institution_code: fi-isbank
+    display_name: İş Bankası
+    verification: [PRESS, PUBLIC_BANK_PAGE]
+  - institution_code: fi-yapikredi
+    display_name: Yapı Kredi
+    verification: [PUBLIC_BANK_PAGE]
+
+ops_blocker: |
+  To reach the claimed 60+ Taksitlio brands with prod-quality data, export the
+  official partner roster (merchant_code, legal_name, seed_url or feed_url,
+  credential_ref) from Taksitlio partner CRM / app CMS into
+  crawler/ops/official-partner-export.yaml — then re-run fetch+ingest.
+  Inventing the missing ~40 names would violate ADR-010 real-data rules.

@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Union
 
 
 class ConfidenceField(str, Enum):
@@ -33,15 +33,14 @@ class FieldConfidencePolicy:
 
     use_threshold: float = 0.85
     clarify_threshold: float = 0.55
-    # Optional overrides: field → (use, clarify)
     overrides: Mapping[str, tuple[float, float]] = None  # type: ignore[assignment]
 
     def __post_init__(self) -> None:
         if self.overrides is None:
             object.__setattr__(self, "overrides", {})
 
-    def thresholds_for(self, field: ConfidenceField) -> tuple[float, float]:
-        override = self.overrides.get(field.value)
+    def thresholds_for(self, field: str) -> tuple[float, float]:
+        override = self.overrides.get(field)
         if override:
             return float(override[0]), float(override[1])
         return self.use_threshold, self.clarify_threshold
@@ -61,6 +60,16 @@ class FieldConfidence:
         return "overall_confidence" in self.scores or "overall" in self.scores
 
 
+@dataclass(frozen=True)
+class FieldDecisionResult:
+    """Per-field decision returned by decide_field (ADR-012 test API)."""
+
+    field_name: str
+    score: Optional[float]
+    action: str  # USE | CLARIFY | REJECT
+    accepted: bool
+
+
 def reject_overall_confidence(payload: Mapping[str, object]) -> None:
     """Raise ValueError if overall_confidence is used for auto-select."""
 
@@ -74,23 +83,55 @@ def reject_overall_confidence(payload: Mapping[str, object]) -> None:
 
 
 def decide_field(
-    confidence: FieldConfidence,
-    field: ConfidenceField,
+    field_name: Union[str, ConfidenceField, FieldConfidence],
+    score: Union[float, None, ConfidenceField] = None,
     *,
     policy: FieldConfidencePolicy | None = None,
-) -> FieldDecision:
+) -> Union[FieldDecisionResult, FieldDecision]:
+    """Decide a single field.
+
+    Test / ADR API:
+        decide_field(field_name: str, score: float|None) → FieldDecisionResult
+
+    Legacy:
+        decide_field(confidence: FieldConfidence, field: ConfidenceField) → FieldDecision
+    """
+
     pol = policy or FieldConfidencePolicy()
-    if confidence.has_overall_confidence():
-        raise ValueError("overall_confidence is forbidden for auto-select (ADR-012)")
-    score = confidence.get(field)
-    if score is None:
-        return FieldDecision.CLARIFY
-    use_t, clarify_t = pol.thresholds_for(field)
-    if score >= use_t:
-        return FieldDecision.USE
-    if score >= clarify_t:
-        return FieldDecision.CLARIFY
-    return FieldDecision.REJECT
+
+    # Legacy: decide_field(confidence, field)
+    if isinstance(field_name, FieldConfidence) and isinstance(score, ConfidenceField):
+        if field_name.has_overall_confidence():
+            raise ValueError("overall_confidence is forbidden for auto-select (ADR-012)")
+        s = field_name.get(score)
+        use_t, clarify_t = pol.thresholds_for(score.value)
+        if s is None:
+            return FieldDecision.CLARIFY
+        if s >= use_t:
+            return FieldDecision.USE
+        if s >= clarify_t:
+            return FieldDecision.CLARIFY
+        return FieldDecision.REJECT
+
+    name = (
+        field_name.value if isinstance(field_name, ConfidenceField) else str(field_name)
+    )
+    s = float(score) if score is not None else None
+    use_t, clarify_t = pol.thresholds_for(name)
+    if s is None:
+        action = FieldDecision.CLARIFY.value
+    elif s >= use_t:
+        action = FieldDecision.USE.value
+    elif s >= clarify_t:
+        action = FieldDecision.CLARIFY.value
+    else:
+        action = FieldDecision.REJECT.value
+    return FieldDecisionResult(
+        field_name=name,
+        score=s,
+        action=action,
+        accepted=action == FieldDecision.USE.value,
+    )
 
 
 def decide_all(
@@ -100,9 +141,12 @@ def decide_all(
     policy: FieldConfidencePolicy | None = None,
 ) -> dict[str, FieldDecision]:
     targets = fields or tuple(ConfidenceField)
-    return {
-        f.value: decide_field(confidence, f, policy=policy) for f in targets
-    }
+    out: dict[str, FieldDecision] = {}
+    for f in targets:
+        result = decide_field(confidence, f, policy=policy)
+        assert isinstance(result, FieldDecision)
+        out[f.value] = result
+    return out
 
 
 __all__ = [
@@ -110,6 +154,7 @@ __all__ = [
     "FieldConfidence",
     "FieldConfidencePolicy",
     "FieldDecision",
+    "FieldDecisionResult",
     "decide_all",
     "decide_field",
     "reject_overall_confidence",

@@ -44,8 +44,10 @@ async def ensure_merchant(conn, *, code: str, name: str) -> int:
 async def ensure_institution(conn, *, code: str, name: str) -> int:
     row = await conn.fetchrow(
         """
-        INSERT INTO financial_institutions (institution_code, display_name, normalized_name, status)
-        VALUES ($1, $2, lower($2), 'ACTIVE')
+        INSERT INTO financial_institutions (
+          institution_code, display_name, normalized_name, status
+        )
+        VALUES ($1::text, $2::text, lower($2::text), 'ACTIVE')
         ON CONFLICT (institution_code) DO UPDATE
           SET display_name = EXCLUDED.display_name,
               status = 'ACTIVE',
@@ -66,18 +68,23 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
         apply_ingestion_to_catalog,
     )
 
-    mapping = {
-        "src-m-vatan.json": ("m-vatan", "Vatan Bilgisayar"),
-        "src-m-mediamarkt.json": ("m-mediamarkt", "MediaMarkt"),
+    # Opaque codes → display names from ops registry (not app hardcode maps).
+    name_by_code = {
+        "src-m-vatan": ("m-vatan", "Vatan Bilgisayar"),
+        "src-m-mediamarkt": ("m-mediamarkt", "MediaMarkt"),
+        "src-m-koctas": ("m-koctas", "Koçtaş"),
+        "src-m-dr": ("m-dr", "D&R"),
     }
     reports = []
     catalog = PostgresProductCatalogRepository(pool)
     async with pool.acquire() as conn:
-        for fname, (code, name) in mapping.items():
-            path = LIVE / fname
-            if not path.exists():
-                reports.append({"file": fname, "skipped": True})
-                continue
+        for path in sorted(LIVE.glob("src-m-*.json")):
+            meta = name_by_code.get(path.stem)
+            if meta is None:
+                # Derive opaque code from stem: src-m-foo -> m-foo
+                code = path.stem.replace("src-", "", 1)
+                meta = (code, code)
+            code, name = meta
             merchant_id = await ensure_merchant(conn, code=code, name=name)
             binding = SourceBinding(
                 source_code=path.stem,
@@ -85,13 +92,13 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
                 merchant_id=str(merchant_id),
                 config={"feed_path": str(path)},
             )
-            result = await run_ingestion_dry(binding, limit=1000)
+            result = await run_ingestion_dry(binding, limit=2000)
             applied = await apply_ingestion_to_catalog(
                 result, merchant_id=merchant_id, catalog=catalog
             )
             reports.append(
                 {
-                    "file": fname,
+                    "file": path.name,
                     "merchant_id": merchant_id,
                     "discovered": result.discovered,
                     "chatbot_visible": result.chatbot_visible,

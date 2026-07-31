@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
-from typing import Mapping, Optional, Sequence
+from dataclasses import dataclass
+from typing import Optional, Sequence
 
 from taksitlio.answer_integrity.eligibility import contains_forbidden_approval_claim
 from taksitlio.answer_integrity.facts import FactEnvelope, FactType, GroundedFact
@@ -48,6 +48,12 @@ class ClaimValidationResult:
     def failed(self) -> bool:
         return not self.ok
 
+    @property
+    def reasons(self) -> tuple[str, ...]:
+        """Backward-compatible alias used by grounded response paths."""
+
+        return tuple(v.code for v in self.violations)
+
 
 def _normalize_money(token: str) -> Optional[str]:
     t = token.strip().replace(" ", "").replace("₺", "")
@@ -72,11 +78,8 @@ def _normalize_money(token: str) -> Optional[str]:
         val = float(t)
     except ValueError:
         return None
-    # Skip tiny integers that look like terms (1–36 months) when alone —
-    # caller filters via context; keep all parseable amounts.
     if val != val:  # NaN
         return None
-    # Canonical string without trailing .0 when integer
     if abs(val - round(val)) < 1e-9:
         return str(int(round(val)))
     return f"{val:.2f}".rstrip("0").rstrip(".")
@@ -89,11 +92,11 @@ def _allowed_money_set(facts: Sequence[GroundedFact]) -> set[str]:
         FactType.MONTHLY_PAYMENT,
         FactType.TOTAL_REPAYMENT,
         FactType.FEES,
+        FactType.FEES_TOTAL,
     }
     for f in facts:
         if f.fact_type not in money_types:
             continue
-        # value like "42999 TRY"
         raw = f.value
         for m in _MONEY_RE.finditer(raw):
             norm = _normalize_money(m.group(1))
@@ -139,9 +142,15 @@ def validate_claims(
     *,
     ranking_winner_ids: Optional[Sequence[str]] = None,
     result_institution_names: Optional[Sequence[str]] = None,
+    stock_status: Optional[str] = None,
+    rate_type: Optional[str] = None,
+    cost_kind: Optional[str] = None,
+    best_label_allowed: bool = False,
+    fees_total: float = 0.0,
 ) -> ClaimValidationResult:
     """Deterministic claim grounding. Failure → caller must use template."""
 
+    _ = stock_status, rate_type, cost_kind, best_label_allowed, fees_total
     claimable = envelope.claimable()
     violations: list[ClaimViolation] = []
     used: list[str] = []
@@ -156,7 +165,6 @@ def validate_claims(
 
     allowed_money = _allowed_money_set(claimable)
     for m in _MONEY_RE.finditer(text):
-        # Skip bare small integers that are clearly terms (handled separately)
         span_start = m.start()
         window = text[span_start : m.end() + 8].casefold()
         if re.search(r"^\d+\s*(?:ay|aylık|months?)", window):
@@ -164,7 +172,6 @@ def validate_claims(
         norm = _normalize_money(m.group(1))
         if norm is None:
             continue
-        # Ignore year-like / tiny noise under 10 unless in allowed set
         try:
             as_float = float(norm)
         except ValueError:
@@ -184,22 +191,16 @@ def validate_claims(
                 if norm in _allowed_money_set([f]):
                     used.append(f.fact_id)
 
-    # Institutions mentioned
     inst_allowed = set(_allowed_institutions(claimable))
     if result_institution_names:
         inst_allowed |= {n.casefold() for n in result_institution_names}
-    # Only flag known-looking bank tokens from facts' complement is hard;
-    # check explicit institution facts if text mentions them incorrectly.
-    for f in claimable:
-        if f.fact_type is FactType.INSTITUTION:
-            continue
-    # Scan for institution names that appear in text but not allowed
-    # (only check names we know from a broader result set when provided)
     if result_institution_names is not None:
         for name in result_institution_names:
             if name.casefold() in text.casefold():
                 if name.casefold() not in inst_allowed and name.casefold() not in {
-                    f.value.casefold() for f in claimable if f.fact_type is FactType.INSTITUTION
+                    f.value.casefold()
+                    for f in claimable
+                    if f.fact_type is FactType.INSTITUTION
                 }:
                     violations.append(
                         ClaimViolation(
@@ -208,9 +209,6 @@ def validate_claims(
                             excerpt=name,
                         )
                     )
-
-    # Also: if text contains an institution fact value from envelope metadata
-    # that isn't claimable — covered by allowed set emptiness.
 
     allowed_terms = _allowed_terms(claimable)
     for m in _TERM_RE.finditer(text):
@@ -257,7 +255,6 @@ def validate_claims(
         zero_ok = any(
             f.value.upper() in {"ZERO_RATE", "ZERO_TOTAL_COST"} for f in rate_facts
         )
-        # "masrafsız" requires ZERO_TOTAL_COST
         if re.search(r"\bmasrafsız\b", text, re.IGNORECASE):
             if not any(f.value.upper() == "ZERO_TOTAL_COST" for f in rate_facts):
                 violations.append(

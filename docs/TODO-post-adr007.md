@@ -221,43 +221,49 @@ ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.m
 - [x] Guest UI: DEMO kaldırıldı; SSE + clarification + chips + partial cards
 - [x] P1 unit tests
 
-### P2+ (sonraki)
+### P2 — logos / metrics / catalog pool / full persist
 
 - [x] Remote understanding provider (OpenAI-compatible) behind same worker contract
   — prefers `FAST_C_*` / 9B (`remote_nine_b`); `UNDERSTANDING_*` override; else deterministic fallback
 - [x] Chat + search-session APIs schedule `LlmUnderstandingWorker` when `llm_job_id` set
 - [x] `POST /v1/search-sessions/{id}/llm-jobs/drain` ops helper
-- [ ] Logo CDN URLs from merchant/brand/institution media
-- [ ] Live partial-result / queue latency metrics export
-- [ ] Persist orchestrator runtime state fully via Postgres (not only event/job mirror)
+- [x] `V022__merchant_brand_media_logos.sql` + `media.logo_resolver` (merchant/brand/institution CDN)
+- [x] Merchant directory + finance enrich + search rail use READY `media_assets.cdn_url` only
+- [x] Live latency export: `GET /v1/search-sessions/metrics/summary` (queue / inference / partial / complete P50/P95)
+- [x] `SearchSessionStatePersister` dual-write (session/version/events/jobs/clarifications/partials/metrics)
+- [x] Catalog/crawl product pool via `refresh_orchestrator_from_catalog` (empty catalog → demo fallback)
 - [x] Live FAST_C / 9B smoke against real OpenAI-compatible endpoint (ops)
   — nanobase tunnel `127.0.0.1:8023` → `taksitlio-fast-c` / `poc-fast-nine-b`;
   gitignored `.env.runtime`
+- [x] P2 unit tests
 
 ## Open — ADR-012 answer integrity / claim grounding / recommendation safety
 
 ADR: [`docs/adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md`](adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
 
-Durum: **Proposed — design**; kod P0 kabul sonrası.
+Durum: **Accepted — P0 skeleton + zero-tolerance gates**.
 
-### P0 — design lock + skeleton (kabul sonrası)
+### P0 — design lock + skeleton
 
 - [x] ADR-012 dokümanı (25 kalite katmanı + 10 gate)
-- [ ] `answer_integrity` / `claim_validation` / `recommendation_safety` paket iskeleti
-- [ ] Fact envelope + provenance validator (`no evidence → no claim`)
-- [ ] Field truth status + Deterministic Response Composer
-- [ ] Final Claim Validator + template fallback
-- [ ] Field-level confidence policy (overall_confidence yasağı)
-- [ ] Unit / acceptance gate tests (sıfır-tolerans claim’ler)
+- [x] `answer_integrity` / `claim_validation` / `recommendation_safety` paket iskeleti
+- [x] Fact envelope + provenance validator (`no evidence → no claim`)
+- [x] Field truth status + Deterministic Response Composer
+- [x] Final Claim Validator + template fallback (`GroundedResponseGenerator` wired)
+- [x] Field-level confidence policy (overall_confidence auto-select yasağı)
+- [x] Unit / acceptance gate tests (sıfır-tolerans claim’ler)
+- [x] V023 migration (facts / precedence / circuit breakers / feedback / shadow)
 
 ### P1+ (sonraki)
 
-- [ ] Source conflict + precedence policy (DB)
-- [ ] Payment reconciliation gate + ZERO_RATE / ZERO_TOTAL_COST
-- [ ] Product identity / media match / recommendation integrity + reason_codes
-- [ ] Negative constraint lock + prompt injection boundary
-- [ ] Schema drift / quality circuit breaker
-- [ ] Golden + metamorphic suites; shadow mode; feedback snapshots; error classes
+- [x] Source conflict + precedence policy (in-memory + V023 seed)
+- [x] Payment reconciliation gate + ZERO_RATE / ZERO_TOTAL_COST
+- [x] Product identity / media match / recommendation integrity + reason_codes
+- [x] Negative constraint lock + prompt injection boundary
+- [x] Schema drift / quality circuit breaker
+- [ ] Golden + metamorphic suites genişletmesi; shadow mode prod wiring; feedback API; error class metrics export
+- [ ] Sponsored ranking isolation canlı ranking path’e bağlama
+- [ ] Postgres precedence / circuit breaker runtime loaders
 
 ## Gates
 
@@ -281,12 +287,12 @@ Durum: **Proposed — design**; kod P0 kabul sonrası.
 | Stale LLM Protection | P0 skeleton PASS (unit/acceptance) |
 | LLM Timeout Fallback | P0 skeleton PASS (unit/acceptance) |
 | Logo Correctness | P2 CDN resolver PASS (unit; READY media only) |
-| Source Provenance | ADR-012 proposed |
-| Claim Grounding | ADR-012 proposed |
-| Payment Calculation | ADR-012 proposed (ADR-010 payment_plan üzerine) |
-| Product Identity | ADR-012 proposed |
-| Recommendation Integrity | ADR-012 proposed (ADR-010 Recommendation sıkılaştırma) |
-| Negative Constraint | ADR-012 proposed |
-| Source Conflict | ADR-012 proposed |
-| Schema Drift | ADR-012 proposed |
-| Prompt Injection | ADR-012 proposed |
+| Source Provenance | ADR-012 P0 PASS (unit/acceptance) |
+| Claim Grounding | ADR-012 P0 PASS (unit/acceptance; GroundedResponse wired) |
+| Payment Calculation | ADR-012 P0 PASS (reconciliation + ZERO_RATE/ZERO_TOTAL_COST) |
+| Product Identity | ADR-012 P0 PASS (variant gate) |
+| Recommendation Integrity | ADR-012 P0 PASS (“en uygun” kapısı + reason_codes) |
+| Negative Constraint | ADR-012 P0 PASS (lock priority) |
+| Source Conflict | ADR-012 P0 PASS (precedence + CONFLICTED) |
+| Schema Drift | ADR-012 P0 PASS (quarantine signals) |
+| Prompt Injection | ADR-012 P0 PASS (untrusted boundary) |

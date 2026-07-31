@@ -5,6 +5,7 @@ No demo seed — only rows produced from verified ingestion snapshots.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Optional, Protocol, Sequence
 
@@ -410,9 +411,11 @@ class PostgresProductCatalogRepository:
                 plan.source_url,
                 plan.content_hash,
                 plan.source_reference,
-                dict(plan.attributes),
+                json.dumps(dict(plan.attributes or {})),
             )
         attrs = row["attributes"]
+        if isinstance(attrs, str):
+            attrs = json.loads(attrs)
         return StoredProduct(
             id=int(row["id"]),
             merchant_id=int(row["merchant_id"]),

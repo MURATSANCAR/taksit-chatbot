@@ -5,6 +5,11 @@
 # Seeds are starting URLs (homepage / sitemap / campaign listing). Live product rows
 # appear only after StormCrawler parse succeeds — no invented prices/rates.
 
+# Live capture status (ops):
+# - 2026-07-31: Vatan + MediaMarkt product feeds ingested to nanobase Postgres (105 products).
+# - Teknosa blocked by Cloudflare from crawler network — needs official feed/API or browser adapter.
+# - Full Taksitlio 60+ brand roster is not published on taksitlio.com; expand registry as partners confirm.
+
 version: 1
 
 defaults:

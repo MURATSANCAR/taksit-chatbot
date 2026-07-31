@@ -34,6 +34,11 @@ class ComposedResponse:
     fact_ids: tuple[str, ...]
     allowed_facts: tuple[dict[str, str], ...]
     reason_explanation: Optional[str] = None
+    used_llm: bool = False
+    grounded: bool = True
+    used_model: bool = False
+    claim_reasons: tuple[str, ...] = ()
+    claim_validation: Optional[object] = None
 
 
 def _fact_value(envelope: FactEnvelope, fact_type: FactType) -> Optional[str]:
@@ -214,13 +219,96 @@ def merge_decoration(
     return "\n\n".join(parts)
 
 
+def compose_from_facts(
+    envelope: FactEnvelope,
+    *,
+    need_description: str = "ihtiyacınız",
+    eligibility: object = None,
+    reason_explanations: Sequence[str] = (),
+    cards: Sequence[Mapping[str, object]] = (),
+    clarifications: Sequence[str] = (),
+) -> ComposedResponse:
+    """Alias for compose_deterministic (pipeline / ADR-012 test API)."""
+
+    _ = eligibility
+    base = compose_deterministic(
+        envelope,
+        need_description=need_description,
+        cards=cards,
+        clarifications=clarifications,
+    )
+    if reason_explanations and not base.reason_explanation:
+        reasons = tuple(str(r) for r in reason_explanations if r)
+        return ComposedResponse(
+            text=base.text,
+            outcome=base.outcome,
+            template_used=base.template_used,
+            fact_ids=base.fact_ids,
+            allowed_facts=base.allowed_facts,
+            reason_explanation=" ".join(reasons),
+            claim_reasons=reasons,
+        )
+    return base
+
+
+def merge_optional_llm_fields(
+    base: ComposedResponse,
+    llm_fields: Mapping[str, str],
+    *,
+    envelope: Optional[FactEnvelope] = None,
+    ranking_winner_ids: Sequence[str] = (),
+    result_institution_names: Sequence[str] = (),
+) -> ComposedResponse:
+    """Merge LLM decoration; on claim failure fall back to deterministic template."""
+
+    from taksitlio.answer_integrity.claim_validator import validate_claims
+
+    decoration = filter_llm_decoration(llm_fields)
+    if not decoration:
+        return base
+    merged_text = merge_decoration(base, decoration)
+    env = envelope or FactEnvelope(facts=())
+    cv = validate_claims(
+        merged_text,
+        env,
+        ranking_winner_ids=ranking_winner_ids,
+        result_institution_names=result_institution_names,
+    )
+    if cv.failed:
+        return ComposedResponse(
+            text=base.text,
+            outcome=ResponseOutcome.CLAIM_VALIDATION_FAILED,
+            template_used="llm_rejected_template_fallback",
+            fact_ids=base.fact_ids,
+            allowed_facts=base.allowed_facts,
+            reason_explanation=base.reason_explanation,
+            used_llm=False,
+            grounded=True,
+            claim_validation=cv,
+        )
+    return ComposedResponse(
+        text=merged_text,
+        outcome=base.outcome,
+        template_used="llm_decorated",
+        fact_ids=base.fact_ids,
+        allowed_facts=base.allowed_facts,
+        reason_explanation=base.reason_explanation,
+        used_llm=True,
+        used_model=True,
+        grounded=True,
+        claim_validation=cv,
+    )
+
+
 __all__ = [
     "APPROVAL_DISCLAIMER",
     "CANNOT_VERIFY_TEMPLATE",
     "ComposedResponse",
     "compose_deterministic",
+    "compose_from_facts",
     "compose_reason_explanation",
     "filter_llm_decoration",
     "llm_allowed_fields",
     "merge_decoration",
+    "merge_optional_llm_fields",
 ]

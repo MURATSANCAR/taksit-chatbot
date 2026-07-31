@@ -3,17 +3,18 @@
 from __future__ import annotations
 
 from taksitlio.answer_integrity import (
+    EvidenceRef,
+    Fact,
     FactType,
     FieldTruthStatus,
     QUALITY_GATES,
-    build_envelope,
-    build_fact,
+    build_fact_envelope,
     validate_claims,
 )
 from taksitlio.recommendation_safety import (
     ConstraintSource,
     NegativeConstraintLock,
-    IntegritySignals,
+    RecommendationCandidate,
     evaluate_recommendation_integrity,
 )
 
@@ -25,14 +26,14 @@ def test_quality_gates_registered() -> None:
 
 
 def test_zero_tolerance_ungrounded_financial_claim() -> None:
-    env = build_envelope(
+    env = build_fact_envelope(
         [
-            build_fact(
+            Fact(
                 fact_id="p1",
                 fact_type=FactType.PRICE,
                 value="42999 TRY",
                 truth_status=FieldTruthStatus.VERIFIED,
-                evidence={"price_snapshot_id": "ps"},
+                evidence=EvidenceRef(price_snapshot_id="ps"),
             )
         ]
     )
@@ -43,25 +44,26 @@ def test_zero_tolerance_ungrounded_financial_claim() -> None:
 def test_zero_tolerance_negative_constraint_return() -> None:
     lock = NegativeConstraintLock()
     lock.lock("telefon", source=ConstraintSource.USER_CORRECTION)
-    blocked = lock.reject_llm_reintroduction(proposed_positive=["telefon da uygun"])
-    # concept normalization is exact token; ensure lock holds for canonical concept
-    blocked2 = lock.reject_llm_reintroduction(proposed_positive=["telefon"])
-    assert "telefon" in blocked2
-    assert blocked2  # non-empty
+    blocked = lock.reject_llm_reintroduction(proposed_positive=["telefon"])
+    assert "telefon" in blocked
 
 
 def test_conflicted_never_best_label() -> None:
-    decision = evaluate_recommendation_integrity(
-        IntegritySignals(
-            comparable_candidate_count=5,
-            prices_fresh=True,
+    cands = [
+        RecommendationCandidate(
+            product_id=f"p{i}",
+            price_fresh=True,
             stock_verified=True,
             variants_comparable=True,
-            total_repayment_present=True,
-            bank_mapping_verified=True,
+            total_repayment=1000 + i,
+            monthly_payment=100,
+            price=900,
+            finance_mapping_verified=True,
             campaign_active=True,
             critical_attributes_complete=True,
-            field_statuses=(FieldTruthStatus.CONFLICTED,),
+            conflicted=(i == 0),
         )
-    )
-    assert not decision.allow_best_label
+        for i in range(3)
+    ]
+    decision = evaluate_recommendation_integrity(cands, winner_product_id="p0")
+    assert not decision.best_label_allowed
