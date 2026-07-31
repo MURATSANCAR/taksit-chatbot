@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import time
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, Mapping, Optional
 from uuid import uuid4
 
@@ -24,6 +26,31 @@ _FORBIDDEN_ID_PATTERNS = (
     "category-",
     "cat_",
 )
+
+_DEFAULT_SYSTEM_PROMPT = """You extract Turkish purchase needs as one JSON object only (NeedProfile).
+Rules:
+- Never emit category IDs, fixture keys, or UUIDs.
+- intent: {type, confidence}; type enum PRODUCT_PURCHASE|COMPARE_OPTIONS|BUDGET_INQUIRY|INSTALLMENT_INQUIRY|OUT_OF_SCOPE|CLARIFICATION_RESPONSE|OTHER
+- need_description: short Turkish string from the utterance
+- budget: {type, value, minimum, maximum, monthly_payment, currency}; type UNKNOWN/EXACT/APPROXIMATE/RANGE/MONTHLY_PAYMENT; currency TRY; unused numerics null
+- preferences: [{concept, importance}]
+- usage_context: string array
+- entities: [{type, value, confidence?}]
+- ambiguities: [{code, description}]
+- clarification: {required, question_intent}
+- confidence: 0..1
+- semantic_constraints: {positive, negative, corrections} each [{concept, provenance, weight?}]; provenance EXPLICIT|INFERRED|EXPLICIT_NEGATION|USER_CORRECTION|SESSION_CONTEXT
+Put explicit exclusions in semantic_constraints.negative with EXPLICIT_NEGATION.
+No markdown."""
+
+
+@lru_cache(maxsize=1)
+def _need_profile_schema() -> dict[str, Any]:
+    path = (
+        Path(__file__).resolve().parents[2] / "schemas" / "need_profile.schema.json"
+    )
+    with path.open(encoding="utf-8") as fh:
+        return json.load(fh)
 
 
 def _looks_like_forbidden_identifier(text: str) -> bool:
@@ -82,11 +109,7 @@ class RemoteFastExtractor:
         self._owns_client = client is None
         self._client = client or httpx.AsyncClient()
         self._validator = validator or SemanticConstraintValidator()
-        self._system_prompt = system_prompt or (
-            "You extract Turkish purchase-need understanding as JSON only. "
-            "Never emit category IDs, fixture keys, or UUIDs. "
-            "Respond with a NeedProfile JSON object."
-        )
+        self._system_prompt = system_prompt or _DEFAULT_SYSTEM_PROMPT
 
     async def aclose(self) -> None:
         if self._owns_client:
@@ -118,7 +141,16 @@ class RemoteFastExtractor:
             "temperature": self._temperature,
             "max_tokens": self._max_output_tokens,
             "stream": False,
-            "response_format": {"type": "json_object"},
+            # Prefer constrained JSON when the OpenAI-compatible server supports it;
+            # llama.cpp accepts json_schema; unknown keys are ignored by some servers.
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "NeedProfile",
+                    "schema": _need_profile_schema(),
+                    "strict": True,
+                },
+            },
             "messages": [
                 {"role": "system", "content": self._system_prompt},
                 {"role": "user", "content": json.dumps(user_payload, ensure_ascii=False)},
@@ -233,11 +265,13 @@ def build_remote_fast_from_env() -> RemoteFastExtractor:
         raise FastDeploymentUnavailable(
             "FAST_PROVIDER_BASE_URL / FAST_MODEL_REFERENCE required"
         )
+    # CPU-hosted 4B GGUF NeedProfile fills commonly exceed 3s/128 tokens;
+    # override via env — defaults remain aggressive for GPU-class targets.
     timeout_ms = int(os.environ.get("FAST_TIMEOUT_MS") or os.environ.get("POC_FAST_TIMEOUT_MS") or "3000")
     max_tokens = int(
         os.environ.get("FAST_MAX_OUTPUT_TOKENS")
         or os.environ.get("POC_FAST_MAX_OUTPUT_TOKENS")
-        or "128"
+        or "384"
     )
     temperature = float(
         os.environ.get("FAST_TEMPERATURE") or os.environ.get("POC_FAST_TEMPERATURE") or "0"
