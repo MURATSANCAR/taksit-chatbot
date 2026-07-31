@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncIterator
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from taksitlio.app.container import (
     AppContainer,
@@ -14,6 +16,8 @@ from taksitlio.app.container import (
 )
 from taksitlio.config.settings import InfraSettings
 from taksitlio.api.routes import admin, chat, health
+
+_WEB_TAKSITLIO = Path(__file__).resolve().parents[3] / "web" / "taksitlio"
 
 
 def create_app(container: AppContainer | None = None) -> FastAPI:
@@ -41,6 +45,13 @@ def create_app(container: AppContainer | None = None) -> FastAPI:
     app.include_router(health.router)
     app.include_router(chat.router, prefix="/v1")
     app.include_router(admin.router, prefix="/v1/admin")
+    if _WEB_TAKSITLIO.is_dir():
+        # Guest chatbot UI — later wired to /v1/chat (portal.nanobase.ai/taksitlio)
+        app.mount(
+            "/taksitlio",
+            StaticFiles(directory=str(_WEB_TAKSITLIO), html=True),
+            name="taksitlio-portal",
+        )
     return app
 
 

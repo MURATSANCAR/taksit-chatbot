@@ -1,4 +1,4 @@
-# TODO — post ADR-007 / ADR-008 / ADR-009
+# TODO — post ADR-007 / ADR-008 / ADR-009 / ADR-010
 
 Status date: 2026-07-31
 
@@ -23,24 +23,69 @@ Status date: 2026-07-31
 - [x] Live runbook: [`docs/runbooks/ADR-009-live-runtime-verification.md`](runbooks/ADR-009-live-runtime-verification.md)
 - [x] `python -m taksitlio.db.migrate` + `.env.runtime` gitignore
 
-## Open — canlı sunucu (runbook; kod değişikliği yok)
-
-Operatör runbook’u çalıştırır. Matcher / threshold / dataset **dokunulmaz**.
+## Open — canlı sunucu (ADR-009 runbook; matcher dokunulmaz)
 
 - [ ] Sunucuda Docker + Redis + pgvector ayakta
-- [ ] Live FAST health + Türkçe extraction eval
+- [ ] Live FAST health + Türkçe extraction eval (A/B/C HR100: QUALITY_REJECT)
 - [ ] Live CATEGORY_EMBEDDING rebuild + quality comparison
 - [ ] pgvector 100 / 1k / 10k benchmark
 - [ ] Full E2E stage latency
 - [ ] `PROVISIONAL_ACCEPT` (`real_*_measured=true`)
-- [ ] Campaign Gate `READY_TO_OPEN` → sonra kampanya domain tasarımı
+- [ ] Campaign Gate `READY_TO_OPEN` (kişisel kredi onayı)
+
+## Open — ADR-010 gerçek ürün / kampanya / hızlı teklif
+
+ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md)
+
+### P0 — ingestion skeleton
+
+- [x] ADR-010 V2 dokümanı
+- [x] `V015__ingestion_and_merchant_locations.sql`
+- [x] `src/taksitlio/ingestion/` adapter protocol + registry
+- [x] `src/taksitlio/merchant/` domain stubs
+- [x] `campaign_catalog/` + `payment_plan/` import-safe stubs
+- [x] Adapter contract + no-static-mapping guard tests
+
+### P1 — products / offers / generic feed adapter
+
+- [x] `V016__products_offers_and_snapshots.sql`
+- [x] `src/taksitlio/product/` (canonical key, hash, upsert plan)
+- [x] `generic.json_feed.v1` adapter (merchant adı hardcode yok)
+- [x] Unit tests (upsert/canonical/feed)
+
+### P2 — media pipeline
+
+- [x] `V017__media_assets_and_variants.sql`
+- [x] `src/taksitlio/media/` (download/hash/quality/storage/variants/primary)
+- [x] Hotlink yok — CDN URL; primary yoksa `IMAGE_UNAVAILABLE`
+- [x] Unit tests
+
+### P3 — finance campaigns + payment plans
+
+- [x] `V018__finance_campaigns_rates_payment_plans.sql`
+- [x] `campaign_catalog` eligibility (expired / agreement / term / amount)
+- [x] `payment_plan` CALCULATED_ESTIMATE / SOURCE_PROVIDED_OFFER (oran uydurma yok)
+- [x] Unit tests
+
+### P4+ (sonraki)
+
+- [ ] product_finance_options projection + fuzzy entity resolution
+- [ ] Chatbot product cards + progressive response
+- [ ] Freshness scheduler + merchant READY/PARTIAL/BLOCKED gates
+- [ ] Task-specific FAST fine-tune / LoRA (ayrı hat; genel model denemesi kapandı)
+- [ ] İlk gerçek merchant feed bağlama (operatör; kodda merchant adı yok)
 
 ## Gates
 
 | Gate | Status |
 |---|---|
 | Safety | PASS (baseline) |
-| Quality | QUALITY_READY (baseline) |
-| Runtime | BLOCKED_DEPENDENCY → runbook |
-| Provisional | BLOCKED_DEPENDENCY → runbook |
-| Campaign | CLOSED |
+| Quality | QUALITY_READY (baseline); gerçek FAST HR100 REJECT |
+| Runtime | BLOCKED / PERFORMANCE_REJECT (CPU) |
+| Provisional | not locked |
+| Campaign (kişisel onay) | CLOSED |
+| Data Ingestion | P1 (generic feed adapter + product schema) |
+| Data Quality | P2 media quality skeleton |
+| Fast Product Path | not started |
+| Finance Mapping | P3 skeleton (eligibility + payment plan) |
+| Recommendation | not started |

@@ -12,4 +12,8 @@ def test_migration_files_are_version_ordered() -> None:
     assert names == sorted(names)
     assert names[0].startswith("V001")
     assert any(n.startswith("V014") for n in names)
+    assert any(n.startswith("V015") for n in names)
+    assert any(n.startswith("V016") for n in names)
+    assert any(n.startswith("V017") for n in names)
+    assert any(n.startswith("V018") for n in names)
     assert all(isinstance(p, Path) and p.suffix == ".sql" for p in files)
