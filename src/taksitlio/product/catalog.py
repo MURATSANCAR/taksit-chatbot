@@ -29,6 +29,9 @@ class StoredProduct:
     data_quality_status: str
     status: str
     attributes: Mapping[str, Any] = field(default_factory=dict)
+    primary_cdn_url: Optional[str] = None
+    pending_source_image_url: Optional[str] = None
+    primary_media_status: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -91,10 +94,44 @@ class ProductCatalogRepository(Protocol):
         self, *, merchant_id: Optional[int] = None, limit: int = 100
     ) -> Sequence[StoredProduct]: ...
 
+    async def get_product(self, product_id: int) -> Optional[StoredProduct]: ...
+
+    async def set_pending_source_image(
+        self, product_id: int, source_url: str
+    ) -> None: ...
+
+    async def attach_primary_media(
+        self,
+        product_id: int,
+        *,
+        cdn_url: Optional[str],
+        sha256: str,
+        status: str,
+        source_url: str,
+        storage_key: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        file_size: Optional[int] = None,
+    ) -> None: ...
+
+    async def mark_offer_stale(self, product_id: int) -> None: ...
+
+    async def refresh_offer_price(
+        self,
+        product_id: int,
+        *,
+        price: float,
+        currency: str,
+        stock_status: str,
+        list_price: Optional[float] = None,
+    ) -> Optional[StoredOffer]: ...
+
 
 class InMemoryProductCatalogRepository:
     def __init__(self) -> None:
         self._products: dict[tuple[int, str], StoredProduct] = {}
+        self._by_id: dict[int, tuple[int, str]] = {}
         self._offers: dict[int, StoredOffer] = {}  # product_id → offer
         self._next_product = 1
         self._next_offer = 1
@@ -131,8 +168,16 @@ class InMemoryProductCatalogRepository:
             data_quality_status=data_quality_status,
             status=status,
             attributes=dict(plan.attributes),
+            primary_cdn_url=None if existing is None else existing.primary_cdn_url,
+            pending_source_image_url=(
+                None if existing is None else existing.pending_source_image_url
+            ),
+            primary_media_status=(
+                None if existing is None else existing.primary_media_status
+            ),
         )
         self._products[key] = stored
+        self._by_id[pid] = key
         return stored
 
     async def upsert_offer(
@@ -167,6 +212,87 @@ class InMemoryProductCatalogRepository:
             rows = [r for r in rows if r.merchant_id == merchant_id]
         rows.sort(key=lambda r: r.id)
         return tuple(rows[:limit])
+
+    async def get_product(self, product_id: int) -> Optional[StoredProduct]:
+        key = self._by_id.get(product_id)
+        if key is None:
+            return None
+        return self._products.get(key)
+
+    async def set_pending_source_image(
+        self, product_id: int, source_url: str
+    ) -> None:
+        product = await self.get_product(product_id)
+        if product is None:
+            return
+        key = self._by_id[product_id]
+        self._products[key] = StoredProduct(
+            **{
+                **product.__dict__,
+                "pending_source_image_url": source_url,
+            }
+        )
+
+    async def attach_primary_media(
+        self,
+        product_id: int,
+        *,
+        cdn_url: Optional[str],
+        sha256: str,
+        status: str,
+        source_url: str,
+        storage_key: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        file_size: Optional[int] = None,
+    ) -> None:
+        _ = (sha256, source_url, storage_key, mime_type, width, height, file_size)
+        product = await self.get_product(product_id)
+        if product is None:
+            return
+        key = self._by_id[product_id]
+        self._products[key] = StoredProduct(
+            **{
+                **product.__dict__,
+                "primary_cdn_url": cdn_url,
+                "primary_media_status": status,
+                "pending_source_image_url": None,
+            }
+        )
+
+    async def mark_offer_stale(self, product_id: int) -> None:
+        offer = self._offers.get(product_id)
+        if offer is None:
+            return
+        self._offers[product_id] = StoredOffer(
+            **{**offer.__dict__, "freshness_status": "STALE"}
+        )
+
+    async def refresh_offer_price(
+        self,
+        product_id: int,
+        *,
+        price: float,
+        currency: str,
+        stock_status: str,
+        list_price: Optional[float] = None,
+    ) -> Optional[StoredOffer]:
+        _ = list_price
+        offer = self._offers.get(product_id)
+        if offer is None:
+            return None
+        updated = StoredOffer(
+            **{
+                **offer.__dict__,
+                "current_price": float(price),
+                "currency": currency,
+                "stock_status": stock_status,
+                "freshness_status": "FRESH",
+            }
+        )
+        self._offers[product_id] = updated
+        return updated
 
 
 class PostgresProductCatalogRepository:
@@ -418,6 +544,196 @@ class PostgresProductCatalogRepository:
                 )
             )
         return tuple(out)
+
+    async def get_product(self, product_id: int) -> Optional[StoredProduct]:
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT id, merchant_id, external_product_id, display_name,
+                       content_hash, data_quality_status, status, attributes
+                FROM products WHERE id = $1
+                """,
+                product_id,
+            )
+        if row is None:
+            return None
+        attrs = row["attributes"]
+        return StoredProduct(
+            id=int(row["id"]),
+            merchant_id=int(row["merchant_id"]),
+            external_product_id=str(row["external_product_id"]),
+            display_name=str(row["display_name"]),
+            content_hash=row["content_hash"],
+            data_quality_status=str(row["data_quality_status"]),
+            status=str(row["status"]),
+            attributes=dict(attrs or {}),
+        )
+
+    async def set_pending_source_image(
+        self, product_id: int, source_url: str
+    ) -> None:
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                """
+                UPDATE products
+                SET metadata = COALESCE(metadata, '{}'::jsonb)
+                    || jsonb_build_object('pending_source_image_url', $2::text),
+                    updated_at = NOW()
+                WHERE id = $1
+                """,
+                product_id,
+                source_url,
+            )
+
+    async def attach_primary_media(
+        self,
+        product_id: int,
+        *,
+        cdn_url: Optional[str],
+        sha256: str,
+        status: str,
+        source_url: str,
+        storage_key: Optional[str] = None,
+        mime_type: Optional[str] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+        file_size: Optional[int] = None,
+    ) -> None:
+        async with self._pool.acquire() as conn:
+            async with conn.transaction():
+                asset_id = await conn.fetchval(
+                    "SELECT id FROM media_assets WHERE sha256 = $1",
+                    sha256,
+                )
+                if asset_id is None:
+                    asset_id = await conn.fetchval(
+                        """
+                        INSERT INTO media_assets (
+                            source_url, storage_key, cdn_url, mime_type,
+                            width, height, file_size, sha256, status,
+                            last_verified_at
+                        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW())
+                        RETURNING id
+                        """,
+                        source_url,
+                        storage_key,
+                        cdn_url,
+                        mime_type,
+                        width,
+                        height,
+                        file_size,
+                        sha256,
+                        status,
+                    )
+                else:
+                    await conn.execute(
+                        """
+                        UPDATE media_assets SET
+                            storage_key = COALESCE($2, storage_key),
+                            cdn_url = COALESCE($3, cdn_url),
+                            status = $4,
+                            last_verified_at = NOW(),
+                            updated_at = NOW()
+                        WHERE id = $1
+                        """,
+                        asset_id,
+                        storage_key,
+                        cdn_url,
+                        status,
+                    )
+                await conn.execute(
+                    """
+                    UPDATE product_media_links
+                    SET is_primary = FALSE
+                    WHERE product_id = $1 AND is_primary = TRUE
+                    """,
+                    product_id,
+                )
+                await conn.execute(
+                    """
+                    INSERT INTO product_media_links (
+                        product_id, media_asset_id, media_role,
+                        display_order, is_primary
+                    ) VALUES ($1,$2,'PRIMARY',0,TRUE)
+                    ON CONFLICT (product_id, media_asset_id, media_role)
+                    DO UPDATE SET is_primary = TRUE
+                    """,
+                    product_id,
+                    asset_id,
+                )
+                await conn.execute(
+                    """
+                    UPDATE products
+                    SET metadata = (COALESCE(metadata, '{}'::jsonb)
+                        - 'pending_source_image_url')
+                        || jsonb_build_object(
+                            'primary_cdn_url', to_jsonb($2::text),
+                            'primary_media_status', to_jsonb($3::text)
+                        ),
+                        updated_at = NOW()
+                    WHERE id = $1
+                    """,
+                    product_id,
+                    cdn_url,
+                    status,
+                )
+
+    async def mark_offer_stale(self, product_id: int) -> None:
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                """
+                UPDATE product_offers
+                SET freshness_status = 'STALE', updated_at = NOW()
+                WHERE product_id = $1
+                """,
+                product_id,
+            )
+
+    async def refresh_offer_price(
+        self,
+        product_id: int,
+        *,
+        price: float,
+        currency: str,
+        stock_status: str,
+        list_price: Optional[float] = None,
+    ) -> Optional[StoredOffer]:
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                UPDATE product_offers SET
+                    current_price = $2,
+                    list_price = COALESCE($3, list_price),
+                    currency = $4,
+                    stock_status = $5,
+                    freshness_status = 'FRESH',
+                    last_verified_at = NOW(),
+                    updated_at = NOW()
+                WHERE id = (
+                    SELECT id FROM product_offers
+                    WHERE product_id = $1
+                    ORDER BY id DESC LIMIT 1
+                )
+                RETURNING *
+                """,
+                product_id,
+                price,
+                list_price,
+                currency,
+                stock_status,
+            )
+        if row is None:
+            return None
+        return StoredOffer(
+            id=int(row["id"]),
+            product_id=product_id,
+            merchant_id=int(row["merchant_id"]),
+            current_price=float(row["current_price"]),
+            currency=str(row["currency"]),
+            stock_status=str(row["stock_status"]),
+            content_hash=row["content_hash"],
+            freshness_status=str(row["freshness_status"]),
+        )
 
 
 def _status_for_quality(verdict: ProductQualityVerdict) -> tuple[str, str]:

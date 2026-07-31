@@ -314,11 +314,26 @@ async def dry_run_and_persist(
                 catalog=catalog,
                 only_chatbot_visible=True,
             )
+            media_jobs = 0
+            scheduler_repo = container.extras.get("scheduler_repo")
+            if scheduler_repo is not None:
+                from taksitlio.ingestion_scheduler.media_enqueue import (
+                    enqueue_media_jobs_for_applied,
+                )
+
+                media_jobs = await enqueue_media_jobs_for_applied(
+                    ingestion=result,
+                    applied=applied,
+                    scheduler=scheduler_repo,
+                    catalog=catalog,
+                    source_id=out.get("source_id"),
+                )
             out["catalog"] = {
                 "upserted_products": applied.upserted_products,
                 "upserted_offers": applied.upserted_offers,
                 "skipped_unchanged": applied.skipped_unchanged,
                 "skipped_quarantined": applied.skipped_quarantined,
+                "media_jobs_enqueued": media_jobs,
                 "items": [
                     {
                         "external_product_id": i.external_product_id,

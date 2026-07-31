@@ -104,16 +104,26 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] Admin: upsert source, dry-run/persist, enqueue, tick, list runs/health
 - [x] Unit tests
 
+### P8 — catalog upsert + scheduler daemon
+
+- [x] `product.catalog` apply (quality filter → plan → upsert product/offer; quarantine skip)
+- [x] In-memory + Postgres product catalog repositories (snapshot on price change)
+- [x] Admin: `upsert_products` on dry-run/persist + `GET /products`
+- [x] `taksitlio-scheduler` daemon (`run_daemon` lease loop)
+- [x] Unit tests
+
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Task-specific FAST fine-tune / LoRA
-- [ ] İlk gerçek merchant feed bağlama (operatör dry-run ile; kodda merchant adı yok)
+- [ ] İlk gerçek merchant feed bağlama (operatör dry-run+upsert ile; kodda merchant adı yok)
 - [x] Redis popular-query / alias / best-offer cache wiring (container DI)
 - [x] `POST /v1/product-query/resolve-entities`
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
 - [x] Postgres’e source/run persist + scheduler worker lease loop
-- [ ] Product upsert from dry-run (gerçek feed; sahte seed yok)
-- [ ] Long-running scheduler daemon / compose service
+- [x] Product upsert from dry-run (gerçek feed; sahte seed yok)
+- [x] Scheduler daemon skeleton (`taksitlio-scheduler`)
+- [ ] Compose’a scheduler service + queue-specific job handlers (media/price fetch)
+- [ ] Media pipeline bağlama (CDN) on upsert
 ## Gates
 
 | Gate | Status |
@@ -123,7 +133,7 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Runtime | BLOCKED / PERFORMANCE_REJECT (CPU) |
 | Provisional | not locked |
 | Campaign (kişisel onay) | CLOSED |
-| Data Ingestion | P7 (source/run persist + scheduler lease; operator feed pending) |
+| Data Ingestion | P8 (dry-run→catalog upsert + scheduler daemon; operator feed pending) |
 | Data Quality | P6 scorer + admin score API |
 | Fast Product Path | P5C (search + resolve-entities + Redis/in-mem cache DI) |
 | Finance Mapping | P3 skeleton (eligibility + payment plan) |
