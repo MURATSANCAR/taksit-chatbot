@@ -116,13 +116,18 @@
   }
 
   function dealArticleHtml(d, i) {
+    const badgeOnMedia = d.best
+      ? `<span class="deal-badge">Öne çıkan</span>`
+      : "";
     const media = d.img
-      ? `<div class="deal-media"><img src="${escapeHtml(d.img)}" alt="" loading="lazy" /></div>`
-      : `<div class="deal-media is-empty">Görsel yok</div>`;
+      ? `<div class="deal-media">${badgeOnMedia}<img src="${escapeHtml(d.img)}" alt="" loading="lazy" /></div>`
+      : `<div class="deal-media is-empty">${badgeOnMedia}Görsel yok</div>`;
     const hint = d.hint
       ? `<span class="hint">${escapeHtml(d.hint)}</span>`
       : "";
-    const pillClass = d.best ? "pill" : "pill soft";
+    const sideBadge = d.best
+      ? ""
+      : `<span class="pill soft">${escapeHtml(d.badge || "Seçenek")}</span>`;
     return `
       <article class="deal ${d.best ? "best" : ""}" style="animation-delay:${0.06 + i * 0.1}s">
         ${media}
@@ -130,7 +135,7 @@
           <div>
             <div class="deal-top">
               <div class="deal-name">${escapeHtml(d.name)}</div>
-              <span class="${pillClass}">${escapeHtml(d.badge)}</span>
+              ${sideBadge}
             </div>
             <div class="deal-meta">${escapeHtml(d.meta)}</div>
           </div>

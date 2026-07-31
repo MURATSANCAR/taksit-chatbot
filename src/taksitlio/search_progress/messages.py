@@ -43,34 +43,46 @@ class DataOrigin(str, Enum):
     CACHED_VERIFIED_RESULT = "CACHED_VERIFIED_RESULT"
 
 
-# Generic catalog — no bank/merchant names.
+# Generic catalog — no bank/merchant names. Marketing-friendly TR copy only.
 _EVENT_MESSAGES: dict[SearchProgressEventType, str] = {
-    SearchProgressEventType.SEARCH_ACCEPTED: "İsteğini çözümlüyorum...",
-    SearchProgressEventType.FAST_PARSE_STARTED: "İsteğini çözümlüyorum...",
-    SearchProgressEventType.FAST_PARSE_COMPLETED: "İhtiyaçlar çözümlendi",
-    SearchProgressEventType.ENTITY_RESOLUTION_STARTED: "Uygun mağaza ve ürün kategorilerini eşleştiriyorum...",
-    SearchProgressEventType.ENTITY_RESOLUTION_COMPLETED: "Uygun mağazalar eşleştirildi",
-    SearchProgressEventType.GAP_ANALYSIS_COMPLETED: "İhtiyaçlar değerlendirildi",
-    SearchProgressEventType.CLARIFICATION_REQUIRED: "Bir tercihinizi netleştirmem yeterli olacak",
-    SearchProgressEventType.CLARIFICATION_ANSWERED: "Tercihiniz alındı",
-    SearchProgressEventType.LLM_JOB_QUEUED: "Tercihlerinizi ürün özellikleriyle eşleştiriyorum...",
-    SearchProgressEventType.LLM_JOB_STARTED: "Tercihlerinizi ürün özellikleriyle eşleştiriyorum...",
-    SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED: "Kriterlerinize uygun ürünler hazırlanıyor...",
-    SearchProgressEventType.PRODUCT_POOL_PARTIAL_READY: "İlk uygun ürünleri buldum. Sonuçları tercihlerinize göre daraltıyorum.",
-    SearchProgressEventType.MERCHANT_CANDIDATES_RESOLVED: "Uygun mağazalar bulundu",
-    SearchProgressEventType.BRAND_CANDIDATES_RESOLVED: "Uygun markalar eşleştirildi",
-    SearchProgressEventType.FINANCE_SEARCH_STARTED: "Finansman seçenekleri hazırlanıyor...",
-    SearchProgressEventType.FINANCIAL_INSTITUTION_CANDIDATES_FOUND: "Uygun finansman seçenekleri karşılaştırılıyor",
-    SearchProgressEventType.PAYMENT_PLAN_CALCULATION_STARTED: "Vade ve aylık ödeme seçenekleri hesaplanıyor...",
-    SearchProgressEventType.PARTIAL_RESULTS_READY: "İlk uygun ürünleri buldum. Sonuçları tercihlerinize göre daraltıyorum.",
-    SearchProgressEventType.LLM_JOB_COMPLETED: "Tercihler ürün özellikleriyle eşleştirildi",
-    SearchProgressEventType.LLM_JOB_TIMED_OUT: "Elimdeki kesin kriterlere göre en yakın sonuçları hazırladım.",
-    SearchProgressEventType.RANKING_STARTED: "Sonuçlar sıralanıyor...",
-    SearchProgressEventType.FINAL_RESULTS_READY: "Sonuçlar hazır",
-    SearchProgressEventType.SEARCH_COMPLETED: "Arama tamamlandı",
+    SearchProgressEventType.SEARCH_ACCEPTED: "İhtiyacını dinliyorum…",
+    SearchProgressEventType.FAST_PARSE_STARTED: "İhtiyacını dinliyorum…",
+    SearchProgressEventType.FAST_PARSE_COMPLETED: "İhtiyacını anladım",
+    SearchProgressEventType.ENTITY_RESOLUTION_STARTED:
+        "Senin için uygun mağaza ve kategorileri eşleştiriyorum…",
+    SearchProgressEventType.ENTITY_RESOLUTION_COMPLETED: "Uygun mağazalar eşleşti",
+    SearchProgressEventType.GAP_ANALYSIS_COMPLETED: "Tercihlerini netleştirdim",
+    SearchProgressEventType.CLARIFICATION_REQUIRED:
+        "Bir tercihin daha netleşirse daha isabetli önerebilirim",
+    SearchProgressEventType.CLARIFICATION_ANSWERED: "Tercihin alındı",
+    SearchProgressEventType.LLM_JOB_QUEUED:
+        "Tercihlerini ürün özellikleriyle eşleştiriyorum…",
+    SearchProgressEventType.LLM_JOB_STARTED:
+        "Tercihlerini ürün özellikleriyle eşleştiriyorum…",
+    SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED:
+        "Katalogdan sana uygun ürünleri arıyorum…",
+    SearchProgressEventType.PRODUCT_POOL_PARTIAL_READY:
+        "Katalogdan ilk eşleşmeleri getirdim",
+    SearchProgressEventType.MERCHANT_CANDIDATES_RESOLVED:
+        "Senin için uygun mağazaları seçiyorum",
+    SearchProgressEventType.BRAND_CANDIDATES_RESOLVED: "Uygun markaları eşleştirdim",
+    SearchProgressEventType.FINANCE_SEARCH_STARTED:
+        "Taksit ve finansman seçeneklerini hazırlıyorum…",
+    SearchProgressEventType.FINANCIAL_INSTITUTION_CANDIDATES_FOUND:
+        "Taksit ve finansman seçeneklerini karşılaştırıyorum",
+    SearchProgressEventType.PAYMENT_PLAN_CALCULATION_STARTED:
+        "Aylık ödeme ve vade seçeneklerini hesaplıyorum…",
+    SearchProgressEventType.PARTIAL_RESULTS_READY:
+        "Ön sonuçlar hazır — tercihlerinle daraltıyorum",
+    SearchProgressEventType.LLM_JOB_COMPLETED: "Tercihlerin ürünlerle eşleşti",
+    SearchProgressEventType.LLM_JOB_TIMED_OUT:
+        "Elimdeki kesin kriterlere göre en yakın sonuçları hazırladım",
+    SearchProgressEventType.RANKING_STARTED: "Sana en uygun sırayı belirliyorum…",
+    SearchProgressEventType.FINAL_RESULTS_READY: "Sana özel öneriler hazır",
+    SearchProgressEventType.SEARCH_COMPLETED: "Araman tamamlandı",
     SearchProgressEventType.SEARCH_COMPLETED_DEGRADED: (
         "Elimdeki kesin kriterlere göre ürünleri sıraladım. "
-        "Dilerseniz bir tercih daha ekleyerek sonuçları daraltabilirsiniz."
+        "Dilersen bir tercih daha ekleyerek sonuçları daraltabilirsin."
     ),
     SearchProgressEventType.SEARCH_FAILED: "Arama tamamlanamadı",
     SearchProgressEventType.SEARCH_CANCELLED: "Arama iptal edildi",

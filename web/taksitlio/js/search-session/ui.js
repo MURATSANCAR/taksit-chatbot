@@ -228,6 +228,8 @@
       if (optsReplace && existing) existing.remove();
 
       var deals = Cards.dealsFromChatPayload({ cards: cards, phase: payload.route });
+      var maxShow = 3;
+      var shown = (deals.deals || []).slice(0, maxShow);
       var wrap = document.createElement("div");
       wrap.className = "showroom";
       wrap.dataset.showroomLive = "1";
@@ -239,9 +241,9 @@
         '<div class="showroom-head"><div class="eyebrow">' +
         Cards.escapeHtml(label) +
         "</div><h2>" +
-        deals.deals.length +
+        shown.length +
         " seçenek</h2></div>" +
-        deals.deals.map(Cards.dealArticleHtml).join("");
+        shown.map(Cards.dealArticleHtml).join("");
       thread.appendChild(wrap);
       requestAnimationFrame(function () {
         wrap.querySelectorAll(".deal, .offer").forEach(function (node) {

@@ -440,6 +440,7 @@
       aspect-ratio: 1 / 1.05;
       display: grid;
       place-items: center;
+      position: relative;
     }
     .offer-media img,
     .deal-media img {
@@ -454,6 +455,20 @@
       color: var(--muted);
       text-align: center;
       padding: 8px;
+    }
+    .deal-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 2;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--lime);
+      color: var(--ink);
+      box-shadow: 0 4px 12px rgba(30, 31, 34, 0.12);
     }
     .offer-body,
     .deal-body {
@@ -653,26 +668,35 @@
       margin-bottom: 8px;
     }
     .partial-carousel {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-x: contain;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 6px;
-      margin: 0 calc(-1 * var(--space));
-      padding-left: var(--space);
-      padding-right: var(--space);
-      scrollbar-width: thin;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      width: 100%;
+      overflow: hidden;
+      padding-bottom: 0;
+      margin: 0;
+    }
+    .partial-products[data-cols="2"] .partial-carousel {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .partial-card {
-      flex: 0 0 min(148px, 42vw);
-      min-width: min(148px, 42vw);
-      scroll-snap-align: start;
+      min-width: 0;
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+    .partial-card.is-featured {
+      border-color: rgba(151, 71, 255, 0.32);
+      box-shadow: 0 10px 22px rgba(151, 71, 255, 0.1);
+    }
+    .partial-media {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #EEEAF4;
     }
     .partial-card img,
     .partial-card .skeleton {
@@ -680,13 +704,30 @@
       height: auto;
       aspect-ratio: 4 / 3;
       object-fit: cover;
-      border-radius: 10px;
-      background: #EEEAF4;
       display: block;
+      background: #EEEAF4;
+    }
+    .partial-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 2;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--lime);
+      color: var(--ink);
+      box-shadow: 0 4px 12px rgba(30, 31, 34, 0.12);
+      max-width: calc(100% - 16px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .partial-card h4 {
       margin: 8px 0 2px;
-      font-size: clamp(12px, 3.2vw, 13px);
+      font-size: clamp(11.5px, 3vw, 13px);
       line-height: 1.3;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -700,6 +741,18 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    .partial-card .partial-price {
+      margin-top: 4px;
+      color: var(--purple);
+      font-weight: 800;
+      font-size: clamp(12px, 3.2vw, 13px);
+    }
+
+    @media (max-width: 360px) {
+      .partial-carousel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     .clarification-card {
