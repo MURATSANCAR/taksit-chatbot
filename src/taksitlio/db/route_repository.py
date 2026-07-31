@@ -134,8 +134,6 @@ def _cfg(value) -> dict:
         text = value.strip()
         if not text:
             return {}
-        import json
-
         parsed = json.loads(text)
         return dict(parsed) if isinstance(parsed, dict) else {}
     return dict(value)
@@ -277,9 +275,7 @@ def _row_to_route(row: asyncpg.Record) -> RouteVersion:
             conn_cfg=row["f_conn_cfg"],
             conn_status=row["f_conn_status"],
         )
-    cond = row["condition_expression"] or {}
-    if not isinstance(cond, dict):
-        cond = dict(cond)
+    cond = _cfg(row["condition_expression"])
     return RouteVersion(
         id=int(row["route_id"]),
         task_code=row["task_code"],

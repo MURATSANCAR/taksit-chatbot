@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Taksitlio · İhtiyaç Asistanı</title>
   <link rel="icon" href="assets/favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,48 +23,70 @@
       --surface: #FFFFFF;
       --font: "Figtree", system-ui, sans-serif;
       --display: "Bricolage Grotesque", system-ui, sans-serif;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --shell-max: 100%;
+      --app-radius: 0;
+      --phone-border: 0;
+      --frame-pad: 0px;
+      --top-pad-extra: 8px;
+      --space: clamp(12px, 3.2vw, 16px);
+      --bubble-max: min(86%, 34rem);
+      --fs-body: clamp(13.5px, 3.6vw, 15px);
+      --fs-title: clamp(24px, 7vw, 34px);
+      --fs-showroom: clamp(22px, 5.5vw, 28px);
+      --fs-price: clamp(22px, 5.5vw, 28px);
     }
 
     * { box-sizing: border-box; }
     html, body { margin: 0; height: 100%; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
     body {
       font-family: var(--font);
       color: var(--ink);
       min-height: 100%;
+      min-height: 100dvh;
       display: grid;
-      place-items: center;
-      padding: 20px 14px;
-      background:
-        radial-gradient(900px 420px at 50% -12%, rgba(151, 71, 255, 0.16), transparent 55%),
-        linear-gradient(180deg, #EDE8F5 0%, #F6F5F7 50%, #ECECEE 100%);
+      place-items: stretch;
+      padding: 0;
+      background: var(--bg);
+      overflow: hidden;
     }
 
-    .shell { width: min(390px, 100%); }
+    .shell {
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      min-height: 100dvh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
 
     .phone {
       width: 100%;
-      border-radius: 36px;
+      flex: 1;
+      min-height: 0;
+      border-radius: var(--app-radius);
       overflow: hidden;
-      border: 9px solid #141416;
+      border: var(--phone-border) solid #141416;
       background: var(--bg);
-      box-shadow: 0 28px 64px rgba(40, 20, 80, 0.18);
+      box-shadow: none;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
-    .phone::before {
-      content: "";
-      position: absolute;
-      top: 9px; left: 50%; transform: translateX(-50%);
-      width: 88px; height: 20px;
-      border-radius: 0 0 12px 12px;
-      background: #141416;
-      z-index: 30;
-    }
+    .phone::before { display: none; }
 
     .app {
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      height: min(760px, calc(100vh - 56px));
-      min-height: 620px;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      flex: 1;
+      min-height: 0;
+      height: 100%;
+      width: 100%;
       background: var(--bg);
       position: relative;
     }
@@ -103,7 +125,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 30px 16px 10px;
+      padding:
+        calc(var(--top-pad-extra) + var(--safe-top) + 10px)
+        calc(var(--space) + var(--safe-right))
+        10px
+        calc(var(--space) + var(--safe-left));
       background: rgba(245, 243, 248, 0.92);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid transparent;
@@ -111,40 +137,50 @@
       z-index: 5;
     }
     .top.scrolled { border-bottom-color: var(--line); }
-    .wordmark { height: 15px; width: auto; display: block; }
+    .wordmark {
+      height: clamp(14px, 3.8vw, 16px);
+      width: auto;
+      max-width: min(46vw, 160px);
+      object-fit: contain;
+      display: block;
+    }
     .guest {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
+      font-size: clamp(10px, 2.8vw, 11px);
       font-weight: 700;
       color: var(--purple-deep);
       background: var(--purple-soft);
       border: 1px solid rgba(151, 71, 255, 0.18);
       padding: 6px 10px;
       border-radius: 999px;
+      white-space: nowrap;
     }
-    .guest svg { width: 12px; height: 12px; fill: currentColor; }
+    .guest svg { width: 12px; height: 12px; fill: currentColor; flex: none; }
 
     .thread {
       overflow: auto;
-      padding: 8px 14px 18px;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding: 8px calc(var(--space) + var(--safe-right)) 18px calc(var(--space) + var(--safe-left));
       display: flex;
       flex-direction: column;
       gap: 12px;
       scroll-behavior: smooth;
       scrollbar-width: none;
+      min-height: 0;
     }
     .thread::-webkit-scrollbar { display: none; }
 
     .welcome {
       text-align: center;
-      padding: 18px 10px 8px;
+      padding: clamp(12px, 4vw, 22px) 6px 8px;
       animation: rise .55s cubic-bezier(.22,1,.36,1) both;
     }
     .welcome h1 {
       font-family: var(--display);
-      font-size: 30px;
+      font-size: var(--fs-title);
       font-weight: 800;
       letter-spacing: -0.045em;
       margin: 14px 0 8px;
@@ -152,10 +188,11 @@
     }
     .welcome p {
       margin: 0 auto;
-      max-width: 28ch;
+      max-width: 36ch;
       color: var(--muted);
-      font-size: 13.5px;
+      font-size: clamp(13px, 3.5vw, 14.5px);
       line-height: 1.45;
+      padding: 0 4px;
     }
     .welcome-ai {
       position: relative;
@@ -164,10 +201,10 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      width: min(100%, 300px);
+      width: min(100%, 320px);
       margin: 0 auto;
-      padding: 16px 22px 14px;
-      border-radius: 28px;
+      padding: clamp(14px, 4vw, 18px) clamp(16px, 5vw, 24px) 14px;
+      border-radius: clamp(20px, 5vw, 28px);
       background:
         linear-gradient(165deg, rgba(255,255,255,0.92), rgba(244,235,255,0.88));
       border: 1px solid rgba(151, 71, 255, 0.14);

@@ -10,6 +10,7 @@ COPY pyproject.toml README.md ./
 COPY src ./src
 COPY db ./db
 COPY eval ./eval
+COPY web ./web
 
 RUN pip install --no-cache-dir -e ".[api,media]"
 
