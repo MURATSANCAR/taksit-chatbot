@@ -128,13 +128,51 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] Browse ranking: CHEAPEST / attribute skip finance+image hard gates
 - [x] Unit tests
 
+### P11 — merchant/finance enrich + S3 storage backend
+
+- [x] `merchant.directory` (in-mem + Postgres); opaque fallback `merchant:{id}`
+- [x] `finance_option_index` + enrich into catalog search / FINANCE_ENRICHED cards
+- [x] `S3CompatibleObjectStorage` + `OBJECT_STORAGE_BACKEND` factory (`local`|`s3`)
+- [x] Unit tests
+
+### P12 — Postgres finance options sync + institution labels
+
+- [x] `PostgresFinanceOptionIndex` (`product_finance_options` ↔ search index)
+- [x] `PostgresInstitutionLabelLoader` + `load_institution_labels` (no hardcoded banks)
+- [x] Admin: rebuild / list finance options; reload institution labels
+- [x] Production container wires Postgres finance index + labels
+- [x] Unit tests
+
+### P13 — chat pipeline → progressive search / finance cards
+
+- [x] `product_query.chat_bridge` (need_profile → search request; catalog search)
+- [x] `ChatPipeline` prefers catalog cards when products exist; else legacy campaigns
+- [x] `GroundedResponseGenerator.from_product_cards` (estimate labels only)
+- [x] `POST /v1/chat` returns `cards` + `phase` (+ optional `product_phase`)
+- [x] Unit tests
+
+### P14 — web UI card renderer (`/taksitlio` → `/v1/chat`)
+
+- [x] Remove DEMO merchant/bank offer seed from guest UI
+- [x] `js/chat-cards.js` maps API cards (CDN only) + legacy campaigns fallback
+- [x] Progressive client calls: `FIRST_CARDS` → `FINANCE_ENRICHED` when catalog path
+- [x] CTA copy respects Campaign Gate CLOSED (no instant personal approval claim)
+- [x] Unit / static serving tests
+
+### P15 — merchant feed bind glue (credential_ref + operator merchant)
+
+- [x] `secrets.resolve` — `env://` / `bearer:env://` / `header:…:env://`
+- [x] `generic.json_feed.v1` sends resolved auth headers (no inline secrets)
+- [x] Admin `POST/GET /v1/admin/merchants` (opaque code + ops-provided display name)
+- [x] Runbook: `docs/runbooks/ADR-010-merchant-feed-bind.md`
+- [x] Unit tests (synthetic fixture only)
+
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Task-specific FAST fine-tune / LoRA
-- [ ] İlk gerçek merchant feed bağlama (operatör dry-run+upsert ile; kodda merchant adı yok)
+- [ ] Canlı merchant feed URL + `MERCHANT_FEED_TOKEN` (ops; runbook P15)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
-- [ ] Live CDN origin (S3/GCS) instead of LocalObjectStorage
-- [ ] Merchant display name from DB (still no hardcode); finance projection into catalog search
+- [ ] Canlı S3/MinIO credentials + CDN origin (ops)
 
 ## Gates
 
@@ -145,8 +183,8 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Runtime | BLOCKED / PERFORMANCE_REJECT (CPU) |
 | Provisional | not locked |
 | Campaign (kişisel onay) | CLOSED |
-| Data Ingestion | P9 (handlers + media CDN attach + compose scheduler) |
+| Data Ingestion | P15 (credential_ref + merchant bind + dry-run/upsert) |
 | Data Quality | P6 scorer + admin score API |
-| Fast Product Path | P10 (catalog-backed search + progressive cards) |
-| Finance Mapping | P3 skeleton (eligibility + payment plan) |
+| Fast Product Path | P14 (chat cards + guest UI renderer) |
+| Finance Mapping | P12 (Postgres finance sync + institution labels + admin rebuild) |
 | Recommendation | P4 ranking safety rules (browse vs finance modes) |

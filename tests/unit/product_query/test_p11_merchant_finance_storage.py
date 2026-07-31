@@ -146,6 +146,7 @@ async def test_catalog_search_uses_merchant_and_finance() -> None:
             json={
                 "utterance": "laptop",
                 "ranking_mode": "LOWEST_MONTHLY_PAYMENT",
+                "phase": "FINANCE_ENRICHED",
                 "use_catalog": True,
                 "use_popular_cache": False,
                 "catalog_merchant_id": 1,
@@ -155,7 +156,7 @@ async def test_catalog_search_uses_merchant_and_finance() -> None:
     assert resp.status_code == 200
     body = resp.json()
     assert body["cards"]
-    assert body["cards"][0]["merchant_display_name"] == "Operator Merchant"
+    assert body["cards"][0]["merchant"]["display_name"] == "Operator Merchant"
     assert body["cards"][0]["best_finance"]["institution_display_name"] == (
         "Bank Label From Catalog"
     )

@@ -72,6 +72,7 @@ class GenericJsonFeedAdapter:
         feed_path: Optional[str | Path] = None,
         timeout_seconds: float = 30.0,
         source_reference: Optional[str] = None,
+        request_headers: Optional[Mapping[str, str]] = None,
     ) -> None:
         if not feed_url and not feed_path:
             raise ValueError("feed_url or feed_path required")
@@ -79,6 +80,7 @@ class GenericJsonFeedAdapter:
         self._feed_path = Path(feed_path) if feed_path else None
         self._timeout = timeout_seconds
         self._source_reference = source_reference or feed_url or str(feed_path)
+        self._request_headers = dict(request_headers or {})
         self._items: dict[str, dict[str, Any]] | None = None
 
     def capabilities(self) -> Sequence[IngestionCapability]:
@@ -95,7 +97,10 @@ class GenericJsonFeedAdapter:
         else:
             try:
                 async with httpx.AsyncClient(timeout=self._timeout) as client:
-                    resp = await client.get(self._feed_url)  # type: ignore[arg-type]
+                    resp = await client.get(
+                        self._feed_url,  # type: ignore[arg-type]
+                        headers=self._request_headers or None,
+                    )
                     resp.raise_for_status()
                     raw = resp.json()
             except httpx.TimeoutException as exc:

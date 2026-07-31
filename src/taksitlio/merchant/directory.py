@@ -41,8 +41,27 @@ class InMemoryMerchantDirectory:
         return row.display_name
 
     async def upsert(self, entry: MerchantDirectoryEntry) -> MerchantDirectoryEntry:
-        self._by_id[entry.id] = entry
-        return entry
+        for existing in self._by_id.values():
+            if existing.merchant_code == entry.merchant_code:
+                updated = MerchantDirectoryEntry(
+                    id=existing.id,
+                    merchant_code=entry.merchant_code,
+                    display_name=entry.display_name,
+                    status=entry.status,
+                )
+                self._by_id[existing.id] = updated
+                return updated
+        new_id = entry.id
+        if new_id <= 0 or new_id in self._by_id:
+            new_id = (max(self._by_id.keys()) if self._by_id else 0) + 1
+        stored = MerchantDirectoryEntry(
+            id=new_id,
+            merchant_code=entry.merchant_code,
+            display_name=entry.display_name,
+            status=entry.status,
+        )
+        self._by_id[new_id] = stored
+        return stored
 
     async def list_active(self, *, limit: int = 200) -> Sequence[MerchantDirectoryEntry]:
         rows = [e for e in self._by_id.values() if e.status == "ACTIVE"]

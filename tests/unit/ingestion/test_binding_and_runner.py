@@ -64,8 +64,8 @@ def test_inline_secret_rejected_when_credential_ref() -> None:
         source_code="s",
         adapter_code="generic.json_feed.v1",
         merchant_id="m1",
-        credential_ref="secret://feed-token",
+        credential_ref="env://FEED_TOKEN",
         config={"feed_path": "/tmp/x", "authorization": "Bearer x"},
     )
-    with pytest.raises(ValueError, match="credential_ref"):
+    with pytest.raises(ValueError, match="inline"):
         instantiate_adapter(binding)

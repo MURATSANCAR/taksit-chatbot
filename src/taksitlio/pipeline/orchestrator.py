@@ -11,6 +11,11 @@ from taksitlio.campaign.models import CampaignRetriever
 from taksitlio.campaign.ranking import RankedCampaign, RankingEngine
 from taksitlio.category.matcher import SemanticCategoryMatcher
 from taksitlio.model_router.router import RouteDecision
+from taksitlio.product_query.chat_bridge import (
+    ProductPathDeps,
+    need_profile_to_search_request,
+    run_catalog_search_for_chat,
+)
 from taksitlio.response.grounded import GroundedReply, GroundedResponseGenerator
 from taksitlio.understanding.service import UnderstandingService, UnderstoodTurn
 
@@ -20,6 +25,7 @@ class ChatRequest:
     session_id: str
     message: str
     user_id: str | None = None
+    product_phase: str | None = None  # FIRST_CARDS | FINANCE_ENRICHED
 
 
 @dataclass(frozen=True)
@@ -30,6 +36,8 @@ class ChatResponse:
     need_profile: dict[str, Any] | None
     categories: list[dict[str, Any]] = field(default_factory=list)
     campaigns: list[dict[str, Any]] = field(default_factory=list)
+    cards: list[dict[str, Any]] = field(default_factory=list)
+    phase: str | None = None
     cta: dict[str, Any] | None = None
     diagnostics: dict[str, Any] = field(default_factory=dict)
     latency_ms: float = 0.0
@@ -46,6 +54,7 @@ class ChatPipeline:
         responder: GroundedResponseGenerator,
         *,
         campaign_repo: Any,
+        product_path: ProductPathDeps | None = None,
     ) -> None:
         self._understanding = understanding
         self._categories = category_matcher
@@ -54,6 +63,7 @@ class ChatPipeline:
         self._ranking = ranking
         self._responder = responder
         self._campaign_repo = campaign_repo
+        self._product_path = product_path
 
     async def handle(self, request: ChatRequest) -> ChatResponse:
         started = time.perf_counter()
@@ -138,7 +148,29 @@ class ChatPipeline:
                 category_codes=category_codes,
             )
 
-        # Retrieve → eligibility → rank
+        # Prefer ADR-010 catalog path when products exist; else legacy V004 campaigns.
+        product_hit = await self._try_product_path(request, need_profile)
+        if product_hit is not None:
+            reply, cards, phase, product_extra = product_hit
+            return self._build(
+                request,
+                turn,
+                reply,
+                match_result.matches,
+                [],
+                started,
+                cards=cards,
+                phase=phase,
+                extra={
+                    "product_path": True,
+                    "model_profile": understanding.used_profile_code,
+                    "fallback_used": understanding.fallback_used,
+                    "was_update": turn.was_update,
+                    **product_extra,
+                },
+            )
+
+        # Retrieve → eligibility → rank (legacy campaigns)
         candidates = await self._retriever.retrieve(category_codes)
         rules = await self._campaign_repo.get_eligibility_rules()
         eligible = self._eligibility.filter_eligible(
@@ -165,6 +197,7 @@ class ChatPipeline:
             ranked,
             started,
             extra={
+                "product_path": False,
                 "retrieved": len(candidates),
                 "eligible": len(eligible),
                 "ranked": len(ranked),
@@ -173,6 +206,38 @@ class ChatPipeline:
                 "was_update": turn.was_update,
             },
         )
+
+    async def _try_product_path(
+        self,
+        request: ChatRequest,
+        need_profile: dict[str, Any],
+    ) -> tuple[GroundedReply, list[dict[str, Any]], str, dict[str, Any]] | None:
+        if self._product_path is None or not self._product_path.enabled:
+            return None
+        phase = (request.product_phase or "FINANCE_ENRICHED").upper()
+        search_req = need_profile_to_search_request(
+            request.message, need_profile, phase=phase
+        )
+        result = await run_catalog_search_for_chat(self._product_path, search_req)
+        if result is None:
+            return None
+        # Empty cards with no clarifications → fall back to legacy campaigns.
+        if not result.cards and not result.search.clarifications:
+            return None
+        reply = await self._responder.from_product_cards(
+            need_profile,
+            phase=result.phase,
+            cards=result.cards,
+            clarifications=result.search.clarifications,
+        )
+        extra = {
+            "catalog_phase": result.phase,
+            "card_count": len(result.cards),
+            "clarifications": list(result.search.clarifications),
+            "ranking_mode": search_req.ranking_mode.value,
+            "refresh_jobs": len(result.search.refresh_jobs),
+        }
+        return reply, list(result.cards), result.phase, extra
 
     def _build(
         self,
@@ -183,6 +248,8 @@ class ChatPipeline:
         ranked: list[RankedCampaign] | list[Any],
         started: float,
         *,
+        cards: list[dict[str, Any]] | None = None,
+        phase: str | None = None,
         extra: dict[str, Any] | None = None,
     ) -> ChatResponse:
         categories = []
@@ -206,6 +273,8 @@ class ChatPipeline:
                 for r in ranked
                 if hasattr(r, "campaign")
             ]
+        out_cards = list(cards if cards is not None else reply.cards)
+        out_phase = phase if phase is not None else reply.phase
         cta = None
         if reply.cta:
             cta = {
@@ -221,6 +290,8 @@ class ChatPipeline:
             need_profile=turn.need_profile,
             categories=categories,
             campaigns=campaigns,
+            cards=out_cards,
+            phase=out_phase,
             cta=cta,
             diagnostics={
                 "understanding_reason": turn.understanding.reason_code.value

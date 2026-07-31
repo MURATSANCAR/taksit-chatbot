@@ -38,6 +38,12 @@ class QualityScoreOut(BaseModel):
     chatbot_visible: bool
 
 
+class MerchantUpsertIn(BaseModel):
+    merchant_code: str = Field(..., min_length=1, max_length=64)
+    display_name: str = Field(..., min_length=1, max_length=256)
+    status: str = Field(default="ACTIVE", max_length=32)
+
+
 class SourceBindingIn(BaseModel):
     source_code: str = Field(..., min_length=1, max_length=128)
     adapter_code: str = Field(..., min_length=1, max_length=128)
@@ -56,6 +62,54 @@ async def list_adapters(request: Request) -> Dict[str, Any]:
     return {
         "adapters": sorted(registry.known_codes()),
         "note": "Bind sources via opaque adapter_code; no merchant names in code",
+    }
+
+
+@router.post("/merchants")
+async def upsert_merchant(payload: MerchantUpsertIn, request: Request) -> Dict[str, Any]:
+    """Operator bootstrap: store merchant row from ops-provided code/name (DB only)."""
+
+    container = container_from(request)
+    directory = container.extras.get("merchant_directory")
+    if directory is None:
+        raise HTTPException(status_code=501, detail="merchant_directory not configured")
+    if payload.status not in {"ACTIVE", "INACTIVE", "DRAFT"}:
+        raise HTTPException(status_code=400, detail="invalid status")
+    from taksitlio.merchant.directory import MerchantDirectoryEntry
+
+    entry = await directory.upsert(
+        MerchantDirectoryEntry(
+            id=0,
+            merchant_code=payload.merchant_code.strip(),
+            display_name=payload.display_name.strip(),
+            status=payload.status,
+        )
+    )
+    return {
+        "id": entry.id,
+        "merchant_code": entry.merchant_code,
+        "display_name": entry.display_name,
+        "status": entry.status,
+    }
+
+
+@router.get("/merchants")
+async def list_merchants(request: Request, limit: int = 100) -> Dict[str, Any]:
+    container = container_from(request)
+    directory = container.extras.get("merchant_directory")
+    if directory is None:
+        raise HTTPException(status_code=501, detail="merchant_directory not configured")
+    rows = await directory.list_active(limit=min(limit, 500))
+    return {
+        "merchants": [
+            {
+                "id": m.id,
+                "merchant_code": m.merchant_code,
+                "display_name": m.display_name,
+                "status": m.status,
+            }
+            for m in rows
+        ]
     }
 
 

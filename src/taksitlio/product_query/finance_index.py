@@ -91,10 +91,32 @@ def enrich_candidate_with_finance(
     )
 
 
+class InMemoryInstitutionLabelLoader:
+    """Mutable label source for local/dev; production uses Postgres loader."""
+
+    def __init__(self, labels: Optional[dict[str, str]] = None) -> None:
+        self._labels: dict[str, str] = dict(labels or {})
+
+    def set_labels(self, labels: dict[str, str]) -> None:
+        self._labels = dict(labels)
+
+    async def load_labels(self) -> dict[str, str]:
+        return dict(self._labels)
+
+
+async def load_institution_labels(loader: object) -> InstitutionLabelResolver:
+    """Build resolver from a loader exposing ``async load_labels() -> dict``."""
+
+    labels = await loader.load_labels()  # type: ignore[attr-defined]
+    return InstitutionLabelResolver(labels=dict(labels or {}))
+
+
 __all__ = [
     "FinanceOptionIndex",
     "InMemoryFinanceOptionIndex",
+    "InMemoryInstitutionLabelLoader",
     "InstitutionLabelResolver",
     "enrich_candidate_with_finance",
+    "load_institution_labels",
     "pick_best_eligible",
 ]

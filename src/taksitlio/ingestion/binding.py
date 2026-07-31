@@ -14,6 +14,10 @@ from taksitlio.ingestion.adapters.generic_json_feed import (
 )
 from taksitlio.ingestion.protocol import MerchantProductSourceAdapter
 from taksitlio.ingestion.registry import AdapterRegistry
+from taksitlio.secrets.resolve import (
+    CredentialResolveError,
+    http_headers_from_credential_ref,
+)
 
 
 @dataclass(frozen=True)
@@ -57,16 +61,22 @@ def instantiate_adapter(
         feed_path = cfg.get("feed_path")
         timeout = float(cfg.get("timeout_seconds", 30.0))
         source_ref = cfg.get("source_reference") or binding.source_code
-        # credential_ref is resolved by ops/secrets layer — never inline secrets.
-        if binding.credential_ref and "authorization" in cfg:
-            raise ValueError(
-                "inline authorization forbidden when credential_ref is set"
-            )
+        # Never allow inline secrets alongside or instead of credential_ref.
+        for forbidden in ("authorization", "api_key", "token", "password"):
+            if forbidden in cfg:
+                raise ValueError(
+                    f"inline {forbidden} forbidden; use credential_ref (env://…)"
+                )
+        try:
+            headers = http_headers_from_credential_ref(binding.credential_ref)
+        except CredentialResolveError as exc:
+            raise ValueError(str(exc)) from exc
         return GenericJsonFeedAdapter(
             feed_url=feed_url,
             feed_path=feed_path,
             timeout_seconds=timeout,
             source_reference=str(source_ref),
+            request_headers=headers,
         )
 
     # Future adapters: factory(binding) pattern; keep registry check above.

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Taksitlio · Tasarım seçenekleri</title>
+  <style>
+    :root {
+      --ink: #1E1F22;
+      --muted: #6B7280;
+      --purple: #9747FF;
+      --bg: #F4F2F7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 400px at 20% -10%, rgba(151,71,255,.18), transparent 55%),
+        var(--bg);
+      padding: 32px 20px 64px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+    .lead {
+      margin: 0 0 28px;
+      color: var(--muted);
+      max-width: 52ch;
+      line-height: 1.45;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+      max-width: 1200px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 16px 40px rgba(40,20,80,.08);
+      border: 2px solid transparent;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+    .card:hover { border-color: rgba(151,71,255,.35); transform: translateY(-2px); }
+    .card img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 14px;
+      display: block;
+      background: #eceaf0;
+    }
+    .meta { padding: 14px 6px 6px; }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 6px;
+    }
+    .meta h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+    .meta p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.4;
+    }
+    .hint {
+      margin-top: 28px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(151,71,255,.08);
+      color: var(--ink);
+      font-size: 14px;
+      max-width: 1200px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Taksitlio tasarım seçenekleri</h1>
+  <p class="lead">Dört yönü yan yana karşılaştır. Chat’e A / B / C / D yazman yeterli; seçtiğini çalışır sayfaya geçiririm.</p>
+
+  <div class="grid">
+    <article class="card">
+      <img src="options/taksitlio-option-a-dark-chat.png" alt="A · Koyu chat" />
+      <div class="meta">
+        <div class="tag">A</div>
+        <h2>Koyu chat</h2>
+        <p>Dark fintech, bot balonu, lime send. İlk karşılama ekranı.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="options/taksitlio-option-b-light-chat.png" alt="B · Açık chat" />
+      <div class="meta">
+        <div class="tag">B</div>
+        <h2>Açık chat</h2>
+        <p>Mesajlaşma + teklif kartları + üyelik CTA aynı akışta.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="options/taksitlio-option-c-brand-hero.png" alt="C · Brand hero" />
+      <div class="meta">
+        <div class="tag">C</div>
+        <h2>Brand hero</h2>
+        <p>Mor üst alan, ortada büyük prompt, marka odaklı idle.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="options/taksitlio-option-d-showroom.png" alt="D · Showroom" />
+      <div class="meta">
+        <div class="tag">D</div>
+        <h2>Showroom</h2>
+        <p>Chat yok; büyük ürün panelleri ve net aylık fiyat.</p>
+      </div>
+    </article>
+  </div>
+
+  <p class="hint">Dosyalar: <code>design/taksitlio-mockups/options/</code> · Bu sayfa: <code>design/taksitlio-mockups/options.html</code></p>
+</body>
+</html>

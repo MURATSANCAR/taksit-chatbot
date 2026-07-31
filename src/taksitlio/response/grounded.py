@@ -37,6 +37,8 @@ class MembershipCTA:
 class GroundedReply:
     text: str
     campaigns: list[dict[str, Any]] = field(default_factory=list)
+    cards: list[dict[str, Any]] = field(default_factory=list)
+    phase: str | None = None
     cta: MembershipCTA | None = None
     grounded: bool = True
     used_model: bool = False
@@ -150,6 +152,58 @@ class GroundedResponseGenerator:
             template_used="deterministic",
         )
 
+    async def from_product_cards(
+        self,
+        need_profile: Mapping[str, Any],
+        *,
+        phase: str,
+        cards: Sequence[Mapping[str, Any]],
+        clarifications: Sequence[str] = (),
+        policy_code: str = "DEFAULT",
+    ) -> GroundedReply:
+        """Template reply from progressive product cards only — no invented prices/rates."""
+
+        policy = await self._policies.get(policy_code)
+        public_cards = [dict(c) for c in cards[: policy.max_campaigns_in_reply]]
+        cta = MembershipCTA(
+            enabled=policy.membership_cta_enabled,
+            label="Taksitlio'ya üye ol",
+            url=None,
+            reason="product_path_cta",
+        )
+        if clarifications and not public_cards:
+            text = " ".join(clarifications)
+            return GroundedReply(
+                text=text,
+                cards=[],
+                phase=phase,
+                cta=cta,
+                grounded=True,
+                template_used="product_clarify",
+            )
+        if not public_cards:
+            text = (
+                "Bu ihtiyaca uygun ürün bulamadım. "
+                "Bütçeyi veya ürün tercihini biraz değiştirebilir miyiz?"
+            )
+            return GroundedReply(
+                text=text,
+                cards=[],
+                phase=phase,
+                cta=cta,
+                grounded=True,
+                template_used="no_products",
+            )
+        return GroundedReply(
+            text=_template_product_reply(need_profile, public_cards, cta, phase=phase),
+            cards=public_cards,
+            phase=phase,
+            cta=cta,
+            grounded=True,
+            used_model=False,
+            template_used="product_cards",
+        )
+
     async def _llm_reply(
         self,
         need_profile: Mapping[str, Any],
@@ -252,4 +306,39 @@ def _template_reply(
             cta_line = f"{cta.label}: {cta.url}"
         lines.append("")
         lines.append(cta_line)
+    return "\n".join(lines)
+
+
+def _template_product_reply(
+    need_profile: Mapping[str, Any],
+    cards: Sequence[Mapping[str, Any]],
+    cta: MembershipCTA | None,
+    *,
+    phase: str,
+) -> str:
+    need = str(need_profile.get("need_description") or "ihtiyacınız")
+    lines = [f"{need} için katalogdan uygun ürünler:"]
+    for i, card in enumerate(cards, start=1):
+        price = card.get("price")
+        currency = card.get("currency") or "TRY"
+        price_part = ""
+        if price is not None:
+            price_part = f" — {float(price):,.0f} {currency}".replace(",", ".")
+        merchant = (card.get("merchant") or {}).get("display_name") or ""
+        merchant_part = f" ({merchant})" if merchant else ""
+        lines.append(f"{i}. {card.get('display_name')}{merchant_part}{price_part}")
+        finance = card.get("best_finance") if phase == "FINANCE_ENRICHED" else None
+        if isinstance(finance, Mapping):
+            label = finance.get("display_label") or "Tahmini aylık ödeme"
+            monthly = finance.get("monthly_payment")
+            term = finance.get("term_months")
+            inst = finance.get("institution_display_name") or ""
+            if monthly is not None and term is not None:
+                lines.append(
+                    f"   {label}: {float(monthly):,.0f} {currency} / {term} ay"
+                    f"{(' — ' + inst) if inst else ''}".replace(",", ".")
+                )
+    if cta and cta.enabled:
+        lines.append("")
+        lines.append(cta.label + (f": {cta.url}" if cta.url else ""))
     return "\n".join(lines)

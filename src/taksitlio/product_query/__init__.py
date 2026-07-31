@@ -26,7 +26,7 @@ from taksitlio.product_query.ranking import (
 )
 
 ADR_SCOPE = "ADR-010"
-PACKAGE_STATUS = "P10"
+PACKAGE_STATUS = "P11"
 
 
 @dataclass(frozen=True)

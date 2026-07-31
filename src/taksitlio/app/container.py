@@ -238,15 +238,6 @@ def build_in_memory_container(
         prompts=None,
         policies=StaticResponsePolicyProvider(ResponsePolicy()),
     )
-    pipeline = ChatPipeline(
-        understanding=understanding,  # type: ignore[arg-type]
-        category_matcher=matcher,
-        retriever=CampaignRetriever(campaign_repo),
-        eligibility=EligibilityEngine(),
-        ranking=RankingEngine(),
-        responder=responder,
-        campaign_repo=campaign_repo,
-    )
     from taksitlio.ingestion.binding import build_default_registry
     from taksitlio.ingestion.repository import InMemoryIngestionRepository
     from taksitlio.ingestion_scheduler.repository import InMemorySchedulerJobRepository
@@ -254,8 +245,10 @@ def build_in_memory_container(
     from taksitlio.merchant.directory import InMemoryMerchantDirectory
     from taksitlio.product.catalog import InMemoryProductCatalogRepository
     from taksitlio.product_query.cache_wiring import build_product_query_caches
+    from taksitlio.product_query.chat_bridge import ProductPathDeps
     from taksitlio.product_query.finance_index import (
         InMemoryFinanceOptionIndex,
+        InMemoryInstitutionLabelLoader,
         InstitutionLabelResolver,
     )
     import os
@@ -268,6 +261,28 @@ def build_in_memory_container(
         os.environ.setdefault(
             "MEDIA_STORAGE_ROOT", tempfile.mkdtemp(prefix="taksitlio-media-")
         )
+    product_catalog = InMemoryProductCatalogRepository()
+    merchant_directory = InMemoryMerchantDirectory()
+    finance_option_index = InMemoryFinanceOptionIndex()
+    institution_label_loader = InMemoryInstitutionLabelLoader()
+    institution_labels = InstitutionLabelResolver(labels={})
+    pipeline = ChatPipeline(
+        understanding=understanding,  # type: ignore[arg-type]
+        category_matcher=matcher,
+        retriever=CampaignRetriever(campaign_repo),
+        eligibility=EligibilityEngine(),
+        ranking=RankingEngine(),
+        responder=responder,
+        campaign_repo=campaign_repo,
+        product_path=ProductPathDeps(
+            catalog=product_catalog,
+            merchant_directory=merchant_directory,
+            finance_index=finance_option_index,
+            institution_labels=institution_labels,
+            alias_cache=product_query_caches.alias,
+            alias_ttl_seconds=product_query_caches.alias_ttl_seconds,
+        ),
+    )
     return AppContainer(
         settings=settings,
         pipeline=pipeline,
@@ -284,11 +299,12 @@ def build_in_memory_container(
             "adapter_registry": build_default_registry(),
             "ingestion_repo": InMemoryIngestionRepository(),
             "scheduler_repo": InMemorySchedulerJobRepository(),
-            "product_catalog": InMemoryProductCatalogRepository(),
+            "product_catalog": product_catalog,
             "media_storage": build_object_storage_from_env(),
-            "merchant_directory": InMemoryMerchantDirectory(),
-            "finance_option_index": InMemoryFinanceOptionIndex(),
-            "institution_labels": InstitutionLabelResolver(labels={}),
+            "merchant_directory": merchant_directory,
+            "finance_option_index": finance_option_index,
+            "institution_label_loader": institution_label_loader,
+            "institution_labels": institution_labels,
         },
     )
 
@@ -340,6 +356,26 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         prompts=None,
         policies=StaticResponsePolicyProvider(ResponsePolicy()),
     )
+    from taksitlio.ingestion.binding import build_default_registry
+    from taksitlio.ingestion.repository import PostgresIngestionRepository
+    from taksitlio.ingestion_scheduler.repository import PostgresSchedulerJobRepository
+    from taksitlio.media.s3_storage import build_object_storage_from_env
+    from taksitlio.merchant.directory import PostgresMerchantDirectory
+    from taksitlio.product.catalog import PostgresProductCatalogRepository
+    from taksitlio.product_query.cache_wiring import build_product_query_caches
+    from taksitlio.product_query.chat_bridge import ProductPathDeps
+    from taksitlio.product_query.finance_index import load_institution_labels
+    from taksitlio.product_query.postgres_finance import (
+        PostgresFinanceOptionIndex,
+        PostgresInstitutionLabelLoader,
+    )
+
+    product_query_caches = build_product_query_caches(settings, redis=redis)
+    product_catalog = PostgresProductCatalogRepository(pool)
+    merchant_directory = PostgresMerchantDirectory(pool)
+    finance_option_index = PostgresFinanceOptionIndex(pool)
+    institution_label_loader = PostgresInstitutionLabelLoader(pool)
+    institution_labels = await load_institution_labels(institution_label_loader)
     pipeline = ChatPipeline(
         understanding=understanding,
         category_matcher=matcher,
@@ -348,20 +384,15 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         ranking=RankingEngine(),
         responder=responder,
         campaign_repo=campaign_repo,
+        product_path=ProductPathDeps(
+            catalog=product_catalog,
+            merchant_directory=merchant_directory,
+            finance_index=finance_option_index,
+            institution_labels=institution_labels,
+            alias_cache=product_query_caches.alias,
+            alias_ttl_seconds=product_query_caches.alias_ttl_seconds,
+        ),
     )
-    from taksitlio.ingestion.binding import build_default_registry
-    from taksitlio.ingestion.repository import PostgresIngestionRepository
-    from taksitlio.ingestion_scheduler.repository import PostgresSchedulerJobRepository
-    from taksitlio.media.s3_storage import build_object_storage_from_env
-    from taksitlio.merchant.directory import PostgresMerchantDirectory
-    from taksitlio.product.catalog import PostgresProductCatalogRepository
-    from taksitlio.product_query.cache_wiring import build_product_query_caches
-    from taksitlio.product_query.finance_index import (
-        InMemoryFinanceOptionIndex,
-        InstitutionLabelResolver,
-    )
-
-    product_query_caches = build_product_query_caches(settings, redis=redis)
     return AppContainer(
         settings=settings,
         pipeline=pipeline,
@@ -377,11 +408,11 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "adapter_registry": build_default_registry(),
             "ingestion_repo": PostgresIngestionRepository(pool),
             "scheduler_repo": PostgresSchedulerJobRepository(pool),
-            "product_catalog": PostgresProductCatalogRepository(pool),
+            "product_catalog": product_catalog,
             "media_storage": build_object_storage_from_env(),
-            "merchant_directory": PostgresMerchantDirectory(pool),
-            # Postgres finance projection table wiring is a follow-up; in-mem index OK for API inject.
-            "finance_option_index": InMemoryFinanceOptionIndex(),
-            "institution_labels": InstitutionLabelResolver(labels={}),
+            "merchant_directory": merchant_directory,
+            "finance_option_index": finance_option_index,
+            "institution_label_loader": institution_label_loader,
+            "institution_labels": institution_labels,
         },
     )

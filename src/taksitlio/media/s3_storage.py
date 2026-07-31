@@ -1,6 +1,6 @@
-"""S3-compatible object storage (ADR-010 P11).
+"""S3-compatible object storage (ADR-010 P11/P16).
 
-Uses boto3 when installed; credentials via env/credential_ref only — never inline.
+Uses boto3 when installed; credentials via env/IAM only — never inline.
 """
 
 from __future__ import annotations
@@ -8,6 +8,7 @@ from __future__ import annotations
 import os
 from typing import Any, Optional
 
+from taksitlio.media.config import load_object_storage_config
 from taksitlio.media.storage import LocalObjectStorage, ObjectStorage
 
 
@@ -39,7 +40,7 @@ class S3CompatibleObjectStorage:
                 import boto3  # type: ignore
             except ImportError as exc:  # pragma: no cover
                 raise RuntimeError(
-                    "boto3 required for S3CompatibleObjectStorage; pip install boto3"
+                    "boto3 required for S3CompatibleObjectStorage; pip install '.[storage]'"
                 ) from exc
             kwargs: dict[str, Any] = {}
             if endpoint_url:
@@ -50,7 +51,7 @@ class S3CompatibleObjectStorage:
 
     def _key(self, key: str) -> str:
         k = key.lstrip("/")
-        if self.prefix:
+        if self.prefix and not k.startswith(f"{self.prefix}/") and k != self.prefix:
             return f"{self.prefix}/{k}"
         return k
 
@@ -65,27 +66,33 @@ class S3CompatibleObjectStorage:
         return storage_key
 
     def cdn_url_for(self, key: str) -> str:
-        return f"{self.cdn_base_url}/{key.lstrip('/')}"
+        storage_key = self._key(key)
+        return f"{self.cdn_base_url}/{storage_key.lstrip('/')}"
 
 
 def build_object_storage_from_env(
     *,
     default_local_root: str = "/tmp/taksitlio-media",
+    validate: bool = True,
+    strict_cdn: bool = False,
 ) -> ObjectStorage:
     """Select Local vs S3 from ``OBJECT_STORAGE_BACKEND``."""
 
-    backend = (os.environ.get("OBJECT_STORAGE_BACKEND") or "local").strip().lower()
-    cdn = os.environ.get("CDN_BASE_URL", "https://cdn.example.test")
-    if backend in {"s3", "s3_compatible", "minio"}:
+    cfg = load_object_storage_config(default_local_root=default_local_root)
+    if validate:
+        cfg.validate(strict=strict_cdn)
+    if cfg.backend == "s3":
         return S3CompatibleObjectStorage(
-            bucket=os.environ.get("S3_BUCKET", "").strip(),
-            cdn_base_url=cdn,
-            prefix=os.environ.get("S3_PREFIX", "taksitlio"),
-            endpoint_url=os.environ.get("S3_ENDPOINT_URL") or None,
-            region_name=os.environ.get("S3_REGION") or None,
+            bucket=cfg.bucket or "",
+            cdn_base_url=cfg.cdn_base_url,
+            prefix=cfg.prefix,
+            endpoint_url=cfg.endpoint_url,
+            region_name=cfg.region_name,
         )
-    root = os.environ.get("MEDIA_STORAGE_ROOT") or default_local_root
-    return LocalObjectStorage(root, cdn_base_url=cdn)
+    root = cfg.media_root or default_local_root
+    if not os.environ.get("MEDIA_STORAGE_ROOT"):
+        os.environ["MEDIA_STORAGE_ROOT"] = root
+    return LocalObjectStorage(root, cdn_base_url=cfg.cdn_base_url)
 
 
 __all__ = [

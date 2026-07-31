@@ -10,7 +10,6 @@ import asyncio
 import logging
 import os
 import signal
-import tempfile
 from typing import Optional
 
 from taksitlio.ingestion_scheduler.handlers import HandlerContext, QueueDispatchHandler
@@ -20,7 +19,7 @@ from taksitlio.ingestion_scheduler.repository import (
     SchedulerJobRepository,
 )
 from taksitlio.ingestion_scheduler.worker import LeaseLoopWorker
-from taksitlio.media.storage import LocalObjectStorage
+from taksitlio.media.s3_storage import build_object_storage_from_env
 from taksitlio.product.catalog import InMemoryProductCatalogRepository
 
 logger = logging.getLogger("taksitlio.scheduler_daemon")
@@ -83,11 +82,9 @@ def build_handler_from_env(
     catalog: Optional[object] = None,
     storage_root: Optional[str] = None,
 ) -> QueueDispatchHandler:
-    root = storage_root or os.environ.get("MEDIA_STORAGE_ROOT") or tempfile.mkdtemp(
-        prefix="taksitlio-media-"
-    )
-    cdn = os.environ.get("CDN_BASE_URL", "https://cdn.example.test")
-    storage = LocalObjectStorage(root, cdn_base_url=cdn)
+    if storage_root:
+        os.environ.setdefault("MEDIA_STORAGE_ROOT", storage_root)
+    storage = build_object_storage_from_env()
     return QueueDispatchHandler(
         HandlerContext(
             catalog=catalog or InMemoryProductCatalogRepository(),
