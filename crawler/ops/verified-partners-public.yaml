@@ -81,6 +81,13 @@ merchants_verified_public:
     crawl_status: ROBOTS_OK_PARSE_PENDING
     seed_urls: [https://www.trendyol.com/]
 
+  - merchant_code: m-evofone
+    display_name: Evofone
+    verification: [PUBLIC_BANK_PAGE]
+    crawl_status: CAMPAIGN_ONLY
+    seed_urls: [https://www.evofone.com/]
+    notes: Named on Fibabanka güncel alışveriş kredisi kampanya sayfası.
+
   - merchant_code: m-vivense
     display_name: Vivense
     verification: [PUBLIC_BANK_PAGE]

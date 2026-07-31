@@ -37,7 +37,10 @@ from taksitlio.search_sessions.repository import (
     SearchSession,
 )
 from taksitlio.search_sessions.status import SearchSessionStatus, can_transition
-
+from taksitlio.semantic_matching.query_intent import (
+    OUT_OF_SCOPE_ASSIST_MESSAGE,
+    is_off_domain_for_assist,
+)
 
 @dataclass
 class LogoCandidate:
@@ -138,6 +141,11 @@ class SearchOrchestrator:
     def _run_pipeline(self, session: SearchSession, message: str) -> dict[str, Any]:
         self.repo.set_status(session.id, SearchSessionStatus.FAST_PARSING)
         self._emit(session, SearchProgressEventType.FAST_PARSE_STARTED)
+
+        # Deterministic refuse: no general chat / no inventing off-system facts.
+        if is_off_domain_for_assist(message):
+            return self._refuse_off_domain(session)
+
         parse = fast_parse(message, catalog=self.catalog)
         version = self.repo.get_version(session.id, session.active_query_version)
         if version:
@@ -590,11 +598,80 @@ class SearchOrchestrator:
         self._emit(session, SearchProgressEventType.LLM_JOB_COMPLETED, payload={"job_id": job_id})
         # Merge inferred preferences carefully (not as required)
         parse = self.parses[session.id]
-        for pref in (validated or {}).get("inferred_preferences") or []:
+        validated_patch = validated or {}
+        intent = str(validated_patch.get("intent") or "").upper()
+        safe_to_retrieve = bool(validated_patch.get("safe_to_retrieve", True))
+        if (not safe_to_retrieve) or intent in {
+            "OUT_OF_SCOPE",
+            "GENERAL_CHAT",
+            "OTHER",
+        }:
+            return self._refuse_off_domain(session)
+
+        # ADR-012 NEGATIVE_CONSTRAINT_GATE: LLM cannot reintroduce locked negatives
+        from taksitlio.recommendation_safety import (
+            ConstraintSource,
+            NegativeConstraintLock,
+        )
+
+        lock = NegativeConstraintLock()
+        for neg in parse.negative_categories:
+            lock.lock(neg.display_name, source=ConstraintSource.USER_EXPLICIT)
+        state = self.states.get(session.id)
+        if state is not None:
+            for excluded in getattr(state, "excluded_categories", ()) or ():
+                name = (
+                    excluded.display_name
+                    if hasattr(excluded, "display_name")
+                    else str(excluded)
+                )
+                lock.lock(str(name), source=ConstraintSource.USER_EXPLICIT)
+
+        proposed = [
+            str(pref.get("concept") or "")
+            for pref in validated_patch.get("inferred_preferences") or []
+            if pref.get("concept")
+        ]
+        blocked = set(
+            lock.reject_llm_reintroduction(
+                proposed_positive=proposed,
+                proposed_source=ConstraintSource.LLM_INFERENCE,
+            )
+        )
+        for pref in validated_patch.get("inferred_preferences") or []:
             concept = pref.get("concept")
-            if concept and concept not in parse.preferences:
+            if not concept:
+                continue
+            if str(concept).casefold() in blocked:
+                continue
+            if concept not in parse.preferences:
                 parse.preferences.append(str(concept))
         return self._fast_retrieve(session, parse)
+
+    def _refuse_off_domain(self, session: SearchSession) -> dict[str, Any]:
+        """Stop retrieval and return a fixed refuse payload (no invented facts)."""
+
+        if can_transition(session.status, SearchSessionStatus.FAILED):
+            self.repo.set_status(session.id, SearchSessionStatus.FAILED)
+        elif can_transition(session.status, SearchSessionStatus.COMPLETED):
+            self.repo.set_status(session.id, SearchSessionStatus.COMPLETED)
+        self._emit(
+            session,
+            SearchProgressEventType.SEARCH_FAILED,
+            payload={"reason": "OUT_OF_SCOPE"},
+        )
+        empty = {"products": [], "label": ""}
+        return {
+            "search_session_id": session.id,
+            "query_version": session.active_query_version,
+            "status": session.status.value,
+            "route": "OUT_OF_SCOPE",
+            "reply": OUT_OF_SCOPE_ASSIST_MESSAGE,
+            "chips": [],
+            "results": empty,
+            "partial_results": empty,
+            "events_url": f"/v1/search-sessions/{session.id}/events",
+        }
 
     def complete_with_current_results(self, session_id: str) -> dict[str, Any]:
         session = self.repo.get(session_id)

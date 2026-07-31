@@ -258,6 +258,7 @@ def build_in_memory_container(
         InMemoryPrecedencePolicyLoader,
     )
     from taksitlio.recommendation_safety import QualityCircuitBreaker
+    from taksitlio.recommendation_safety.sponsored import InMemorySponsoredPlacementStore
     import os
     import tempfile
 
@@ -289,6 +290,9 @@ def build_in_memory_container(
     finance_option_index = InMemoryFinanceOptionIndex()
     institution_label_loader = InMemoryInstitutionLabelLoader()
     institution_labels = InstitutionLabelResolver(labels={})
+    circuit_breaker_store = InMemoryCircuitBreakerStore()
+    quality_circuit_breaker = QualityCircuitBreaker()
+    sponsored_store = InMemorySponsoredPlacementStore()
     pipeline = ChatPipeline(
         understanding=understanding,  # type: ignore[arg-type]
         category_matcher=matcher,
@@ -304,6 +308,8 @@ def build_in_memory_container(
             institution_labels=institution_labels,
             alias_cache=product_query_caches.alias,
             alias_ttl_seconds=product_query_caches.alias_ttl_seconds,
+            circuit_breaker_store=circuit_breaker_store,
+            sponsored_store=sponsored_store,
         ),
         search_orchestrator=search_orchestrator,
     )
@@ -334,9 +340,10 @@ def build_in_memory_container(
             "logo_catalog": logo_catalog,
             "logo_resolver": logo_catalog.resolver,
             "precedence_policy_loader": InMemoryPrecedencePolicyLoader(),
-            "circuit_breaker_store": InMemoryCircuitBreakerStore(),
+            "circuit_breaker_store": circuit_breaker_store,
             "feedback_store": InMemoryFeedbackStore(),
-            "quality_circuit_breaker": QualityCircuitBreaker(),
+            "quality_circuit_breaker": quality_circuit_breaker,
+            "sponsored_store": sponsored_store,
         },
     )
 
@@ -421,6 +428,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
     )
     from taksitlio.answer_integrity.store import AnswerIntegrityStore
     from taksitlio.recommendation_safety import QualityCircuitBreaker
+    from taksitlio.recommendation_safety.sponsored import PostgresSponsoredPlacementStore
 
     search_orchestrator = build_demo_orchestrator()
     search_pg = PostgresSearchSessionRepository(pool)
@@ -461,6 +469,11 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         await precedence_loader.load_async()
     except Exception:  # noqa: BLE001
         pass
+    sponsored_store = PostgresSponsoredPlacementStore(pool=pool)
+    try:
+        await sponsored_store.hydrate()
+    except Exception:  # noqa: BLE001
+        pass
     llm_worker = build_default_worker(
         search_orchestrator, health_registry=health, http_client=client
     )
@@ -479,6 +492,8 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             institution_labels=institution_labels,
             alias_cache=product_query_caches.alias,
             alias_ttl_seconds=product_query_caches.alias_ttl_seconds,
+            circuit_breaker_store=circuit_breaker_store,
+            sponsored_store=sponsored_store,
         ),
         search_orchestrator=search_orchestrator,
     )
@@ -514,5 +529,6 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "feedback_store": PostgresFeedbackStore(pool=pool),
             "quality_circuit_breaker": quality_circuit_breaker,
             "answer_integrity_store": AnswerIntegrityStore(pool),
+            "sponsored_store": sponsored_store,
         },
     )

@@ -120,9 +120,100 @@ _OUT_OF_SCOPE_CUES = (
     "otel mi",
 )
 
+# Chitchat / open-world asks — never enter product assist or LLM answer prose.
+_GENERAL_CHAT_CUES = (
+    "merhaba",
+    "selam",
+    "nasılsın",
+    "nasilsin",
+    "iyi misin",
+    "günaydın",
+    "gunaydin",
+    "iyi akşamlar",
+    "iyi aksamlar",
+    "ne haber",
+    "naber",
+    "sohbet edelim",
+    "konuşalım",
+    "konusalim",
+    "genel sohbet",
+    "kimsin",
+    "sen kimsin",
+    "hava durumu",
+    "hava nasıl",
+    "hava nasil",
+    "fıkra",
+    "fikra",
+    "şaka yap",
+    "saka yap",
+    "şiir yaz",
+    "siir yaz",
+    "hikaye anlat",
+    "ödev yap",
+    "odev yap",
+    "ödevimi",
+    "odevimi",
+    "çeviri yap",
+    "ceviri yap",
+    "ingilizceye çevir",
+    "ingilizceye cevir",
+    "şarkı sözü",
+    "sarki sozu",
+    "futbol maç",
+    "futbol mac",
+    "siyaset",
+    "borsa tavsiye",
+    "kripto",
+    "bitcoin",
+    "chatgpt",
+    "chat gpt",
+)
+
+# Lexical product-domain anchors when verbs are missing ("iphone 15").
+_PRODUCT_DOMAIN_NOUNS = (
+    "telefon",
+    "laptop",
+    "bilgisayar",
+    "notebook",
+    "tablet",
+    "televizyon",
+    " tv",
+    "buzdolab",
+    "çamaşır",
+    "camasir",
+    "bulaşık",
+    "bulasik",
+    "klima",
+    "kulaklık",
+    "kulaklik",
+    "airpods",
+    "iphone",
+    "samsung",
+    "macbook",
+    "ipad",
+    "konsol",
+    "playstation",
+    "xbox",
+    "ürün",
+    "urun",
+    "taksit",
+    "kampanya",
+    "fiyat",
+    "bütçe",
+    "butce",
+    "aylık",
+    "aylik",
+)
+
 _CHOICE_RE = re.compile(
     r"\b\w+\s+m[ıiuü]\b.+\bm[ıiuü]\b|\byoksa\b",
     re.IGNORECASE,
+)
+
+OUT_OF_SCOPE_ASSIST_MESSAGE = (
+    "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve "
+    "taksit ihtiyaçlarınız için buradayım; sistemde olmayan bilgi veremem ve "
+    "genel sohbet yapmam."
 )
 
 
@@ -144,6 +235,13 @@ def classify_query_intent(text: str) -> QueryIntentKind:
     if _has_any(folded, _OUT_OF_SCOPE_CUES):
         return QueryIntentKind.OUT_OF_SCOPE
 
+    active = _has_any(folded, _ACTIVE_PURCHASE_CUES)
+    weak = _has_any(folded, _WEAK_PURCHASE_CUES)
+
+    # General chat without an explicit shopping ask → out of scope.
+    if _has_any(folded, _GENERAL_CHAT_CUES) and not active and not weak:
+        return QueryIntentKind.OUT_OF_SCOPE
+
     if _CHOICE_RE.search(folded) or (
         folded.count(" mi ") + folded.count(" mı ") + folded.count(" mu ")
         + folded.count(" mü ")
@@ -151,8 +249,6 @@ def classify_query_intent(text: str) -> QueryIntentKind:
     ):
         return QueryIntentKind.CHOICE
 
-    active = _has_any(folded, _ACTIVE_PURCHASE_CUES)
-    weak = _has_any(folded, _WEAK_PURCHASE_CUES)
     non_purchase = _has_any(folded, _NON_PURCHASE_CUES)
     refusal = _has_any(folded, _PURCHASE_REFUSAL_CUES)
 
@@ -168,6 +264,20 @@ def classify_query_intent(text: str) -> QueryIntentKind:
         return QueryIntentKind.PRODUCT_PURCHASE
 
     return QueryIntentKind.UNKNOWN
+
+
+def is_off_domain_for_assist(text: str) -> bool:
+    """True when the assistant must refuse (no catalog facts, no general chat)."""
+
+    kind = classify_query_intent(text)
+    if kind is QueryIntentKind.OUT_OF_SCOPE:
+        return True
+    if kind is QueryIntentKind.NON_PURCHASE:
+        return True
+    if kind in {QueryIntentKind.PRODUCT_PURCHASE, QueryIntentKind.CHOICE}:
+        return False
+    # UNKNOWN: allow only clear product-domain nouns (e.g. bare model names).
+    return not _has_any(_fold(text), _PRODUCT_DOMAIN_NOUNS)
 
 
 def is_choice_question(text: str) -> bool:
@@ -186,8 +296,10 @@ def blocks_auto_select(text: str) -> bool:
 
 
 __all__ = [
+    "OUT_OF_SCOPE_ASSIST_MESSAGE",
     "QueryIntentKind",
+    "blocks_auto_select",
     "classify_query_intent",
     "is_choice_question",
-    "blocks_auto_select",
+    "is_off_domain_for_assist",
 ]

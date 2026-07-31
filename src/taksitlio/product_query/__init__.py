@@ -22,7 +22,7 @@ from taksitlio.product_query.ranking import (
     RankedProduct,
     RankingMode,
     RankingWeights,
-    rank_products,
+    rank_products_with_sponsored_isolation,
 )
 
 ADR_SCOPE = "ADR-010"
@@ -99,10 +99,12 @@ def run_product_query(
         if offer is not None
         else ()
     )
-    ranked = rank_products(
+    ranked = rank_products_with_sponsored_isolation(
         products,
         mode=request.ranking_mode,
         weights=ranking_weights,
+        sponsored_product_ids=getattr(request, "sponsored_product_ids", ()) or (),
+        sponsored_weights=getattr(request, "sponsored_weights", None) or {},
     )
     return ProductQueryResult(
         merchant_resolution=merchant_res,

@@ -8,16 +8,12 @@
     function parseResponse(r) {
       return r.json().then(function (body) {
         if (!r.ok) {
+          // Keep raw detail only for console/debug; UI must use TaksitlioPublic.errorMessage.
           var detail = body && (body.detail || body.message || body.error);
-          var err = new Error(
-            typeof detail === "string"
-              ? detail
-              : detail
-                ? JSON.stringify(detail)
-                : "http_" + r.status
-          );
+          var err = new Error("http_" + r.status);
           err.status = r.status;
           err.body = body;
+          err.detail = detail;
           throw err;
         }
         return body;
@@ -81,13 +77,33 @@
           /* ignore malformed */
         }
       };
-      // Named SSE events (event: TYPE) also arrive as MessageEvent on that type
+      // Backend sends `event: <TYPE>`; those do not hit onmessage.
       [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "FAST_PARSE_COMPLETED",
+        "ENTITY_RESOLUTION_STARTED",
+        "ENTITY_RESOLUTION_COMPLETED",
+        "GAP_ANALYSIS_COMPLETED",
+        "CLARIFICATION_REQUIRED",
+        "CLARIFICATION_ANSWERED",
+        "LLM_JOB_QUEUED",
+        "LLM_JOB_STARTED",
+        "PRODUCT_POOL_SEARCH_STARTED",
+        "PRODUCT_POOL_PARTIAL_READY",
+        "MERCHANT_CANDIDATES_RESOLVED",
+        "BRAND_CANDIDATES_RESOLVED",
+        "FINANCE_SEARCH_STARTED",
+        "FINANCIAL_INSTITUTION_CANDIDATES_FOUND",
+        "PAYMENT_PLAN_CALCULATION_STARTED",
         "PARTIAL_RESULTS_READY",
+        "LLM_JOB_COMPLETED",
+        "LLM_JOB_TIMED_OUT",
+        "RANKING_STARTED",
         "FINAL_RESULTS_READY",
         "SEARCH_COMPLETED",
         "SEARCH_COMPLETED_DEGRADED",
-        "LLM_JOB_COMPLETED",
+        "SEARCH_FAILED",
         "SEARCH_CANCELLED",
       ].forEach(function (type) {
         es.addEventListener(type, function (ev) {

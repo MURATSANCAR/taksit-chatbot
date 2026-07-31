@@ -37,7 +37,7 @@ from taksitlio.product_query.ranking import (
     RankableProduct,
     RankingMode,
     RankingWeights,
-    rank_products,
+    rank_products_with_sponsored_isolation,
 )
 
 
@@ -70,6 +70,11 @@ class SearchProductCandidate:
     campaign_active: bool = True
     card_finance: Optional[Any] = None  # ProductCardFinanceSummary | None
     last_price_verified_at: Optional[Any] = None  # datetime | None
+    price_snapshot_id: Optional[str] = None
+    stock_snapshot_id: Optional[str] = None
+    offer_id: Optional[str] = None
+    is_sponsored: bool = False
+    sponsor_weight: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -83,6 +88,10 @@ class ProductSearchRequest:
     phase: str = "FIRST_CARDS"  # SEARCHING | FIRST_CARDS | FINANCE_ENRICHED
     cache_version: str = "catalog-v0"
     locale: str = "tr-TR"
+    sponsored_product_ids: tuple[str, ...] = ()
+    sponsored_weights: Mapping[str, float] = field(default_factory=dict)
+    # Optional: merchant_ids whose price results are disabled by circuit breaker
+    price_disabled_merchant_ids: frozenset[str] = field(default_factory=frozenset)
 
 
 @dataclass(frozen=True)
@@ -128,10 +137,14 @@ def _filter_products(
     *,
     merchant_id: Optional[str],
     max_price: Optional[float],
+    price_disabled_merchant_ids: frozenset[str] = frozenset(),
 ) -> list[SearchProductCandidate]:
     out: list[SearchProductCandidate] = []
     for p in products:
         if merchant_id and p.merchant_id != merchant_id:
+            continue
+        # Circuit breaker: merchant price results disabled → exclude from finance/price path
+        if p.merchant_id in price_disabled_merchant_ids:
             continue
         if max_price is not None and p.price > max_price:
             continue
@@ -195,7 +208,10 @@ async def search_products(
             clarifications.append(f"“{last.candidates[0].display_name}”ı mı kastettiniz?")
 
     filtered = _filter_products(
-        products, merchant_id=merchant_id, max_price=request.max_price
+        products,
+        merchant_id=merchant_id,
+        max_price=request.max_price,
+        price_disabled_merchant_ids=request.price_disabled_merchant_ids,
     )
 
     refresh_jobs: list[SchedulerJobSpec] = []
@@ -246,8 +262,23 @@ async def search_products(
             )
         )
 
-    ranked = rank_products(
-        rankables, mode=request.ranking_mode, weights=ranking_weights
+    sponsored_ids = tuple(
+        dict.fromkeys(
+            list(request.sponsored_product_ids)
+            + [p.product_id for p in filtered if p.is_sponsored]
+        )
+    )
+    sponsored_weights = dict(request.sponsored_weights)
+    for p in filtered:
+        if p.is_sponsored and p.product_id not in sponsored_weights:
+            sponsored_weights[p.product_id] = float(p.sponsor_weight)
+
+    ranked = rank_products_with_sponsored_isolation(
+        rankables,
+        mode=request.ranking_mode,
+        weights=ranking_weights,
+        sponsored_product_ids=sponsored_ids,
+        sponsored_weights=sponsored_weights,
     )
     ranked_ids = {r.product_id for r in ranked if not r.disqualified}
     card_sources = tuple(
@@ -267,6 +298,12 @@ async def search_products(
             price_checked_at=p.price_checked_at,
             campaign_checked_at=p.campaign_checked_at,
             best_finance=p.card_finance,
+            price_snapshot_id=p.price_snapshot_id or (
+                f"offer:{p.offer_id}" if p.offer_id else None
+            ),
+            stock_snapshot_id=p.stock_snapshot_id or (
+                f"offer:{p.offer_id}:stock" if p.offer_id else None
+            ),
         )
         for p in filtered
         if p.product_id in ranked_ids

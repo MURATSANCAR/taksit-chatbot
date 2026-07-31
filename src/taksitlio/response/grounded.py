@@ -32,7 +32,9 @@ class ResponsePolicy:
     allow_fabricated_prices: bool = False
     membership_cta_enabled: bool = True
     out_of_scope_message: str = (
-        "Bu konuda yardımcı olamıyorum. Taksitlio ürün ve kampanya ihtiyaçlarınız için buradayım."
+        "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve "
+        "taksit ihtiyaçlarınız için buradayım; sistemde olmayan bilgi veremem ve "
+        "genel sohbet yapmam."
     )
     clarification_template: str = (
         "Daha iyi önerebilmem için netleştirmem gerekiyor: {question}"

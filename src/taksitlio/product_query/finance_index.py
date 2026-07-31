@@ -83,6 +83,15 @@ def enrich_candidate_with_finance(
         display_label=best.display_label or "Tahmini aylık ödeme",
         fees_total=float(best.fees_total or 0),
         institution_logo_cdn_url=labels.logo_cdn_url_for(best.institution_id),
+        payment_calculation_id=(
+            f"pay:{best.rate_snapshot_id or best.campaign_id or best.product_offer_id}"
+            f":{best.term_months}"
+        ),
+        rate_snapshot_id=best.rate_snapshot_id,
+        campaign_version_id=best.campaign_id,
+        merchant_finance_agreement_id=(
+            f"agr:{best.merchant_id}:{best.institution_id}"
+        ),
     )
     return replace(
         candidate,

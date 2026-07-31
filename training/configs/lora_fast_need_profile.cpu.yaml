@@ -1,0 +1,34 @@
+# CPU-friendly NeedProfile LoRA config (nanobase / no GPU).
+# Smoke default: small instruct model. For 9B set base_model_ref to HF id
+# (NOT the llama.cpp GGUF under models/taksitlio-fast-c).
+# No QUALITY_READY / PROVISIONAL_ACCEPT claim from this file alone.
+
+base_model_ref: "Qwen/Qwen2.5-0.5B-Instruct"
+output_dir: "training/exports/lora-out-cpu-smoke"
+train_jsonl: "training/exports/need_profile_sft.jsonl"
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.05
+  target_modules: ["q_proj", "v_proj"]
+
+train:
+  epochs: 1
+  learning_rate: 2.0e-4
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 4
+  max_seq_len: 1024
+  bf16: false
+  logging_steps: 5
+  save_steps: 50
+  max_steps: 30
+
+runtime:
+  require_gpu: false
+  framework: "peft+transformers"
+
+notes:
+  - "CPU smoke validates the train pipeline"
+  - "Swap base_model_ref to Qwen3.5-9B HF weights for production-intent LoRA"
+  - "GGUF (poc-fast-nine-b) is inference-only via llama.cpp — not peft-trainable"

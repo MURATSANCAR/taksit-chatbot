@@ -504,6 +504,89 @@
     }
     .cta-btn:active { transform: scale(0.985); }
 
+    .constraint-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 4px;
+    }
+    .constraint-chips .chip {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+    .constraint-chips .chip:hover {
+      border-color: rgba(151, 71, 255, 0.35);
+      background: var(--purple-soft);
+    }
+    .search-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 4px;
+    }
+    .search-controls button,
+    .search-feedback .feedback-btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--purple-soft);
+      color: var(--purple-deep);
+    }
+    .search-controls button[data-act="cancel"] {
+      background: rgba(30, 31, 34, 0.06);
+      color: var(--muted);
+    }
+    .search-feedback {
+      margin: 6px 0 10px;
+    }
+    .search-feedback .feedback-thanks {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .partial-products {
+      margin: 8px 0;
+    }
+    .partial-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .partial-carousel {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .partial-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 8px;
+    }
+    .partial-card h4 {
+      margin: 8px 0 2px;
+      font-size: 12.5px;
+    }
+    .partial-card p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
     .composer {
       padding: 10px 12px 16px;
       background: linear-gradient(180deg, transparent, rgba(245,243,248,0.96) 28%);
@@ -643,6 +726,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="js/public-facing.js"></script>
   <script src="js/chat-cards.js"></script>
   <script src="js/search-session/client.js"></script>
   <script src="js/search-session/ui.js"></script>
@@ -675,11 +759,23 @@
           thread: els.thread,
           botBubble: (html) => botBubble(html),
           clearTyping: () => clearTyping(),
+          onError: (msg) => {
+            const safe =
+              window.TaksitlioPublic && window.TaksitlioPublic.sanitize
+                ? window.TaksitlioPublic.sanitize(msg)
+                : msg;
+            toast(safe);
+            botBubble(safe);
+          },
         })
       : null;
 
     function toast(msg) {
-      els.toast.textContent = msg;
+      const safe =
+        window.TaksitlioPublic && window.TaksitlioPublic.sanitize
+          ? window.TaksitlioPublic.sanitize(msg)
+          : msg;
+      els.toast.textContent = safe;
       els.toast.classList.add("show");
       clearTimeout(toast._t);
       toast._t = setTimeout(() => els.toast.classList.remove("show"), 2200);
@@ -783,11 +879,15 @@
     }
 
     function botBubble(html) {
+      const safe =
+        window.TaksitlioPublic && window.TaksitlioPublic.sanitize
+          ? window.TaksitlioPublic.sanitize(html)
+          : html;
       const row = document.createElement("div");
       row.className = "row bot";
       row.innerHTML = `
         <div class="avatar"><img src="assets/favicon.png" alt="" /></div>
-        <div class="bubble bot"><span class="who">Taksitlio</span>${html}</div>`;
+        <div class="bubble bot"><span class="who">Taksitlio</span>${safe}</div>`;
       els.thread.appendChild(row);
       scrollEnd();
       return row;
@@ -854,11 +954,16 @@
           await searchUi.runSearch(need.raw);
         } else {
           clearTyping();
-          botBubble("Arama servisi şu an kullanılamıyor.");
+          botBubble("NanobaseAI arama servisi şu an kullanılamıyor.");
         }
       } catch (err) {
         clearTyping();
-        botBubble("İsteğini işlerken bir sorun oluştu. Lütfen tekrar dene.");
+        const safe =
+          window.TaksitlioPublic && window.TaksitlioPublic.errorMessage
+            ? window.TaksitlioPublic.errorMessage(err)
+            : "NanobaseAI isteğini işlerken bir sorun oluştu. Lütfen tekrar dene.";
+        toast(safe);
+        botBubble(safe);
         console.error(err);
       }
 

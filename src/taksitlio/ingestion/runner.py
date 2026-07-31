@@ -164,6 +164,73 @@ async def run_ingestion_dry(
                 )
             )
 
+    diagnostics: dict[str, Any] = {"limit": limit, "dry_run": True}
+    # ADR-012 SCHEMA_DRIFT_GATE + quality circuit breaker (source-scoped)
+    from taksitlio.recommendation_safety import (
+        BreakerAction,
+        BreakerScope,
+        DriftSignals,
+        QualityCircuitBreaker,
+        decide_breaker,
+        evaluate_schema_drift,
+    )
+
+    failed_rate = (failed / discovered) if discovered else 0.0
+    prices = [
+        float(item.offers[0].current_price)
+        for item in items
+        if item.offers and item.offers[0].current_price is not None
+    ]
+    # Without prior baseline, only signal structural anomalies from this run.
+    all_oos = bool(items) and all(
+        (not item.stock)
+        or str(getattr(item.stock[0], "stock_status", "")).upper()
+        in {"OUT_OF_STOCK", "UNAVAILABLE", "UNKNOWN"}
+        for item in items
+        if item.error is None
+    )
+    image_zero = bool(items) and all(not item.media for item in items if item.error is None)
+    currencies = {
+        str(item.offers[0].currency)
+        for item in items
+        if item.offers and getattr(item.offers[0], "currency", None)
+    }
+    drift = evaluate_schema_drift(
+        DriftSignals(
+            all_out_of_stock=all_oos and succeeded > 0,
+            image_count_zero=image_zero and succeeded > 0,
+            currency_changed=len(currencies) > 1,
+            product_count_drop_ratio=None,
+            price_drop_ratio=None,
+        )
+    )
+    breaker_action = decide_breaker(
+        scope=BreakerScope.MERCHANT_PRICE,
+        broken_rate=failed_rate,
+        mismatch_count=1 if drift.action.value != "OK" else 0,
+    )
+    cb = QualityCircuitBreaker(
+        broken_price_rate=failed_rate,
+        campaign_mismatch_count=1 if drift.action.value != "OK" else 0,
+    )
+    actions = cb.evaluate()
+    if breaker_action is not BreakerAction.NONE and breaker_action not in actions:
+        actions = tuple(dict.fromkeys([*actions, breaker_action]))
+    diagnostics["schema_drift"] = {
+        "action": drift.action.value,
+        "reasons": list(drift.reasons),
+    }
+    diagnostics["circuit_breaker"] = {
+        "merchant_id": binding.merchant_id,
+        "source_code": binding.source_code,
+        "broken_price_rate": failed_rate,
+        "actions": [a.value for a in actions],
+        "price_disabled": BreakerAction.DISABLE_PRICE_RESULTS in actions
+        or cb.is_price_disabled(),
+    }
+    if prices:
+        diagnostics["price_sample_count"] = len(prices)
+
     return IngestionRunResult(
         source_code=binding.source_code,
         adapter_code=binding.adapter_code,
@@ -174,7 +241,7 @@ async def run_ingestion_dry(
         quarantined=quarantined,
         chatbot_visible=visible,
         items=tuple(items),
-        diagnostics={"limit": limit, "dry_run": True},
+        diagnostics=diagnostics,
     )
 
 

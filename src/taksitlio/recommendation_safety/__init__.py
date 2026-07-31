@@ -69,6 +69,11 @@ from taksitlio.recommendation_safety.schema_drift import (
     DriftSignals,
     evaluate_schema_drift,
 )
+from taksitlio.recommendation_safety.sponsored import (
+    InMemorySponsoredPlacementStore,
+    PostgresSponsoredPlacementStore,
+    SponsoredPlacementRecord,
+)
 
 
 def evaluate_recommendation_integrity(
@@ -96,6 +101,7 @@ __all__ = [
     "DriftSignals",
     "ErrorClass",
     "FeedbackResultSnapshot",
+    "InMemorySponsoredPlacementStore",
     "IntegrityDecision",
     "IntegritySignals",
     "LABEL_BEST",
@@ -107,6 +113,7 @@ __all__ = [
     "NEAREST_LABEL",
     "NegativeConstraintLock",
     "PACKAGE_STATUS",
+    "PostgresSponsoredPlacementStore",
     "QualityCircuitBreaker",
     "REASON_CODE_TEMPLATES",
     "RecommendationCandidate",
@@ -114,6 +121,7 @@ __all__ = [
     "RecommendationReasonCode",
     "ShadowComparison",
     "SponsoredPlacement",
+    "SponsoredPlacementRecord",
     "TripleWinnerSet",
     "VariantIdentity",
     "apply_sponsored_isolation",

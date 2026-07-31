@@ -86,6 +86,9 @@ async def product_to_search_candidate(
         finance_active=False,
         rate_fresh=False,
         campaign_active=True,
+        offer_id=str(offer.id),
+        price_snapshot_id=f"offer:{offer.id}",
+        stock_snapshot_id=f"offer:{offer.id}:stock",
     )
     if finance_index is not None:
         rows = await finance_index.list_for_product(str(product.id))

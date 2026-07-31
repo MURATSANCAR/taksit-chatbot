@@ -327,7 +327,7 @@ class DeterministicFastExtractor:
         seen_positive: set[str] = set()
         seen_negative: set[str] = set()
 
-        # Detect OUT_OF_SCOPE cues (rare; catalog will decide anyway).
+        # Detect OUT_OF_SCOPE cues (travel + clear off-domain).
         oos_cues = (
             "uçak bileti",
             "otel rezervasyon",
@@ -336,6 +336,9 @@ class DeterministicFastExtractor:
             "kapadokya",
             "tur paketi",
             "turu paketi",
+            "hava durumu",
+            "sohbet edelim",
+            "fıkra",
         )
         if any(cue in normalized_full for cue in oos_cues):
             intent = "OUT_OF_SCOPE"

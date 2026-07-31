@@ -85,6 +85,13 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
                 code = path.stem.replace("src-", "", 1)
                 meta = (code, code)
             code, name = meta
+            # Skip empty product feeds (blocked/unparseable sites)
+            raw = json.loads(path.read_text(encoding="utf-8"))
+            if not raw.get("products"):
+                reports.append(
+                    {"file": path.name, "skipped": "empty_products", "merchant_code": code}
+                )
+                continue
             merchant_id = await ensure_merchant(conn, code=code, name=name)
             binding = SourceBinding(
                 source_code=path.stem,
@@ -129,35 +136,54 @@ async def ingest_campaigns(pool) -> list[dict[str, Any]]:
             adapter = GenericCampaignFeedAdapter(
                 feed_path=path, default_institution_code=icode
             )
+            # Raw feed rows for summary/image/merchant_codes (adapter keeps them on record source)
+            raw_feed = json.loads(path.read_text(encoding="utf-8"))
+            raw_by_id = {
+                str(row.get("id")): row
+                for row in (raw_feed.get("campaigns") or [])
+                if isinstance(row, dict) and row.get("id")
+            }
             result = await run_campaign_feed_dry(adapter)
             applied = 0
             for camp in result.campaigns:
+                raw = raw_by_id.get(camp.campaign_code, {})
+                summary = raw.get("summary")
+                metadata = {
+                    k: raw.get(k)
+                    for k in ("image_url", "image_local_path", "source_url", "terms")
+                    if raw.get(k) is not None
+                }
                 await conn.execute(
                     """
                     INSERT INTO finance_campaigns (
                       institution_id, campaign_code, display_name, summary,
                       campaign_type, status, verification_status,
                       minimum_purchase_amount, maximum_purchase_amount,
-                      source_reference
+                      source_reference, metadata
                     ) VALUES (
-                      $1, $2, $3, $4, $5, 'DRAFT', 'UNVERIFIED', $6, $7, $8
+                      $1, $2, $3, $4, $5, 'DRAFT', 'UNVERIFIED', $6, $7, $8,
+                      $9::jsonb
                     )
                     ON CONFLICT (campaign_code) DO UPDATE SET
                       display_name = EXCLUDED.display_name,
                       summary = EXCLUDED.summary,
+                      campaign_type = EXCLUDED.campaign_type,
+                      minimum_purchase_amount = EXCLUDED.minimum_purchase_amount,
+                      maximum_purchase_amount = EXCLUDED.maximum_purchase_amount,
                       source_reference = EXCLUDED.source_reference,
+                      metadata = EXCLUDED.metadata,
                       updated_at = NOW()
                     """,
                     institution_id,
                     camp.campaign_code,
                     camp.display_name,
-                    None,
+                    summary,
                     camp.campaign_type.value,
                     camp.minimum_purchase_amount,
                     camp.maximum_purchase_amount,
-                    camp.source_reference,
+                    camp.source_reference or raw.get("source_url"),
+                    json.dumps(metadata, ensure_ascii=False),
                 )
-                # store eligible terms if present
                 crow = await conn.fetchrow(
                     "SELECT id FROM finance_campaigns WHERE campaign_code=$1",
                     camp.campaign_code,
@@ -173,6 +199,30 @@ async def ingest_campaigns(pool) -> list[dict[str, Any]]:
                         cid,
                         months,
                     )
+                for mcode in camp.eligible_merchant_codes:
+                    mid = await ensure_merchant(
+                        conn, code=mcode, name=mcode.removeprefix("m-").title()
+                    )
+                    await conn.execute(
+                        """
+                        INSERT INTO campaign_merchants (campaign_id, merchant_id)
+                        VALUES ($1, $2)
+                        ON CONFLICT DO NOTHING
+                        """,
+                        cid,
+                        mid,
+                    )
+                await conn.execute(
+                    """
+                    INSERT INTO campaign_source_snapshots (
+                      campaign_id, content_hash, payload, source_reference
+                    ) VALUES ($1, $2, $3::jsonb, $4)
+                    """,
+                    cid,
+                    raw.get("id"),
+                    json.dumps(raw, ensure_ascii=False),
+                    raw.get("source_url") or camp.source_reference,
+                )
                 applied += 1
             reports.append(
                 {

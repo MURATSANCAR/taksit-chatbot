@@ -59,8 +59,8 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
             if not isinstance(it, dict):
                 continue
             t = it.get("@type")
-            types = t if isinstance(t, list) else [t]
-            if "Product" not in {str(x) for x in types if x}:
+            types = [str(x) for x in (t if isinstance(t, list) else [t]) if x]
+            if not any(x.endswith("Product") or x == "Product" for x in types):
                 continue
             offers = it.get("offers") or {}
             if isinstance(offers, list):
@@ -93,7 +93,7 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                     it.get("sku")
                     or it.get("productID")
                     or it.get("mpn")
-                    or url.rstrip("/").rsplit("/", 1)[-1]
+                    or url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
                 ),
                 "name": str(name).strip(),
                 "sku": it.get("sku"),
@@ -111,6 +111,32 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                 "attributes": attrs,
                 "category": it.get("category"),
             }
+    # OpenGraph + embedded price fallback (no invent)
+    om = re.search(
+        r'property=["\']og:title["\'][^>]*content=["\']([^"\']+)', html, re.I
+    ) or re.search(
+        r'content=["\']([^"\']+)["\'][^>]*property=["\']og:title["\']', html, re.I
+    )
+    pm = re.search(r'"price"\s*:\s*"?(\d+(?:[.,]\d+)?)"?', html)
+    img_m = re.search(
+        r'property=["\']og:image["\'][^>]*content=["\']([^"\']+)', html, re.I
+    )
+    if om and pm:
+        price = float(pm.group(1).replace(",", "."))
+        name = unescape(om.group(1)).strip()
+        # strip site suffix noise
+        name = re.sub(r"\s*[|·].*$", "", name).strip()
+        pid = url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
+        return {
+            "id": pid,
+            "name": name,
+            "url": url,
+            "price": price,
+            "currency": "TRY",
+            "stock_status": "UNKNOWN",
+            "image_url": img_m.group(1) if img_m else None,
+            "attributes": {},
+        }
     return None
 
 
@@ -179,6 +205,13 @@ def parse_vatan_listing(html: str) -> list[dict[str, Any]]:
     return list({p["id"]: p for p in products}.values())
 
 
+def _apply_limit(urls: list[str], limit: int) -> list[str]:
+    """limit<=0 means no cap."""
+    if limit and limit > 0:
+        return urls[:limit]
+    return urls
+
+
 def fetch_listing_then_jsonld(
     client: httpx.Client,
     *,
@@ -201,19 +234,21 @@ def fetch_listing_then_jsonld(
             if u not in product_urls:
                 product_urls.append(u)
         time.sleep(delay)
-    product_urls = product_urls[:limit]
+    product_urls = _apply_limit(product_urls, limit)
     out: list[dict[str, Any]] = []
-    for url in product_urls:
+    for i, url in enumerate(product_urls, 1):
         r = client.get(url)
         if r.status_code == 200:
             p = parse_jsonld_product(r.text, url)
             if p:
                 out.append(p)
+        if i % 25 == 0:
+            print(f"    ... {i}/{len(product_urls)} fetched, {len(out)} ok")
         time.sleep(delay)
     return list({p["id"]: p for p in out}.values())
 
 
-def fetch_vatan(client: httpx.Client, delay: float) -> list[dict[str, Any]]:
+def fetch_vatan(client: httpx.Client, delay: float, limit: int = 0) -> list[dict[str, Any]]:
     cats = [
         "https://www.vatanbilgisayar.com/notebook/",
         "https://www.vatanbilgisayar.com/cep-telefonu-modelleri/",
@@ -221,48 +256,110 @@ def fetch_vatan(client: httpx.Client, delay: float) -> list[dict[str, Any]]:
         "https://www.vatanbilgisayar.com/televizyon/",
         "https://www.vatanbilgisayar.com/beyaz-esya/",
         "https://www.vatanbilgisayar.com/oyun-bilgisayari/",
+        "https://www.vatanbilgisayar.com/fotograf-makinesi/",
+        "https://www.vatanbilgisayar.com/yazici/",
+        "https://www.vatanbilgisayar.com/monitor/",
+        "https://www.vatanbilgisayar.com/kulaklik/",
     ]
     out: list[dict[str, Any]] = []
-    for url in cats:
-        r = client.get(url)
-        if r.status_code == 200:
-            out.extend(parse_vatan_listing(r.text))
+    for cat in cats:
+        page = 1
+        while True:
+            url = cat if page == 1 else f"{cat}?page={page}"
+            r = client.get(url)
+            if r.status_code != 200:
+                break
+            batch = parse_vatan_listing(r.text)
+            if not batch:
+                break
+            before = len(out)
+            out.extend(batch)
+            out = list({p["id"]: p for p in out}.values())
+            added = len(out) - before
+            print(f"  vatan {cat.split('.com/')[1]} page={page} +{added} total={len(out)}")
+            if limit > 0 and len(out) >= limit:
+                return out[:limit]
+            if added == 0:
+                break
+            # discover max page from links
+            pages = [int(x) for x in re.findall(r"[?&]page=(\d+)", r.text)]
+            max_page = max(pages) if pages else page
+            page += 1
+            if page > max_page:
+                break
+            time.sleep(delay)
         time.sleep(delay)
     return list({p["id"]: p for p in out}.values())
 
 
-def fetch_mediamarkt(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
-    cats = [
-        "https://www.mediamarkt.com.tr/tr/category/laptop-504926.html",
-        "https://www.mediamarkt.com.tr/tr/category/cep-telefonlari-504171.html",
-        "https://www.mediamarkt.com.tr/tr/category/tabletler-639520.html",
-        "https://www.mediamarkt.com.tr/tr/category/oyuncu-laptop-878043.html",
+def _mediamarkt_product_urls_from_sitemaps(
+    client: httpx.Client, delay: float, limit: int
+) -> list[str]:
+    idx = client.get("https://www.mediamarkt.com.tr/sitemaps/sitemap-index.xml")
+    if idx.status_code != 200:
+        return []
+    maps = [
+        u
+        for u in re.findall(r"<loc>([^<]+)</loc>", idx.text)
+        if "sitemap-productdetailspages-" in u
     ]
-    product_urls: list[str] = []
-    for cat in cats:
-        r = client.get(cat)
-        if r.status_code != 200:
-            time.sleep(delay)
-            continue
-        links = re.findall(
-            r'href="(https://www\.mediamarkt\.com\.tr/tr/product/[^"#?]+)"', r.text
-        )
-        links += [
-            "https://www.mediamarkt.com.tr" + u
-            for u in re.findall(r'href="(/tr/product/[^"#?]+)"', r.text)
-        ]
-        for u in links:
-            if u not in product_urls:
-                product_urls.append(u)
+    urls: list[str] = []
+    for sm in maps:
         time.sleep(delay)
-    product_urls = product_urls[:limit]
+        r = client.get(sm)
+        if r.status_code != 200:
+            continue
+        for u in re.findall(r"<loc>([^<]+)</loc>", r.text):
+            if "/tr/product/" in u and u not in urls:
+                urls.append(u)
+                if limit > 0 and len(urls) >= limit:
+                    return urls
+        print(f"  mediamarkt sitemap {sm.rsplit('/', 1)[-1]} urls={len(urls)}")
+    return urls
+
+
+def fetch_mediamarkt(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
+    product_urls = _mediamarkt_product_urls_from_sitemaps(client, delay, limit)
+    if not product_urls:
+        # fallback: category listing
+        cats = [
+            "https://www.mediamarkt.com.tr/tr/category/laptop-504926.html",
+            "https://www.mediamarkt.com.tr/tr/category/cep-telefonlari-504171.html",
+            "https://www.mediamarkt.com.tr/tr/category/tabletler-639520.html",
+            "https://www.mediamarkt.com.tr/tr/category/oyuncu-laptop-878043.html",
+        ]
+        for cat in cats:
+            r = client.get(cat)
+            if r.status_code != 200:
+                time.sleep(delay)
+                continue
+            links = re.findall(
+                r'href="(https://www\.mediamarkt\.com\.tr/tr/product/[^"#?]+)"', r.text
+            )
+            links += [
+                "https://www.mediamarkt.com.tr" + u
+                for u in re.findall(r'href="(/tr/product/[^"#?]+)"', r.text)
+            ]
+            for u in links:
+                if u not in product_urls:
+                    product_urls.append(u)
+            time.sleep(delay)
+        product_urls = _apply_limit(product_urls, limit)
     out: list[dict[str, Any]] = []
-    for url in product_urls:
+    for i, url in enumerate(product_urls, 1):
         r = client.get(url)
         if r.status_code == 200:
             p = parse_jsonld_product(r.text, url)
             if p:
                 out.append(p)
+        if i % 50 == 0:
+            print(f"    ... {i}/{len(product_urls)} fetched, {len(out)} ok")
+            # checkpoint so long unlimited runs are durable
+            write_feed(
+                "src-m-mediamarkt",
+                list({p["id"]: p for p in out}.values()),
+                "mediamarkt live capture (checkpoint)",
+            )
         time.sleep(delay)
     return list({p["id"]: p for p in out}.values())
 
@@ -319,7 +416,7 @@ def write_feed(source_code: str, products: list[dict[str, Any]], source: str) ->
 
 
 FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
-    "vatan": lambda c, d, lim: fetch_vatan(c, d),
+    "vatan": lambda c, d, lim: fetch_vatan(c, d, lim),
     "mediamarkt": lambda c, d, lim: fetch_mediamarkt(c, d, lim),
     "koctas": lambda c, d, lim: fetch_koctas(c, d, lim),
     "dr": lambda c, d, lim: fetch_dr(c, d, lim),
@@ -334,7 +431,12 @@ def main() -> None:
         help="comma list: vatan,mediamarkt,koctas,dr",
     )
     p.add_argument("--delay", type=float, default=2.0)
-    p.add_argument("--limit", type=int, default=40)
+    p.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="max products per merchant; 0 = no limit",
+    )
     args = p.parse_args()
     wanted = [m.strip() for m in args.merchants.split(",") if m.strip()]
 

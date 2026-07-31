@@ -166,6 +166,15 @@ async def ingestion_dry_run(
         adapter_code=result.adapter_code,
         last_run=result,
     )
+    from taksitlio.answer_integrity.quality_ops import (
+        persist_breaker_from_ingestion_result,
+    )
+
+    breaker_persist = await persist_breaker_from_ingestion_result(
+        result,
+        container.extras.get("circuit_breaker_store"),
+        reason_prefix="ingestion_dry_run",
+    )
     return {
         "source_code": result.source_code,
         "adapter_code": result.adapter_code,
@@ -176,6 +185,7 @@ async def ingestion_dry_run(
         "quarantined": result.quarantined,
         "chatbot_visible": result.chatbot_visible,
         "health": health,
+        "circuit_breaker": breaker_persist,
         "items": [
             {
                 "external_product_id": i.external_product_id,
@@ -392,7 +402,18 @@ async def dry_run_and_persist(
         "persisted_run_id": None,
         "enqueued_job_id": None,
         "catalog": None,
+        "circuit_breaker": None,
     }
+
+    from taksitlio.answer_integrity.quality_ops import (
+        persist_breaker_from_ingestion_result,
+    )
+
+    out["circuit_breaker"] = await persist_breaker_from_ingestion_result(
+        result,
+        container.extras.get("circuit_breaker_store"),
+        reason_prefix="ingestion_dry_run_persist",
+    )
 
     if payload.persist:
         if ingestion_repo is None:

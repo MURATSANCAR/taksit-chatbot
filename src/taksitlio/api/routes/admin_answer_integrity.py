@@ -151,3 +151,95 @@ async def error_class_metrics(
     store: FeedbackStore = Depends(_feedback_store),
 ) -> dict[str, Any]:
     return {"counts": await store.metrics_by_error_class_async()}
+
+
+def _sponsored_store(request: Request) -> Any:
+    from taksitlio.recommendation_safety.sponsored import InMemorySponsoredPlacementStore
+
+    container = request.app.state.container
+    store = container.extras.get("sponsored_store")
+    if store is None:
+        store = InMemorySponsoredPlacementStore()
+        container.extras["sponsored_store"] = store
+    return store
+
+
+class SponsoredIn(BaseModel):
+    product_id: str = Field(..., min_length=1, max_length=128)
+    weight: float = 0.0
+    merchant_id: Optional[str] = None
+    active: bool = True
+    label: str = "sponsored"
+
+
+@router.get("/answer-integrity/sponsored")
+async def list_sponsored(request: Request) -> dict[str, Any]:
+    store = _sponsored_store(request)
+    rows = store.list_active()
+    return {
+        "placements": [
+            {
+                "product_id": p.product_id,
+                "weight": p.weight,
+                "merchant_id": p.merchant_id,
+                "active": p.active,
+                "label": p.label,
+            }
+            for p in rows
+        ]
+    }
+
+
+@router.put("/answer-integrity/sponsored")
+async def upsert_sponsored(body: SponsoredIn, request: Request) -> dict[str, Any]:
+    from taksitlio.recommendation_safety.sponsored import SponsoredPlacementRecord
+
+    store = _sponsored_store(request)
+    record = SponsoredPlacementRecord(
+        product_id=body.product_id,
+        weight=body.weight,
+        merchant_id=body.merchant_id,
+        active=body.active,
+        label=body.label,
+    )
+    upsert_async = getattr(store, "upsert_async", None)
+    if callable(upsert_async):
+        await upsert_async(record)
+    else:
+        store.upsert(record)
+    return {"ok": True, "placement": body.model_dump()}
+
+
+@router.delete("/answer-integrity/sponsored/{product_id}")
+async def deactivate_sponsored(product_id: str, request: Request) -> dict[str, Any]:
+    store = _sponsored_store(request)
+    deactivate_async = getattr(store, "deactivate_async", None)
+    if callable(deactivate_async):
+        await deactivate_async(product_id)
+    else:
+        store.deactivate(product_id)
+    return {"ok": True, "product_id": product_id, "active": False}
+
+
+@router.get("/answer-integrity/circuit-breakers")
+async def list_circuit_breakers(request: Request) -> dict[str, Any]:
+    store = request.app.state.container.extras.get("circuit_breaker_store")
+    if store is None:
+        return {"breakers": []}
+    breakers = getattr(store, "breakers", None) or getattr(store, "_cache", None) or {}
+    out = []
+    for source_id, cb in dict(breakers).items():
+        out.append(
+            {
+                "source_id": source_id,
+                "price_disabled": bool(getattr(cb, "is_price_disabled", lambda: False)()),
+                "campaign_disabled": bool(
+                    getattr(cb, "is_campaign_disabled", lambda: False)()
+                ),
+                "broken_price_rate": getattr(cb, "broken_price_rate", 0.0),
+                "actions": sorted(
+                    a.value for a in getattr(cb, "disabled", set())
+                ),
+            }
+        )
+    return {"breakers": out}

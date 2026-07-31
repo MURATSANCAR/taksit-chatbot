@@ -29,6 +29,30 @@ class ProductPathDeps:
     alias_ttl_seconds: int = 300
     enabled: bool = True
     catalog_limit: int = 40
+    circuit_breaker_store: Any = None  # InMemory/PostgresCircuitBreakerStore
+    sponsored_store: Any = None  # InMemory/PostgresSponsoredPlacementStore
+
+
+def _price_disabled_merchant_ids(store: Any) -> frozenset[str]:
+    if store is None:
+        return frozenset()
+    disabled: set[str] = set()
+    breakers = getattr(store, "breakers", None) or getattr(store, "_cache", None) or {}
+    if isinstance(breakers, dict):
+        for merchant_id, cb in breakers.items():
+            is_disabled = getattr(cb, "is_price_disabled", None)
+            if callable(is_disabled) and is_disabled():
+                disabled.add(str(merchant_id))
+    return frozenset(disabled)
+
+
+def _sponsored_kwargs(store: Any) -> dict[str, Any]:
+    if store is None:
+        return {}
+    as_kwargs = getattr(store, "as_search_kwargs", None)
+    if callable(as_kwargs):
+        return dict(as_kwargs())
+    return {}
 
 
 def budget_max_price(need_profile: Mapping[str, Any]) -> Optional[float]:
@@ -141,6 +165,18 @@ async def run_catalog_search_for_chat(
     )
     if not products:
         return None
+
+    from dataclasses import replace
+
+    sponsored = _sponsored_kwargs(deps.sponsored_store)
+    request = replace(
+        request,
+        price_disabled_merchant_ids=_price_disabled_merchant_ids(
+            deps.circuit_breaker_store
+        ),
+        sponsored_product_ids=tuple(sponsored.get("sponsored_product_ids") or ()),
+        sponsored_weights=dict(sponsored.get("sponsored_weights") or {}),
+    )
 
     result = await search_products(
         request,

@@ -181,14 +181,21 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] SFT row schema + `taksitlio.training.export_sft`
 - [x] CLI export from golden / HR validation (concepts only; no fixture IDs)
 - [x] Example LoRA YAML + loud-fail `train_lora_stub.py`
+- [x] Real trainer `training/train_lora.py` + CPU smoke config (`lora_fast_need_profile.cpu.yaml`)
+- [x] Nanobase: `var/lora-venv` (torch CPU + peft) + SFT export 120 rows
+- [x] CPU smoke LoRA complete → adapter under `training/exports/lora-out-cpu-smoke`
+- [ ] Optional 9B HF LoRA (`lora_fast_need_profile.9b.cpu.yaml`) — multi-day CPU; GGUF inference ayrı kalır
 - [x] Runbook: `docs/runbooks/ADR-009-fast-lora-scaffold.md`
 - [x] Unit tests
-- [ ] Ops GPU train + redeploy FAST_* + re-run ADR-009 HR100 (not done here)
+- [ ] ADR-009 HR100 after adapter deploy (no quality claim until then)
+
 
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Canlı merchant kaynağı (API / feed / crawl) + credential_ref (ops; P15 veya crawl adapter)
 - [x] StormCrawler Docker stack + JSON feed bridge (`docker/docker-compose.crawler.yml`, `crawler/`, `generic.campaign_feed.v1`, runbook `ADR-010-stormcrawler.md`)
+- [x] Public-verified partners + live feeds → nanobase: 23 merchants, 207 products/offers, 4 banks, 2 campaigns (`crawler/ops/verified-partners-public.yaml`)
+- [ ] **Blocker:** Taksitlio 60+ isimli marka listesi kamuya açık değil — ops `official-partner-export.yaml` olmadan kalan markalar uydurulamaz (ADR-010)
 - [x] Canlı MinIO wiring (nanobase `.env.runtime` → `taksitlio-media`; code deploy smoke OK)
 - [ ] Public CDN DNS / reverse-proxy (CDN hâlâ `127.0.0.1:9000` path-style)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
@@ -265,6 +272,10 @@ Durum: **Closed — production gates PASS (2026-07-31).**
 - [x] Golden + metamorphic suites; shadow compare API; feedback API; error class metrics
 - [x] Sponsored ranking isolation (`rank_products_with_sponsored_isolation`)
 - [x] Postgres precedence / circuit breaker runtime loaders + container DI
+- [x] Last-mile wiring: search sponsored path, LLM negation lock, partial hard-exclude,
+      ingestion drift/breaker diagnostics, card evidence IDs, circuit breaker → search filter
+- [x] Ops wiring: dry-run → breaker persist; sponsored registry (V024) + admin CRUD;
+      chat/search loads sponsored + breakers from container stores
 
 ## Gates
 

@@ -29,6 +29,9 @@
       var label =
         (seen[type] && seen[type].display && seen[type].display.message) ||
         type;
+      if (global.TaksitlioPublic && global.TaksitlioPublic.sanitize) {
+        label = global.TaksitlioPublic.sanitize(label);
+      }
       var mark = done ? "✓" : active ? "●" : "○";
       html +=
         '<li class="' +

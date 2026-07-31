@@ -69,6 +69,11 @@ class InMemoryCircuitBreakerStore:
                 }
             )
 
+    async def record_actions_async(
+        self, source_id: str, actions: Sequence[BreakerAction], *, reason: str = ""
+    ) -> None:
+        self.record_actions(source_id, actions, reason=reason)
+
 
 @dataclass
 class PostgresPrecedencePolicyLoader:

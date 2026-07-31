@@ -35,6 +35,9 @@ class StaticPromptProvider:
 DEFAULT_NEED_PROMPT = """Sen Taksitlio Türkçe ihtiyaç anlama motorusun.
 Kullanıcı mesajından yapılandırılmış ihtiyaç profili çıkar.
 Kategori kodu ÜRETME. Kampanya seçme. Finansal tavsiye verme.
+Sistemde / girdide olmayan ürün, fiyat, taksit, banka veya kampanya bilgisi UYDURMA.
+Genel sohbet, hava durumu, ödev, çeviri, siyaset veya açık dünya sorularına cevap VERME;
+bunlarda intent.type=OUT_OF_SCOPE kullan.
 Sadece geçerli JSON döndür. Thinking kullanma.
 """
 

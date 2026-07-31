@@ -45,6 +45,16 @@ def _cards_from_results(payload: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _reply_for_route(payload: dict[str, Any]) -> tuple[str, str]:
     route = payload.get("route") or "FAST"
+    if route == "OUT_OF_SCOPE":
+        return (
+            payload.get("reply")
+            or (
+                "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve "
+                "taksit ihtiyaçlarınız için buradayım; sistemde olmayan bilgi veremem ve "
+                "genel sohbet yapmam."
+            ),
+            "SAFE_FAILURE",
+        )
     if route == "CLARIFICATION":
         clar = payload.get("clarification") or {}
         q = clar.get("question_text") or "Bir tercihinizi netleştirebilir misiniz?"

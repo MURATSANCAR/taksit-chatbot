@@ -44,12 +44,26 @@ python training/train_lora_stub.py --check-config \
   --config training/configs/lora_fast_need_profile.example.yaml
 ```
 
-### 4. Real train (ops GPU host)
+### 4. Real train
 
-Install `torch`, `transformers`, `peft` (versions chosen by ops). Replace the
-stub with a peft `Trainer` pipeline **outside** application runtime, or extend
-`train_lora_stub.py` in a private ops branch. Do not commit secrets or vendor
-model slugs into app migrations.
+**CPU (nanobase, slow OK):**
+
+```bash
+cd /data/nanobaseai/taksitlio-chatbot
+export HF_HOME=$PWD/var/hf-cache
+./var/lora-venv/bin/python training/train_lora.py \
+  --config training/configs/lora_fast_need_profile.cpu.yaml \
+  --allow-cpu --limit 40 --max-steps 20
+```
+
+Smoke uses `Qwen/Qwen2.5-0.5B-Instruct` (pipeline proof). For 9B intent use
+`lora_fast_need_profile.9b.cpu.yaml` with HF (not GGUF) weights — multi-day on CPU.
+
+**GPU host (preferred for 9B):** peft Trainer / same `train_lora.py` without
+`--allow-cpu`, `runtime.require_gpu: true`.
+
+Do not commit secrets or vendor model slugs into app migrations.
+
 
 ### 5. Evaluate (required before any quality claim)
 

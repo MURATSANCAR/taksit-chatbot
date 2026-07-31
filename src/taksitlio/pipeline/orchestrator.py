@@ -19,6 +19,7 @@ from taksitlio.product_query.chat_bridge import (
 from taksitlio.response.grounded import GroundedReply, GroundedResponseGenerator
 from taksitlio.search_sessions.chat_bridge import bridge_search_start
 from taksitlio.search_sessions.orchestrator import SearchOrchestrator
+from taksitlio.semantic_matching.query_intent import is_off_domain_for_assist
 from taksitlio.understanding.service import UnderstandingService, UnderstoodTurn
 
 
@@ -76,6 +77,21 @@ class ChatPipeline:
 
     async def handle(self, request: ChatRequest) -> ChatResponse:
         started = time.perf_counter()
+
+        # Hard gate: no general chat / no inventing off-catalog knowledge.
+        if is_off_domain_for_assist(request.message):
+            reply = await self._responder.out_of_scope()
+            return ChatResponse(
+                session_id=request.session_id,
+                reply=reply.text,
+                decision="SAFE_FAILURE",
+                need_profile=None,
+                diagnostics={
+                    "off_domain": True,
+                    "reply_template": reply.template_used,
+                },
+                latency_ms=(time.perf_counter() - started) * 1000.0,
+            )
 
         # ADR-011: clarification-first product search before legacy understanding LLM.
         # Explicit product_phase keeps ADR-010 catalog progressive card path.
@@ -348,6 +364,8 @@ class ChatPipeline:
 
     @staticmethod
     def _looks_like_product_query(message: str) -> bool:
+        if is_off_domain_for_assist(message):
+            return False
         lower = (message or "").casefold()
         cues = (
             "alacağım",

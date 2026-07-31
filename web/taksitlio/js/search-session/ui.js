@@ -8,6 +8,7 @@
     COMPLETED: 1,
     TIMED_OUT: 1,
     COMPLETED_DEGRADED: 1,
+    FAILED: 1,
   };
 
   function apiBase() {
@@ -87,16 +88,27 @@
   }
 
   function errorMessage(err) {
-    if (!err) return "İsteğini işlerken bir sorun oluştu.";
-    if (err.status === 409) return "Oturum güncellendi; lütfen tekrar dene.";
-    if (err.message && err.message !== "http_" + err.status) return err.message;
-    return "İsteğini işlerken bir sorun oluştu. Lütfen tekrar dene.";
+    if (global.TaksitlioPublic && global.TaksitlioPublic.errorMessage) {
+      return global.TaksitlioPublic.errorMessage(err);
+    }
+    return "NanobaseAI isteğini işlerken bir sorun oluştu. Lütfen tekrar dene.";
+  }
+
+  function publicText(text) {
+    if (global.TaksitlioPublic && global.TaksitlioPublic.sanitize) {
+      return global.TaksitlioPublic.sanitize(text);
+    }
+    return text;
   }
 
   function attachSearchUi(opts) {
     var thread = opts.thread;
     var botBubble = opts.botBubble;
     var clearTyping = opts.clearTyping;
+    var rawBotBubble = botBubble;
+    botBubble = function (html) {
+      return rawBotBubble(publicText(html));
+    };
     var onError = opts.onError || function (msg) {
       if (botBubble) botBubble(msg);
     };
@@ -255,7 +267,11 @@
               expected_query_version: state.queryVersion,
             })
             .then(function (ans) {
-              applyPayload(ans, { announce: true, announceText: "Kısıtı güncelledim." });
+              applyPayload(ans, {
+                announce: true,
+                announceText: "Kısıtı güncelledim.",
+                replaceResults: true,
+              });
             })
             .catch(function (err) {
               onError(errorMessage(err));
@@ -294,7 +310,8 @@
       });
     }
 
-    function subscribe(sessionId, panels) {
+    function subscribe(sessionId, panels, forceRestart) {
+      if (es && !forceRestart) return;
       if (es) es.close();
       state.terminalRefreshDone = false;
       events = [];
@@ -362,12 +379,15 @@
       if (options.announce) {
         var text =
           options.announceText ||
-          (payload.route === "CLARIFICATION"
-            ? (payload.clarification && payload.clarification.question_text) ||
-              payload.status
-            : payload.route === "LLM"
-              ? "Tercihlerinizi ürün özellikleriyle eşleştiriyorum..."
-              : "Kriterlerinize uygun ürünler hazırlanıyor...");
+          (payload.route === "OUT_OF_SCOPE"
+            ? payload.reply ||
+              "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve taksit ihtiyaçlarınız için buradayım."
+            : payload.route === "CLARIFICATION"
+              ? (payload.clarification && payload.clarification.question_text) ||
+                payload.status
+              : payload.route === "LLM"
+                ? "Tercihlerinizi ürün özellikleriyle eşleştiriyorum..."
+                : "Kriterlerinize uygun ürünler hazırlanıyor...");
         botBubble(text);
       }
 
@@ -392,20 +412,24 @@
 
       renderControls(panels.querySelector("[data-controls]"));
       if (state.searchSessionId) {
-        subscribe(state.searchSessionId, panels);
+        subscribe(state.searchSessionId, panels, !!options.restartEvents);
       }
       return payload;
     }
 
     async function runSearch(message) {
-      var panels = ensurePanels(thread);
       var payload;
+      var wasActive = isActiveSession();
       try {
-        if (isActiveSession()) {
+        if (wasActive) {
           payload = await client.supersedeMessage(state.searchSessionId, {
             message: message,
           });
         } else {
+          if (es) {
+            es.close();
+            es = null;
+          }
           state.searchSessionId = null;
           state.queryVersion = 0;
           state.status = null;
@@ -427,6 +451,10 @@
           persistSessionId(null);
           state.searchSessionId = null;
           state.status = null;
+          if (es) {
+            es.close();
+            es = null;
+          }
           payload = await client.start({
             conversation_id: conversationId(),
             message: message,
@@ -439,7 +467,11 @@
           throw err;
         }
       }
-      return applyPayload(payload, { announce: true, replaceResults: true });
+      return applyPayload(payload, {
+        announce: true,
+        replaceResults: true,
+        restartEvents: true,
+      });
     }
 
     async function hydratePersistedSession() {

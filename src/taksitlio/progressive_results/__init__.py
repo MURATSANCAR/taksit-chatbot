@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence
 
 
 PARTIAL_LABEL = "Ön sonuçlar"
@@ -59,6 +59,9 @@ def can_partial_retrieve(constraints: dict[str, Any]) -> bool:
 
 
 def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]) -> float:
+    # Hard exclude locked / negative categories (ADR-012 NEGATIVE_CONSTRAINT_GATE)
+    if _matches_negative_constraint(product, constraints):
+        return float("-inf")
     score = float(product.get("query_relevance") or 0.5)
     score += 0.15 if product.get("stock_status") == "AVAILABLE" else -0.2
     freshness = str(product.get("price_freshness") or "")
@@ -81,6 +84,31 @@ def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]
     return score
 
 
+def _matches_negative_constraint(product: dict[str, Any], constraints: dict[str, Any]) -> bool:
+    negatives = constraints.get("negative_categories") or constraints.get("excluded_categories") or []
+    if not negatives:
+        return False
+    haystack = " ".join(
+        str(x)
+        for x in (
+            product.get("display_name"),
+            product.get("category"),
+            product.get("category_name"),
+            product.get("brand_model"),
+            " ".join(str(t) for t in (product.get("tags") or ())),
+        )
+        if x
+    ).casefold()
+    for neg in negatives:
+        if isinstance(neg, Mapping):
+            token = str(neg.get("display_name") or neg.get("concept") or "").strip()
+        else:
+            token = str(neg).strip()
+        if token and token.casefold() in haystack:
+            return True
+    return False
+
+
 def build_partial_snapshot(
     *,
     query_version: int,
@@ -90,8 +118,9 @@ def build_partial_snapshot(
 ) -> PartialResultSnapshot:
     if not can_partial_retrieve(constraints):
         return PartialResultSnapshot(query_version=query_version, products=[])
+    eligible = [p for p in products if not _matches_negative_constraint(p, constraints)]
     ranked = sorted(
-        products,
+        eligible,
         key=lambda p: score_partial_candidate(p, constraints),
         reverse=True,
     )[:limit]

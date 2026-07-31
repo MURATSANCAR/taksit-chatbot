@@ -39,6 +39,11 @@ class ProductCardFinanceSummary:
     campaign_ends_at: Optional[str] = None
     fees_total: float = 0.0
     institution_logo_cdn_url: Optional[str] = None
+    payment_calculation_id: Optional[str] = None
+    rate_snapshot_id: Optional[str] = None
+    campaign_version_id: Optional[str] = None
+    merchant_finance_agreement_id: Optional[str] = None
+    rate_type: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -59,6 +64,8 @@ class ProductCard:
     campaign_checked_at: Optional[str]
     product_url: Optional[str]
     tags: tuple[str, ...] = ()
+    price_snapshot_id: Optional[str] = None
+    stock_snapshot_id: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -86,6 +93,8 @@ class CardSourceProduct:
     price_checked_at: Optional[str] = None
     campaign_checked_at: Optional[str] = None
     best_finance: Optional[ProductCardFinanceSummary] = None
+    price_snapshot_id: Optional[str] = None
+    stock_snapshot_id: Optional[str] = None
 
 
 def build_searching_phase(message: str = "Ürünleri arıyorum") -> ProgressiveResponse:
@@ -136,6 +145,8 @@ def build_product_card(
         campaign_checked_at=source.campaign_checked_at if include_finance else None,
         product_url=source.product_url,
         tags=tuple(tags),
+        price_snapshot_id=source.price_snapshot_id,
+        stock_snapshot_id=source.stock_snapshot_id,
     )
 
 
@@ -211,11 +222,18 @@ def card_to_public_dict(card: ProductCard) -> dict[str, Any]:
             "fees_total": card.best_finance.fees_total,
             "display_label": card.best_finance.display_label,
             "campaign_ends_at": card.best_finance.campaign_ends_at,
+            "payment_calculation_id": card.best_finance.payment_calculation_id,
+            "rate_snapshot_id": card.best_finance.rate_snapshot_id,
+            "campaign_version_id": card.best_finance.campaign_version_id,
+            "merchant_finance_agreement_id": card.best_finance.merchant_finance_agreement_id,
+            "rate_type": card.best_finance.rate_type,
         },
         "price_checked_at": card.price_checked_at,
         "campaign_checked_at": card.campaign_checked_at,
         "product_url": card.product_url,
         "tags": list(card.tags),
+        "price_snapshot_id": card.price_snapshot_id,
+        "stock_snapshot_id": card.stock_snapshot_id,
     }
 
 

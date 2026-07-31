@@ -745,5 +745,7 @@ campaign_version / payment_calculation satırlarına FK ile bağlanır.
   Production: `PostgresFeedbackStore` → V023 tabloları
   (`feedback_result_snapshots`, `shadow_mode_comparisons`, `error_class_events`).
   Demo: `InMemoryFeedbackStore`.
+- Sponsored placements: V024 + admin CRUD; search path `sponsored_store` okur.
+- Ingestion dry-run → `persist_breaker_from_ingestion_result` (store + Postgres).
 - Sponsored isolation ranking path’te (`rank_products_with_sponsored_isolation`).
 - Metamorphic + golden regression suite `tests/unit/answer_integrity/`.
