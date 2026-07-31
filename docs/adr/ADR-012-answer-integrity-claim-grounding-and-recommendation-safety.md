@@ -749,3 +749,5 @@ campaign_version / payment_calculation satırlarına FK ile bağlanır.
 - Ingestion dry-run → `persist_breaker_from_ingestion_result` (store + Postgres).
 - Sponsored isolation ranking path’te (`rank_products_with_sponsored_isolation`).
 - Metamorphic + golden regression suite `tests/unit/answer_integrity/`.
+- Ops runbook: [`docs/runbooks/ADR-012-answer-integrity-ops.md`](../runbooks/ADR-012-answer-integrity-ops.md)
+  (live `python -m taksitlio.db.migrate` + breaker / sponsored / feedback smoke).

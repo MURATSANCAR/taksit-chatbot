@@ -60,6 +60,139 @@ async def ensure_institution(conn, *, code: str, name: str) -> int:
     return int(row["id"])
 
 
+async def attach_product_images(
+    pool,
+    *,
+    ingestion,
+    applied,
+    catalog,
+) -> dict[str, int]:
+    """Download feed image_url → object storage → media_assets (no hotlink)."""
+    import os
+
+    from taksitlio.media.pipeline import download_image, ingest_image_bytes
+    from taksitlio.media.storage import LocalObjectStorage
+
+    root = os.environ.get("MEDIA_STORAGE_ROOT", "/tmp/taksitlio-media")
+    cdn = os.environ.get("CDN_BASE_URL", "http://localhost:8000/cdn")
+    storage = LocalObjectStorage(root, cdn_base_url=cdn)
+
+    by_ext = {
+        i.external_product_id: i.product_id
+        for i in applied.items
+        if i.product_id is not None
+    }
+    stats = {"pending_set": 0, "downloaded": 0, "ready": 0, "failed": 0, "skipped": 0}
+    async with pool.acquire() as conn:
+        known = {
+            r["sha256"]
+            for r in await conn.fetch("SELECT sha256 FROM media_assets")
+        }
+        for row in ingestion.items:
+            product_id = by_ext.get(row.external_product_id)
+            if product_id is None or not row.media:
+                stats["skipped"] += 1
+                continue
+            primary = next(
+                (m for m in row.media if getattr(m, "media_role", None) == "PRIMARY"),
+                row.media[0],
+            )
+            source_url = getattr(primary, "source_url", None)
+            if not source_url:
+                stats["skipped"] += 1
+                continue
+            await catalog.set_pending_source_image(product_id, source_url)
+            stats["pending_set"] += 1
+            try:
+                data = await download_image(source_url)
+                outcome = ingest_image_bytes(
+                    data,
+                    source_url=source_url,
+                    storage=storage,
+                    known_sha256=known,
+                    source_reference=ingestion.source_code,
+                )
+                draft = outcome.draft
+                if outcome.skipped_duplicate_sha:
+                    mid = await conn.fetchval(
+                        "SELECT id FROM media_assets WHERE sha256=$1", draft.sha256
+                    )
+                else:
+                    mid = await conn.fetchval(
+                        """
+                        INSERT INTO media_assets (
+                          source_url, storage_key, cdn_url, mime_type, width, height,
+                          file_size, sha256, perceptual_hash, quality_score, status,
+                          source_reference
+                        ) VALUES (
+                          $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12
+                        )
+                        ON CONFLICT (sha256) DO UPDATE SET
+                          updated_at = NOW(),
+                          last_verified_at = NOW()
+                        RETURNING id
+                        """,
+                        draft.source_url,
+                        draft.storage_key,
+                        draft.cdn_url,
+                        draft.mime_type,
+                        draft.width,
+                        draft.height,
+                        draft.file_size,
+                        draft.sha256,
+                        draft.perceptual_hash,
+                        draft.quality_score,
+                        draft.status.value if hasattr(draft.status, "value") else str(draft.status),
+                        draft.source_reference,
+                    )
+                    known.add(draft.sha256)
+                    for v in draft.variants or ():
+                        await conn.execute(
+                            """
+                            INSERT INTO media_variants (
+                              media_asset_id, variant_code, width, height, mime_type,
+                              storage_key, cdn_url, file_size
+                            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+                            ON CONFLICT (media_asset_id, variant_code) DO NOTHING
+                            """,
+                            mid,
+                            v["variant_code"],
+                            v["width"],
+                            v.get("height"),
+                            v["mime_type"],
+                            v["storage_key"],
+                            v["cdn_url"],
+                            v.get("file_size"),
+                        )
+                await conn.execute(
+                    """
+                    INSERT INTO product_media_links (
+                      product_id, media_asset_id, media_role, display_order, is_primary
+                    ) VALUES ($1,$2,'PRIMARY',0,TRUE)
+                    ON CONFLICT (product_id, media_asset_id, media_role) DO UPDATE
+                      SET is_primary = TRUE
+                    """,
+                    product_id,
+                    mid,
+                )
+                # clear pending once attached
+                await conn.execute(
+                    """
+                    UPDATE products SET metadata =
+                      COALESCE(metadata,'{}'::jsonb) - 'pending_source_image_url',
+                      updated_at = NOW()
+                    WHERE id=$1
+                    """,
+                    product_id,
+                )
+                stats["downloaded"] += 1
+                if str(draft.status).endswith("READY") or getattr(draft.status, "value", "") == "READY":
+                    stats["ready"] += 1
+            except Exception:
+                stats["failed"] += 1
+    return stats
+
+
 async def ingest_products(pool) -> list[dict[str, Any]]:
     from taksitlio.ingestion.binding import SourceBinding
     from taksitlio.ingestion.runner import run_ingestion_dry
@@ -99,9 +232,13 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
                 merchant_id=str(merchant_id),
                 config={"feed_path": str(path)},
             )
-            result = await run_ingestion_dry(binding, limit=2000)
+            # No artificial product cap for live upserts.
+            result = await run_ingestion_dry(binding, limit=1_000_000)
             applied = await apply_ingestion_to_catalog(
                 result, merchant_id=merchant_id, catalog=catalog
+            )
+            media_stats = await attach_product_images(
+                pool, ingestion=result, applied=applied, catalog=catalog
             )
             reports.append(
                 {
@@ -111,6 +248,7 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
                     "chatbot_visible": result.chatbot_visible,
                     "upserted_products": applied.upserted_products,
                     "upserted_offers": applied.upserted_offers,
+                    "media": media_stats,
                 }
             )
     return reports

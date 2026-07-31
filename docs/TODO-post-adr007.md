@@ -249,7 +249,10 @@ ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.m
 
 ADR: [`docs/adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md`](adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safety.md)
 
-Durum: **Closed — production gates PASS (2026-07-31).**
+Ops runbook: [`docs/runbooks/ADR-012-answer-integrity-ops.md`](runbooks/ADR-012-answer-integrity-ops.md)
+
+Durum: **Closed — production gates PASS (2026-07-31).** Canlı DB migrate + smoke
+runbook’da; bu makinede Docker/DATABASE_URL yoksa ops adımı sunucuda kalır.
 
 ### P0 — design lock + skeleton
 
@@ -276,6 +279,7 @@ Durum: **Closed — production gates PASS (2026-07-31).**
       ingestion drift/breaker diagnostics, card evidence IDs, circuit breaker → search filter
 - [x] Ops wiring: dry-run → breaker persist; sponsored registry (V024) + admin CRUD;
       chat/search loads sponsored + breakers from container stores
+- [x] Ops runbook: migrate V023/V024 + breaker/sponsored/feedback smoke
 
 ## Gates
 
