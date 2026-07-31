@@ -68,8 +68,8 @@ DEFAULT_ALIASES = {
 }
 
 
-def _sh(cmd: str, **kwargs: Any) -> str:
-    proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False, **kwargs)
+def _sh(cmd: str) -> str:
+    proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, check=False)
     return ((proc.stdout or "") + (proc.stderr or "")).strip()
 
 
@@ -91,8 +91,7 @@ def _isolate_candidate(key: str) -> None:
 def _restore_all() -> None:
     _sh(
         "sudo systemctl start "
-        "taksitlio-fast-a.service taksitlio-fast-b.service taksitlio-fast-c.service",
-        check=False,
+        "taksitlio-fast-a.service taksitlio-fast-b.service taksitlio-fast-c.service"
     )
 
 
