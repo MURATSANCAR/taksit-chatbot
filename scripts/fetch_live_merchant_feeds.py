@@ -24,10 +24,111 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "crawler" / "feeds" / "live"
 UA = "TaksitlioBot/0.1 (+ADR-010 polite catalog; ops research)"
 
+# Hard stop across all src-m-* live feeds (MinIO/DB size guard). 0 disables.
+DEFAULT_GLOBAL_PRODUCT_CAP = 1_000_000
+_ACTIVE_GLOBAL_CAP = DEFAULT_GLOBAL_PRODUCT_CAP
+
 # Allow `from browser_fetch import ...` when run as scripts/fetch_*.py
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+
+def set_global_product_cap(cap: int) -> None:
+    """Set process-wide live-feed product ceiling (0 = disabled)."""
+
+    global _ACTIVE_GLOBAL_CAP
+    _ACTIVE_GLOBAL_CAP = max(0, int(cap))
+
+
+def active_global_product_cap() -> int:
+    return _ACTIVE_GLOBAL_CAP
+
+
+def count_live_feed_products(
+    *,
+    exclude_source: Optional[str] = None,
+    feed_dir: Optional[Path] = None,
+) -> int:
+    """Sum `count` (or products length) across live merchant feed JSON files."""
+
+    root = feed_dir or OUT
+    if not root.is_dir():
+        return 0
+    total = 0
+    exclude = (exclude_source or "").removesuffix(".json")
+    for path in sorted(root.glob("src-m-*.json")):
+        stem = path.stem
+        if exclude and stem == exclude:
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        n = data.get("count")
+        if not isinstance(n, int):
+            n = len(data.get("products") or [])
+        total += max(0, int(n))
+    return total
+
+
+def global_room_for_source(
+    source_code: str,
+    *,
+    global_cap: Optional[int] = None,
+    feed_dir: Optional[Path] = None,
+) -> int:
+    """How many products this source may hold before the global cap is hit."""
+
+    cap = active_global_product_cap() if global_cap is None else max(0, int(global_cap))
+    if cap <= 0:
+        return 10**18
+    others = count_live_feed_products(exclude_source=source_code, feed_dir=feed_dir)
+    return max(0, cap - others)
+
+
+def merchant_absolute_cap(
+    source_code: str,
+    per_merchant_limit: int,
+    *,
+    global_cap: Optional[int] = None,
+    feed_dir: Optional[Path] = None,
+) -> Optional[int]:
+    """Absolute max ``len(by_id)`` for this merchant. ``None`` = uncapped."""
+
+    caps: list[int] = []
+    if per_merchant_limit and per_merchant_limit > 0:
+        caps.append(int(per_merchant_limit))
+    g = active_global_product_cap() if global_cap is None else max(0, int(global_cap))
+    if g > 0:
+        caps.append(global_room_for_source(source_code, global_cap=g, feed_dir=feed_dir))
+    if not caps:
+        return None
+    return max(0, min(caps))
+
+
+def resolve_run_limit(
+    per_merchant_limit: int,
+    *,
+    source_code: str,
+    global_cap: Optional[int] = None,
+    feed_dir: Optional[Path] = None,
+) -> int:
+    """Effective fetcher limit for this run. ``0`` means stop (no room / no work).
+
+    When per-merchant limit is 0 (historically uncapped), the global ceiling
+    becomes the limit so crawls still stop at 1M total products.
+    """
+
+    abs_cap = merchant_absolute_cap(
+        source_code,
+        per_merchant_limit,
+        global_cap=global_cap,
+        feed_dir=feed_dir,
+    )
+    if abs_cap is None:
+        return 0 if per_merchant_limit == 0 else int(per_merchant_limit)
+    return int(abs_cap)
 
 
 def parse_tr_price(raw: str) -> Optional[float]:
@@ -297,10 +398,26 @@ def fetch_hybris_product_sitemap(
         print(f"  {source_code} sitemap +{batch} total={len(product_urls)}")
 
     by_id = _load_existing_feed(source_code)
+    abs_cap = merchant_absolute_cap(source_code, limit)
+    if abs_cap is not None and abs_cap <= 0:
+        print(f"  {source_code} global product cap reached — skip")
+        return list(by_id.values())
+    if abs_cap is not None and len(by_id) >= abs_cap:
+        print(f"  {source_code} at cap {abs_cap} — skip")
+        return list(by_id.values())[:abs_cap]
+
     done = {str(p.get("url")) for p in by_id.values() if p.get("url")}
     todo = [u for u in product_urls if u not in done]
-    todo = _apply_limit(todo, limit)
-    print(f"  {source_code} todo={len(todo)} catalog={len(product_urls)} workers={workers}")
+    if abs_cap is not None:
+        room = max(0, abs_cap - len(by_id))
+        todo = todo[:room]
+    else:
+        todo = _apply_limit(todo, limit)
+    print(
+        f"  {source_code} todo={len(todo)} catalog={len(product_urls)} "
+        f"workers={workers} abs_cap={abs_cap}",
+        flush=True,
+    )
 
     lock = threading.Lock()
     fail = 0
@@ -317,7 +434,15 @@ def fetch_hybris_product_sitemap(
 
     batch_size = 300
     for start in range(0, len(todo), batch_size):
+        live_cap = merchant_absolute_cap(source_code, limit)
+        if live_cap is not None and len(by_id) >= live_cap:
+            print(f"  {source_code} stopped at global/merchant cap {live_cap}", flush=True)
+            break
         batch = todo[start : start + batch_size]
+        if live_cap is not None:
+            batch = batch[: max(0, live_cap - len(by_id))]
+        if not batch:
+            break
         print(f"  {source_code} batch {start}-{start + len(batch) - 1}", flush=True)
         with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
             futs = {ex.submit(_one, u): u for u in batch}
@@ -329,7 +454,8 @@ def fetch_hybris_product_sitemap(
                 with lock:
                     done_n += 1
                     if p and p.get("id"):
-                        by_id[str(p["id"])] = p
+                        if live_cap is None or len(by_id) < live_cap:
+                            by_id[str(p["id"])] = p
                     else:
                         fail += 1
                     if done_n % 150 == 0 or done_n == len(todo):
@@ -344,7 +470,11 @@ def fetch_hybris_product_sitemap(
                         )
         if delay > 0:
             time.sleep(delay)
-    return list(by_id.values())
+    out = list(by_id.values())
+    live_cap = merchant_absolute_cap(source_code, limit)
+    if live_cap is not None:
+        out = out[:live_cap]
+    return out
 
 
 def fetch_arcelik(
@@ -595,7 +725,18 @@ def fetch_sitemap_jsonld_catalog(
     fail = 0
     fetched = 0
     tls = threading.local()
-    budget = limit if limit and limit > 0 else None
+
+    def _budget() -> Optional[int]:
+        return merchant_absolute_cap(source_code, limit)
+
+    budget = _budget()
+    if budget is not None and budget <= 0:
+        print(f"  {source_code} global product cap reached — skip")
+        return list(by_id.values())
+    if budget is not None and len(by_id) >= budget:
+        print(f"  {source_code} at cap {budget} — skip")
+        return list(by_id.values())[:budget]
+    print(f"  {source_code} maps={len(maps)} workers={workers} curl={use_curl_cffi} abs_cap={budget}")
 
     def _session():
         if use_cloudscraper:
@@ -631,18 +772,20 @@ def fetch_sitemap_jsonld_catalog(
             return None
 
     def _process_urls(todo: list[str], label: str) -> bool:
-        """Fetch PDPs; return False if limit budget exhausted."""
+        """Fetch PDPs; return False if limit / global budget exhausted."""
         nonlocal fail, fetched
         if not todo:
             return True
         print(f"  {source_code} {label} todo={len(todo)} have={len(by_id)}", flush=True)
         batch_size = 300
         for start in range(0, len(todo), batch_size):
-            if budget is not None and len(by_id) >= budget:
+            live = _budget()
+            if live is not None and len(by_id) >= live:
+                print(f"  {source_code} stopped at cap {live}", flush=True)
                 return False
             batch = todo[start : start + batch_size]
-            if budget is not None:
-                remain = budget - len(by_id)
+            if live is not None:
+                remain = live - len(by_id)
                 if remain <= 0:
                     return False
                 batch = batch[:remain]
@@ -655,9 +798,11 @@ def fetch_sitemap_jsonld_catalog(
                         p = None
                     with lock:
                         fetched += 1
+                        live_now = _budget()
                         if p and p.get("id"):
-                            by_id[str(p["id"])] = p
-                            done_urls.add(str(p.get("url") or ""))
+                            if live_now is None or len(by_id) < live_now:
+                                by_id[str(p["id"])] = p
+                                done_urls.add(str(p.get("url") or ""))
                         else:
                             fail += 1
                         if fetched % 150 == 0:
@@ -681,7 +826,8 @@ def fetch_sitemap_jsonld_catalog(
 
     try:
         for mi, sm in enumerate(maps, 1):
-            if budget is not None and len(by_id) >= budget:
+            live = _budget()
+            if live is not None and len(by_id) >= live:
                 break
             time.sleep(max(delay, 0.05))
             if use_curl_cffi:
@@ -721,8 +867,9 @@ def fetch_sitemap_jsonld_catalog(
         )
 
     out = list(by_id.values())
-    if budget is not None:
-        out = out[:budget]
+    live = _budget()
+    if live is not None:
+        out = out[:live]
     return out
 
 

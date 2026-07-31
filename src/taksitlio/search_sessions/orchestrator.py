@@ -59,6 +59,7 @@ class SearchOrchestrator:
     category_token_map: dict[str, tuple[str, ...]] = field(default_factory=dict)
     states: dict[str, QueryNeedState] = field(default_factory=dict)
     parses: dict[str, Any] = field(default_factory=dict)
+    utterances: dict[str, str] = field(default_factory=dict)
     clarifications: dict[str, dict[str, Any]] = field(default_factory=dict)
     llm_jobs: dict[str, Any] = field(default_factory=dict)
     logo_rails: dict[str, dict[str, list[LogoCandidate]]] = field(default_factory=dict)
@@ -66,16 +67,43 @@ class SearchOrchestrator:
     circuit_open: bool = False
     logo_resolver: Any = None
 
-    def _constraints_with_category_tokens(self, parse: Any) -> dict[str, Any]:
+    def _constraints_with_category_tokens(
+        self, parse: Any, *, utterance: str = ""
+    ) -> dict[str, Any]:
         constraints = parse.to_dict() if hasattr(parse, "to_dict") else dict(parse or {})
         cats = list(constraints.get("positive_categories") or [])
+        u_raw = (utterance or "").casefold()
+        try:
+            from taksitlio.semantic_matching.turkish_normalize import normalize_turkish
+
+            u_norm = normalize_turkish(utterance or "").value or ""
+        except Exception:  # noqa: BLE001
+            u_norm = u_raw
         enriched: list[dict[str, Any]] = []
         for cat in cats:
             row = dict(cat) if isinstance(cat, dict) else {"display_name": str(cat)}
             rid = str(row.get("resolved_id") or "")
-            tokens = self.category_token_map.get(rid)
+            tokens = list(self.category_token_map.get(rid) or ())
+            if tokens and (u_raw or u_norm):
+                display_n = str(row.get("display_name") or "").casefold()
+                specific: list[str] = []
+                for t in tokens:
+                    t_raw = str(t or "").strip()
+                    if not t_raw:
+                        continue
+                    t_cf = t_raw.casefold()
+                    try:
+                        t_n = normalize_turkish(t_raw).value or t_cf
+                    except Exception:  # noqa: BLE001
+                        t_n = t_cf
+                    if t_cf in u_raw or (t_n and t_n in u_norm):
+                        # Prefer concrete synonym (buzdolabı) over broad category label.
+                        if t_cf != display_n and t_n != normalize_turkish(display_n).value:
+                            specific.append(t_raw)
+                if specific:
+                    tokens = list(dict.fromkeys(specific))
             if tokens:
-                row["include_tokens"] = list(tokens)
+                row["include_tokens"] = tokens
             enriched.append(row)
         if enriched:
             constraints["positive_categories"] = enriched
@@ -169,6 +197,7 @@ class SearchOrchestrator:
             version.confidence = parse.confidence
             version.requires_llm = parse.requires_llm
         self.parses[session.id] = parse
+        self.utterances[session.id] = message
         self._emit(
             session,
             SearchProgressEventType.FAST_PARSE_COMPLETED,
@@ -305,7 +334,9 @@ class SearchOrchestrator:
         if can_transition(session.status, SearchSessionStatus.FAST_RETRIEVAL):
             self.repo.set_status(session.id, SearchSessionStatus.FAST_RETRIEVAL)
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
-        constraints = self._constraints_with_category_tokens(parse)
+        constraints = self._constraints_with_category_tokens(
+            parse, utterance=self.utterances.get(session.id, "")
+        )
         partial = build_partial_snapshot(
             query_version=session.active_query_version,
             products=self.product_pool,
@@ -432,7 +463,9 @@ class SearchOrchestrator:
         self._emit(session, SearchProgressEventType.LLM_JOB_STARTED, payload={"job_id": job.id})
 
         # Progressive retrieval in parallel (do not wait for LLM)
-        constraints = self._constraints_with_category_tokens(parse)
+        constraints = self._constraints_with_category_tokens(
+            parse, utterance=message or self.utterances.get(session.id, "")
+        )
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
         partial = build_partial_snapshot(
             query_version=session.active_query_version,
