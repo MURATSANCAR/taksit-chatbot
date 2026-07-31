@@ -21,12 +21,14 @@ merchants_verified_public:
   - merchant_code: m-teknosa
     display_name: Teknosa
     verification: [PUBLIC_MERCHANT_PAGE, PRESS]
-    crawl_status: PLAYWRIGHT_OR_FLARESOLVERR
-    seed_urls: [https://www.teknosa.com/]
+    crawl_status: CLOUDSCRAPER_SITEMAP
+    source_code: src-m-teknosa
+    seed_urls: [https://www.teknosa.com/, https://www.teknosa.com/siteharitasi.xml]
     notes: |
-      Plain HTTP 403 (Cloudflare). Use Playwright and/or FlareSolverr profile:
-      docker compose -f docker/docker-compose.crawler.yml --profile waf up -d flaresolverr
-      FLARESOLVERR_URL=http://127.0.0.1:8191
+      Cloudflare blocks plain HTTP/datacenter. Use cloudscraper:
+      pip install '.[crawler]'
+      python scripts/fetch_live_merchant_feeds.py --merchants teknosa --delay 0.3 --workers 6 --limit 0
+      Catalog ~380k PDP URLs (Product + Outlet sitemaps). Resumes + checkpoints.
 
   - merchant_code: m-vatan
     display_name: Vatan Bilgisayar

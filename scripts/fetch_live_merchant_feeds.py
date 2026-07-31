@@ -93,6 +93,7 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
             for ap in it.get("additionalProperty") or []:
                 if isinstance(ap, dict) and ap.get("name") is not None:
                     attrs[str(ap["name"])] = ap.get("value")
+            clean_name = _clean_product_name(str(name).strip())
             return {
                 "id": str(
                     it.get("sku")
@@ -100,7 +101,7 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
                     or it.get("mpn")
                     or url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
                 ),
-                "name": str(name).strip(),
+                "name": clean_name,
                 "sku": it.get("sku"),
                 "gtin": it.get("gtin13") or it.get("gtin") or it.get("gtin14"),
                 "ean": it.get("gtin13") or it.get("ean"),
@@ -128,9 +129,7 @@ def parse_jsonld_product(html: str, url: str) -> Optional[dict[str, Any]]:
     )
     if om and pm:
         price = float(pm.group(1).replace(",", "."))
-        name = unescape(om.group(1)).strip()
-        # strip site suffix noise
-        name = re.sub(r"\s*[|·].*$", "", name).strip()
+        name = _clean_product_name(unescape(om.group(1)).strip())
         pid = url.rstrip("/").rsplit("-", 1)[-1].replace(".html", "")
         return {
             "id": pid,
@@ -152,6 +151,17 @@ def _opt_float(v: Any) -> Optional[float]:
         return float(str(v).replace(",", "."))
     except (TypeError, ValueError):
         return None
+
+
+def _clean_product_name(name: str) -> str:
+    name = re.sub(r"\s*[|·].*$", "", name).strip()
+    name = re.sub(
+        r"\s*(Fiyatı ve Özellikleri|Fiyat ve Özellikleri|- Fiyat ve Özellikleri)\s*$",
+        "",
+        name,
+        flags=re.I,
+    ).strip()
+    return name
 
 
 def parse_vatan_listing(html: str) -> list[dict[str, Any]]:
@@ -479,42 +489,133 @@ def fetch_dr(client: httpx.Client, delay: float, limit: int) -> list[dict[str, A
     return list({p["id"]: p for p in out}.values())
 
 
-def fetch_teknosa(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
-    """Teknosa: Cloudflare blocks plain HTTP; try Playwright, then FlareSolverr."""
-    from browser_fetch import fetch_html, fetch_html_flaresolverr
+def fetch_teknosa(
+    client: httpx.Client,
+    delay: float,
+    limit: int,
+    *,
+    workers: int = 6,
+) -> list[dict[str, Any]]:
+    """Teknosa full catalog via siteharitasi.xml + cloudscraper (Cloudflare).
 
-    seeds = [
-        "https://www.teknosa.com/",
-        "https://www.teknosa.com/laptop-c-100001",
-        "https://www.teknosa.com/telefon-c-100002",
+    ~380k PDP URLs across Product + Outlet sitemaps. Resumes from existing
+    live feed, checkpoints every 200 products. Polite concurrent fetch.
+    """
+    import threading
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    from browser_fetch import create_cloudscraper
+
+    scraper = create_cloudscraper()
+    idx = scraper.get("https://www.teknosa.com/siteharitasi.xml", timeout=120)
+    if idx.status_code != 200:
+        print(f"  teknosa sitemap index HTTP {idx.status_code}")
+        return []
+    children = re.findall(r"<loc>([^<]+)</loc>", idx.text)
+    maps = [
+        u
+        for u in children
+        if "Product-tr-TRY" in u or "OutletCanonicalised-tr-TRY" in u
     ]
     product_urls: list[str] = []
-    for seed in seeds:
-        html = fetch_html(seed) or fetch_html_flaresolverr(seed)
-        if not html:
-            print(f"  teknosa blocked: {seed}")
+    seen_u: set[str] = set()
+    for sm in maps:
+        time.sleep(max(delay, 0.2))
+        r = scraper.get(sm, timeout=120)
+        if r.status_code != 200:
+            print(f"  teknosa sitemap fail {sm.rsplit('/', 1)[-1]} {r.status_code}")
             continue
-        found = re.findall(r'href="(https://www\.teknosa\.com/[^"#?]+\-p\-\d+[^"#?]*)"', html)
-        found += [
-            "https://www.teknosa.com" + u
-            for u in re.findall(r'href="(/[^"#?]+\-p\-\d+[^"#?]*)"', html)
-        ]
-        for u in found:
-            if u not in product_urls:
-                product_urls.append(u.split("?")[0])
-        time.sleep(delay)
-    product_urls = _apply_limit(product_urls, limit)
-    out: list[dict[str, Any]] = []
-    for i, url in enumerate(product_urls, 1):
-        html = fetch_html(url)
-        if html:
-            p = parse_jsonld_product(html, url)
-            if p:
-                out.append(p)
-        if i % 20 == 0:
-            print(f"    ... {i}/{len(product_urls)} fetched, {len(out)} ok")
-        time.sleep(delay)
-    return list({p["id"]: p for p in out}.values())
+        for u in re.findall(r"<loc>([^<]+)</loc>", r.text):
+            u = u.split("?")[0]
+            if u not in seen_u:
+                seen_u.add(u)
+                product_urls.append(u)
+        print(f"  teknosa sitemap {sm.rsplit('/', 1)[-1]} total_urls={len(product_urls)}")
+
+    # Resume: skip IDs already in live feed
+    existing_path = OUT / "src-m-teknosa.json"
+    by_id: dict[str, dict[str, Any]] = {}
+    if existing_path.exists():
+        try:
+            prev = json.loads(existing_path.read_text(encoding="utf-8")).get("products") or []
+            by_id = {str(p["id"]): p for p in prev if p.get("id")}
+            print(f"  teknosa resume {len(by_id)} products already captured")
+        except Exception as exc:
+            print(f"  teknosa resume skip: {exc}")
+
+    done_urls = {str(p.get("url")) for p in by_id.values() if p.get("url")}
+    todo = [u for u in product_urls if u not in done_urls]
+    todo = _apply_limit(todo, limit)
+    print(f"  teknosa todo={len(todo)} / catalog={len(product_urls)} workers={workers}")
+
+    lock = threading.Lock()
+    fail = 0
+    done_n = 0
+    batch_size = 500
+    tls = threading.local()
+
+    def _session():
+        s = getattr(tls, "scraper", None)
+        if s is None:
+            s = create_cloudscraper()
+            tls.scraper = s
+        return s
+
+    def _one(url: str) -> Optional[dict[str, Any]]:
+        local = _session()
+        try:
+            r = local.get(url, timeout=60)
+        except Exception:
+            return None
+        if r.status_code != 200:
+            return None
+        try:
+            return parse_jsonld_product(r.text, url)
+        except Exception:
+            return None
+
+    try:
+        for batch_start in range(0, len(todo), batch_size):
+            batch = todo[batch_start : batch_start + batch_size]
+            print(f"  teknosa batch {batch_start}-{batch_start + len(batch) - 1}", flush=True)
+            with ThreadPoolExecutor(max_workers=max(1, workers)) as ex:
+                futs = {ex.submit(_one, u): u for u in batch}
+                for fut in as_completed(futs):
+                    try:
+                        p = fut.result()
+                    except Exception:
+                        p = None
+                    with lock:
+                        done_n += 1
+                        if p and p.get("id"):
+                            by_id[str(p["id"])] = p
+                        else:
+                            fail += 1
+                        if done_n % 200 == 0 or done_n == len(todo):
+                            write_feed(
+                                "src-m-teknosa",
+                                list(by_id.values()),
+                                "teknosa full sitemap+cloudscraper (checkpoint)",
+                            )
+                            print(
+                                f"    ... {done_n}/{len(todo)} fetched, "
+                                f"{len(by_id)} products, fail={fail}",
+                                flush=True,
+                            )
+            if delay > 0:
+                time.sleep(delay)
+    except Exception as exc:
+        import traceback
+
+        print(f"  teknosa crawl aborted: {exc}", flush=True)
+        traceback.print_exc()
+        write_feed(
+            "src-m-teknosa",
+            list(by_id.values()),
+            "teknosa full sitemap+cloudscraper (aborted checkpoint)",
+        )
+
+    return list(by_id.values())
 
 
 def write_feed(source_code: str, products: list[dict[str, Any]], source: str) -> Path:
@@ -540,11 +641,13 @@ def write_feed(source_code: str, products: list[dict[str, Any]], source: str) ->
 
 
 FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
-    "vatan": lambda c, d, lim: fetch_vatan(c, d, lim),
-    "mediamarkt": lambda c, d, lim: fetch_mediamarkt(c, d, lim),
-    "koctas": lambda c, d, lim: fetch_koctas(c, d, lim),
-    "dr": lambda c, d, lim: fetch_dr(c, d, lim),
-    "teknosa": lambda c, d, lim: fetch_teknosa(c, d, lim),
+    "vatan": lambda c, d, lim, **kw: fetch_vatan(c, d, lim),
+    "mediamarkt": lambda c, d, lim, **kw: fetch_mediamarkt(c, d, lim),
+    "koctas": lambda c, d, lim, **kw: fetch_koctas(c, d, lim),
+    "dr": lambda c, d, lim, **kw: fetch_dr(c, d, lim),
+    "teknosa": lambda c, d, lim, **kw: fetch_teknosa(
+        c, d, lim, workers=int(kw.get("workers", 6))
+    ),
 }
 
 
@@ -562,6 +665,12 @@ def main() -> None:
         default=0,
         help="max products per merchant; 0 = no limit",
     )
+    p.add_argument(
+        "--workers",
+        type=int,
+        default=6,
+        help="concurrent PDP workers (teknosa / WAF merchants)",
+    )
     args = p.parse_args()
     wanted = [m.strip() for m in args.merchants.split(",") if m.strip()]
 
@@ -572,7 +681,9 @@ def main() -> None:
                 continue
             print(f"fetch {code} ...")
             try:
-                products = FETCHERS[code](client, args.delay, args.limit)
+                products = FETCHERS[code](
+                    client, args.delay, args.limit, workers=args.workers
+                )
                 path = write_feed(f"src-m-{code}", products, f"{code} live capture")
                 print(f"  {len(products)} -> {path}")
             except Exception as exc:

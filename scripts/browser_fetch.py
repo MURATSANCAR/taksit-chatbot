@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Optional browser / FlareSolverr helpers for WAF-challenged merchant pages.
+"""Optional browser / FlareSolverr / cloudscraper helpers for WAF pages.
 
 Used by ``fetch_live_merchant_feeds.py`` when plain HTTP is blocked.
 
+- cloudscraper: JS challenge bypass (preferred for Teknosa)
 - Playwright: https://github.com/microsoft/playwright-python
 - FlareSolverr (ops sidecar): https://github.com/FlareSolverr/FlareSolverr
 
@@ -12,11 +13,38 @@ Does not invent product data. If a challenge cannot be solved, returns None.
 from __future__ import annotations
 
 import os
-from typing import Optional
+from typing import Any, Optional
 
 import httpx
 
 FLARESOLVERR_URL = os.environ.get("FLARESOLVERR_URL", "").rstrip("/")
+
+
+def create_cloudscraper() -> Any:
+    """Return a cloudscraper session (Cloudflare JS challenge)."""
+    try:
+        import cloudscraper
+    except ImportError as exc:
+        raise SystemExit(
+            "cloudscraper required for WAF merchants — pip install cloudscraper"
+        ) from exc
+    return cloudscraper.create_scraper(
+        browser={"browser": "chrome", "platform": "darwin", "mobile": False}
+    )
+
+
+def fetch_html_cloudscraper(url: str, *, timeout: float = 60.0, session: Any = None) -> Optional[str]:
+    scraper = session or create_cloudscraper()
+    try:
+        r = scraper.get(url, timeout=timeout)
+    except Exception as exc:
+        print(f"  cloudscraper fail {url}: {exc}")
+        return None
+    if r.status_code != 200 or len(r.text) < 500:
+        return None
+    if "Just a moment" in r.text or "Attention Required" in r.text[:2000]:
+        return None
+    return r.text
 
 
 def fetch_html_playwright(
@@ -76,7 +104,13 @@ def fetch_html_flaresolverr(url: str, *, timeout_ms: int = 60000) -> Optional[st
 
 
 def fetch_html(url: str, *, prefer: str = "auto") -> Optional[str]:
-    """prefer: auto|playwright|flaresolverr"""
+    """prefer: auto|cloudscraper|playwright|flaresolverr"""
+    if prefer in ("auto", "cloudscraper"):
+        html = fetch_html_cloudscraper(url)
+        if html:
+            return html
+        if prefer == "cloudscraper":
+            return None
     if prefer in ("auto", "flaresolverr"):
         html = fetch_html_flaresolverr(url)
         if html:

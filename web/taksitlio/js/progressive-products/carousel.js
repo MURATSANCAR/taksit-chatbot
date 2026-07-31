@@ -14,12 +14,12 @@
       '</div><div class="partial-carousel">';
     (snapshot.products || []).forEach(function (p) {
       html +=
-        '<article class="partial-card" style="min-width:140px">' +
+        '<article class="partial-card">' +
         (p.thumbnail_cdn_url
-          ? '<img width="120" height="90" alt="" src="' +
+          ? '<img alt="" loading="lazy" src="' +
             escapeHtml(p.thumbnail_cdn_url) +
             '" />'
-          : '<div class="skeleton" style="width:120px;height:90px"></div>') +
+          : '<div class="skeleton" aria-hidden="true"></div>') +
         "<h4>" +
         escapeHtml(p.display_name) +
         "</h4><p>" +

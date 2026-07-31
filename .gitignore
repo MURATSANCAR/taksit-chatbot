@@ -20,3 +20,5 @@ evaluation/private/*
 
 # P17 LoRA exports (generated)
 training/exports/
+.venv-crawl/
+vendor/

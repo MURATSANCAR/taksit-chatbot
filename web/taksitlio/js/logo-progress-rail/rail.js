@@ -24,7 +24,7 @@
           html +=
             '<span class="logo-fallback" title="' +
             alt +
-            '" style="width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center">' +
+            '">' +
             alt.slice(0, 2) +
             "</span>";
         }
