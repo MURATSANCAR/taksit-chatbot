@@ -247,6 +247,9 @@ def build_in_memory_container(
         responder=responder,
         campaign_repo=campaign_repo,
     )
+    from taksitlio.product_query.cache_wiring import build_product_query_caches
+
+    product_query_caches = build_product_query_caches(settings, redis=None)
     return AppContainer(
         settings=settings,
         pipeline=pipeline,
@@ -259,6 +262,7 @@ def build_in_memory_container(
             "understanding": understanding,
             "health": health,
             "profiles": None,
+            "product_query_caches": product_query_caches,
         },
     )
 
@@ -319,6 +323,9 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
         responder=responder,
         campaign_repo=campaign_repo,
     )
+    from taksitlio.product_query.cache_wiring import build_product_query_caches
+
+    product_query_caches = build_product_query_caches(settings, redis=redis)
     return AppContainer(
         settings=settings,
         pipeline=pipeline,
@@ -330,5 +337,6 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "sessions": sessions,
             "route_repo": route_repo,
             "health": health,
+            "product_query_caches": product_query_caches,
         },
     )

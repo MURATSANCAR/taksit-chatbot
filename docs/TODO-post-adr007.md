@@ -82,12 +82,15 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] merchant READY/PARTIAL/BLOCKED activation
 - [x] `POST /v1/product-query/progressive-cards`
 - [x] Unit tests
+- [x] `product_query.search` (resolve → filter → rank → cards + refresh jobs)
+- [x] `POST /v1/product-query/search` + in-memory alias cache; Redis optional (`RedisAliasResolutionCache`)
+- [x] Search/cache unit tests
 
 ### Sonraki (operasyon / ayrı hat)
 
 - [ ] Task-specific FAST fine-tune / LoRA
 - [ ] İlk gerçek merchant feed bağlama (operatör; kodda merchant adı yok)
-- [ ] Full product-query search HTTP + Redis caches
+- [ ] Redis popular-query / alias cache wiring at scale (container DI)
 - [ ] Campaign Gate kişisel onay (ADR-009 provisional sonrası)
 
 ## Gates
@@ -101,6 +104,6 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 | Campaign (kişisel onay) | CLOSED |
 | Data Ingestion | P1 (generic feed adapter + product schema) |
 | Data Quality | P2 media quality skeleton |
-| Fast Product Path | P4 skeleton (resolution + ranking) |
+| Fast Product Path | P5B (search HTTP + alias cache; Redis optional) |
 | Finance Mapping | P3 skeleton (eligibility + payment plan) |
 | Recommendation | P4 ranking safety rules |

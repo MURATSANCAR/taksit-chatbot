@@ -24,9 +24,15 @@ from taksitlio.product_query.ranking import (
     RankingWeights,
     rank_products,
 )
+from taksitlio.product_query.search import (
+    ProductSearchRequest,
+    ProductSearchResponse,
+    SearchProductCandidate,
+    search_products,
+)
 
 ADR_SCOPE = "ADR-010"
-PACKAGE_STATUS = "P4"
+PACKAGE_STATUS = "P5B"
 
 
 @dataclass(frozen=True)
@@ -117,6 +123,9 @@ __all__ = [
     "PACKAGE_STATUS",
     "ProductQueryRequest",
     "ProductQueryResult",
+    "ProductSearchRequest",
+    "ProductSearchResponse",
+    "SearchProductCandidate",
     "StructuredProductFilters",
     "rebuild_finance_options",
     "rank_products",
@@ -124,4 +133,5 @@ __all__ = [
     "resolve_institutions",
     "resolve_merchant",
     "run_product_query",
+    "search_products",
 ]

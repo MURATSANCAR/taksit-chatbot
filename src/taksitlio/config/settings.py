@@ -19,6 +19,10 @@ class InfraSettings:
     redis_url: str
     redis_key_prefix: str = "taksitlio"
     session_ttl_seconds: int = 86400
+    alias_cache_ttl_seconds: int = 300
+    popular_query_cache_ttl_seconds: int = 120
+    best_offer_cache_ttl_seconds: int = 180
+    catalog_cache_version: str = "catalog-v0"
     http_timeout_seconds: float = 30.0
     api_host: str = "0.0.0.0"
     api_port: int = 8000
@@ -48,6 +52,15 @@ class InfraSettings:
             redis_url=redis_url or "redis://redis:6379/0",
             redis_key_prefix=_env("REDIS_KEY_PREFIX", "taksitlio") or "taksitlio",
             session_ttl_seconds=int(_env("SESSION_TTL_SECONDS", "86400")),
+            alias_cache_ttl_seconds=int(_env("ALIAS_CACHE_TTL_SECONDS", "300")),
+            popular_query_cache_ttl_seconds=int(
+                _env("POPULAR_QUERY_CACHE_TTL_SECONDS", "120")
+            ),
+            best_offer_cache_ttl_seconds=int(
+                _env("BEST_OFFER_CACHE_TTL_SECONDS", "180")
+            ),
+            catalog_cache_version=_env("CATALOG_CACHE_VERSION", "catalog-v0")
+            or "catalog-v0",
             http_timeout_seconds=float(_env("HTTP_TIMEOUT_SECONDS", "30")),
             api_host=_env("API_HOST", "0.0.0.0") or "0.0.0.0",
             api_port=int(_env("API_PORT", "8000")),
