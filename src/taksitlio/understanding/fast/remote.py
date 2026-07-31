@@ -205,7 +205,17 @@ class RemoteFastExtractor:
                 reason_code="FORBIDDEN_IDENTIFIER_GENERATION",
             )
 
-        constraints = self._validator.validate(need_profile)
+        # Validator expects the constraint bag, not the full NeedProfile.
+        raw_constraints = need_profile.get("semantic_constraints")
+        if not isinstance(raw_constraints, Mapping):
+            raw_constraints = {}
+        constraints = self._validator.validate(raw_constraints)
+        usage = payload.get("usage") if isinstance(payload, dict) else None
+        finish_reason = None
+        try:
+            finish_reason = (payload.get("choices") or [{}])[0].get("finish_reason")
+        except Exception:  # noqa: BLE001
+            finish_reason = None
         return FastExtractionOutcome(
             utterance=utterance,
             need_profile=need_profile,
@@ -217,6 +227,8 @@ class RemoteFastExtractor:
                 "profile_code": self._profile_code,
                 "correlation_id": correlation_id,
                 "forbidden_identifier_hits": forbidden_hits,
+                "usage": usage if isinstance(usage, Mapping) else None,
+                "finish_reason": finish_reason,
             },
         )
 

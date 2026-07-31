@@ -90,17 +90,67 @@ class FastExtractionMetrics:
         }
 
 
+def _normalize_for_score(text: str) -> str:
+    """Reuse Turkish-aware folding used by SemanticConstraintValidator."""
+
+    try:
+        from taksitlio.semantic_constraints.validator import _normalize_concept
+
+        return _normalize_concept(text)
+    except Exception:  # noqa: BLE001
+        return text.strip().lower()
+
+
 def _concept_texts(items: Sequence[Mapping[str, Any]] | None) -> set[str]:
+    """Extract comparable concept strings from annotation or NeedProfile bags.
+
+    Accepts both evaluation annotation keys (``concept``) and morphology-safe
+    fields (``surface_form`` / ``normalized``). Values are folded with the
+    same Turkish normalization used by SemanticConstraintValidator.
+    """
+
     out: set[str] = set()
     if not items:
         return out
     for item in items:
         if not isinstance(item, Mapping):
             continue
-        for key in ("surface_form", "normalized", "text", "value"):
+        for key in (
+            "surface_form",
+            "normalized",
+            "concept",
+            "text",
+            "value",
+            "previous_concept",
+            "replacement_concept",
+        ):
             val = item.get(key)
             if isinstance(val, str) and val.strip():
-                out.add(val.strip().lower())
+                out.add(_normalize_for_score(val))
+    return out
+
+
+def _correction_texts(items: Sequence[Mapping[str, Any]] | None) -> set[str]:
+    """Score corrections as ``previous->replacement`` pairs when both exist."""
+
+    out: set[str] = set()
+    if not items:
+        return out
+    for item in items:
+        if not isinstance(item, Mapping):
+            continue
+        prev = item.get("previous_concept") or item.get("previous_surface_form")
+        repl = item.get("replacement_concept") or item.get("replacement_surface_form")
+        if isinstance(prev, str) and isinstance(repl, str) and prev.strip() and repl.strip():
+            out.add(
+                f"{_normalize_for_score(prev)}->{_normalize_for_score(repl)}"
+            )
+            continue
+        # Single-concept USER_CORRECTION / legacy shape: fall back to concept set.
+        for key in ("surface_form", "normalized", "concept", "text", "value"):
+            val = item.get(key)
+            if isinstance(val, str) and val.strip():
+                out.add(_normalize_for_score(val))
                 break
     return out
 
@@ -205,7 +255,7 @@ def score_fast_extraction(
         _prf_update(
             m,
             kind="correction",
-            predicted=_concept_texts((pred_c or {}).get("corrections")),
-            expected=_concept_texts((exp_c or {}).get("corrections")),
+            predicted=_correction_texts((pred_c or {}).get("corrections")),
+            expected=_correction_texts((exp_c or {}).get("corrections")),
         )
     return m

@@ -14,6 +14,7 @@ class RuntimeGateStatus(str, Enum):
     RUNTIME_READY = "RUNTIME_READY"
     BLOCKED_DEPENDENCY = "BLOCKED_DEPENDENCY"
     RUNTIME_QUALITY_REJECT = "RUNTIME_QUALITY_REJECT"
+    RUNTIME_PERFORMANCE_REJECT = "RUNTIME_PERFORMANCE_REJECT"
 
 
 class CampaignGateStatus(str, Enum):
@@ -58,17 +59,21 @@ def evaluate_runtime_gate(
     deps: RuntimeDependencyReport,
     *,
     quality_ok: Optional[bool] = None,
+    performance_ok: Optional[bool] = None,
 ) -> RuntimeGateStatus:
     """Dependency-first runtime gate.
 
     Missing dependency → BLOCKED_DEPENDENCY (never counted as test success).
     Dependencies green but measured quality fails → RUNTIME_QUALITY_REJECT.
+    Quality ok but latency/throughput floors missed → RUNTIME_PERFORMANCE_REJECT.
     """
 
     if not deps.all_available or not deps.all_measured:
         return RuntimeGateStatus.BLOCKED_DEPENDENCY
     if quality_ok is False:
         return RuntimeGateStatus.RUNTIME_QUALITY_REJECT
+    if performance_ok is False:
+        return RuntimeGateStatus.RUNTIME_PERFORMANCE_REJECT
     return RuntimeGateStatus.RUNTIME_READY
 
 
