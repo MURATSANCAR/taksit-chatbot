@@ -2,3 +2,8 @@
 /feeds/*.json
 !/feeds/fixtures/
 !/feeds/fixtures/**
+
+# Live ops captures — never commit merchant/product/campaign binaries or feeds.
+# Store on the server: LIVE_FEED_DIR (staging) → MEDIA_STORAGE_ROOT / S3 (CDN).
+/feeds/live/**
+!/feeds/live/README.md

@@ -24,6 +24,11 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "crawler" / "feeds" / "live"
 UA = "TaksitlioBot/0.1 (+ADR-010 polite catalog; ops research)"
 
+# Allow `from browser_fetch import ...` when run as scripts/fetch_*.py
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 
 def parse_tr_price(raw: str) -> Optional[float]:
     text = raw.strip().replace("TL", "").replace("₺", "").strip()
@@ -365,32 +370,151 @@ def fetch_mediamarkt(client: httpx.Client, delay: float, limit: int) -> list[dic
 
 
 def fetch_koctas(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
-    return fetch_listing_then_jsonld(
-        client,
-        category_urls=[
-            "https://www.koctas.com.tr/beyaz-esya-c-200001",
-            "https://www.koctas.com.tr/elektronik-c-200002",
-            "https://www.koctas.com.tr/mobilya-c-100001",
-        ],
-        product_href_re=r'href="(https://www\.koctas\.com\.tr/[^"#?]+\.html)"',
-        delay=delay,
-        limit=limit,
-        base="https://www.koctas.com.tr",
-    )
+    """Koçtaş: PDP/category often Akamai-denied; use Playwright homepage + allowed pages.
+
+    Full catalog needs FlareSolverr/residential proxy or merchant feed.
+    Sitemap product URLs are public but PDP HTML is blocked from many IPs.
+    """
+    from browser_fetch import fetch_html_playwright
+
+    html = fetch_html_playwright("https://www.koctas.com.tr/", wait_ms=5000)
+    if not html:
+        print("  koctas: browser blocked — set FLARESOLVERR_URL or provide partner feed")
+        return []
+    # Extract from DOM-like structure in rendered HTML via JS-equivalent regex cleanup
+    products: list[dict[str, Any]] = []
+    try:
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_context(locale="tr-TR").new_page()
+            page.set_content(html, wait_until="domcontentloaded")
+            rows = page.evaluate(
+                """() => {
+                const out=[]; const seen=new Set();
+                document.querySelectorAll('a[href*="/p/"]').forEach(a=>{
+                  const href=a.getAttribute('href')||'';
+                  const m=href.match(/\\/p\\/(\\d+)/);
+                  if(!m || seen.has(m[1])) return;
+                  let root=a.closest('[data-price], .product-item, [class*="product-card"], li, article');
+                  if(!root) root=a.parentElement?.parentElement || a.parentElement;
+                  const priceAttr=root?.getAttribute?.('data-price')
+                    || root?.querySelector?.('[data-price]')?.getAttribute('data-price');
+                  const pm=(root?.innerText||'').match(/(\\d{1,3}(?:\\.\\d{3})*,\\d{2}|\\d+,\\d{2})\\s*TL/);
+                  let name=(a.getAttribute('title')||a.getAttribute('aria-label')||'').trim();
+                  if(!name){
+                    name=root?.querySelector?.('h2,h3,[class*="name"],[class*="title"]')?.textContent?.trim()||'';
+                  }
+                  if(!name || name.length<6) return;
+                  if(/next slide|previous|sepete|çok satan|alışverişe başla|indirim fırsatı/i.test(name)) return;
+                  let price=null;
+                  if(priceAttr){
+                    const raw=String(priceAttr);
+                    price=parseFloat(raw.includes(',') ? raw.replace(/\\./g,'').replace(',','.') : raw);
+                  } else if(pm){
+                    price=parseFloat(pm[1].replace(/\\./g,'').replace(',','.'));
+                  }
+                  if(!(price>0)) return;
+                  let img=root?.querySelector('img[src^="http"]')?.getAttribute('src')
+                    || root?.querySelector('img[data-src^="http"]')?.getAttribute('data-src') || null;
+                  if(img && img.startsWith('data:')) img=null;
+                  const url=href.startsWith('http') ? href.split('?')[0]
+                    : ('https://www.koctas.com.tr'+href.split('?')[0]);
+                  seen.add(m[1]);
+                  out.push({id:m[1], name:name.slice(0,200), url, price, image_url:img,
+                            currency:'TRY', stock_status:'UNKNOWN', attributes:{}});
+                });
+                return out;
+            }"""
+            )
+            browser.close()
+            products = list(rows or [])
+    except Exception as exc:
+        print(f"  koctas extract fail: {exc}")
+        return []
+    products = _apply_limit(products, limit)
+    time.sleep(delay)
+    return list({p["id"]: p for p in products}.values())
+
+
+def _dr_product_urls_from_sitemaps(client: httpx.Client, delay: float, limit: int) -> list[str]:
+    idx = client.get("https://www.dr.com.tr/sitemaps/products.xml")
+    if idx.status_code != 200:
+        return []
+    maps = re.findall(r"<loc>([^<]+)</loc>", idx.text)
+    urls: list[str] = []
+    for sm in maps:
+        time.sleep(delay)
+        r = client.get(sm)
+        if r.status_code != 200:
+            continue
+        for u in re.findall(r"<loc>([^<]+)</loc>", r.text):
+            if "dr.com.tr" in u and u not in urls:
+                urls.append(u)
+                if limit > 0 and len(urls) >= limit:
+                    return urls
+        print(f"  dr sitemap {sm.rsplit('/', 1)[-1]} urls={len(urls)}")
+    return urls
 
 
 def fetch_dr(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
-    return fetch_listing_then_jsonld(
-        client,
-        category_urls=[
-            "https://www.dr.com.tr/kategori/elektronik",
-            "https://www.dr.com.tr/kategori/kitap",
-        ],
-        product_href_re=r'href="(https://www\.dr\.com\.tr/[^"#?]+)"',
-        delay=delay,
-        limit=limit,
-        base="https://www.dr.com.tr",
-    )
+    """D&R: official product sitemaps + JSON-LD (category HTML has almost no PDP links)."""
+    product_urls = _dr_product_urls_from_sitemaps(client, delay, limit)
+    out: list[dict[str, Any]] = []
+    for i, url in enumerate(product_urls, 1):
+        r = client.get(url)
+        if r.status_code == 200:
+            p = parse_jsonld_product(r.text, url)
+            if p:
+                out.append(p)
+        if i % 50 == 0:
+            print(f"    ... {i}/{len(product_urls)} fetched, {len(out)} ok")
+            write_feed(
+                "src-m-dr",
+                list({p["id"]: p for p in out}.values()),
+                "dr live capture (checkpoint)",
+            )
+        time.sleep(delay)
+    return list({p["id"]: p for p in out}.values())
+
+
+def fetch_teknosa(client: httpx.Client, delay: float, limit: int) -> list[dict[str, Any]]:
+    """Teknosa: Cloudflare blocks plain HTTP; try Playwright, then FlareSolverr."""
+    from browser_fetch import fetch_html, fetch_html_flaresolverr
+
+    seeds = [
+        "https://www.teknosa.com/",
+        "https://www.teknosa.com/laptop-c-100001",
+        "https://www.teknosa.com/telefon-c-100002",
+    ]
+    product_urls: list[str] = []
+    for seed in seeds:
+        html = fetch_html(seed) or fetch_html_flaresolverr(seed)
+        if not html:
+            print(f"  teknosa blocked: {seed}")
+            continue
+        found = re.findall(r'href="(https://www\.teknosa\.com/[^"#?]+\-p\-\d+[^"#?]*)"', html)
+        found += [
+            "https://www.teknosa.com" + u
+            for u in re.findall(r'href="(/[^"#?]+\-p\-\d+[^"#?]*)"', html)
+        ]
+        for u in found:
+            if u not in product_urls:
+                product_urls.append(u.split("?")[0])
+        time.sleep(delay)
+    product_urls = _apply_limit(product_urls, limit)
+    out: list[dict[str, Any]] = []
+    for i, url in enumerate(product_urls, 1):
+        html = fetch_html(url)
+        if html:
+            p = parse_jsonld_product(html, url)
+            if p:
+                out.append(p)
+        if i % 20 == 0:
+            print(f"    ... {i}/{len(product_urls)} fetched, {len(out)} ok")
+        time.sleep(delay)
+    return list({p["id"]: p for p in out}.values())
 
 
 def write_feed(source_code: str, products: list[dict[str, Any]], source: str) -> Path:
@@ -420,6 +544,7 @@ FETCHERS: dict[str, Callable[..., list[dict[str, Any]]]] = {
     "mediamarkt": lambda c, d, lim: fetch_mediamarkt(c, d, lim),
     "koctas": lambda c, d, lim: fetch_koctas(c, d, lim),
     "dr": lambda c, d, lim: fetch_dr(c, d, lim),
+    "teknosa": lambda c, d, lim: fetch_teknosa(c, d, lim),
 }
 
 
@@ -427,8 +552,8 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--merchants",
-        default="vatan,mediamarkt,koctas,dr",
-        help="comma list: vatan,mediamarkt,koctas,dr",
+        default="vatan,mediamarkt,koctas,dr,teknosa",
+        help="comma list: vatan,mediamarkt,koctas,dr,teknosa",
     )
     p.add_argument("--delay", type=float, default=2.0)
     p.add_argument(

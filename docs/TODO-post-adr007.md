@@ -251,8 +251,9 @@ ADR: [`docs/adr/ADR-012-answer-integrity-claim-grounding-and-recommendation-safe
 
 Ops runbook: [`docs/runbooks/ADR-012-answer-integrity-ops.md`](runbooks/ADR-012-answer-integrity-ops.md)
 
-Durum: **Closed — production gates PASS (2026-07-31).** Canlı DB migrate + smoke
-runbook’da; bu makinede Docker/DATABASE_URL yoksa ops adımı sunucuda kalır.
+Durum: **Closed — production gates PASS (2026-07-31).** Canlı DB migrate
+nanobase’te uygulandı (V022–V024, 2026-08-01); smoke write OK. Ops runbook:
+[`docs/runbooks/ADR-012-answer-integrity-ops.md`](runbooks/ADR-012-answer-integrity-ops.md).
 
 ### P0 — design lock + skeleton
 

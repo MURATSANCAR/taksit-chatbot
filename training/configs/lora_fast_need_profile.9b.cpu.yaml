@@ -1,10 +1,10 @@
 # 9B NeedProfile LoRA on CPU (nanobase). Expect multi-hour / multi-day runs.
 # Requires HuggingFace transformers weights, not GGUF.
-# Example HF id (ops may mirror locally): Qwen/Qwen3.5-9B or org-equivalent opaque ref.
+# Hub id matches serve family: Qwen/Qwen3.5-9B (GGUF remain for llama.cpp).
 
 base_model_ref: "Qwen/Qwen3.5-9B"
 output_dir: "training/exports/lora-out-9b-cpu"
-train_jsonl: "training/exports/need_profile_sft.jsonl"
+train_jsonl: "training/exports/need_profile_sft.v2.jsonl"
 
 lora:
   r: 16
@@ -17,16 +17,17 @@ train:
   learning_rate: 2.0e-4
   per_device_train_batch_size: 1
   gradient_accumulation_steps: 8
-  max_seq_len: 2048
+  max_seq_len: 1024
   bf16: false
   logging_steps: 10
-  save_steps: 100
-  # omit max_steps → full epoch over JSONL
+  save_steps: 50
+  max_steps: 200
 
 runtime:
   require_gpu: false
   framework: "peft+transformers"
 
 notes:
-  - "CPU 9B is intentional slow path until a GPU host exists"
+  - "First overnight pass uses max_steps=200 on v2 SFT (~2k rows)"
+  - "Serving GGUF (poc-fast-nine-b) remains separate until adapter is converted/wired"
   - "Do not claim QUALITY_READY until ADR-009 HR100 eval passes"

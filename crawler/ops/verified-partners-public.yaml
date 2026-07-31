@@ -21,8 +21,12 @@ merchants_verified_public:
   - merchant_code: m-teknosa
     display_name: Teknosa
     verification: [PUBLIC_MERCHANT_PAGE, PRESS]
-    crawl_status: BLOCKED_CLOUDFLARE
+    crawl_status: PLAYWRIGHT_OR_FLARESOLVERR
     seed_urls: [https://www.teknosa.com/]
+    notes: |
+      Plain HTTP 403 (Cloudflare). Use Playwright and/or FlareSolverr profile:
+      docker compose -f docker/docker-compose.crawler.yml --profile waf up -d flaresolverr
+      FLARESOLVERR_URL=http://127.0.0.1:8191
 
   - merchant_code: m-vatan
     display_name: Vatan Bilgisayar
@@ -41,9 +45,13 @@ merchants_verified_public:
   - merchant_code: m-koctas
     display_name: Koçtaş
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: ATTEMPT
+    crawl_status: PLAYWRIGHT_HOMEPAGE_PARTIAL
     source_code: src-m-koctas
     seed_urls: [https://www.koctas.com.tr/]
+    notes: |
+      Product sitemaps public; PDP/category often Akamai Access Denied.
+      Playwright can read homepage cards. Full catalog needs partner feed,
+      residential proxy, or Apify actor (caulleonard/koctas-product-scraper).
 
   - merchant_code: m-arcelik
     display_name: Arçelik
@@ -103,9 +111,10 @@ merchants_verified_public:
   - merchant_code: m-dr
     display_name: D&R
     verification: [PUBLIC_BANK_PAGE]
-    crawl_status: ATTEMPT
+    crawl_status: LIVE_SITEMAP
     source_code: src-m-dr
     seed_urls: [https://www.dr.com.tr/]
+    notes: Official sitemaps/products.xml + JSON-LD PDPs.
 
   - merchant_code: m-civil
     display_name: Civil
