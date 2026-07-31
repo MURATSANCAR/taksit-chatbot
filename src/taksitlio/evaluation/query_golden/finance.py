@@ -111,6 +111,7 @@ def evaluate_finance_lane(
                 term_months=int(row["term"]),
                 snapshot=snap,
                 fees_total=float(row.get("fees") or 0),
+                down_payment=float(row.get("down_payment") or 0),
             )
             exp_m = float(row["expected_monthly_payment"])
             exp_t = float(row["expected_total_repayment"])

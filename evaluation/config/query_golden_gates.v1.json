@@ -1,7 +1,7 @@
 {
   "version": "v1",
   "dataset_id": "taksitlio-query-golden-v1",
-  "notes": "ADR-013 gate thresholds. Parser full ACCEPT requires DRAFT=0 + HR bar. Retrieval/finance TEST lanes use zero-tolerance integrity counts.",
+  "notes": "ADR-013 gate thresholds. Parser/clarification full ACCEPT requires DRAFT=0. Retrieval/finance/bank_mapping use zero-tolerance integrity counts.",
   "minimum_human_reviewed": 100,
   "parser_gate_thresholds": {
     "merchant_precision": {"min": 0.98},
@@ -31,10 +31,38 @@
     "wrong_total_repayment": {"max_count": 0},
     "eligibility_accuracy": {"min": 1.0}
   },
+  "bank_mapping_gate_thresholds": {
+    "wrong_bank_mapping": {"max_count": 0},
+    "wrong_merchant_mapping": {"max_count": 0},
+    "expired_shown": {"max_count": 0},
+    "no_agreement_shown": {"max_count": 0},
+    "accuracy": {"min": 1.0}
+  },
   "clarification_gate_thresholds": {
     "llm_avoided_by_clarification_rate": {"min": 0.60},
     "max_questions_per_message": {"max_count": 1},
     "max_consecutive_questions": {"max_count": 2}
+  },
+  "shadow_gate_thresholds": {
+    "merchant_diffs": {"max_count": 0}
+  },
+  "product_data_gate_thresholds": {
+    "wrong_name": {"max_count": 0},
+    "wrong_price": {"max_count": 0},
+    "wrong_url": {"max_count": 0},
+    "wrong_variant": {"max_count": 0},
+    "broken_image_on_clean": {"max_count": 0},
+    "invented_products_on_store_only": {"max_count": 0},
+    "defect_detection_misses": {"max_count": 0},
+    "primary_image_coverage": {"min": 0.95},
+    "fresh_price_coverage": {"min": 0.95}
+  },
+  "perf_gate_thresholds": {
+    "parser_p95_ms": {"max": 30.0},
+    "total_p95_ms": {"max": 50.0}
+  },
+  "chaos_gate_thresholds": {
+    "failed": {"max_count": 0}
   },
   "zero_tolerance": [
     "wrong_bank_mapping",

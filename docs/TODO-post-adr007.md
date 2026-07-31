@@ -296,12 +296,14 @@ Runbook: [`docs/runbooks/ADR-013-layered-verification.md`](runbooks/ADR-013-laye
 - [x] Loader / metrics + `evaluation/_run_query_golden_v1.py` parser lane
 - [x] Data-driven fuzzy acceptance (no static typo map)
 - [x] Retrieval / finance / E2E lanes on **TEST** fixtures (product pool + finance scenarios)
+- [x] Payment plan golden expansion + bank mapping verification table (TEST)
+- [x] Clarification lane + offline shadow smoke on Query Golden
+- [x] Controlled product golden v1 (100 SKUs: api_feed / html_jsonld / store_only)
+- [x] Perf microbench lane + chaos degrade scenarios (TEST)
 - [ ] HUMAN_REVIEWED growth toward promotion bar (`DRAFT=0` + thresholds)
-- [ ] Retrieval / finance / E2E on **staging** (real merchant data; nanobase)
-- [ ] Staging product golden (controlled 100 SKUs × 3 merchant types)
-- [ ] Payment plan golden dataset expansion + bank mapping verification table
-- [ ] Shadow mode ≥1000 anonymous queries
-- [ ] Perf / chaos / UAT gates for general open
+- [ ] Retrieval / finance / E2E / product_data on **staging** (real merchant data; nanobase)
+- [ ] Shadow mode ≥1000 anonymous **live** queries
+- [ ] Perf / chaos hard gates on staging runtime + UAT
 
 ## Gates
 
@@ -336,6 +338,10 @@ Runbook: [`docs/runbooks/ADR-013-layered-verification.md`](runbooks/ADR-013-laye
 | Prompt Injection | ADR-012 PASS |
 | Query Golden / Parser (ADR-013) | P0 bootstrap (1000 cases; DRAFT-heavy; parser BOOTSTRAP) |
 | Query Golden Retrieval/Finance TEST (ADR-013) | PASS (fixture lanes; staging open) |
-| Clarification Gate (ADR-013 L2) | unit/acceptance skeleton; golden growth open |
+| Bank Mapping TEST (ADR-013) | PASS (verification table v1) |
+| Clarification Gate (ADR-013 L2) | BOOTSTRAP on golden (LLM leak=0; rate growth open) |
+| Shadow smoke offline (ADR-013) | BOOTSTRAP (live ≥1000 open) |
+| Product Data TEST (ADR-013 L3) | PASS (100 SKU fixture; staging open) |
+| Perf / Chaos TEST (ADR-013) | perf BOOTSTRAP-ok locally; chaos PASS |
 | Real Product / Finance / Payment / Rec / Progress (ADR-013 L3–L8) | staging datasets open |
 | Shadow / Perf / UAT (ADR-013) | open |

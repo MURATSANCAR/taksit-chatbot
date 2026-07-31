@@ -66,15 +66,29 @@ PASS requires schema-valid 1000 + runner green; promotion thresholds in
 ```bash
 python evaluation/_run_query_golden_v1.py --lane retrieval
 python evaluation/_run_query_golden_v1.py --lane finance
+python evaluation/_run_query_golden_v1.py --lane bank_mapping
+python evaluation/_run_query_golden_v1.py --lane clarification
+python evaluation/_run_query_golden_v1.py --lane shadow
+python evaluation/_run_query_golden_v1.py --lane product_data
+python evaluation/_run_query_golden_v1.py --lane perf
+python evaluation/_run_query_golden_v1.py --lane chaos
 python evaluation/_run_query_golden_v1.py --lane e2e
 ```
 
-- **retrieval** — same Query Golden utterances + TEST product pool
-  (`evaluation/fixtures/query_golden_test_products.json`). Zero-tolerance:
-  budget / merchant / negation / RAM filter leaks.
-- **finance** — `finance_scenarios.v1.jsonl` eligibility + payment golden.
-  Zero-tolerance: expired/no-agreement shown, wrong monthly/total.
-- **e2e** — composes parser + retrieval + finance on TEST only.
+- **retrieval** — Query Golden + TEST product pool. Zero-tolerance filter leaks.
+- **finance** — expanded payment + eligibility golden (`finance_scenarios.v1.jsonl`).
+- **bank_mapping** — merchant↔bank verification table
+  (`bank_mapping_verification.v1.jsonl`); expired / no-agreement / category
+  exclusion must not show.
+- **clarification** — L2 metrics; `unnecessary_llm_on_clarification_count=0`;
+  avoidance rate target ≥0.60 (BOOTSTRAP while DRAFT-heavy).
+- **shadow** — offline expected-vs-parser diff smoke (not live dual-run).
+- **product_data** — 100 controlled SKUs/probes across `api_feed` /
+  `html_jsonld` / `store_only` (`product_golden.v1.jsonl`).
+- **perf** — warm parser P50/P95/P99 (local CI informational / BOOTSTRAP).
+- **chaos** — progress truthfulness, LLM circuit, expired campaign, stale LLM,
+  empty feed.
+- **e2e** — composes all of the above on TEST.
 
 Staging real-merchant bind remains open (nanobase); do not treat TEST PASS
 as Real Product Data Gate.

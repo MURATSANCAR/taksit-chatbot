@@ -1,0 +1,10 @@
+{"scenario_id": "chaos-001", "kind": "progress_truthfulness", "data_origin": "LOCAL_VERIFIED_SNAPSHOT", "assert_rejects_live_claim": true}
+{"scenario_id": "chaos-002", "kind": "progress_truthfulness", "data_origin": "FINANCIAL_INSTITUTION_API", "assert_rejects_live_claim": false}
+{"scenario_id": "chaos-003", "kind": "llm_circuit_open", "message": "Evde herkesin kullanabileceği mantıklı bir cihaz arıyorum"}
+{"scenario_id": "chaos-004", "kind": "clarification_when_llm_down", "message": "Apple almak istiyorum"}
+{"scenario_id": "chaos-005", "kind": "expired_campaign_not_shown"}
+{"scenario_id": "chaos-006", "kind": "stale_llm_not_applied"}
+{"scenario_id": "chaos-007", "kind": "empty_feed_no_crash"}
+{"scenario_id": "chaos-008", "kind": "progress_truthfulness", "data_origin": "CACHED_VERIFIED_RESULT", "assert_rejects_live_claim": true}
+{"scenario_id": "chaos-009", "kind": "llm_circuit_open", "message": "Teknosa’dan 40 bin liraya laptop"}
+{"scenario_id": "chaos-010", "kind": "expired_campaign_not_shown"}
