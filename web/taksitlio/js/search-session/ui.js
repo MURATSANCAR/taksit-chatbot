@@ -65,6 +65,82 @@
     return isHardTerminalStatus(status) || isContinuableStatus(status);
   }
 
+  var GREETING_ASSIST =
+    "Tanıştığımıza memnun oldum. Ben Taksitlio Yapay Zeka asistanıyım; " +
+    "ihtiyacınız olan ürünleri en uygun ve en iyi ödeme koşullarıyla bulmanız " +
+    "için buradayım. Hangi ürünü arıyorsunuz?";
+  var OUT_OF_SCOPE_ASSIST =
+    "Bu konuda yardımcı olamam. Ben Taksitlio Yapay Zeka asistanıyım; " +
+    "ürün ve taksit kampanyalarında size en uygun seçenekleri bulmak için " +
+    "buradayım. Ne arıyorsunuz?";
+  var GREETING_CUES = [
+    "merhaba",
+    "selam",
+    "nasilsin",
+    "nasılsın",
+    "iyi misin",
+    "gunaydin",
+    "günaydın",
+    "iyi aksamlar",
+    "iyi akşamlar",
+    "ne haber",
+    "naber",
+    "kimsin",
+    "sen kimsin",
+    "adin ne",
+    "adın ne",
+  ];
+  var CHAT_CUES = [
+    "hava durumu",
+    "hava nasil",
+    "hava nasıl",
+    "fikra",
+    "fıkra",
+    "siyaset",
+    "kripto",
+    "bitcoin",
+    "chatgpt",
+    "saka yap",
+    "şaka yap",
+    "siir yaz",
+    "şiir yaz",
+  ];
+  var PURCHASE_CUES = [
+    "almak",
+    "ariyorum",
+    "arıyorum",
+    "fiyat",
+    "taksit",
+    "butce",
+    "bütçe",
+    "lazim",
+    "lazım",
+  ];
+
+  function foldTr(text) {
+    return String(text || "")
+      .toLocaleLowerCase("tr-TR")
+      .replace(/İ/g, "i")
+      .replace(/I/g, "ı");
+  }
+
+  function hasCue(folded, cues) {
+    for (var i = 0; i < cues.length; i++) {
+      if (folded.indexOf(cues[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  /** Instant local copy for clear greetings / chitchat (server still called async). */
+  function localAssistReply(message) {
+    var folded = " " + foldTr(message) + " ";
+    if (!folded.trim()) return null;
+    if (hasCue(folded, PURCHASE_CUES)) return null;
+    if (hasCue(folded, GREETING_CUES)) return GREETING_ASSIST;
+    if (hasCue(folded, CHAT_CUES)) return OUT_OF_SCOPE_ASSIST;
+    return null;
+  }
+
   function ensurePanels(thread) {
     var host = thread.querySelector("[data-search-ui]");
     if (host) return host;
@@ -434,8 +510,16 @@
       }
 
       renderControls(panels.querySelector("[data-controls]"));
-      if (state.searchSessionId) {
+      // OUT_OF_SCOPE / terminal: no live event stream — keep greeting replies snappy.
+      if (
+        state.searchSessionId &&
+        payload.route !== "OUT_OF_SCOPE" &&
+        !isHardTerminalStatus(state.status)
+      ) {
         subscribe(state.searchSessionId, panels, !!options.restartEvents);
+      } else if (es && (payload.route === "OUT_OF_SCOPE" || isHardTerminalStatus(state.status))) {
+        es.close();
+        es = null;
       }
       return payload;
     }
@@ -443,6 +527,28 @@
     async function runSearch(message) {
       var payload;
       var wasActive = canContinueSession();
+      // Instant local assist for greetings / off-topic — don't wait on typing+RTT.
+      var instant = localAssistReply(message);
+      if (instant && !wasActive) {
+        clearTyping();
+        botBubble(instant);
+        // Fire-and-forget session create for server consistency (no await).
+        client
+          .start({
+            conversation_id: conversationId(),
+            message: message,
+            client_query_id:
+              typeof crypto !== "undefined" && crypto.randomUUID
+                ? crypto.randomUUID()
+                : undefined,
+          })
+          .then(function (done) {
+            syncState(done);
+            if (done && done.search_session_id) persistSessionId(null);
+          })
+          .catch(function () {});
+        return { route: "OUT_OF_SCOPE", reply: instant };
+      }
       try {
         if (wasActive) {
           payload = await client.supersedeMessage(state.searchSessionId, {

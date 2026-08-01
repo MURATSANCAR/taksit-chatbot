@@ -153,8 +153,12 @@ async def search_metrics_summary(request: Request) -> Dict[str, Any]:
 
 @router.post("/search-sessions")
 async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, Any]:
+    from taksitlio.semantic_matching.query_intent import is_off_domain_for_assist
+
     orch = _orchestrator(request)
-    await _maybe_refresh_catalog(request, orch, payload.message)
+    # Greeting / off-topic: skip catalog hydrate (can take seconds under load).
+    if not is_off_domain_for_assist(payload.message):
+        await _maybe_refresh_catalog(request, orch, payload.message)
     result = orch.start(
         conversation_id=payload.conversation_id,
         message=payload.message,
@@ -165,8 +169,9 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
     # Normalize events_url to this API prefix
     sid = result["search_session_id"]
     result["events_url"] = f"/v1/search-sessions/{sid}/events"
-    _schedule_understanding(request, result)
-    await _maybe_persist(request, sid)
+    if result.get("route") != "OUT_OF_SCOPE":
+        _schedule_understanding(request, result)
+        await _maybe_persist(request, sid)
     return result
 
 
@@ -245,12 +250,16 @@ async def supersede_message(
     payload: SupersedeIn,
     request: Request,
 ) -> Dict[str, Any]:
+    from taksitlio.semantic_matching.query_intent import is_off_domain_for_assist
+
     orch = await _ensure_session(request, session_id)
     try:
-        await _maybe_refresh_catalog(request, orch, payload.message)
+        if not is_off_domain_for_assist(payload.message):
+            await _maybe_refresh_catalog(request, orch, payload.message)
         result = orch.supersede_with_message(session_id, payload.message)
-        _schedule_understanding(request, result)
-        await _maybe_persist(request, session_id)
+        if result.get("route") != "OUT_OF_SCOPE":
+            _schedule_understanding(request, result)
+            await _maybe_persist(request, session_id)
         return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc

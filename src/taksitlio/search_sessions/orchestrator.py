@@ -203,7 +203,8 @@ class SearchOrchestrator:
 
         # Deterministic refuse: no general chat / no inventing off-system facts.
         if is_off_domain_for_assist(message):
-            return self._refuse_off_domain(session)
+            self.utterances[session.id] = message
+            return self._refuse_off_domain(session, message=message)
 
         parse = fast_parse(message, catalog=self.catalog)
         version = self.repo.get_version(session.id, session.active_query_version)
@@ -697,7 +698,7 @@ class SearchOrchestrator:
             "GENERAL_CHAT",
             "OTHER",
         }:
-            return self._refuse_off_domain(session)
+            return self._refuse_off_domain(session, message=self.utterances.get(session.id) or "")
 
         # ADR-012 NEGATIVE_CONSTRAINT_GATE: LLM cannot reintroduce locked negatives
         from taksitlio.recommendation_safety import (
@@ -739,9 +740,14 @@ class SearchOrchestrator:
                 parse.preferences.append(str(concept))
         return self._fast_retrieve(session, parse)
 
-    def _refuse_off_domain(self, session: SearchSession) -> dict[str, Any]:
+    def _refuse_off_domain(
+        self, session: SearchSession, *, message: str = ""
+    ) -> dict[str, Any]:
         """Stop retrieval and return a fixed refuse payload (no invented facts)."""
 
+        utterance = message or self.utterances.get(session.id) or ""
+        if utterance:
+            self.utterances[session.id] = utterance
         if can_transition(session.status, SearchSessionStatus.FAILED):
             self.repo.set_status(session.id, SearchSessionStatus.FAILED)
         elif can_transition(session.status, SearchSessionStatus.COMPLETED):
@@ -752,7 +758,6 @@ class SearchOrchestrator:
             payload={"reason": "OUT_OF_SCOPE"},
         )
         empty = {"products": [], "label": ""}
-        utterance = self.utterances.get(session.id) or ""
         return {
             "search_session_id": session.id,
             "query_version": session.active_query_version,

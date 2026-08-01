@@ -1594,7 +1594,13 @@
 
       userBubble(need.raw);
       window.__burst("soft");
-      const t = typing();
+      // Greetings / clear chitchat: skip typing delay — reply is local+instant.
+      const skipTyping =
+        searchUi &&
+        /(?:^|\s)(merhaba|selam|nasılsın|nasilsin|hava\s+durumu|fıkra|fikra|siyaset)(?:\s|$|[?!.,])/i.test(
+          need.raw
+        );
+      const t = skipTyping ? null : typing();
       try {
         if (searchUi) {
           await searchUi.runSearch(need.raw);
@@ -1611,6 +1617,8 @@
         toast(safe);
         botBubble(safe);
         console.error(err);
+      } finally {
+        if (t) t.remove();
       }
 
       busy = false;
