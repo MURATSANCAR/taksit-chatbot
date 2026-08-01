@@ -748,6 +748,51 @@
       border-color: rgba(151, 71, 255, 0.35);
       background: var(--purple-soft);
     }
+
+    .prompt-suggestions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 2px 0 6px 36px;
+      max-width: calc(var(--bubble-max) + 8px);
+      animation: bubbleIn .42s cubic-bezier(.22,1,.36,1) both;
+      animation-delay: .08s;
+    }
+    .prompt-suggestions .suggest {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(30, 31, 34, 0.04);
+      transition: border-color .15s ease, background .15s ease, transform .15s ease;
+    }
+    .prompt-suggestions .suggest:hover {
+      border-color: rgba(151, 71, 255, 0.35);
+      background: var(--purple-soft);
+    }
+    .prompt-suggestions .suggest:active {
+      transform: scale(0.985);
+    }
+    .prompt-suggestions .suggest .suggest-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 750;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .prompt-suggestions .suggest .suggest-text {
+      color: var(--purple-deep);
+    }
     .search-controls {
       display: flex;
       flex-wrap: wrap;
@@ -1485,16 +1530,54 @@
       return { raw: (text || "").trim() };
     }
 
+    const BOOT_EXAMPLES = [
+      {
+        label: "Telefon",
+        text: "Cep telefonu alacağız, bütçemiz 40 bin TL civarı",
+      },
+      {
+        label: "Beyaz eşya",
+        text: "Buzdolabı bakıyorum, 25–30 bin",
+      },
+    ];
+
+    function clearPromptSuggestions() {
+      els.thread.querySelectorAll(".prompt-suggestions").forEach((n) => n.remove());
+    }
+
+    function showPromptSuggestions(examples) {
+      clearPromptSuggestions();
+      const wrap = document.createElement("div");
+      wrap.className = "prompt-suggestions";
+      wrap.setAttribute("role", "group");
+      wrap.setAttribute("aria-label", "Örnek aramalar");
+      examples.forEach((ex) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "suggest";
+        btn.innerHTML =
+          `<span class="suggest-label"></span><span class="suggest-text"></span>`;
+        btn.querySelector(".suggest-label").textContent = ex.label;
+        btn.querySelector(".suggest-text").textContent = ex.text;
+        btn.addEventListener("click", () => {
+          if (busy) return;
+          clearPromptSuggestions();
+          run(ex.text);
+        });
+        wrap.appendChild(btn);
+      });
+      els.thread.appendChild(wrap);
+      scrollEnd();
+      return wrap;
+    }
+
     async function boot() {
       window.__burst("soft");
       const t = typing();
       await wait(520);
       t.remove();
-      botBubble(
-        "Ne almak istediğini ve bütçeni kendi cümlelerinle yazman yeterli. Örneğin:<br>" +
-        "<em style=\"color:var(--purple-deep);font-style:normal;font-weight:600\">“Cep telefonu alacağız, bütçemiz 40 bin TL civarı”</em><br>" +
-        "<em style=\"color:#0F8F6B;font-style:normal;font-weight:600\">“Buzdolabı bakıyorum, 25–30 bin”</em>"
-      );
+      botBubble("Ne almak istediğini ve bütçeni kendi cümlelerinle yazman yeterli.");
+      showPromptSuggestions(BOOT_EXAMPLES);
       started = true;
     }
 
@@ -1507,6 +1590,7 @@
       els.send.disabled = true;
       els.input.value = "";
       els.input.style.height = "auto";
+      clearPromptSuggestions();
 
       userBubble(need.raw);
       window.__burst("soft");

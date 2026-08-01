@@ -121,7 +121,7 @@ _OUT_OF_SCOPE_CUES = (
 )
 
 # Chitchat / open-world asks — never enter product assist or LLM answer prose.
-_GENERAL_CHAT_CUES = (
+_GREETING_CUES = (
     "merhaba",
     "selam",
     "nasılsın",
@@ -133,12 +133,25 @@ _GENERAL_CHAT_CUES = (
     "iyi aksamlar",
     "ne haber",
     "naber",
+    "tanışalım",
+    "tanisalim",
+    "tanışmak",
+    "tanismak",
+    "kimsin",
+    "sen kimsin",
+    "sen kim",
+    "adin ne",
+    "adın ne",
+    "kendini tanıt",
+    "kendini tanit",
+)
+
+_GENERAL_CHAT_CUES = (
+    *_GREETING_CUES,
     "sohbet edelim",
     "konuşalım",
     "konusalim",
     "genel sohbet",
-    "kimsin",
-    "sen kimsin",
     "hava durumu",
     "hava nasıl",
     "hava nasil",
@@ -210,11 +223,34 @@ _CHOICE_RE = re.compile(
     re.IGNORECASE,
 )
 
-OUT_OF_SCOPE_ASSIST_MESSAGE = (
-    "Ben Taksitlio Yapay Zeka asistanıyım; ihtiyacınız olan ürünleri "
-    "en uygun ve en iyi ödeme koşullarıyla bulmanız için buradayım. "
-    "Ürün veya taksit kampanyası sorarak devam edebilirsiniz."
+GREETING_ASSIST_MESSAGE = (
+    "Tanıştığımıza memnun oldum. Ben Taksitlio Yapay Zeka asistanıyım; "
+    "ihtiyacınız olan ürünleri en uygun ve en iyi ödeme koşullarıyla bulmanız "
+    "için buradayım. Hangi ürünü arıyorsunuz?"
 )
+
+OUT_OF_SCOPE_ASSIST_MESSAGE = (
+    "Bu konuda yardımcı olamam. Ben Taksitlio Yapay Zeka asistanıyım; "
+    "ürün ve taksit kampanyalarında size en uygun seçenekleri bulmak için "
+    "buradayım. Ne arıyorsunuz?"
+)
+
+
+def is_greeting_utterance(text: str) -> bool:
+    folded = _fold(text)
+    if not folded.strip():
+        return False
+    active = _has_any(folded, _ACTIVE_PURCHASE_CUES)
+    weak = _has_any(folded, _WEAK_PURCHASE_CUES)
+    return _has_any(folded, _GREETING_CUES) and not active and not weak
+
+
+def assist_message_for_utterance(text: str) -> str:
+    """Pick greeting vs off-topic assist copy (both stay out of catalog search)."""
+
+    if is_greeting_utterance(text):
+        return GREETING_ASSIST_MESSAGE
+    return OUT_OF_SCOPE_ASSIST_MESSAGE
 
 
 def _fold(text: str) -> str:
@@ -296,10 +332,13 @@ def blocks_auto_select(text: str) -> bool:
 
 
 __all__ = [
+    "GREETING_ASSIST_MESSAGE",
     "OUT_OF_SCOPE_ASSIST_MESSAGE",
     "QueryIntentKind",
+    "assist_message_for_utterance",
     "blocks_auto_select",
     "classify_query_intent",
     "is_choice_question",
+    "is_greeting_utterance",
     "is_off_domain_for_assist",
 ]

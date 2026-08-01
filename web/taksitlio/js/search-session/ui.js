@@ -401,7 +401,7 @@
           options.announceText ||
           (payload.route === "OUT_OF_SCOPE"
             ? payload.reply ||
-              "Ben Taksitlio Yapay Zeka asistanıyım; ihtiyacınız olan ürünleri en uygun ve en iyi ödeme koşullarıyla bulmanız için buradayım. Ürün veya taksit kampanyası sorarak devam edebilirsiniz."
+              "Ben Taksitlio Yapay Zeka asistanıyım; ürün ve taksit kampanyalarında size en uygun seçenekleri bulmak için buradayım. Ne arıyorsunuz?"
             : payload.route === "CLARIFICATION"
               ? (payload.clarification && payload.clarification.question_text) ||
                 payload.status

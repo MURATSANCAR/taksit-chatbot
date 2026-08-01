@@ -80,7 +80,7 @@ class ChatPipeline:
 
         # Hard gate: no general chat / no inventing off-catalog knowledge.
         if is_off_domain_for_assist(request.message):
-            reply = await self._responder.out_of_scope()
+            reply = await self._responder.out_of_scope(utterance=request.message)
             return ChatResponse(
                 session_id=request.session_id,
                 reply=reply.text,
@@ -139,7 +139,7 @@ class ChatPipeline:
             return self._build(request, turn, reply, [], [], started)
 
         if need_profile is None:
-            reply = await self._responder.out_of_scope()
+            reply = await self._responder.out_of_scope(utterance=request.message)
             return self._build(
                 request,
                 turn,
@@ -156,7 +156,7 @@ class ChatPipeline:
 
         intent_type = (need_profile.get("intent") or {}).get("type")
         if intent_type == "OUT_OF_SCOPE":
-            reply = await self._responder.out_of_scope()
+            reply = await self._responder.out_of_scope(utterance=request.message)
             return self._build(request, turn, reply, [], [], started)
 
         # Category match

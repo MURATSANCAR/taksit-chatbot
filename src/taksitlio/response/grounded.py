@@ -132,10 +132,22 @@ class GroundedResponseGenerator:
             outcome=ResponseOutcome.PARTIALLY_ANSWERED.value,
         )
 
-    async def out_of_scope(self, *, policy_code: str = "DEFAULT") -> GroundedReply:
+    async def out_of_scope(
+        self,
+        *,
+        policy_code: str = "DEFAULT",
+        utterance: str = "",
+    ) -> GroundedReply:
+        from taksitlio.semantic_matching.query_intent import assist_message_for_utterance
+
         policy = await self._policies.get(policy_code)
+        text = (
+            assist_message_for_utterance(utterance)
+            if (utterance or "").strip()
+            else policy.out_of_scope_message
+        )
         return GroundedReply(
-            text=policy.out_of_scope_message,
+            text=text,
             grounded=True,
             template_used="out_of_scope",
             outcome=ResponseOutcome.CANNOT_VERIFY.value,

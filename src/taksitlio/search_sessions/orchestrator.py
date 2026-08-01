@@ -48,7 +48,7 @@ from taksitlio.search_sessions.status import (
     is_hard_terminal,
 )
 from taksitlio.semantic_matching.query_intent import (
-    OUT_OF_SCOPE_ASSIST_MESSAGE,
+    assist_message_for_utterance,
     is_off_domain_for_assist,
 )
 
@@ -752,12 +752,13 @@ class SearchOrchestrator:
             payload={"reason": "OUT_OF_SCOPE"},
         )
         empty = {"products": [], "label": ""}
+        utterance = self.utterances.get(session.id) or ""
         return {
             "search_session_id": session.id,
             "query_version": session.active_query_version,
             "status": session.status.value,
             "route": "OUT_OF_SCOPE",
-            "reply": OUT_OF_SCOPE_ASSIST_MESSAGE,
+            "reply": assist_message_for_utterance(utterance),
             "chips": [],
             "results": empty,
             "partial_results": empty,
