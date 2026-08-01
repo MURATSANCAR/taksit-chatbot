@@ -1,0 +1,8 @@
+{
+  "snapshots_written": 15,
+  "status_counts": {
+    "READY": 2,
+    "PARTIAL": 6,
+    "BLOCKED": 7
+  }
+}

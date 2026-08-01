@@ -1,0 +1,5 @@
+{
+  "status": "NOT_VERIFIED",
+  "pass": false,
+  "reason": "Requires READY>=3 + INTERNAL projection + human/E2E harness"
+}

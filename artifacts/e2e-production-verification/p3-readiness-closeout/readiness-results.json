@@ -1,0 +1,11 @@
+{
+  "status_counts": {
+    "READY": 2,
+    "PARTIAL": 6,
+    "BLOCKED": 7,
+    "DEGRADED": 0,
+    "DISABLED": 0
+  },
+  "ready_merchant_count": 2,
+  "ready_active_products": 1060
+}

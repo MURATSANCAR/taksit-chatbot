@@ -1,0 +1,26 @@
+[
+  {
+    "flag_code": "adaptive_catalog_enabled",
+    "status": "ENABLED"
+  },
+  {
+    "flag_code": "adaptive_ranking_enabled",
+    "status": "SHADOW"
+  },
+  {
+    "flag_code": "dynamic_readiness_enabled",
+    "status": "SHADOW"
+  },
+  {
+    "flag_code": "learning_auto_promotion_enabled",
+    "status": "DISABLED"
+  },
+  {
+    "flag_code": "learning_candidate_generation_enabled",
+    "status": "ENABLED"
+  },
+  {
+    "flag_code": "rolling_golden_enabled",
+    "status": "ENABLED"
+  }
+]

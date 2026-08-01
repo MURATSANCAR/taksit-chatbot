@@ -1,0 +1,20 @@
+{
+  "catalog_revision": "2026-08-01T13:52:09.556361+00:00",
+  "ready_merchants": 2,
+  "ready_merchant_ids": [
+    5,
+    18
+  ],
+  "rows": 1054,
+  "finance_ready_rows": 0,
+  "leakage": {
+    "blocked_partial_degraded": 0,
+    "non_ready_rows": 0,
+    "unresolved_category": 0,
+    "invalid_price": 0,
+    "invalid_url": 0,
+    "non_card_ready": 0
+  },
+  "pass_leakage": true,
+  "captured_at": "2026-08-01T13:52:09.814619+00:00"
+}

@@ -19,6 +19,78 @@ def test_babama_telefon_free_text_keeps_only_telefon() -> None:
     assert all(c.display_name == "telefon" for c in parse.positive_categories)
 
 
+def test_babama_tel_expands_to_telefon_not_intel_substring() -> None:
+    """Colloquial 'tel' must become telefon — never substring-match Intel laptops."""
+
+    nouns = _free_text_product_nouns("babama tel lazım")
+    assert nouns == ["telefon"]
+
+    parse = fast_parse("babama tel lazım")
+    ids = [c.resolved_id for c in parse.positive_categories]
+    assert ids == ["free_text:telefon"]
+
+    phone = {
+        "product_id": "p-phone-1",
+        "display_name": "Samsung Galaxy A54 Cep Telefonu",
+        "category": "Akıllı Telefon",
+        "brand": "Samsung",
+        "merchant_display_name": "Teknosa",
+        "price": 18000.0,
+        "stock_status": "AVAILABLE",
+        "price_freshness": "FRESH",
+        "has_primary_image": True,
+        "thumbnail_cdn_url": "https://cdn.example/a54.jpg",
+        "query_relevance": 0.9,
+    }
+    intel_laptop = {
+        "product_id": "p-laptop-1",
+        "display_name": (
+            "LENOVO Ideapad Slim 3/ Intel core i5-13420H/ 8 GB Ram/ "
+            "512 GB SSD/ 15.3 WUXGA/ W11/ Laptop 83K100UFTR"
+        ),
+        "category": "Laptop",
+        "brand": "LENOVO",
+        "merchant_display_name": "MediaMarkt",
+        "price": 25999.0,
+        "stock_status": "AVAILABLE",
+        "price_freshness": "FRESH",
+        "has_primary_image": True,
+        "thumbnail_cdn_url": "https://cdn.example/ideapad.jpg",
+        "query_relevance": 0.5,
+    }
+    # Defense in depth: raw include_tokens=["tel"] must not hit Intel laptops,
+    # and must still resolve to the phone family (tel → category-phone).
+    tel_constraint = {
+        "positive_categories": [
+            {"display_name": "tel", "include_tokens": ["tel"]},
+        ]
+    }
+    assert matches_required_categories(phone, tel_constraint)
+    assert not matches_required_categories(intel_laptop, tel_constraint)
+
+    # Bare short token without family mapping must not substring-match Intel.
+    assert not matches_required_categories(
+        intel_laptop,
+        {
+            "positive_categories": [
+                {"display_name": "xyz", "include_tokens": ["tel"]},
+            ]
+        },
+    )
+
+    orch = SearchOrchestrator(
+        repo=InMemorySearchSessionRepository(),
+        product_pool=[intel_laptop, phone],
+    )
+    out = orch.start(conversation_id="kin-tel-1", message="babama tel lazım")
+    products = (out.get("partial_results") or out.get("results") or {}).get("products") or []
+    assert products, out
+    ids_out = {str(p.get("product_id") or "") for p in products}
+    assert "p-phone-1" in ids_out
+    assert "p-laptop-1" not in ids_out
+    assert all("laptop" not in str(p.get("display_name") or "").casefold() for p in products)
+
+
 def test_kinship_variants_strip_recipient_keep_product() -> None:
     cases = (
         ("anneme laptop lazım", "laptop"),
@@ -59,17 +131,25 @@ def test_babama_telefon_returns_phone_not_empty_reply() -> None:
     assert products, out
     assert "bulamadım" not in str(out.get("reply") or "").casefold()
 
-    # Regression: dual free-text AND must not empty the pool.
-    bad = {
-        "positive_categories": [
-            {"display_name": "babama", "include_tokens": ["babama"]},
-            {"display_name": "telefon", "include_tokens": ["telefon"]},
-        ]
+    # Regression: kinship must not become a required free-text category.
+    # Dual free-text AND emptied the pool; matcher is OR across positives, so
+    # babama+telefon would still match — the guard is the parser (no babama noun).
+    assert "babama" not in {
+        str(c.display_name or "").casefold() for c in fast_parse("babama telefon lazım").positive_categories
     }
-    assert not matches_required_categories(phone, bad)
-    good = {
-        "positive_categories": [
-            {"display_name": "telefon", "include_tokens": ["telefon"]},
-        ]
-    }
-    assert matches_required_categories(phone, good)
+    assert not matches_required_categories(
+        phone,
+        {
+            "positive_categories": [
+                {"display_name": "babama", "include_tokens": ["babama"]},
+            ]
+        },
+    )
+    assert matches_required_categories(
+        phone,
+        {
+            "positive_categories": [
+                {"display_name": "telefon", "include_tokens": ["telefon"]},
+            ]
+        },
+    )

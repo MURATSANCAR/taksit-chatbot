@@ -1,0 +1,55 @@
+{
+  "priority_top": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "score": 0.593746
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "score": 0.521941
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "score": 0.493353
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "score": 0.450615
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "score": 0.444804
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "score": 0.421308
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "score": 0.419793
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "score": 0.377611
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "score": 0.332856
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "score": 0.332749
+    }
+  ],
+  "captured_at": "2026-08-01T13:52:06.377204+00:00"
+}

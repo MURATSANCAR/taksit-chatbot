@@ -1,0 +1,11 @@
+{
+  "samples": 2,
+  "errors": 13,
+  "total_backend_p50_ms": 521.62,
+  "total_backend_p95_ms": 703.87,
+  "total_backend_p99_ms": 703.87,
+  "ranking_component_p95_ms": "NOT_VERIFIED",
+  "pass": false,
+  "note": "Full HTTP search-session latency; ranking span not separately instrumented yet",
+  "captured_at": "2026-08-01T13:53:55.302748+00:00"
+}

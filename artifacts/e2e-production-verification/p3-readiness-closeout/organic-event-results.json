@@ -1,0 +1,1626 @@
+{
+  "feed_changes_observed": 200,
+  "outbox_events_created": 400,
+  "events_before": 123,
+  "events_after": 523,
+  "pending_before": 3,
+  "pending_after": 0,
+  "consumer": {
+    "fetched": 403,
+    "completed": 403,
+    "failed": 0,
+    "retried": 0,
+    "readiness_merchant_ids": [
+      1,
+      22
+    ],
+    "traces": [
+      {
+        "event_id": "6bd7e005-1ba7-449f-80be-e8bb6aa811bc",
+        "event_type": "PRODUCT_DISCOVERED",
+        "job_id": null,
+        "affected_product_id": 1,
+        "affected_merchant_id": 1,
+        "catalog_revision": "r"
+      },
+      {
+        "event_id": "ede90f2c-677b-4622-88f1-3554933a1c3b",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 186855,
+        "affected_merchant_id": 22,
+        "catalog_revision": "bed736a3b79b05dc561f66b1feff6dd2e15d3afb3a3b6be3f04bd77bc6ed4421"
+      },
+      {
+        "event_id": "1baa9f8e-dbb5-4315-9358-274f5d615318",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "49594ed2-f54a-4c84-95e2-bf0ea7fc9394",
+        "affected_product_id": 186855,
+        "affected_merchant_id": 22,
+        "catalog_revision": "bed736a3b79b05dc561f66b1feff6dd2e15d3afb3a3b6be3f04bd77bc6ed4421"
+      },
+      {
+        "event_id": "48e505f6-1cd7-430b-91d2-3a590310ef94",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50099,
+        "affected_merchant_id": 22,
+        "catalog_revision": "03437478e90defe258e9c56f49c32de8798c7d97fcb65ae2e2e74625cb118e85"
+      },
+      {
+        "event_id": "6be65a59-d62c-4640-8003-f36eed7ddc7b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0436b714-a0b8-492e-be6d-0fbac2cf6d2f",
+        "affected_product_id": 50099,
+        "affected_merchant_id": 22,
+        "catalog_revision": "03437478e90defe258e9c56f49c32de8798c7d97fcb65ae2e2e74625cb118e85"
+      },
+      {
+        "event_id": "a89ec400-895b-440b-aaf4-67ba57ffefb3",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50098,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d7ff5f9bd43c18adb50b52aa48de688b57db22cb275d42469a9a1153529b3cef"
+      },
+      {
+        "event_id": "57349c16-4819-4fd0-adc6-cf1382e59dde",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "dab481f0-2192-40d2-9520-2ecb413313fc",
+        "affected_product_id": 50098,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d7ff5f9bd43c18adb50b52aa48de688b57db22cb275d42469a9a1153529b3cef"
+      },
+      {
+        "event_id": "febd5175-3635-476a-b422-92e43c5fd148",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202902,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6cdf7883fa233922fc9852c71bf9f5109ffa77647a8c886787ff91a1d72e8965"
+      },
+      {
+        "event_id": "fa0bfa54-eba0-46b7-893d-f039c47cf2e4",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "8383bb5e-0cb7-4085-9917-61cf49053e5a",
+        "affected_product_id": 202902,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6cdf7883fa233922fc9852c71bf9f5109ffa77647a8c886787ff91a1d72e8965"
+      },
+      {
+        "event_id": "a96ad4b5-3ac7-4f3b-b9b4-7bbc29be3f1d",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50097,
+        "affected_merchant_id": 22,
+        "catalog_revision": "20c81349d1e7f100ecef31859a59a83f026ed362ae8d6b89317aa49ff7e82e1b"
+      },
+      {
+        "event_id": "6fdba8d9-2e49-48ad-848a-9f942db841a6",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "7a425771-673e-4cee-9c2d-e219f8247692",
+        "affected_product_id": 50097,
+        "affected_merchant_id": 22,
+        "catalog_revision": "20c81349d1e7f100ecef31859a59a83f026ed362ae8d6b89317aa49ff7e82e1b"
+      },
+      {
+        "event_id": "8ba5b2e2-ebd3-45d1-b91d-28f0862253e2",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202901,
+        "affected_merchant_id": 22,
+        "catalog_revision": "b5a800c7fbd811f822f57862d4c8b2e2a31eb9acb36b1386a323df9833c18652"
+      },
+      {
+        "event_id": "13a72484-6b82-4130-9fc3-8e18df7655d1",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "48006cce-47fb-460c-b56f-bb4d86b8c683",
+        "affected_product_id": 202901,
+        "affected_merchant_id": 22,
+        "catalog_revision": "b5a800c7fbd811f822f57862d4c8b2e2a31eb9acb36b1386a323df9833c18652"
+      },
+      {
+        "event_id": "90a2343d-6dfe-453b-9c39-fe919f62e6eb",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202887,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4cb36fc496251fe8a37608e475e719513b33c456c78b4e1ec2c4c9246ffe1d1d"
+      },
+      {
+        "event_id": "f9d77e23-16cb-4dbc-90fa-e289b856c105",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "4e5c3c44-a378-4f03-a792-19d748539840",
+        "affected_product_id": 202887,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4cb36fc496251fe8a37608e475e719513b33c456c78b4e1ec2c4c9246ffe1d1d"
+      },
+      {
+        "event_id": "5ec7ea47-75c8-4a24-be1f-1596f96ce304",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202891,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c89fb893eedbaae36568f5aed3923c5abe9b62e5b0fda0f6494dbbdd2a96d546"
+      },
+      {
+        "event_id": "78199a47-89dc-4136-86e8-79403cbc7207",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "2ea83a1c-1afe-451f-b63f-23b05d711736",
+        "affected_product_id": 202891,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c89fb893eedbaae36568f5aed3923c5abe9b62e5b0fda0f6494dbbdd2a96d546"
+      },
+      {
+        "event_id": "7717d578-685b-45ae-889d-46a51a62c113",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202900,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c495ce8407f5c71e44ebd580585b2839340df7ca49e74c493efb387a762729b6"
+      },
+      {
+        "event_id": "0bcdf0da-39b5-4c5e-a056-ee43400f9d83",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "bc88c5e5-94c8-48b4-8947-60f7ddd8e31b",
+        "affected_product_id": 202900,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c495ce8407f5c71e44ebd580585b2839340df7ca49e74c493efb387a762729b6"
+      },
+      {
+        "event_id": "edf97628-30e6-4080-b526-dd258c5055d3",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50096,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ec36c818457ec241495fc2133eabdf2420f3919bcbf795b9dbc37ff527ef27d1"
+      },
+      {
+        "event_id": "79041595-b0eb-4175-ac0c-154872c071a5",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "273c45eb-2950-444a-a2a9-aa5cfe57d0ec",
+        "affected_product_id": 50096,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ec36c818457ec241495fc2133eabdf2420f3919bcbf795b9dbc37ff527ef27d1"
+      },
+      {
+        "event_id": "321bbcb8-b0dd-4ede-af90-fa2680e8bcaa",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202899,
+        "affected_merchant_id": 22,
+        "catalog_revision": "684e9935563833635aa933828c4f52da30c4d15741ed238af7d02e388664cbf6"
+      },
+      {
+        "event_id": "eda7f1f7-509b-430f-b1b6-36aec032a67c",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "e00ac01b-2e73-4653-af1e-bdbf9575a694",
+        "affected_product_id": 202899,
+        "affected_merchant_id": 22,
+        "catalog_revision": "684e9935563833635aa933828c4f52da30c4d15741ed238af7d02e388664cbf6"
+      },
+      {
+        "event_id": "8bdc3ffb-4052-40ae-88e7-6e5113917037",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202898,
+        "affected_merchant_id": 22,
+        "catalog_revision": "59fbac9823d8ec824cd4e1da5b9db62de4f1b09e3d5e041d74c7ba7e4579e32a"
+      },
+      {
+        "event_id": "605644a9-228c-4d8e-b1f1-191aed7ec684",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "d3d3bbd9-f3ec-418e-b27d-a5ef7414c533",
+        "affected_product_id": 202898,
+        "affected_merchant_id": 22,
+        "catalog_revision": "59fbac9823d8ec824cd4e1da5b9db62de4f1b09e3d5e041d74c7ba7e4579e32a"
+      },
+      {
+        "event_id": "34fb2069-8072-49ab-800f-0f02a2a23763",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202894,
+        "affected_merchant_id": 22,
+        "catalog_revision": "8e0ebcfe80837fe61fd742235d63a0b45f8747f13985f265db32a1c4f7666d58"
+      },
+      {
+        "event_id": "057eb620-cfe5-4346-9e0b-550cd479cf8b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0477e3b8-c559-4fd3-971c-254d3741b1c7",
+        "affected_product_id": 202894,
+        "affected_merchant_id": 22,
+        "catalog_revision": "8e0ebcfe80837fe61fd742235d63a0b45f8747f13985f265db32a1c4f7666d58"
+      },
+      {
+        "event_id": "6716787d-5ba7-41c2-8dfc-94020de5a56f",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202886,
+        "affected_merchant_id": 22,
+        "catalog_revision": "b5f2a6533a8a03301af6da931a0c8cb70330829827977c18e2ff51819a19536d"
+      },
+      {
+        "event_id": "4448ae2f-452d-4ac5-b073-2cd00fb995bf",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "3bbb38fd-e9d8-4833-8fbe-1c124b8ac404",
+        "affected_product_id": 202886,
+        "affected_merchant_id": 22,
+        "catalog_revision": "b5f2a6533a8a03301af6da931a0c8cb70330829827977c18e2ff51819a19536d"
+      },
+      {
+        "event_id": "eef2ccc1-86e3-4bb2-b6b7-e87c18b2c261",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202897,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0c6afd79aad9832801990bf9d786a91f80b828e9c0701db6ff83c3895246029f"
+      },
+      {
+        "event_id": "d79df5c0-cc53-4bdf-9442-a742acb746f0",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "8a780247-014f-49f0-a607-ad9c86612c3f",
+        "affected_product_id": 202897,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0c6afd79aad9832801990bf9d786a91f80b828e9c0701db6ff83c3895246029f"
+      },
+      {
+        "event_id": "de0b9433-3dfe-4e92-a246-7ded986d3fa2",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50095,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a34ce1bf5a6ea2d25460f93ba5efb966199f98167d5ce6e301c577e63fcd7278"
+      },
+      {
+        "event_id": "573d4168-cc11-4b69-a64c-5e862d27204c",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "84ea3733-ca9a-49ac-9729-0dba6fb52074",
+        "affected_product_id": 50095,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a34ce1bf5a6ea2d25460f93ba5efb966199f98167d5ce6e301c577e63fcd7278"
+      },
+      {
+        "event_id": "3c5024dd-ca60-44f8-bee7-21fe5152c020",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50094,
+        "affected_merchant_id": 22,
+        "catalog_revision": "74376a5ae9afd652fe9e560853aa319d86c7664aa9f98d0264362fd13ce08327"
+      },
+      {
+        "event_id": "9fb85ec2-a617-4a1e-92c8-3ca7c21bcf9b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "f35e0d1b-52c0-490b-a73f-907a49f3fc01",
+        "affected_product_id": 50094,
+        "affected_merchant_id": 22,
+        "catalog_revision": "74376a5ae9afd652fe9e560853aa319d86c7664aa9f98d0264362fd13ce08327"
+      },
+      {
+        "event_id": "d55e20b1-c547-4ac8-807c-ac38f596c77f",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50093,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7dd9b108331f2fa0d482c0fb31a99d68629ad1b385fe79538e051dc5b3d2f4e9"
+      },
+      {
+        "event_id": "8bf89edb-1cff-498f-81a3-b393ac1f6991",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "7d265e27-7645-49ca-9fcc-1bbc58f6d3c1",
+        "affected_product_id": 50093,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7dd9b108331f2fa0d482c0fb31a99d68629ad1b385fe79538e051dc5b3d2f4e9"
+      },
+      {
+        "event_id": "af67624a-0e44-4f48-aceb-f76d60c74960",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202880,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a2f79677d0392b93926370f8312184d2e5160910d1d7f0dd7da85c282392620e"
+      },
+      {
+        "event_id": "e888d477-5b4c-4a74-9667-c33ed5b686e1",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "4b466d42-4e8d-4f1c-aacc-8d772e3d51ca",
+        "affected_product_id": 202880,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a2f79677d0392b93926370f8312184d2e5160910d1d7f0dd7da85c282392620e"
+      },
+      {
+        "event_id": "fd509a4b-8a08-41df-b1fb-9b7db0c1711e",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202896,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4438bfa71557f495570fa4287c97f35b168dd5125739ea11965c3b8c12055000"
+      },
+      {
+        "event_id": "6b69c018-a757-4015-9cd2-4b0551864604",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "4c9fa54f-39f8-4a5d-a09e-eb760472dc3b",
+        "affected_product_id": 202896,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4438bfa71557f495570fa4287c97f35b168dd5125739ea11965c3b8c12055000"
+      },
+      {
+        "event_id": "8452cc4c-66d7-43bc-9bf4-fee266eaa837",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202885,
+        "affected_merchant_id": 22,
+        "catalog_revision": "874834ec478eb1da3a48cd00c5fdaeeb388aa4158b39e79317cd95fdd9020530"
+      },
+      {
+        "event_id": "68125b21-48f0-4eb9-8972-4444920fd835",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "70ea4397-d25e-44a2-a036-bf02d04ae77a",
+        "affected_product_id": 202885,
+        "affected_merchant_id": 22,
+        "catalog_revision": "874834ec478eb1da3a48cd00c5fdaeeb388aa4158b39e79317cd95fdd9020530"
+      },
+      {
+        "event_id": "ce905262-b3db-462e-a0e7-ba4e013963be",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202895,
+        "affected_merchant_id": 22,
+        "catalog_revision": "8db29292a4dcfd6d2180905f7990f18e6f2e67b1d2a4895e00f6cabe690a23c4"
+      },
+      {
+        "event_id": "408cdfbe-a3d2-4a2f-8cb3-6346b0b16f10",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "18107d7d-58da-4d19-8d98-5a42f517d3d2",
+        "affected_product_id": 202895,
+        "affected_merchant_id": 22,
+        "catalog_revision": "8db29292a4dcfd6d2180905f7990f18e6f2e67b1d2a4895e00f6cabe690a23c4"
+      },
+      {
+        "event_id": "2a7013f6-4f93-45a4-9ae6-e3a2249d97f7",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202884,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7123f37f58a94a6a58dca3ba3041a6c45e9cb1738c64c89d24e8390bad7be522"
+      },
+      {
+        "event_id": "92620d88-b2a8-4afe-8902-2360e0d6e990",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "5108f7fd-78bc-40a1-9b35-f2ce5dfa2861",
+        "affected_product_id": 202884,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7123f37f58a94a6a58dca3ba3041a6c45e9cb1738c64c89d24e8390bad7be522"
+      },
+      {
+        "event_id": "ace485ae-0071-4722-ad40-0654e44bb669",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202876,
+        "affected_merchant_id": 22,
+        "catalog_revision": "71b1a4dc1ca2d2b36612d0d5090345dd90be727b012dba3497b406608ac7042c"
+      },
+      {
+        "event_id": "3b96c62a-eff8-427c-9f16-6320ab411cbd",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "cc3fad3d-b339-4490-b8ca-d4bfc008d45d",
+        "affected_product_id": 202876,
+        "affected_merchant_id": 22,
+        "catalog_revision": "71b1a4dc1ca2d2b36612d0d5090345dd90be727b012dba3497b406608ac7042c"
+      },
+      {
+        "event_id": "8bd89eac-b940-409f-a81f-d56c0608801c",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202893,
+        "affected_merchant_id": 22,
+        "catalog_revision": "64b6dcf4aa60a641e19453ef0d4c8ba0d99311feff999585a0aebb4e26165514"
+      },
+      {
+        "event_id": "9b8bfbda-33b5-4afc-84a8-3a145c334218",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "c527815f-2a08-4a78-bd32-1e72a24a9275",
+        "affected_product_id": 202893,
+        "affected_merchant_id": 22,
+        "catalog_revision": "64b6dcf4aa60a641e19453ef0d4c8ba0d99311feff999585a0aebb4e26165514"
+      },
+      {
+        "event_id": "725ccc28-2f16-4ec1-980b-a1b6a31b32b6",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202892,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ec7d7c8c4ffe2d937376c0496b6ede86827c57cec8e61e79512a7ee9e69721ec"
+      },
+      {
+        "event_id": "c218df53-6ff3-459f-8d75-9aefd9776fdd",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "5925f9f1-758c-4101-b5ae-3f7549cc45e8",
+        "affected_product_id": 202892,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ec7d7c8c4ffe2d937376c0496b6ede86827c57cec8e61e79512a7ee9e69721ec"
+      },
+      {
+        "event_id": "367aa604-60f8-4d4d-a450-ce0bb817b107",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202875,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7435f1eb80c77908455e837974a196542138e3832ecede7f109e27c702f6be01"
+      },
+      {
+        "event_id": "d17e2fae-b098-4d39-bbbc-ef6cf5a5a695",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "8ddf3663-ec2e-4b0c-b9bb-2874d10123d3",
+        "affected_product_id": 202875,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7435f1eb80c77908455e837974a196542138e3832ecede7f109e27c702f6be01"
+      },
+      {
+        "event_id": "7c347701-436a-46c6-9fce-48cf50ed2a66",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202877,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4e6819f90bdf054522a5b438bfae61211dd26634ad9a82a46dd56036826d1e00"
+      },
+      {
+        "event_id": "d686c621-0751-4518-ba91-cbb32497b5f2",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "876c200f-d138-48ea-923d-3aacd6be8045",
+        "affected_product_id": 202877,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4e6819f90bdf054522a5b438bfae61211dd26634ad9a82a46dd56036826d1e00"
+      },
+      {
+        "event_id": "68d8480d-f11b-472a-b3cc-bdad6c583120",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202879,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1e86d37be71815a89a4b7855fc33834a95bec217645c1fca65e21fd50034a484"
+      },
+      {
+        "event_id": "89e226c5-80d4-4908-b18e-ba76730006e0",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "9705bf25-1fb1-4da4-84e3-fe1f71d9eff6",
+        "affected_product_id": 202879,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1e86d37be71815a89a4b7855fc33834a95bec217645c1fca65e21fd50034a484"
+      },
+      {
+        "event_id": "d762284c-983f-41e0-abbd-d0fcadb86d9e",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202890,
+        "affected_merchant_id": 22,
+        "catalog_revision": "f2b2c83c708b95139acaa56bece0f462bdb8e02359e0be24ae9e21ac751ded03"
+      },
+      {
+        "event_id": "ecbf4aae-161c-4c8e-976e-c3db49b019a3",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "3c4a0727-4235-49c0-9d09-793f7c8f7d87",
+        "affected_product_id": 202890,
+        "affected_merchant_id": 22,
+        "catalog_revision": "f2b2c83c708b95139acaa56bece0f462bdb8e02359e0be24ae9e21ac751ded03"
+      },
+      {
+        "event_id": "3e4347ce-f22a-4018-bf01-c70082411a6e",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202878,
+        "affected_merchant_id": 22,
+        "catalog_revision": "06111614a16a1aec8049d96ada6a49b3254518b881998ba1ea61858728a71dc3"
+      },
+      {
+        "event_id": "1074f6b5-6805-49a2-88ff-49fa96d3f08d",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "ae800cae-793f-4b80-999f-4660800fe065",
+        "affected_product_id": 202878,
+        "affected_merchant_id": 22,
+        "catalog_revision": "06111614a16a1aec8049d96ada6a49b3254518b881998ba1ea61858728a71dc3"
+      },
+      {
+        "event_id": "0e65c1be-e24e-4ca1-876b-8cff26a5964e",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202889,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1ffbf70abcfa504c57a3330e87ebab13e228e069133522dcd716039274c9d4f9"
+      },
+      {
+        "event_id": "94966f25-8bda-44ce-b821-046e2849e13d",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "e7032e27-43d9-4576-80f3-c0c3ab018647",
+        "affected_product_id": 202889,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1ffbf70abcfa504c57a3330e87ebab13e228e069133522dcd716039274c9d4f9"
+      },
+      {
+        "event_id": "9595f019-7436-4e5c-b15d-c2cd4ae1b944",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202873,
+        "affected_merchant_id": 22,
+        "catalog_revision": "16e1ca3c2646147e7764da36548ea6a54d43aee344ced398e2ec9b8eb0733535"
+      },
+      {
+        "event_id": "01a539e2-eee9-43e5-bfa9-a81f5fe6784e",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "6ab5f977-4e8f-4710-82cc-3f643cfb378d",
+        "affected_product_id": 202873,
+        "affected_merchant_id": 22,
+        "catalog_revision": "16e1ca3c2646147e7764da36548ea6a54d43aee344ced398e2ec9b8eb0733535"
+      },
+      {
+        "event_id": "296a23f2-598c-4a2b-82e8-d3e4bd70c6b3",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202888,
+        "affected_merchant_id": 22,
+        "catalog_revision": "5fc974afb4be8bd048a2f25e6d73574e0442014e19bb630dc6322415cf3f18ca"
+      },
+      {
+        "event_id": "f98b7986-e1a1-41bd-a6b7-dab2e4177564",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "38e3fa6f-5324-4435-a762-58c7eb22c6b1",
+        "affected_product_id": 202888,
+        "affected_merchant_id": 22,
+        "catalog_revision": "5fc974afb4be8bd048a2f25e6d73574e0442014e19bb630dc6322415cf3f18ca"
+      },
+      {
+        "event_id": "022e306b-a88a-4294-a222-ef86bb651dd7",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50092,
+        "affected_merchant_id": 22,
+        "catalog_revision": "cb4a1ac7c485e80a294bb5869d5f15a067e5e6a2f9d151b80697cc406bbce602"
+      },
+      {
+        "event_id": "af309184-5e80-403d-b76e-901d57c0f94b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "f8de3e3b-e8dd-45df-b34c-7738bef92a14",
+        "affected_product_id": 50092,
+        "affected_merchant_id": 22,
+        "catalog_revision": "cb4a1ac7c485e80a294bb5869d5f15a067e5e6a2f9d151b80697cc406bbce602"
+      },
+      {
+        "event_id": "b1972f63-a45e-4a9d-be6c-772b9d9c4f61",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202882,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6c99013dcffba44e0d5aefba72bd869a68e895f18ad611b9bacedd85709308d8"
+      },
+      {
+        "event_id": "621f9f50-bf78-4d54-a8ff-e46483e084ad",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "7850f570-138d-4fb0-b8a4-c15c547c4e9e",
+        "affected_product_id": 202882,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6c99013dcffba44e0d5aefba72bd869a68e895f18ad611b9bacedd85709308d8"
+      },
+      {
+        "event_id": "6b869632-bdf5-4ce6-965b-0f470626c27a",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202883,
+        "affected_merchant_id": 22,
+        "catalog_revision": "135f95817f178a2b3d3e2c8f349ec0ee9c2a2e72c09c264e21de120631226462"
+      },
+      {
+        "event_id": "d9bb7429-6e4e-47a6-8f43-c4c82b5a8bbf",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "87cfbd8d-4ef5-492a-aad4-3c399e04f463",
+        "affected_product_id": 202883,
+        "affected_merchant_id": 22,
+        "catalog_revision": "135f95817f178a2b3d3e2c8f349ec0ee9c2a2e72c09c264e21de120631226462"
+      },
+      {
+        "event_id": "cfaa0d55-26a1-4d0d-b620-ce2b2291565d",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202881,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a90643ecf3fb47a8d18c1cacefaef8e4b5091921ca4ddfb09dd3a3e07221024f"
+      },
+      {
+        "event_id": "8aa57540-ef9f-4ae7-a49d-b4f75e278720",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "01d65153-c66e-4358-bd7c-a7a492e348bf",
+        "affected_product_id": 202881,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a90643ecf3fb47a8d18c1cacefaef8e4b5091921ca4ddfb09dd3a3e07221024f"
+      },
+      {
+        "event_id": "51c9e133-99d0-462a-8e3d-7ee60afc7a0a",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50091,
+        "affected_merchant_id": 22,
+        "catalog_revision": "fce99d8f0d8e52ae2a90cbf58a4e034b64ef951b72b49adc3e742cc19a5c8cc2"
+      },
+      {
+        "event_id": "9615cd00-3bbc-4412-96ed-153da63c71e4",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "e77956a5-6385-468f-aa16-ea616a4fab77",
+        "affected_product_id": 50091,
+        "affected_merchant_id": 22,
+        "catalog_revision": "fce99d8f0d8e52ae2a90cbf58a4e034b64ef951b72b49adc3e742cc19a5c8cc2"
+      },
+      {
+        "event_id": "cf9bfc01-39c6-4e22-a7b9-ec8b90451ea2",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50090,
+        "affected_merchant_id": 22,
+        "catalog_revision": "cfc1d492a5a8ce05ab84bf3fd3cc70ea0dd962849faf397485d5f7222b91807b"
+      },
+      {
+        "event_id": "2543c49a-e19e-41f2-84e8-2985fa374a6e",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "5e810b7a-74f5-4545-9562-be1caa57e685",
+        "affected_product_id": 50090,
+        "affected_merchant_id": 22,
+        "catalog_revision": "cfc1d492a5a8ce05ab84bf3fd3cc70ea0dd962849faf397485d5f7222b91807b"
+      },
+      {
+        "event_id": "439d36c6-89a8-44aa-b200-40f6bc4ca47e",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202874,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7885250adecd5ce06346f802b938a779421d49bf700f9ed91ee4f717b3639834"
+      },
+      {
+        "event_id": "9f3d0fe3-b7c5-46a0-83e9-b6da0f7355e3",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "86aebb6d-da60-4fc8-9ef1-1748f7ceb6eb",
+        "affected_product_id": 202874,
+        "affected_merchant_id": 22,
+        "catalog_revision": "7885250adecd5ce06346f802b938a779421d49bf700f9ed91ee4f717b3639834"
+      },
+      {
+        "event_id": "846a8116-e6ad-4a0d-9d9e-be5bee24e352",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202868,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1e4888b30db0ad1e72aad68d88ca90d70caf72afc0c36044855e95308dc6183c"
+      },
+      {
+        "event_id": "67118d7a-4088-47b7-a2ae-3aec0e75f36b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "3bf883a7-ca47-409a-917d-fe8931bec2fb",
+        "affected_product_id": 202868,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1e4888b30db0ad1e72aad68d88ca90d70caf72afc0c36044855e95308dc6183c"
+      },
+      {
+        "event_id": "83ac503c-4ea3-4dad-9538-62bb7cf409fd",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202871,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6b3637e18d3e031a0226ef7a89edd602704df58b37bfbd29ff83ed3057ed2f9d"
+      },
+      {
+        "event_id": "c176b08b-c706-4674-b78e-99a17a166557",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "938ec479-2fab-4b1d-ae5d-7b7470cd5dd9",
+        "affected_product_id": 202871,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6b3637e18d3e031a0226ef7a89edd602704df58b37bfbd29ff83ed3057ed2f9d"
+      },
+      {
+        "event_id": "9039e113-fb3f-416e-91e5-e8922fe0c1b0",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202870,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0899790dc5f316ba661d6498daf8ffcdae31d2d6e811f5c475d19a2ed3919f26"
+      },
+      {
+        "event_id": "b4eee3b2-c0dc-4f63-b39d-c98602ab9cca",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "057e7b5a-1e72-4eae-a6c0-019e8107e181",
+        "affected_product_id": 202870,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0899790dc5f316ba661d6498daf8ffcdae31d2d6e811f5c475d19a2ed3919f26"
+      },
+      {
+        "event_id": "1a539034-3d4d-444b-a4eb-ddd0245910c0",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202872,
+        "affected_merchant_id": 22,
+        "catalog_revision": "37dcc346a0a622c103dd937620f17b58a382ac6c9a3f1b614aa20d54a46b8383"
+      },
+      {
+        "event_id": "e5b8cd35-88b5-493d-b65c-214f276a3045",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "74583b40-8461-476a-bf58-2d4abe17e7d3",
+        "affected_product_id": 202872,
+        "affected_merchant_id": 22,
+        "catalog_revision": "37dcc346a0a622c103dd937620f17b58a382ac6c9a3f1b614aa20d54a46b8383"
+      },
+      {
+        "event_id": "1fd3a074-ade4-43d3-85a9-9db816a83895",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202869,
+        "affected_merchant_id": 22,
+        "catalog_revision": "533c7f00053e7b56ef66dfdd548684b29671bcc3c6ae4439e130d42da3cfb681"
+      },
+      {
+        "event_id": "ee771921-01fa-4765-a85a-5a98a26991cb",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "fd049732-d381-4a0f-8731-e36400cb3f40",
+        "affected_product_id": 202869,
+        "affected_merchant_id": 22,
+        "catalog_revision": "533c7f00053e7b56ef66dfdd548684b29671bcc3c6ae4439e130d42da3cfb681"
+      },
+      {
+        "event_id": "f5e2c3ba-2dd4-4ae2-8244-de492ae8d83d",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 186855,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c5706ffbf98afc5e03afb50fa8da760ed6da25c67dc72c27f5fb7c652e6aafd5"
+      },
+      {
+        "event_id": "8760b8ef-5c04-4a88-b788-4c5a2a2a53e3",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "8e45837d-4df6-4270-9657-1650c3943ce9",
+        "affected_product_id": 186855,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c5706ffbf98afc5e03afb50fa8da760ed6da25c67dc72c27f5fb7c652e6aafd5"
+      },
+      {
+        "event_id": "f371d962-a215-4a4f-8749-1f779304ec6c",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202866,
+        "affected_merchant_id": 22,
+        "catalog_revision": "2ecd867610eda3b39934cf2a8d285b8813c0a44e21efbf8079cad137de9cdcbc"
+      },
+      {
+        "event_id": "fd9825c9-be89-48dd-9b4e-7d7e485da5e3",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "378c13de-baa4-42ca-8237-24dcf8b08b59",
+        "affected_product_id": 202866,
+        "affected_merchant_id": 22,
+        "catalog_revision": "2ecd867610eda3b39934cf2a8d285b8813c0a44e21efbf8079cad137de9cdcbc"
+      },
+      {
+        "event_id": "5ca7e030-5bbc-4101-b059-943e1b0103be",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202867,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1218cfd839257c59ef1b0bab628de2a51269c7a24e773026e6511b946c12fcb4"
+      },
+      {
+        "event_id": "56f55e72-ebca-4419-b133-4b39ffcaabcd",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "957e2c3a-4e27-4b4c-901e-802397a32884",
+        "affected_product_id": 202867,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1218cfd839257c59ef1b0bab628de2a51269c7a24e773026e6511b946c12fcb4"
+      },
+      {
+        "event_id": "ac7e2949-d798-4cfd-bc0e-40e0a52470d3",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202865,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d28bdf8aa3b8e5923a44e73fc22c97119da4e313d798c65aee22426883ffc805"
+      },
+      {
+        "event_id": "8f5ede8d-2b02-42c2-b3c8-0f88cabfd815",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "d624f0f6-8602-4208-998c-5dc1eacdc130",
+        "affected_product_id": 202865,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d28bdf8aa3b8e5923a44e73fc22c97119da4e313d798c65aee22426883ffc805"
+      },
+      {
+        "event_id": "267a71de-bc0b-41e2-8bb9-ad854f339fb9",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202864,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0fdc3456956eccdebacff6a757a3c0f9f87f5bb823da6e53ebdc70fb819135ce"
+      },
+      {
+        "event_id": "d90459b2-de08-4f50-b851-1fe48df2fa07",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "ea83d163-8b5c-45a2-8101-761cc238be56",
+        "affected_product_id": 202864,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0fdc3456956eccdebacff6a757a3c0f9f87f5bb823da6e53ebdc70fb819135ce"
+      },
+      {
+        "event_id": "0ae91a83-52cc-44e8-9c3d-98f9a7e1a7c7",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202862,
+        "affected_merchant_id": 22,
+        "catalog_revision": "337fe1ee295364f9dc00eaff75430e5704488a854216895753e226d0f4f5f9c3"
+      },
+      {
+        "event_id": "289e44c5-973c-4f56-81af-a2e9667c6ba9",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0e7901ad-48fa-493b-9012-4a55b5f3e80b",
+        "affected_product_id": 202862,
+        "affected_merchant_id": 22,
+        "catalog_revision": "337fe1ee295364f9dc00eaff75430e5704488a854216895753e226d0f4f5f9c3"
+      },
+      {
+        "event_id": "cf23288b-b972-48dd-a550-d6046ee51a3a",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50089,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3456913cd9c449c340ba10894a7c531a24499fa27b5e6b5e557110b33ed98c97"
+      },
+      {
+        "event_id": "86b891ba-9582-4597-9883-f1dc8d7ccf41",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "49886673-8694-469a-b43a-da19f84f5776",
+        "affected_product_id": 50089,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3456913cd9c449c340ba10894a7c531a24499fa27b5e6b5e557110b33ed98c97"
+      },
+      {
+        "event_id": "cbd8b5cd-e33c-4cae-ae8f-e49f46bed653",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202863,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4f9a719a9045842f86fb01d1b28f10edbd786f27961b473f38b6d6d7c0cf0a8e"
+      },
+      {
+        "event_id": "539c00d3-8eae-4cd8-b8cb-8a83efd391aa",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "aea8c9da-71c7-4f33-b033-9a82875d1741",
+        "affected_product_id": 202863,
+        "affected_merchant_id": 22,
+        "catalog_revision": "4f9a719a9045842f86fb01d1b28f10edbd786f27961b473f38b6d6d7c0cf0a8e"
+      },
+      {
+        "event_id": "f259a185-4bf9-41a7-ac24-92c0f6d5bb36",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202861,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a6aa14de1ef597adf817be9dac288909c4c981720ed4faed9b9fa6a12c733c02"
+      },
+      {
+        "event_id": "d120ac08-c543-4e6c-8396-6833e3ca80e4",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0ca4ec6d-e513-4163-af1c-f76834e8517b",
+        "affected_product_id": 202861,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a6aa14de1ef597adf817be9dac288909c4c981720ed4faed9b9fa6a12c733c02"
+      },
+      {
+        "event_id": "8d80bc79-f3fc-4a78-b83f-dfd5ef28a5b5",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202859,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ef83016ae4a0e221abc9aaa267722031bcd7f030aff197470999c9282678afc9"
+      },
+      {
+        "event_id": "a631da6d-dd40-4c65-b0d2-a1b693af9520",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "d80c99b6-a535-43f3-9ad8-88fcb7773223",
+        "affected_product_id": 202859,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ef83016ae4a0e221abc9aaa267722031bcd7f030aff197470999c9282678afc9"
+      },
+      {
+        "event_id": "85404cad-0b2b-46e3-8082-941581fc947c",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50088,
+        "affected_merchant_id": 22,
+        "catalog_revision": "9cd4c57a4706e063c90a1eb89e9334cd3152c0a550ef137a86783da080f5c03b"
+      },
+      {
+        "event_id": "8fdf7b85-6789-4657-aaae-72566c47b649",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "86158e70-07b3-425e-8c7c-2ca65de981d1",
+        "affected_product_id": 50088,
+        "affected_merchant_id": 22,
+        "catalog_revision": "9cd4c57a4706e063c90a1eb89e9334cd3152c0a550ef137a86783da080f5c03b"
+      },
+      {
+        "event_id": "1c7e5997-d4e4-4348-b40f-20e4e82b3b32",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202855,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a4bdea16a3b5104bc66cd3c4fa909e517dbfd4cd53b251c64355e86aba2ce1e4"
+      },
+      {
+        "event_id": "99aa9b01-37c6-42a6-87f9-fda904b79e2a",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "f1e765d9-5b29-4181-9a63-ccb6d2f72d82",
+        "affected_product_id": 202855,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a4bdea16a3b5104bc66cd3c4fa909e517dbfd4cd53b251c64355e86aba2ce1e4"
+      },
+      {
+        "event_id": "80a35744-4202-42da-85cd-f436feff4bcc",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202858,
+        "affected_merchant_id": 22,
+        "catalog_revision": "e899b978406e1de0682612f58ba6a4dd5b9002333b72aee1c834f0f26a2583fd"
+      },
+      {
+        "event_id": "0a73ce1a-bd03-4ca1-bf2e-4cf77b85ce3f",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "3d9884de-201b-469d-a68d-53e4123eba45",
+        "affected_product_id": 202858,
+        "affected_merchant_id": 22,
+        "catalog_revision": "e899b978406e1de0682612f58ba6a4dd5b9002333b72aee1c834f0f26a2583fd"
+      },
+      {
+        "event_id": "67325e2b-ee09-4cfb-bc7c-3862f6588699",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202856,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3dc9b728669aa2e82db900a5f01db3762d7ee2e529583beb84485894b2b956a3"
+      },
+      {
+        "event_id": "d4d83866-baf9-4865-9d9d-a3af13adf573",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "c232db55-11aa-4c35-8a74-21b08ac9ee05",
+        "affected_product_id": 202856,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3dc9b728669aa2e82db900a5f01db3762d7ee2e529583beb84485894b2b956a3"
+      },
+      {
+        "event_id": "4497177a-2fbe-4f48-a92c-6eec57892f17",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202850,
+        "affected_merchant_id": 22,
+        "catalog_revision": "18c8bf7327787b25e21634d41fd7261a57b2ad5cbe104e9178b61204f8fdd1bb"
+      },
+      {
+        "event_id": "821e96d5-7c5e-417a-a0d6-29c631c1d9a4",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "db23895d-513a-4356-8dcf-7d329628e688",
+        "affected_product_id": 202850,
+        "affected_merchant_id": 22,
+        "catalog_revision": "18c8bf7327787b25e21634d41fd7261a57b2ad5cbe104e9178b61204f8fdd1bb"
+      },
+      {
+        "event_id": "28e2970f-9412-43d9-ad7a-0ff49ef303c4",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50087,
+        "affected_merchant_id": 22,
+        "catalog_revision": "db2fc744519c26c83fe7ced84942722b0bc8133052dca44d0f54dc7ed342f4ed"
+      },
+      {
+        "event_id": "163a5181-2fcc-4ff5-ba60-b45ab48f17a3",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0e48e9f6-71bf-428d-8484-62c750428cd6",
+        "affected_product_id": 50087,
+        "affected_merchant_id": 22,
+        "catalog_revision": "db2fc744519c26c83fe7ced84942722b0bc8133052dca44d0f54dc7ed342f4ed"
+      },
+      {
+        "event_id": "e588db88-b7c6-40a4-b573-3dbaadd9389a",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50086,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ec4f0d49c376f600196df20fa602d28fb2acde29dca2e2122f4d26211efe741c"
+      },
+      {
+        "event_id": "d5ece2ce-7da3-4c86-b27e-a9bdd7ff31dd",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "93936f6f-609f-4e93-b753-04aa99eeafd3",
+        "affected_product_id": 50086,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ec4f0d49c376f600196df20fa602d28fb2acde29dca2e2122f4d26211efe741c"
+      },
+      {
+        "event_id": "0ee0b411-d23d-4920-81e1-6150b88bd6bd",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202854,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0c850b5b878a068f50a64e3c848baf875d12d9836de709a54bb1799f361ac941"
+      },
+      {
+        "event_id": "715b0031-cce6-4df2-88ca-42cd6ada81d7",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "765d9cac-5a69-4175-8a23-8b31c0317fbf",
+        "affected_product_id": 202854,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0c850b5b878a068f50a64e3c848baf875d12d9836de709a54bb1799f361ac941"
+      },
+      {
+        "event_id": "7e925e49-8403-4fad-b535-99f668d61287",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202851,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ea8b8073c1d57275b1d49edc1ee810d5f8125af0d6e255202a06e27113e2bffc"
+      },
+      {
+        "event_id": "02c5cfa0-14b8-4231-8ba5-267b8e2160e1",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "3e2b1e15-6033-42f9-8c05-d6d69900e63b",
+        "affected_product_id": 202851,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ea8b8073c1d57275b1d49edc1ee810d5f8125af0d6e255202a06e27113e2bffc"
+      },
+      {
+        "event_id": "975783d7-8896-438a-9fbe-9633dc573188",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50085,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0ff7788628a062e38eaa869e1a68cb43b58e39a6a42023b52c0060c56159fbda"
+      },
+      {
+        "event_id": "ea1dde6a-bbb7-4200-8dbb-56862080ab7b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "a59eb159-bf98-4431-ae4d-c52a3a5622af",
+        "affected_product_id": 50085,
+        "affected_merchant_id": 22,
+        "catalog_revision": "0ff7788628a062e38eaa869e1a68cb43b58e39a6a42023b52c0060c56159fbda"
+      },
+      {
+        "event_id": "cec9f842-1898-4aa4-8bf5-64f4eb841f42",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202843,
+        "affected_merchant_id": 22,
+        "catalog_revision": "80b4b737db64d722da53b0271591aa523e3ac54af6ad711facddd988d0c3c7b3"
+      },
+      {
+        "event_id": "9f4c9f17-89d5-415f-a657-bb7623630983",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "48fab91c-dfa8-4c09-ba3f-88079143e30d",
+        "affected_product_id": 202843,
+        "affected_merchant_id": 22,
+        "catalog_revision": "80b4b737db64d722da53b0271591aa523e3ac54af6ad711facddd988d0c3c7b3"
+      },
+      {
+        "event_id": "004705c4-9146-49d7-b655-49182c69bbe3",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202852,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3b3af8dd735f6bb67c6d652dde8e1c33db2920d490afe60955ebfc59437ce76d"
+      },
+      {
+        "event_id": "094af3d0-8a04-4fab-bae8-b946a53cafdd",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "a60abfc2-3c8e-4200-8c23-4416357b6be1",
+        "affected_product_id": 202852,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3b3af8dd735f6bb67c6d652dde8e1c33db2920d490afe60955ebfc59437ce76d"
+      },
+      {
+        "event_id": "15cbe24c-2621-4c09-a10a-0a2dbd078d36",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202857,
+        "affected_merchant_id": 22,
+        "catalog_revision": "455e51c97738e74ccb01e1207bf40f42fb1d57e2ef56a0da6f97af52e01aee03"
+      },
+      {
+        "event_id": "f52d2e5d-4b64-4d22-acb1-7e520e23a0a8",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "d86ed0cd-fa47-42d5-a64c-3393275c3768",
+        "affected_product_id": 202857,
+        "affected_merchant_id": 22,
+        "catalog_revision": "455e51c97738e74ccb01e1207bf40f42fb1d57e2ef56a0da6f97af52e01aee03"
+      },
+      {
+        "event_id": "a0d57ee6-3535-47c6-b02b-66d43fb7ca5c",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50084,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d33088fe5ef9a9613c3fca7cf4befcd9962da49cff17c50cec2a121275b081cc"
+      },
+      {
+        "event_id": "75912690-8b8d-4209-b452-26e2a49bf0ee",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "593968cb-d996-4803-9e48-8c2bb45a0f2f",
+        "affected_product_id": 50084,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d33088fe5ef9a9613c3fca7cf4befcd9962da49cff17c50cec2a121275b081cc"
+      },
+      {
+        "event_id": "4e3c9a76-d3b6-44fb-9356-5992b5ed9220",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202860,
+        "affected_merchant_id": 22,
+        "catalog_revision": "094ab4fc298fdaebcdf4e8d0dd7bc349da34ef5a69725b00d1c4e4c099108aff"
+      },
+      {
+        "event_id": "346bf159-448e-49c9-84d8-d27df70183b2",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "a1c33048-e2f7-4a3a-8dd2-a010ad245787",
+        "affected_product_id": 202860,
+        "affected_merchant_id": 22,
+        "catalog_revision": "094ab4fc298fdaebcdf4e8d0dd7bc349da34ef5a69725b00d1c4e4c099108aff"
+      },
+      {
+        "event_id": "88142f85-ec4c-495e-9115-645e637d6f65",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50083,
+        "affected_merchant_id": 22,
+        "catalog_revision": "2b46457c05c490475ee4dfe0f98dfc31eca8ada779b40a3f1a8344d69540a836"
+      },
+      {
+        "event_id": "f7b1437d-68e2-4958-97a8-5fe73a45059f",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0616a0c5-850c-448e-98c1-cc4a5c8f680b",
+        "affected_product_id": 50083,
+        "affected_merchant_id": 22,
+        "catalog_revision": "2b46457c05c490475ee4dfe0f98dfc31eca8ada779b40a3f1a8344d69540a836"
+      },
+      {
+        "event_id": "ed70a9e1-40b5-4c17-a367-273edfd1d0da",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50082,
+        "affected_merchant_id": 22,
+        "catalog_revision": "b88ae321c1cb1e135e4b19aae79d0b202efe7f4a053705d18fc0c3d034047e33"
+      },
+      {
+        "event_id": "085da9f8-5bd0-4330-91ad-807f04be5e89",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "2382c612-6979-4b86-9fd8-fc2ff2d0016d",
+        "affected_product_id": 50082,
+        "affected_merchant_id": 22,
+        "catalog_revision": "b88ae321c1cb1e135e4b19aae79d0b202efe7f4a053705d18fc0c3d034047e33"
+      },
+      {
+        "event_id": "5cb2343c-416c-42e2-8177-76c6dfa71ce5",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202853,
+        "affected_merchant_id": 22,
+        "catalog_revision": "41a4485c9fb3389ee0f9087509e54791bbaa3fb49a6475dd0fddff2e03cb5499"
+      },
+      {
+        "event_id": "d8399061-59db-44fc-ad27-a91f0636b23a",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "5cf8d264-717b-4dba-9703-72726d87298a",
+        "affected_product_id": 202853,
+        "affected_merchant_id": 22,
+        "catalog_revision": "41a4485c9fb3389ee0f9087509e54791bbaa3fb49a6475dd0fddff2e03cb5499"
+      },
+      {
+        "event_id": "41c643d0-25b8-41ff-8e55-2a268c3d5e45",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202847,
+        "affected_merchant_id": 22,
+        "catalog_revision": "00442c843f9be61b59c9da976306bfda8a05ea55cd68002724894fc3b8048d62"
+      },
+      {
+        "event_id": "8eccbbe1-fd9d-4f74-bcc1-c893b32d4148",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "535e3b68-5ba1-4ede-942f-5699b15ab3c0",
+        "affected_product_id": 202847,
+        "affected_merchant_id": 22,
+        "catalog_revision": "00442c843f9be61b59c9da976306bfda8a05ea55cd68002724894fc3b8048d62"
+      },
+      {
+        "event_id": "a9933f6d-ed02-4357-b3df-9dc1979b3276",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202849,
+        "affected_merchant_id": 22,
+        "catalog_revision": "31197c713542dc419b2e53861a949ce968c873f2a9e63b919e04e5984544c822"
+      },
+      {
+        "event_id": "81e561ea-8e50-4d62-8f63-e334eb9c699b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "6dead7bb-67b2-4095-bcae-b21180bf053c",
+        "affected_product_id": 202849,
+        "affected_merchant_id": 22,
+        "catalog_revision": "31197c713542dc419b2e53861a949ce968c873f2a9e63b919e04e5984544c822"
+      },
+      {
+        "event_id": "792fcdb3-b1b4-46ea-be97-513d40263ba6",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202845,
+        "affected_merchant_id": 22,
+        "catalog_revision": "e4edce82787213777a4c6022135bfe44a05ac5229d5456f69c48ed5437a0a2cd"
+      },
+      {
+        "event_id": "8b375240-3a45-46ea-b1a1-899390093ea3",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "ed717346-f448-4239-a355-3fd30435b09a",
+        "affected_product_id": 202845,
+        "affected_merchant_id": 22,
+        "catalog_revision": "e4edce82787213777a4c6022135bfe44a05ac5229d5456f69c48ed5437a0a2cd"
+      },
+      {
+        "event_id": "9cf45fe2-8c46-4410-96c1-03075db68cdb",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50081,
+        "affected_merchant_id": 22,
+        "catalog_revision": "467883e923cc152db4f3b87bf34491d8dc02058f3ba5b142f365df56ff74d473"
+      },
+      {
+        "event_id": "1115cde3-f154-41f7-af28-7813f6328ed7",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "aa0fa9bd-8e76-4615-a9a9-5e5e57581360",
+        "affected_product_id": 50081,
+        "affected_merchant_id": 22,
+        "catalog_revision": "467883e923cc152db4f3b87bf34491d8dc02058f3ba5b142f365df56ff74d473"
+      },
+      {
+        "event_id": "cd4548b9-327b-4dbf-b1c8-6108a3814b21",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50080,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6164ca3f431d10dcd99732a883742aeb6fbd0f14e32ba20eb50440a111535d40"
+      },
+      {
+        "event_id": "950bc807-ce9b-4f6b-8c69-5fbbc044d5ce",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "6944d538-811a-4701-8dd1-69052b940d78",
+        "affected_product_id": 50080,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6164ca3f431d10dcd99732a883742aeb6fbd0f14e32ba20eb50440a111535d40"
+      },
+      {
+        "event_id": "5c3426be-df1e-4b2d-89be-ad5a51aaa492",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202848,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d3b57a2b55a9b98b00e70ae2aea72f4fc2c57347f6b03bf48f0157e8dbb29c7b"
+      },
+      {
+        "event_id": "8d186a1c-7e19-438c-a38c-2234e56c8a70",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "a9a46720-1b51-4080-9632-89d49991e540",
+        "affected_product_id": 202848,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d3b57a2b55a9b98b00e70ae2aea72f4fc2c57347f6b03bf48f0157e8dbb29c7b"
+      },
+      {
+        "event_id": "96d4e889-ad4c-4ee8-a0a9-4361d924c309",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202842,
+        "affected_merchant_id": 22,
+        "catalog_revision": "349968c5d94dd0b59674ab544dab7417268331ba0e06dd65e992468156019ab6"
+      },
+      {
+        "event_id": "4949b5bc-461b-4b36-a1f1-5f999feaf5d2",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "c071e768-e80c-4394-94ce-c8af108a65c1",
+        "affected_product_id": 202842,
+        "affected_merchant_id": 22,
+        "catalog_revision": "349968c5d94dd0b59674ab544dab7417268331ba0e06dd65e992468156019ab6"
+      },
+      {
+        "event_id": "847f1a3d-fabf-4da5-9d18-ad3ee61fe5fe",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202846,
+        "affected_merchant_id": 22,
+        "catalog_revision": "97913b9009e433f04e49ca727ce0cd4cef4a5ef94830cb65a67928fb97ee365a"
+      },
+      {
+        "event_id": "8d4dea79-1cce-4298-ba4f-f25b51a1bb30",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "ab9012d4-0a92-4737-b0ca-4349bb6898c2",
+        "affected_product_id": 202846,
+        "affected_merchant_id": 22,
+        "catalog_revision": "97913b9009e433f04e49ca727ce0cd4cef4a5ef94830cb65a67928fb97ee365a"
+      },
+      {
+        "event_id": "0511885c-e7e9-4aa4-b3c0-f9f825917d2a",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50079,
+        "affected_merchant_id": 22,
+        "catalog_revision": "760c571394fdaf3090725b651244f7c5ff0bed1f0a7200b90553160614bc0bb2"
+      },
+      {
+        "event_id": "91eb552a-c621-45f6-ba19-ce90a0c7f318",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "e2beed63-5981-44b9-9cb0-3f1a36faa4ce",
+        "affected_product_id": 50079,
+        "affected_merchant_id": 22,
+        "catalog_revision": "760c571394fdaf3090725b651244f7c5ff0bed1f0a7200b90553160614bc0bb2"
+      },
+      {
+        "event_id": "c58010d4-614d-48f5-8a95-60e6eb75ff31",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202838,
+        "affected_merchant_id": 22,
+        "catalog_revision": "9925dc5ce4b99512b67488b69a9c9cafb44bd01751f45a8040ee2f534affce71"
+      },
+      {
+        "event_id": "10ce3c39-d270-4d6e-8916-6cf6b48d89f2",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "12403a38-938d-464b-ab64-b1e475a48638",
+        "affected_product_id": 202838,
+        "affected_merchant_id": 22,
+        "catalog_revision": "9925dc5ce4b99512b67488b69a9c9cafb44bd01751f45a8040ee2f534affce71"
+      },
+      {
+        "event_id": "a8498337-97ed-4f19-ae36-a68d438e8f18",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202841,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a9d2050311b7de8b92d58fb94c2a6d76e3006d5932d967398c13c881dc1101c4"
+      },
+      {
+        "event_id": "7784b552-d708-4603-8623-668301390881",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "0e934320-e239-4f7e-a023-0968683357e8",
+        "affected_product_id": 202841,
+        "affected_merchant_id": 22,
+        "catalog_revision": "a9d2050311b7de8b92d58fb94c2a6d76e3006d5932d967398c13c881dc1101c4"
+      },
+      {
+        "event_id": "44e265c5-fe42-41f9-9058-6dd3864cec0c",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50078,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1612a1d63f98fcf8bc2da0c6bb25c634ee9b8a183e4210aca82f8d1fcb78ed1a"
+      },
+      {
+        "event_id": "cb97ca34-200d-426a-a42b-0b5f010b65aa",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "d7f7a19f-5e3d-47fd-bf09-9ec9405d8ce2",
+        "affected_product_id": 50078,
+        "affected_merchant_id": 22,
+        "catalog_revision": "1612a1d63f98fcf8bc2da0c6bb25c634ee9b8a183e4210aca82f8d1fcb78ed1a"
+      },
+      {
+        "event_id": "9e01f421-8403-41e6-a2c4-16568de3b78f",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202839,
+        "affected_merchant_id": 22,
+        "catalog_revision": "44a00bd8ee6c8d03db02b6f39366480a48aad1f043f5e3028cc69696442981f8"
+      },
+      {
+        "event_id": "2093d667-ab27-417e-93d8-0c18febbcb3f",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "3b7275b8-cac6-404b-aef1-5af68f334d43",
+        "affected_product_id": 202839,
+        "affected_merchant_id": 22,
+        "catalog_revision": "44a00bd8ee6c8d03db02b6f39366480a48aad1f043f5e3028cc69696442981f8"
+      },
+      {
+        "event_id": "655c7e28-f378-468d-a83f-34aac4a691af",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202840,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ad973d968fdd8a7123886e04fdf0ffe6671abdd5fdaaa732f08351f3e1e58a51"
+      },
+      {
+        "event_id": "8436edfa-8eb1-473e-a3fe-4fdf5a70c20b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "d8fde203-678a-4096-b817-269139dabf86",
+        "affected_product_id": 202840,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ad973d968fdd8a7123886e04fdf0ffe6671abdd5fdaaa732f08351f3e1e58a51"
+      },
+      {
+        "event_id": "96abbde9-7350-422d-b96b-3695a5744f3a",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50077,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3f7afacac38158913e1c3d88d428eaf2d488b4248156bdeece976399537d3bcb"
+      },
+      {
+        "event_id": "72af14b5-2fc9-4f66-bfda-b531df38ed12",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "37b7084e-d19e-4d3e-b97e-707095b89d29",
+        "affected_product_id": 50077,
+        "affected_merchant_id": 22,
+        "catalog_revision": "3f7afacac38158913e1c3d88d428eaf2d488b4248156bdeece976399537d3bcb"
+      },
+      {
+        "event_id": "1b712ccf-1f65-4185-ae4f-5cb5fc1b1ce6",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202837,
+        "affected_merchant_id": 22,
+        "catalog_revision": "f8a31a41089dec466ea4e51d0b2e43d8828fe37ced4bdd798cc91d0b45576587"
+      },
+      {
+        "event_id": "2f1818ae-9398-4441-bb88-c5f6052db905",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "5817dc53-2b41-4d24-aae8-4484974af0a0",
+        "affected_product_id": 202837,
+        "affected_merchant_id": 22,
+        "catalog_revision": "f8a31a41089dec466ea4e51d0b2e43d8828fe37ced4bdd798cc91d0b45576587"
+      },
+      {
+        "event_id": "881926d9-27f1-4c2f-8e7d-aa1b1675c10d",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202844,
+        "affected_merchant_id": 22,
+        "catalog_revision": "f67dd5ccd95ffd5cc9147b959dec75b07099cc088cc9409156a6fe22d7523546"
+      },
+      {
+        "event_id": "2388c74c-dfa2-4e9c-a2d5-db0c7d390328",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "16f78caa-8bf7-41f3-a998-0ad7dc901551",
+        "affected_product_id": 202844,
+        "affected_merchant_id": 22,
+        "catalog_revision": "f67dd5ccd95ffd5cc9147b959dec75b07099cc088cc9409156a6fe22d7523546"
+      },
+      {
+        "event_id": "b7538dd4-52f8-41af-b203-a87bba6d2eba",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50076,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ce3f7d2acab9f49d1da0c4af5d9a9d177dcaa2f6307feb87e1ae6ef8a29a5c8c"
+      },
+      {
+        "event_id": "005f183a-a2c3-45c1-b00f-109e2a9a9ede",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "2d542f27-b080-4e0e-9f83-0ebbb7d85b8b",
+        "affected_product_id": 50076,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ce3f7d2acab9f49d1da0c4af5d9a9d177dcaa2f6307feb87e1ae6ef8a29a5c8c"
+      },
+      {
+        "event_id": "f71c5ca8-3f29-4f8d-99a3-ffa75fa04a60",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202836,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6ab2ecbe918d267aff5c1b1280cce62ef03bd5c8798c70d4db9261114ab94921"
+      },
+      {
+        "event_id": "dc2a5e2b-bd91-4911-88cb-2b18b78ff181",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "4e270a5a-014d-4fd7-acf0-c7578d824467",
+        "affected_product_id": 202836,
+        "affected_merchant_id": 22,
+        "catalog_revision": "6ab2ecbe918d267aff5c1b1280cce62ef03bd5c8798c70d4db9261114ab94921"
+      },
+      {
+        "event_id": "73854e23-8fa7-4050-8cd9-7fd539d10087",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202835,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d34b42a0eaecad1b14d388a557663a24ce22f0f477e1c8a0e49db4974c5cf352"
+      },
+      {
+        "event_id": "f1465192-8952-42c2-8a90-0fe6a186bd1a",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "f36cf08b-dd5a-49e7-8b3e-667929682850",
+        "affected_product_id": 202835,
+        "affected_merchant_id": 22,
+        "catalog_revision": "d34b42a0eaecad1b14d388a557663a24ce22f0f477e1c8a0e49db4974c5cf352"
+      },
+      {
+        "event_id": "c3c9d165-6d4b-4881-8761-3119e9428ed0",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202831,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c69e7d1a8fba2466bab57d14f4d3b96e8ae3e8b2fb9fb03a99c9c5856bfb53ce"
+      },
+      {
+        "event_id": "34c53cb8-df4c-477f-9c67-53f49186b343",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "c8674111-213f-4c41-a723-b0522cdfc403",
+        "affected_product_id": 202831,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c69e7d1a8fba2466bab57d14f4d3b96e8ae3e8b2fb9fb03a99c9c5856bfb53ce"
+      },
+      {
+        "event_id": "040179d5-d0a8-42b6-b39f-6f1011760392",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 50075,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c3b7ca528c59aee735588ca43e0fabaec95981551b7b285fb6f61f45517885e9"
+      },
+      {
+        "event_id": "925436f2-4869-4792-a9ad-638567c22d63",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "f711ab9b-0675-4adc-94f3-427f6942aa1c",
+        "affected_product_id": 50075,
+        "affected_merchant_id": 22,
+        "catalog_revision": "c3b7ca528c59aee735588ca43e0fabaec95981551b7b285fb6f61f45517885e9"
+      },
+      {
+        "event_id": "d9bce5f9-9331-45f8-9ed1-6de5ee06bb62",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202834,
+        "affected_merchant_id": 22,
+        "catalog_revision": "41c2c45018e36239d59bb1f4899f20f7c547fc71dcc2682a0e8cc30141e2679f"
+      },
+      {
+        "event_id": "7c0bb329-1e1a-4c24-a265-6f1129debf9b",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "e56975eb-4ea6-4b74-b9bc-444ae8f720ab",
+        "affected_product_id": 202834,
+        "affected_merchant_id": 22,
+        "catalog_revision": "41c2c45018e36239d59bb1f4899f20f7c547fc71dcc2682a0e8cc30141e2679f"
+      },
+      {
+        "event_id": "c53a5d36-388c-4c0a-b01c-077af51ee358",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202830,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ae35ff1ab9b0562c1e54bdb36ba0ead99115f796bc416792c9e34114fbc86207"
+      },
+      {
+        "event_id": "7fc4a4de-9134-48ac-a61e-866d287e5e0f",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "f6f92f35-cf96-42c2-a76c-33ae642233f5",
+        "affected_product_id": 202830,
+        "affected_merchant_id": 22,
+        "catalog_revision": "ae35ff1ab9b0562c1e54bdb36ba0ead99115f796bc416792c9e34114fbc86207"
+      },
+      {
+        "event_id": "9bd03510-33da-47f9-8e0a-814d868f6697",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202827,
+        "affected_merchant_id": 22,
+        "catalog_revision": "9b98c11d873343b779dd8dd6411e9942f15f6c0e4771f4ba9d5f85c05356d051"
+      },
+      {
+        "event_id": "4bfef876-2ef5-4fea-a565-2bbfb7e50b4e",
+        "event_type": "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+        "job_id": "782f189e-9703-4815-ba57-3f121af8fa74",
+        "affected_product_id": 202827,
+        "affected_merchant_id": 22,
+        "catalog_revision": "9b98c11d873343b779dd8dd6411e9942f15f6c0e4771f4ba9d5f85c05356d051"
+      },
+      {
+        "event_id": "201ce2d3-cadb-4bee-9811-b6be4a4e7468",
+        "event_type": "PRODUCT_CHANGED",
+        "job_id": null,
+        "affected_product_id": 202833,
+        "affected_merchant_id": 22,
+        "catalog_revision": "05c583697bf33a02763e37a6a3f0a0e8ed297d1ba0f9d863b43648c2aac60bed"
+      }
+    ],
+    "captured_at": "2026-08-01T13:52:09.219275+00:00"
+  },
+  "duplicate_key_groups": 0,
+  "missing_events": 0,
+  "note": "Organic path = PostgresProductCatalogRepository.upsert_product same-TX emit",
+  "pass": true,
+  "captured_at": "2026-08-01T13:52:09.224675+00:00"
+}

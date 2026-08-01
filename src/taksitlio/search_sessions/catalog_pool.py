@@ -219,13 +219,22 @@ def apply_catalog_hints(
 ) -> None:
     """Replace CatalogHints + clarify options + token map from live sources."""
 
+    from taksitlio.query_understanding.alias_index import build_alias_index
+
     cat_entities = tuple(category_to_entity(c) for c in categories)
     token_map = {str(c.category_code): category_include_tokens(c) for c in categories}
+    merchant_t = tuple(merchants) if merchants else orch.catalog.merchants
+    brand_t = tuple(brands) if brands else orch.catalog.brands
+    inst_t = tuple(institutions) if institutions else orch.catalog.institutions
+    cats_t = cat_entities if categories else orch.catalog.categories
     orch.catalog = CatalogHints(
-        merchants=tuple(merchants) if merchants else orch.catalog.merchants,
-        categories=cat_entities if categories else orch.catalog.categories,
-        brands=tuple(brands) if brands else orch.catalog.brands,
-        institutions=tuple(institutions) if institutions else orch.catalog.institutions,
+        merchants=merchant_t,
+        categories=cats_t,
+        brands=brand_t,
+        institutions=inst_t,
+        alias_index=build_alias_index(
+            categories=cats_t, merchants=merchant_t, brands=brand_t
+        ),
     )
     if categories:
         orch.category_clarify_options = clarify_options_from_categories(list(categories))
@@ -283,6 +292,12 @@ async def refresh_orchestrator_from_catalog(
     else:
         # Resolve name terms from live category synonyms before product fetch.
         category_entities = tuple(category_to_entity(c) for c in category_rows)
+        from taksitlio.query_understanding.alias_index import build_alias_index
+
+        term_index = build_alias_index(categories=category_entities)
+        # Prefer indexed terms inside load_search_candidates via category entities;
+        # stash index on a thin CatalogHints for reuse after apply_catalog_hints.
+        _ = term_index
         cands = await load_search_candidates_from_catalog(
             catalog,
             utterance=utterance,

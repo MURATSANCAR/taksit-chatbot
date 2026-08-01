@@ -1,0 +1,13 @@
+{
+  "candidates": 250,
+  "approved": 0,
+  "rejected": 0,
+  "needs_revision": 0,
+  "review_required": 250,
+  "dual_control_enforced": true,
+  "auto_approve_forbidden": true,
+  "pass": false,
+  "status": "NOT_VERIFIED",
+  "note": "Human prepared_by != reviewed_by required; not auto-approvable",
+  "captured_at": "2026-08-01T13:53:55.303597+00:00"
+}

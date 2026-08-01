@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from functools import lru_cache
 from typing import Any, Optional, Sequence
 
 from taksitlio.entity_resolution import (
@@ -20,6 +21,11 @@ from taksitlio.semantic_matching.turkish_normalize import (
     normalize_turkish,
     turkish_lower,
 )
+
+
+@lru_cache(maxsize=8192)
+def _nv_cached(s: str) -> str:
+    return normalize_turkish(s).value
 
 
 @dataclass(frozen=True)
@@ -507,6 +513,24 @@ def _is_query_stopword(token: str) -> bool:
     return bool(folded) and folded in _QUERY_STOPWORDS
 
 
+# Colloquial product abbreviations (TR chat). Expand before free-text / category
+# resolution so "babama tel lazım" does not invent include_tokens=["tel"] and
+# substring-match Intel laptops (tel ⊂ intel).
+_PRODUCT_TOKEN_ABBREVIATIONS: dict[str, str] = {
+    "tel": "telefon",
+}
+
+
+def expand_colloquial_product_token(token: str) -> str:
+    """Map a single query token to its catalog-facing surface form when known."""
+
+    raw = (token or "").strip(".,!?;:\"'()[]{}")
+    if not raw:
+        return token
+    key = ascii_fold(raw.casefold())
+    return _PRODUCT_TOKEN_ABBREVIATIONS.get(key, raw)
+
+
 def _free_text_product_nouns(text: str) -> list[str]:
     """Recover concrete product nouns when catalog category resolution misses."""
 
@@ -518,7 +542,7 @@ def _free_text_product_nouns(text: str) -> list[str]:
             continue
         if re.fullmatch(r"\d+[a-zğüşıöç]*", t):  # 16gb, 12ay
             continue
-        nouns.append(tok.strip(".,!?;:\"'()[]{}"))
+        nouns.append(expand_colloquial_product_token(tok))
     # Prefer longer / more specific tokens first, keep order stable after dedupe
     nouns = list(dict.fromkeys(nouns))
     return nouns[:3]
@@ -575,6 +599,7 @@ class CatalogHints:
     categories: tuple[EntityCandidate, ...] = ()
     brands: tuple[EntityCandidate, ...] = ()
     institutions: tuple[EntityCandidate, ...] = ()
+    alias_index: Optional[Any] = None
 
 
 def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastParseResult:
@@ -582,57 +607,78 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
     normalized = normalize_turkish(text).value
     lower = turkish_lower(text)
     positive_text, neg_spans = _split_negation_clauses(text)
+    neg_norm = tuple(_nv_cached(ns) for ns in neg_spans)
 
-    def _nv(s: str) -> str:
-        return normalize_turkish(s).value
+    from taksitlio.query_understanding.alias_index import (
+        build_alias_index,
+        fold_alias,
+    )
+
+    index = catalog.alias_index
+    if index is None:
+        index = build_alias_index(
+            categories=catalog.categories,
+            merchants=catalog.merchants,
+            brands=catalog.brands,
+        )
 
     merchant = None
     hit = _resolve_one(text, catalog.merchants) if catalog.merchants else None
     if hit and hit.resolved_id:
         merchant = hit
     else:
-        for cand in catalog.merchants:
-            for alias in (cand.display_name, cand.canonical_name, *cand.aliases):
-                alias_n = _nv(alias)
-                if alias_n and alias_n in normalized:
-                    merchant = _resolve_one(alias, catalog.merchants)
-                    if merchant:
-                        break
-            if merchant and merchant.resolved_id:
+        for cand in index.lookup_merchants(text):
+            merchant = ResolvedEntityRef(
+                resolved_id=cand.entity_id,
+                display_name=cand.display_name,
+                match_type="NORMALIZED_EXACT",
+                confidence=0.96,
+            )
+            if merchant.resolved_id:
                 break
+        if merchant is None:
+            # Tiny catalogs / tests: keep legacy substring path.
+            for cand in catalog.merchants:
+                for alias in (cand.display_name, cand.canonical_name, *cand.aliases):
+                    alias_n = _nv_cached(alias)
+                    if alias_n and alias_n in normalized:
+                        merchant = _resolve_one(alias, catalog.merchants)
+                        if merchant:
+                            break
+                if merchant and merchant.resolved_id:
+                    break
 
     positive_categories: list[ResolvedEntityRef] = []
     negative_categories: list[ResolvedEntityRef] = []
-    from taksitlio.progressive_results.category_match import alias_mentioned_in_text
+    neg_folded = tuple(fold_alias(ns) for ns in neg_spans if ns)
 
-    for cand in catalog.categories:
-        names = (cand.display_name, cand.canonical_name, *cand.aliases)
-        for name in names:
-            n = _nv(name)
-            if not n:
-                continue
-            if any(n == _nv(ns) or n in _nv(ns) or _nv(ns) in n for ns in neg_spans):
-                negative_categories.append(
-                    ResolvedEntityRef(
-                        resolved_id=cand.entity_id,
-                        display_name=cand.display_name,
-                        match_type="NORMALIZED_EXACT",
-                        confidence=0.95,
-                    )
+    for cand in index.lookup_categories(text):
+        # Prefer negative if the matched phrase sits in a negation clause token.
+        names = (
+            cand.display_name,
+            cand.canonical_name,
+            *(cand.aliases or ()),
+        )
+        folded_names = {fold_alias(str(n)) for n in names if n}
+        if neg_folded and folded_names.intersection(neg_folded):
+            negative_categories.append(
+                ResolvedEntityRef(
+                    resolved_id=cand.entity_id,
+                    display_name=cand.display_name,
+                    match_type="NORMALIZED_EXACT",
+                    confidence=0.95,
                 )
-                break
-            # Whole-token/phrase only — "kamp" must not match "kampanyalı".
-            if n in normalized or alias_mentioned_in_text(name, text):
-                positive_categories.append(
-                    ResolvedEntityRef(
-                        resolved_id=cand.entity_id,
-                        display_name=cand.display_name,
-                        match_type="NORMALIZED_EXACT",
-                        confidence=0.96,
-                        required=True,
-                    )
-                )
-                break
+            )
+            continue
+        positive_categories.append(
+            ResolvedEntityRef(
+                resolved_id=cand.entity_id,
+                display_name=cand.display_name,
+                match_type="NORMALIZED_EXACT",
+                confidence=0.96,
+                required=True,
+            )
+        )
 
     # Deduplicate by id
     def _dedupe(items: list[ResolvedEntityRef]) -> list[ResolvedEntityRef]:
@@ -650,20 +696,31 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
     negative_categories = _dedupe(negative_categories)
 
     brands: list[ResolvedEntityRef] = []
-    for cand in catalog.brands:
-        for name in (cand.display_name, cand.canonical_name, *cand.aliases):
-            n = _nv(name)
-            if n and n in normalized:
-                brands.append(
-                    ResolvedEntityRef(
-                        resolved_id=cand.entity_id,
-                        display_name=cand.display_name,
-                        match_type="NORMALIZED_EXACT",
-                        confidence=0.97,
-                        required=True,
+    for cand in index.lookup_brands(text):
+        brands.append(
+            ResolvedEntityRef(
+                resolved_id=cand.entity_id,
+                display_name=cand.display_name,
+                match_type="NORMALIZED_EXACT",
+                confidence=0.97,
+                required=True,
+            )
+        )
+    if not brands:
+        for cand in catalog.brands:
+            for name in (cand.display_name, cand.canonical_name, *cand.aliases):
+                n = _nv_cached(name)
+                if n and n in normalized:
+                    brands.append(
+                        ResolvedEntityRef(
+                            resolved_id=cand.entity_id,
+                            display_name=cand.display_name,
+                            match_type="NORMALIZED_EXACT",
+                            confidence=0.97,
+                            required=True,
+                        )
                     )
-                )
-                break
+                    break
     brands = _dedupe(brands)
 
     abstract_cues = ("herkes", "yer kapla", "mantıklı", "zorlamasın")

@@ -1,0 +1,573 @@
+{
+  "status_counts": {
+    "READY": 2,
+    "PARTIAL": 6,
+    "BLOCKED": 7,
+    "DEGRADED": 0,
+    "DISABLED": 0
+  },
+  "ready_merchant_count": 2,
+  "ready_active_products": 1060,
+  "merchants": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "active_products": 165169,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.7913,
+        "brand_coverage": 0.9975,
+        "attribute_coverage": 0.9975,
+        "card_media_coverage": 0.9728,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.7913,
+          "required": 0.95,
+          "gap_products": 26212
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "active_products": 7450,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.8835,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 0.9997,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.9209
+      },
+      "top_blockers": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "gap_products": 6705
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "gap_products": 6705
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.8835,
+          "required": 0.95,
+          "gap_products": 495
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "active_products": 6490,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.679,
+        "brand_coverage": 0.9997,
+        "attribute_coverage": 0.9997,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.679,
+          "required": 0.95,
+          "gap_products": 1759
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 15,
+      "merchant_code": "m-arcelik",
+      "active_products": 1244,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.1383,
+        "brand_coverage": 0.1367,
+        "attribute_coverage": 0.1383,
+        "card_media_coverage": 0.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.0,
+          "required": 0.95,
+          "gap_products": 1182
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.1383,
+          "required": 0.95,
+          "gap_products": 1010
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.1367,
+          "required": 0.9,
+          "gap_products": 950
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 16,
+      "merchant_code": "m-beko",
+      "active_products": 1163,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.2537,
+        "brand_coverage": 0.184,
+        "attribute_coverage": 0.184,
+        "card_media_coverage": 0.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.0,
+          "required": 0.95,
+          "gap_products": 1105
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.184,
+          "required": 0.9,
+          "gap_products": 833
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.184,
+          "required": 0.9,
+          "gap_products": 833
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "active_products": 1007,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.4747,
+        "brand_coverage": 0.6415,
+        "attribute_coverage": 0.6415,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.999
+      },
+      "top_blockers": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4747,
+          "required": 0.95,
+          "gap_products": 479
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.6415,
+          "required": 0.9,
+          "gap_products": 260
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.6415,
+          "required": 0.9,
+          "gap_products": 260
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "active_products": 1003,
+      "status": "READY",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.995,
+        "attribute_coverage": 0.999,
+        "card_media_coverage": 0.996,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [],
+      "reasons": []
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "active_products": 892,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.7691,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 1.0
+      },
+      "top_blockers": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "gap_products": 803
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "gap_products": 803
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.7691,
+          "required": 0.95,
+          "gap_products": 161
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 19,
+      "merchant_code": "m-n11",
+      "active_products": 850,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.4153,
+        "brand_coverage": 0.1965,
+        "attribute_coverage": 0.1965,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.1965,
+          "required": 0.9,
+          "gap_products": 598
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.1965,
+          "required": 0.9,
+          "gap_products": 598
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4153,
+          "required": 0.95,
+          "gap_products": 454
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 23,
+      "merchant_code": "m-dr",
+      "active_products": 750,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.1147,
+        "brand_coverage": 0.012,
+        "attribute_coverage": 0.012,
+        "card_media_coverage": 0.46,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.012,
+          "required": 0.9,
+          "gap_products": 666
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.012,
+          "required": 0.9,
+          "gap_products": 666
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.1147,
+          "required": 0.95,
+          "gap_products": 626
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "active_products": 130,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.5308,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.5308,
+          "required": 0.95,
+          "gap_products": 54
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "active_products": 130,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.4846,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 1.0
+      },
+      "top_blockers": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4846,
+          "required": 0.95,
+          "gap_products": 61
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "active_products": 115,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 0.2174,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "gap_products": 104
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "gap_products": 104
+        },
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.2174,
+          "required": 0.95,
+          "gap_products": 84
+        }
+      ],
+      "reasons": [
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "active_products": 57,
+      "status": "READY",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.9649,
+        "attribute_coverage": 0.9649,
+        "card_media_coverage": 0.9649,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [],
+      "reasons": []
+    },
+    {
+      "merchant_id": 24,
+      "merchant_code": "m-civil",
+      "active_products": 8,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.25,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "top_blockers": [
+        {
+          "policy": "MIN_PRODUCTS",
+          "actual": 8.0,
+          "required": 50.0,
+          "gap_products": 42
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.25,
+          "required": 0.95,
+          "gap_products": 6
+        }
+      ],
+      "reasons": [
+        "insufficient_searchable_products",
+        "category_coverage_below_threshold"
+      ]
+    }
+  ],
+  "priority_top": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "score": 0.593746
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "score": 0.521941
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "score": 0.493353
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "score": 0.450615
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "score": 0.444804
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "score": 0.421308
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "score": 0.419793
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "score": 0.377611
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "score": 0.332856
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "score": 0.332749
+    }
+  ],
+  "thresholds": {
+    "minimum_searchable_products": 50,
+    "minimum_category_coverage": 0.95,
+    "minimum_brand_coverage": 0.9,
+    "minimum_critical_attribute_coverage": 0.9,
+    "minimum_card_media_coverage": 0.95,
+    "minimum_fresh_price_coverage": 0.95,
+    "minimum_valid_url_coverage": 0.99,
+    "maximum_critical_error": 0,
+    "minimum_golden_pass_rate": 1.0,
+    "wrong_mapping_tolerance": 0,
+    "payment_calculation_error_tolerance": 0
+  },
+  "captured_at": "2026-08-01T13:52:06.375076+00:00"
+}

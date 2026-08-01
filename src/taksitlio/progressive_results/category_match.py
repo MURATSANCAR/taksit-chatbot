@@ -11,25 +11,39 @@ import re
 from typing import Any, Mapping, Optional, Sequence
 
 # Letters used for Turkish-aware token boundaries (avoid "kamp" ⊂ "kampanyalı").
-_TR_WORD = r"0-9a-zçğıöşü"
+_TR_WORD_CHARS = "0-9a-zçğıöşü"
+# Split on non-word chars — compiled once (fast_parse can call this 10k+ times/request).
+_NON_WORD_RE = re.compile(rf"[^{_TR_WORD_CHARS}]+", re.IGNORECASE)
+
+
+def _token_pad(text: str) -> str:
+    collapsed = " ".join(_NON_WORD_RE.sub(" ", (text or "").casefold()).split())
+    return f" {collapsed} " if collapsed else " "
 
 
 def alias_mentioned_in_text(alias: str, text: str) -> bool:
     """True when alias appears as a whole token/phrase, not a substring of a longer word."""
 
     a = (alias or "").casefold().strip()
-    u = (text or "").casefold()
-    if not a or not u:
+    if not a or len(a) < 3:
         return False
-    # Extremely short aliases are too ambiguous for substring/token recall.
-    if len(a) < 3:
+    needle = _token_pad(a)
+    if needle == " ":
         return False
-    pattern = (
-        rf"(?<![{_TR_WORD}])"
-        + re.escape(a).replace(r"\ ", r"\s+")
-        + rf"(?![{_TR_WORD}])"
-    )
-    return re.search(pattern, u) is not None
+    return needle in _token_pad(text)
+
+
+def _token_in_haystack(tok: str, hay: str) -> bool:
+    """Include/exclude match; short tokens use word boundaries (tel ≠ Intel)."""
+
+    t = (tok or "").casefold().strip()
+    if not t:
+        return False
+    # ≤3-char tokens as bare substrings false-positive (tel⊂intel, pc⊂laptop…).
+    if len(t) <= 3:
+        needle = _token_pad(t)
+        return bool(needle != " " and needle in _token_pad(hay))
+    return t in hay
 
 # Optional enrichment for well-known V003 / legacy ids (not the sole source of truth).
 CATEGORY_FAMILIES: dict[str, dict[str, tuple[str, ...]]] = {
@@ -125,6 +139,7 @@ _CODE_TO_FAMILY = {
 _NAME_TO_FAMILY = {
     "cep telefonu": "category-phone",
     "telefon": "category-phone",
+    "tel": "category-phone",
     "phone": "category-phone",
     "akıllı telefon": "category-phone",
     "dizüstü bilgisayar": "category-laptop",
@@ -195,16 +210,23 @@ def _include_tokens_for(cat: Mapping[str, Any] | str) -> tuple[str, ...]:
     if isinstance(cat, Mapping):
         raw = cat.get("include_tokens") or ()
         tokens = tuple(str(t).casefold().strip() for t in raw if str(t).strip())
-        if tokens:
-            return tokens
         fid = family_id_for_category(cat)
         name = str(cat.get("display_name") or "").casefold().strip()
     else:
         fid = family_id_for_category(cat)
         name = str(cat).casefold().strip()
         tokens = ()
-    if fid and fid in CATEGORY_FAMILIES:
-        return tuple(CATEGORY_FAMILIES[fid]["include"])
+    family_inc = (
+        tuple(CATEGORY_FAMILIES[fid]["include"])
+        if fid and fid in CATEGORY_FAMILIES
+        else ()
+    )
+    # Colloquial free-text like include_tokens=["tel"] must not be the sole
+    # haystack needle (tel⊂intel). Promote to the mapped family includes.
+    if family_inc and (not tokens or all(len(t) <= 3 for t in tokens)):
+        return family_inc
+    if tokens:
+        return tokens
     if name:
         return (name,)
     return ()
@@ -223,20 +245,20 @@ def matches_category_family(product: Mapping[str, Any], family_id: str) -> bool:
         # Dynamic id with no legacy family → allow (token filter applied elsewhere).
         return True
     hay = product_haystack(product)
-    if any(tok in hay for tok in family["exclude"]):
+    if any(_token_in_haystack(tok, hay) for tok in family["exclude"]):
         return False
-    return any(tok in hay for tok in family["include"])
+    return any(_token_in_haystack(tok, hay) for tok in family["include"])
 
 
 def matches_category_tokens(product: Mapping[str, Any], cat: Mapping[str, Any] | str) -> bool:
     hay = product_haystack(product)
     for tok in _exclude_tokens_for(cat):
-        if tok and tok in hay:
+        if tok and _token_in_haystack(tok, hay):
             return False
     includes = _include_tokens_for(cat)
     if not includes:
         return True
-    return any(tok in hay for tok in includes if tok)
+    return any(_token_in_haystack(tok, hay) for tok in includes if tok)
 
 
 def required_category_families(constraints: Mapping[str, Any]) -> tuple[str, ...]:
@@ -284,6 +306,58 @@ def utterance_name_terms(
     if not u:
         return ()
 
+    # Fast path: inverted alias index over category candidates.
+    if category_candidates:
+        from taksitlio.entity_resolution import EntityCandidate
+        from taksitlio.query_understanding.alias_index import (
+            build_alias_index,
+            matched_alias_labels,
+        )
+
+        entities: list[EntityCandidate] = []
+        for cand in category_candidates:
+            if isinstance(cand, EntityCandidate):
+                entities.append(cand)
+                continue
+            if isinstance(cand, Mapping):
+                entities.append(
+                    EntityCandidate(
+                        entity_id=str(
+                            cand.get("entity_id") or cand.get("resolved_id") or ""
+                        ),
+                        display_name=str(cand.get("display_name") or ""),
+                        canonical_name=str(
+                            cand.get("canonical_name") or cand.get("display_name") or ""
+                        ),
+                        aliases=tuple(str(a) for a in (cand.get("aliases") or ())),
+                        entity_type="category",
+                    )
+                )
+                continue
+            entities.append(
+                EntityCandidate(
+                    entity_id=str(getattr(cand, "entity_id", "") or ""),
+                    display_name=str(getattr(cand, "display_name", "") or ""),
+                    canonical_name=str(
+                        getattr(cand, "canonical_name", None)
+                        or getattr(cand, "display_name", "")
+                        or ""
+                    ),
+                    aliases=tuple(
+                        str(a) for a in (getattr(cand, "aliases", ()) or ())
+                    ),
+                    entity_type="category",
+                )
+            )
+        index = build_alias_index(categories=entities)
+        matched: list[str] = []
+        for cand in index.lookup_categories(utterance):
+            matched.extend(matched_alias_labels(cand, utterance))
+        if matched:
+            return tuple(dict.fromkeys(str(m).strip() for m in matched if str(m).strip()))[
+                :12
+            ]
+
     matched: list[str] = []
     for cand in category_candidates or ():
         names: list[str] = []
@@ -304,7 +378,6 @@ def utterance_name_terms(
         ]
         if not hit_names:
             continue
-        # Prefer concrete hits + display name — do NOT dump every alias ("bot", "tv", "pc").
         display = str(names[0]).strip() if names else ""
         chosen: list[str] = []
         if display:
