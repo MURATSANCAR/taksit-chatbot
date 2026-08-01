@@ -32,6 +32,9 @@ def test_golden_expected_builds_valid_need_profile() -> None:
     validate_need_profile(profile)
     assert profile["budget"]["value"] == 40000
     assert any("category_hint:MOBILE_PHONE" in p["concept"] for p in profile["preferences"])
+    sc = profile["semantic_constraints"]
+    assert sc["positive"]
+    assert any(c["concept"] == "mobile phone" for c in sc["positive"])
 
 
 def test_hr_constraints_exclude_fixture_ids() -> None:

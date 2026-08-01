@@ -1,0 +1,32 @@
+# 9B NeedProfile LoRA v3 — constraint-aligned SFT (CPU / nanobase).
+# Targets semantic_constraints for ADR-009 HR100; no quality claim until eval.
+
+base_model_ref: "Qwen/Qwen3.5-9B"
+output_dir: "training/exports/lora-out-9b-v3-cpu"
+train_jsonl: "training/exports/need_profile_sft.v3.jsonl"
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: ["q_proj", "v_proj"]
+
+train:
+  epochs: 1
+  learning_rate: 1.5e-4
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_seq_len: 1536
+  bf16: false
+  logging_steps: 10
+  save_steps: 50
+  max_steps: 400
+
+runtime:
+  require_gpu: false
+  framework: "peft+transformers"
+
+notes:
+  - "v3 SFT: hard-neg + DRAFT upsample; HUMAN_REVIEWED val held out"
+  - "max_steps=400 (~2x overnight v2); expect ~7-10h CPU on nanobase"
+  - "Do not claim QUALITY_READY until ADR-009 HR100 eval passes"

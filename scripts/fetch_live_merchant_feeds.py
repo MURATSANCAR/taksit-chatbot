@@ -912,6 +912,8 @@ def fetch_network(
         index_url="https://www.network.com.tr/sitemap.xml",
         map_filter=lambda u: re.search(r"/product_\d+\.xml$", u) is not None,
         workers=workers,
+        use_curl_cffi=True,
+        curl_impersonate="chrome124",
         url_filter=lambda u: "-p-" in u and "/en/" not in u,
     )
 
@@ -920,10 +922,12 @@ def fetch_civil(
     client: httpx.Client, delay: float, limit: int, *, workers: int = 4
 ) -> list[dict[str, Any]]:
     """Civil storefront is civilim.com (public Shopify)."""
-    idx = client.get("https://www.civilim.com/sitemap.xml")
+    from browser_fetch import curl_cffi_get
+
+    idx_html = curl_cffi_get("https://www.civilim.com/sitemap.xml", impersonate="chrome124")
     maps: list[str] = []
-    if idx.status_code == 200:
-        for u in re.findall(r"<loc>([^<]+)</loc>", idx.text):
+    if idx_html:
+        for u in re.findall(r"<loc>([^<]+)</loc>", idx_html):
             u = unescape(u)
             if "sitemap_products_" in u:
                 maps.append(u)
@@ -934,6 +938,8 @@ def fetch_civil(
         limit=limit,
         map_urls=maps,
         workers=workers,
+        use_curl_cffi=True,
+        curl_impersonate="chrome124",
         url_filter=lambda u: "/products/" in u and u.rstrip("/") != "https://www.civilim.com",
     )
 
@@ -952,7 +958,7 @@ def fetch_trendyol(
             r"https://www\.trendyol\.com/sitemap_products\d+\.xml$", u
         )
         is not None,
-        workers=min(workers, 4),
+        workers=min(workers, 8),
         use_curl_cffi=True,
         curl_impersonate="chrome124",
         url_filter=lambda u: "-p-" in u and "trendyol.com/" in u,
@@ -1179,6 +1185,8 @@ def fetch_mediamarkt(
         index_url="https://www.mediamarkt.com.tr/sitemaps/sitemap-index.xml",
         map_filter=lambda u: "sitemap-productdetailspages-" in u,
         workers=workers,
+        use_curl_cffi=True,
+        curl_impersonate="chrome124",
         url_filter=lambda u: "/tr/product/" in u,
     )
 
@@ -1287,6 +1295,8 @@ def fetch_dr(
         limit=limit,
         index_url="https://www.dr.com.tr/sitemaps/products.xml",
         workers=workers,
+        use_curl_cffi=True,
+        curl_impersonate="chrome124",
         url_filter=lambda u: "dr.com.tr" in u,
     )
 

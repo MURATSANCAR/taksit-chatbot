@@ -51,16 +51,25 @@ def _gpu_available() -> bool:
         return False
 
 
-def _load_rows(path: Path, *, limit: int | None) -> list[dict[str, Any]]:
+def _load_rows(
+    path: Path, *, limit: int | None, include_eval_split: bool = False
+) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
+    skipped_eval = 0
     with path.open(encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if not line:
                 continue
-            rows.append(json.loads(line))
+            row = json.loads(line)
+            if not include_eval_split and str(row.get("split") or "train") == "eval":
+                skipped_eval += 1
+                continue
+            rows.append(row)
             if limit is not None and len(rows) >= limit:
                 break
+    if skipped_eval:
+        print(f"skipped_eval_split={skipped_eval}", file=sys.stderr)
     if not rows:
         raise SystemExit(f"no training rows in {path}")
     return rows
@@ -84,7 +93,14 @@ def _format_example(row: dict[str, Any], tokenizer: Any) -> dict[str, Any]:
     return {"text": text}
 
 
-def train(cfg: dict[str, Any], *, allow_cpu: bool, limit: int | None, max_steps: int | None) -> int:
+def train(
+    cfg: dict[str, Any],
+    *,
+    allow_cpu: bool,
+    limit: int | None,
+    max_steps: int | None,
+    include_eval_split: bool = False,
+) -> int:
     missing = _check_ml_deps()
     if missing:
         print(f"MISSING_DEPS: {', '.join(missing)}", file=sys.stderr)
@@ -127,7 +143,9 @@ def train(cfg: dict[str, Any], *, allow_cpu: bool, limit: int | None, max_steps:
     lora_cfg = cfg.get("lora") if isinstance(cfg.get("lora"), dict) else {}
     train_cfg = cfg.get("train") if isinstance(cfg.get("train"), dict) else {}
 
-    rows = _load_rows(train_jsonl, limit=limit)
+    rows = _load_rows(
+        train_jsonl, limit=limit, include_eval_split=include_eval_split
+    )
     print(f"rows={len(rows)} base_model={base_model} device={'cuda' if torch.cuda.is_available() else 'cpu'}")
 
     tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
@@ -232,6 +250,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None, help="Cap training rows")
     parser.add_argument("--max-steps", type=int, default=None, help="Override max_steps")
     parser.add_argument(
+        "--include-eval-split",
+        action="store_true",
+        help="Train on rows with split=eval (leaks HR val; off by default)",
+    )
+    parser.add_argument(
         "--check-config",
         action="store_true",
         help="Validate config + data only",
@@ -258,7 +281,13 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 0 if ok_data else 4
 
-    return train(cfg, allow_cpu=args.allow_cpu, limit=args.limit, max_steps=args.max_steps)
+    return train(
+        cfg,
+        allow_cpu=args.allow_cpu,
+        limit=args.limit,
+        max_steps=args.max_steps,
+        include_eval_split=args.include_eval_split,
+    )
 
 
 if __name__ == "__main__":
