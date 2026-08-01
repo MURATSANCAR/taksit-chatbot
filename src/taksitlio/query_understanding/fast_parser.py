@@ -15,7 +15,11 @@ from taksitlio.entity_resolution import (
     ResolutionPolicy,
     resolve_entity,
 )
-from taksitlio.semantic_matching.turkish_normalize import normalize_turkish, turkish_lower
+from taksitlio.semantic_matching.turkish_normalize import (
+    ascii_fold,
+    normalize_turkish,
+    turkish_lower,
+)
 
 
 @dataclass(frozen=True)
@@ -144,6 +148,143 @@ _USAGE_CUES = {
     "uzun süre": "longevity",
     "uzun yıllar": "longevity",
 }
+# Kinship / gift-recipient spans — never free-text product nouns.
+# Otherwise "babama telefon lazım" invents required category free_text:babama
+# and AND-filters the pool to empty (ADR-011 progressive retrieval).
+_RECIPIENT_STOPWORDS_RAW = (
+    "bana",
+    "sana",
+    "kendime",
+    "kendisine",
+    "baba",
+    "babam",
+    "babama",
+    "babami",
+    "babamı",
+    "babamin",
+    "babamın",
+    "babamdan",
+    "babamla",
+    "anne",
+    "annem",
+    "anneme",
+    "annemi",
+    "annemin",
+    "annemden",
+    "annemle",
+    "anneanne",
+    "anneannem",
+    "anneanneme",
+    "babaanne",
+    "babaannem",
+    "babaanneme",
+    "dede",
+    "dedem",
+    "dedeme",
+    "dedemi",
+    "nine",
+    "ninem",
+    "nineme",
+    "ninemi",
+    "dayi",
+    "dayı",
+    "dayim",
+    "dayım",
+    "dayima",
+    "dayıma",
+    "amca",
+    "amcam",
+    "amcama",
+    "amcami",
+    "amcamı",
+    "teyze",
+    "teyzem",
+    "teyzeme",
+    "teyzemi",
+    "hala",
+    "halam",
+    "halama",
+    "halami",
+    "halamı",
+    "kardes",
+    "kardeş",
+    "kardesim",
+    "kardeşim",
+    "kardesime",
+    "kardeşime",
+    "kardesimi",
+    "kardeşimi",
+    "es",
+    "eş",
+    "esim",
+    "eşim",
+    "esime",
+    "eşime",
+    "esimi",
+    "eşimi",
+    "koca",
+    "kocam",
+    "kocama",
+    "kocami",
+    "kocamı",
+    "karim",
+    "karım",
+    "karima",
+    "karıma",
+    "oglum",
+    "oğlum",
+    "ogluma",
+    "oğluma",
+    "oglumu",
+    "oğlumu",
+    "kizim",
+    "kızım",
+    "kizima",
+    "kızıma",
+    "kizimi",
+    "kızımı",
+    "cocugum",
+    "çocuğum",
+    "cocuguma",
+    "çocuğuma",
+    "torunum",
+    "torunuma",
+    "torunumu",
+    "yegenim",
+    "yeğenim",
+    "yegenime",
+    "yeğenime",
+    "arkadasim",
+    "arkadaşım",
+    "arkadasima",
+    "arkadaşıma",
+    "sevgilim",
+    "sevgilime",
+    "sevgilimi",
+    "abim",
+    "abime",
+    "abimi",
+    "ablam",
+    "ablama",
+    "ablami",
+    "ablamı",
+    "kayinpeder",
+    "kayınpeder",
+    "kayinpederim",
+    "kayınpederim",
+    "kayinpederime",
+    "kayınpederime",
+    "kayinvalide",
+    "kayınvalide",
+    "kayinvalidem",
+    "kayınvalidem",
+    "kayinvalideme",
+    "kayınvalideme",
+)
+_RECIPIENT_STOPWORDS = frozenset(_RECIPIENT_STOPWORDS_RAW) | frozenset(
+    ascii_fold(turkish_lower(w)) for w in _RECIPIENT_STOPWORDS_RAW
+)
+
 # Function/grammar words stripped when recovering a free-text product noun.
 _QUERY_STOPWORDS = frozenset(
     {
@@ -254,7 +395,7 @@ _QUERY_STOPWORDS = frozenset(
         "cok",
         "çok",
     }
-)
+) | _RECIPIENT_STOPWORDS
 
 
 def _has_max_budget_cue(lower: str) -> bool:
@@ -356,6 +497,16 @@ def _parse_budget(text: str) -> Optional[dict[str, Any]]:
     return None
 
 
+def _is_query_stopword(token: str) -> bool:
+    t = (token or "").casefold().strip()
+    if not t:
+        return True
+    if t in _QUERY_STOPWORDS:
+        return True
+    folded = ascii_fold(t)
+    return bool(folded) and folded in _QUERY_STOPWORDS
+
+
 def _free_text_product_nouns(text: str) -> list[str]:
     """Recover concrete product nouns when catalog category resolution misses."""
 
@@ -363,7 +514,7 @@ def _free_text_product_nouns(text: str) -> list[str]:
     nouns: list[str] = []
     for tok in normalized.split():
         t = tok.strip(".,!?;:\"'()[]{}").casefold()
-        if len(t) < 3 or t.isdigit() or t in _QUERY_STOPWORDS:
+        if len(t) < 3 or t.isdigit() or _is_query_stopword(t):
             continue
         if re.fullmatch(r"\d+[a-zğüşıöç]*", t):  # 16gb, 12ay
             continue

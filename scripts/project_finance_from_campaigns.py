@@ -98,6 +98,15 @@ def _usable_terms(
     return out
 
 
+def _verification_for_source(source_reference: Any) -> str:
+    """SOURCE_PROVIDED when published source file exists; never auto-elevate to VERIFIED."""
+
+    src = str(source_reference or "").strip()
+    if src and Path(src).exists():
+        return "SOURCE_PROVIDED"
+    return "UNVERIFIED"
+
+
 async def ensure_financial_product(conn: Any, *, institution_id: int, code: str, name: str) -> int:
     row = await conn.fetchrow(
         """
@@ -150,7 +159,10 @@ async def main() -> None:
         "agreements": 0,
         "products_projected": 0,
         "eligible_options": 0,
+        "ineligible_options": 0,
         "skipped_no_rate": 0,
+        "skipped_no_merchant": 0,
+        "by_campaign": {},
     }
 
     try:
@@ -163,6 +175,7 @@ async def main() -> None:
                        fi.id AS institution_id, fi.institution_code, fi.display_name AS institution_name
                 FROM finance_campaigns c
                 JOIN financial_institutions fi ON fi.id = c.institution_id
+                WHERE c.status IN ('ACTIVE', 'DRAFT')
                 ORDER BY c.id
                 """
             )
@@ -206,7 +219,14 @@ async def main() -> None:
                     camp["id"],
                 )
                 if not merchants:
+                    stats["skipped_no_merchant"] += 1
                     continue
+
+                ver_status = _verification_for_source(camp["source_reference"])
+                try:
+                    ver_enum = VerificationStatus(ver_status)
+                except ValueError:
+                    ver_enum = VerificationStatus.UNVERIFIED
 
                 product_id = await ensure_financial_product(
                     conn,
@@ -220,11 +240,13 @@ async def main() -> None:
                     UPDATE finance_campaigns
                     SET status = 'ACTIVE',
                         financial_product_id = $2,
+                        verification_status = $3,
                         updated_at = NOW()
                     WHERE id = $1
                     """,
                     camp["id"],
                     product_id,
+                    ver_status,
                 )
 
                 # Replace prior snapshots for this campaign (idempotent rebuild).
@@ -246,7 +268,7 @@ async def main() -> None:
                           verification_status, freshness_status, source_reference, metadata
                         ) VALUES (
                           $1, $2, $3, $3, $4, $5, $6,
-                          'UNVERIFIED', 'FRESH', $7, $8::jsonb
+                          $9, 'FRESH', $7, $8::jsonb
                         )
                         RETURNING id
                         """,
@@ -264,6 +286,7 @@ async def main() -> None:
                             },
                             ensure_ascii=False,
                         ),
+                        ver_status,
                     )
                     snap_ids[months] = int(snap["id"])
                     stats["rate_snapshots"] += 1
@@ -280,7 +303,7 @@ async def main() -> None:
                     display_name=str(camp["display_name"]),
                     campaign_type=ctype,
                     status=CampaignStatus.ACTIVE,
-                    verification_status=VerificationStatus.UNVERIFIED,
+                    verification_status=ver_enum,
                     minimum_purchase_amount=(
                         float(camp["minimum_purchase_amount"])
                         if camp["minimum_purchase_amount"] is not None
@@ -297,35 +320,71 @@ async def main() -> None:
                     source_reference=camp["source_reference"],
                 )
 
+                camp_stats = {
+                    "merchant_codes": list(merchant_codes),
+                    "verification_status": ver_status,
+                    "terms": [int(t["months"]) for t in usable],
+                    "offers": 0,
+                    "eligible_options": 0,
+                    "ineligible_options": 0,
+                }
+
                 for merch in merchants:
                     await conn.execute(
                         """
                         INSERT INTO merchant_financial_agreements (
                           merchant_id, institution_id, financial_product_id, status,
-                          source_reference
-                        ) VALUES ($1, $2, $3, 'ACTIVE', $4)
+                          verification_status, source_reference
+                        ) VALUES ($1, $2, $3, 'ACTIVE', $5, $4)
                         ON CONFLICT (merchant_id, institution_id, financial_product_id)
-                        DO UPDATE SET status = 'ACTIVE', updated_at = NOW()
+                        DO UPDATE SET
+                          status = 'ACTIVE',
+                          verification_status = EXCLUDED.verification_status,
+                          source_reference = COALESCE(EXCLUDED.source_reference, merchant_financial_agreements.source_reference),
+                          updated_at = NOW()
                         """,
                         merch["id"],
                         camp["institution_id"],
                         product_id,
                         camp["source_reference"] or meta.get("source_url"),
+                        ver_status,
                     )
                     stats["agreements"] += 1
 
-                    offers = await conn.fetch(
-                        """
-                        SELECT po.id AS offer_id, po.product_id, po.current_price,
-                               po.stock_status, po.freshness_status
-                        FROM product_offers po
-                        WHERE po.merchant_id = $1
-                          AND po.freshness_status = 'FRESH'
-                          AND po.current_price IS NOT NULL
-                          AND po.current_price > 0
-                        """,
-                        merch["id"],
+                    # Prefer explicit campaign_products when present; else merchant-wide.
+                    linked = await conn.fetchval(
+                        "SELECT count(*) FROM campaign_products WHERE campaign_id = $1",
+                        camp["id"],
                     )
+                    if linked and int(linked) > 0:
+                        offers = await conn.fetch(
+                            """
+                            SELECT po.id AS offer_id, po.product_id, po.current_price,
+                                   po.stock_status, po.freshness_status
+                            FROM product_offers po
+                            JOIN campaign_products cp
+                              ON cp.product_id = po.product_id AND cp.campaign_id = $2
+                            WHERE po.merchant_id = $1
+                              AND po.freshness_status = 'FRESH'
+                              AND po.current_price IS NOT NULL
+                              AND po.current_price > 0
+                            """,
+                            merch["id"],
+                            camp["id"],
+                        )
+                    else:
+                        offers = await conn.fetch(
+                            """
+                            SELECT po.id AS offer_id, po.product_id, po.current_price,
+                                   po.stock_status, po.freshness_status
+                            FROM product_offers po
+                            WHERE po.merchant_id = $1
+                              AND po.freshness_status = 'FRESH'
+                              AND po.current_price IS NOT NULL
+                              AND po.current_price > 0
+                            """,
+                            merch["id"],
+                        )
 
                     for offer in offers:
                         term_options: list[InstitutionTermOption] = []
@@ -342,7 +401,7 @@ async def main() -> None:
                                 maximum_term=months,
                                 term_rates={months: float(monthly or 0.0)},
                                 freshness_status="FRESH",
-                                verification_status=VerificationStatus.UNVERIFIED,
+                                verification_status=ver_enum,
                                 source_reference=camp["source_reference"],
                                 campaign_code=str(camp["campaign_code"]),
                             )
@@ -370,9 +429,15 @@ async def main() -> None:
                         rows = rebuild_finance_options(ctx, term_options)
                         await index.put(str(offer["product_id"]), rows)
                         stats["products_projected"] += 1
-                        stats["eligible_options"] += sum(
-                            1 for r in rows if r.eligibility_status == "ELIGIBLE"
-                        )
+                        camp_stats["offers"] += 1
+                        elig = sum(1 for r in rows if r.eligibility_status == "ELIGIBLE")
+                        inelig = len(rows) - elig
+                        stats["eligible_options"] += elig
+                        stats["ineligible_options"] += inelig
+                        camp_stats["eligible_options"] += elig
+                        camp_stats["ineligible_options"] += inelig
+
+                stats["by_campaign"][str(camp["campaign_code"])] = camp_stats
 
         print(json.dumps(stats, ensure_ascii=False, indent=2))
     finally:

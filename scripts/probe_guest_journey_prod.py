@@ -341,6 +341,7 @@ def cases() -> list[Expect]:
             message="iphone 15",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         Expect(
@@ -348,6 +349,7 @@ def cases() -> list[Expect]:
             message="MacBook Pro",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         Expect(
@@ -355,6 +357,7 @@ def cases() -> list[Expect]:
             message="buzdolabı bakıyorum",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         Expect(
@@ -362,6 +365,7 @@ def cases() -> list[Expect]:
             message="kulaklık arıyorum bütçem 3000",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         Expect(
@@ -369,6 +373,7 @@ def cases() -> list[Expect]:
             message="spor ayakkabı arıyorum",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         Expect(
@@ -376,6 +381,7 @@ def cases() -> list[Expect]:
             message="taksitli telefon öner",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         Expect(
@@ -383,6 +389,15 @@ def cases() -> list[Expect]:
             message="kampanyalı laptop bakıyorum",
             must_be_in_domain=True,
             route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
+            max_ms=30000,
+        ),
+        Expect(
+            name="mix_merhaba_iphone_products",
+            message="merhaba iphone arıyorum",
+            must_be_in_domain=True,
+            route_not_in=("OUT_OF_SCOPE",),
+            require_products=True,
             max_ms=30000,
         ),
         # --- non-purchase service-ish (should refuse, no products) ---

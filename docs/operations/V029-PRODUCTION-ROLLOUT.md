@@ -21,7 +21,7 @@ System definition: kontrollü, versioned, event-driven adaptif katalog ve rankin
 | Executor | Nanobase operator via documented window |
 | Status values | `PLANNED` → `APPROVED` → `RUNNING` → `VERIFIED` / `FAILED` / `ROLLED_BACK` |
 
-Current status: **APPROVED** (staging dry-run PASS; P3 activation authorized for SHADOW-only cutover — no public ACTIVE).
+Current status: **VERIFIED** (production V028+V029+V030 applied 2026-08-01; feature flags SHADOW-safe; public ACTIVE cutover **not** performed).
 
 ---
 
