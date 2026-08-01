@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "feature_flags": [
+    {
+      "flag_code": "adaptive_catalog_enabled",
+      "status": "ENABLED"
+    },
+    {
+      "flag_code": "adaptive_ranking_enabled",
+      "status": "SHADOW"
+    },
+    {
+      "flag_code": "dynamic_readiness_enabled",
+      "status": "SHADOW"
+    },
+    {
+      "flag_code": "learning_auto_promotion_enabled",
+      "status": "DISABLED"
+    },
+    {
+      "flag_code": "learning_candidate_generation_enabled",
+      "status": "ENABLED"
+    },
+    {
+      "flag_code": "rolling_golden_enabled",
+      "status": "ENABLED"
+    }
+  ],
+  "audit": {
+    "audit_id": "ae85f1cd-712c-47f0-8126-0377a5ecc6c8",
+    "operator": "platform-ops",
+    "change_reason": "TASK-P3-PRODUCTION-ACTIVATION post-migration SHADOW verification",
+    "deployment_id": "P3-20260801T132938Z",
+    "started_at": "2026-08-01T13:29:39.201008+00:00",
+    "completed_at": null
+  }
+}

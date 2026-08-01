@@ -1,0 +1,6 @@
+{
+  "search_ready_products": 0,
+  "ready_merchants": 1,
+  "pass": false,
+  "note": "Projection fill deferred until ≥3 READY + INTERNAL flag; public ACTIVE not performed."
+}

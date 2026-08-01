@@ -1,0 +1,111 @@
+{
+  "status": "VERIFIED",
+  "apply": {
+    "pass": true,
+    "seconds": 0.0,
+    "returncode": 0,
+    "stdout": "already_applied",
+    "stderr": "",
+    "migrations_expected": [
+      "V028__recovery_p1_verification_and_payment_idempotency.sql",
+      "V029__recovery_p2_live_adaptive_catalog.sql",
+      "V030__p2_live_activation_flags_and_search_ready.sql"
+    ],
+    "note": "V030 already in schema_migration_history — skip re-apply"
+  },
+  "integrity": {
+    "before": {
+      "products_count": 186458,
+      "offers_count": 186458,
+      "media_count": 165152,
+      "finance_options_count": 27293,
+      "payment_plans_count": 0,
+      "campaigns_count": 5,
+      "merchants_active": 26
+    },
+    "after": {
+      "products_count": 186458,
+      "offers_count": 186458,
+      "media_count": 165297,
+      "finance_options_count": 27293,
+      "payment_plans_count": 0,
+      "campaigns_count": 5,
+      "merchants_active": 26
+    },
+    "loss": {
+      "product_loss": 0,
+      "offer_loss": 0,
+      "media_loss": 0,
+      "finance_option_loss": 0,
+      "payment_plan_loss": 0
+    },
+    "deltas": {
+      "products_delta": 0,
+      "offers_delta": 0,
+      "media_delta": 145,
+      "finance_options_delta": 0,
+      "payment_plans_delta": 0
+    },
+    "tables_present": [
+      "auto_ops_jobs",
+      "catalog_domain_events",
+      "learning_promotion_policies",
+      "merchant_readiness_snapshots",
+      "product_ranking_feature_projection",
+      "runtime_feature_flags",
+      "search_ready_product_projection"
+    ],
+    "tables_ok": true,
+    "feature_flags": [
+      {
+        "flag_code": "adaptive_catalog_enabled",
+        "status": "ENABLED"
+      },
+      {
+        "flag_code": "adaptive_ranking_enabled",
+        "status": "SHADOW"
+      },
+      {
+        "flag_code": "dynamic_readiness_enabled",
+        "status": "SHADOW"
+      },
+      {
+        "flag_code": "learning_auto_promotion_enabled",
+        "status": "DISABLED"
+      },
+      {
+        "flag_code": "learning_candidate_generation_enabled",
+        "status": "ENABLED"
+      },
+      {
+        "flag_code": "rolling_golden_enabled",
+        "status": "ENABLED"
+      }
+    ],
+    "feature_flags_safe": true,
+    "applied_history": [
+      {
+        "filename": "V028__recovery_p1_verification_and_payment_idempotency.sql",
+        "applied_at": "2026-08-01 13:29:14.149942+00:00"
+      },
+      {
+        "filename": "V029__recovery_p2_live_adaptive_catalog.sql",
+        "applied_at": "2026-08-01 13:29:14.453894+00:00"
+      },
+      {
+        "filename": "V030__p2_live_activation_flags_and_search_ready.sql",
+        "applied_at": "2026-08-01 13:29:14.486677+00:00"
+      }
+    ],
+    "pass": true,
+    "captured_at": "2026-08-01T13:30:04.811308+00:00"
+  },
+  "audit": {
+    "audit_id": "ae85f1cd-712c-47f0-8126-0377a5ecc6c8",
+    "operator": "platform-ops",
+    "change_reason": "TASK-P3-PRODUCTION-ACTIVATION post-migration SHADOW verification",
+    "deployment_id": "P3-20260801T132938Z",
+    "started_at": "2026-08-01T13:29:39.201008+00:00",
+    "completed_at": null
+  }
+}

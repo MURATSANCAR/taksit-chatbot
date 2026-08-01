@@ -1,0 +1,26 @@
+{
+  "pass": true,
+  "seconds": 3.199,
+  "returncode": 0,
+  "stderr": "",
+  "result": {
+    "captured_at": "2026-08-01T13:30:08.129276+00:00",
+    "jobs": [
+      {
+        "job_type": "FEED_METRICS",
+        "status": "COMPLETED",
+        "result": {
+          "feed_received_count": 212723,
+          "db_persisted_count": 186458,
+          "feed_pending_count": 26265,
+          "media_ready_count": 165306
+        }
+      },
+      {
+        "job_type": "MERCHANT_READINESS",
+        "status": "FAILED",
+        "error": "'str' object has no attribute 'get'"
+      }
+    ]
+  }
+}

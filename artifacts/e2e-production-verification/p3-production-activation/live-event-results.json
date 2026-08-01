@@ -1,0 +1,25 @@
+{
+  "inserted": 120,
+  "types": [
+    "ALIAS_CANDIDATE_CREATED",
+    "ATTRIBUTE_MAPPING_CANDIDATE_CREATED",
+    "BRAND_MAPPING_CANDIDATE_CREATED",
+    "CATEGORY_MAPPING_CANDIDATE_CREATED",
+    "DRIFT_DETECTED",
+    "MEDIA_CHANGED",
+    "MERCHANT_READINESS_RECALCULATION_REQUESTED",
+    "OFFER_CHANGED",
+    "PRICE_CHANGED",
+    "PRODUCT_CHANGED",
+    "PRODUCT_DISCOVERED",
+    "SOURCE_CATEGORY_DISCOVERED",
+    "STOCK_CHANGED"
+  ],
+  "distinct_types": 13,
+  "total_events": 120,
+  "processed_done": 60,
+  "consumer_updated": 60,
+  "organic_ingest_emitter": "NOT_VERIFIED",
+  "pass": true,
+  "note": "Controlled pipeline-proof events from real product IDs; organic live-feed→event wiring remains separate gate."
+}

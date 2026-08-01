@@ -1,0 +1,62 @@
+{
+  "global": {
+    "category": 0.757,
+    "card_media": 0.9163,
+    "brand": 0.932,
+    "attributes": 0.932
+  },
+  "priority_top": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "score": 0.586291
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "score": 0.444804
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "score": 0.40824
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "score": 0.397269
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "score": 0.377611
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "score": 0.348166
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "score": 0.332856
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "score": 0.321308
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "score": 0.319893
+    },
+    {
+      "merchant_id": 19,
+      "merchant_code": "m-n11",
+      "score": 0.304854
+    }
+  ],
+  "note": "Coverage uplift jobs are generic; no merchant-named branches.",
+  "status": "SHADOW_MEASUREMENT"
+}

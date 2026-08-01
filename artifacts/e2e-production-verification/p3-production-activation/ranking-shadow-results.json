@@ -1,0 +1,8 @@
+{
+  "before_p95_ms": 105,
+  "after_p95_ms": "NOT_VERIFIED",
+  "microbenchmark_p95_ms": 2.7,
+  "note": "Microbenchmark ≠ production full-path. Cutover blocked until ≥1000 internal full-path samples P95 < 50ms.",
+  "adaptive_ranking_mode": "SHADOW",
+  "pass": false
+}

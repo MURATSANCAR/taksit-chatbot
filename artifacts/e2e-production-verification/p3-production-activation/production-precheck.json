@@ -1,0 +1,38 @@
+{
+  "captured_at": "2026-08-01T13:29:41.744037+00:00",
+  "database": "taksitlio",
+  "role": "primary",
+  "schema_revision_latest": "V030__p2_live_activation_flags_and_search_ready.sql",
+  "pending_migrations": [],
+  "inventory": {
+    "products_count": 186458,
+    "offers_count": 186458,
+    "media_count": 165152,
+    "finance_options_count": 27293,
+    "payment_plans_count": 0,
+    "campaigns_count": 5,
+    "merchants_active": 26
+  },
+  "baseline_hash": "b5d020c5e52a066d",
+  "v029_tables_present": [
+    "auto_ops_jobs",
+    "catalog_domain_events",
+    "learning_promotion_policies",
+    "merchant_readiness_snapshots",
+    "product_ranking_feature_projection",
+    "runtime_feature_flags",
+    "search_ready_product_projection"
+  ],
+  "db_size": "1203 MB",
+  "active_transactions": 0,
+  "long_running_queries": 0,
+  "replication_lag": "n/a_primary",
+  "feed_count_estimate": 212723,
+  "disk": {
+    "data": "/dev/mapper/vg_data-data  3.7T  317G  3.4T   9% /data"
+  },
+  "backup": {
+    "available": false,
+    "path": null
+  }
+}

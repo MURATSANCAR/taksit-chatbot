@@ -1,0 +1,48 @@
+{
+  "gates": {
+    "PRODUCTION_MIGRATION_GATE": true,
+    "FEATURE_FLAG_SAFE_GATE": true,
+    "LIVE_EVENT_GATE": true,
+    "AUTO_OPS_GATE": true,
+    "MERCHANT_READINESS_GATE": false,
+    "SEARCH_READY_GATE": false,
+    "CATEGORY_COVERAGE_GATE": false,
+    "MEDIA_COVERAGE_GATE": false,
+    "ROLLING_GOLDEN_GATE": false,
+    "RANKING_REGRESSION_GATE": false,
+    "RANKING_PERFORMANCE_GATE": false,
+    "REVISION_PINNING_GATE": false,
+    "PLAYWRIGHT_GATE": false,
+    "LIVE_SSE_GATE": false,
+    "LLM_PARTIAL_GATE": false,
+    "SHADOW_GATE": false,
+    "UAT_GATE": false,
+    "LOAD_GATE": false,
+    "CHAOS_GATE": false,
+    "CLAIM_GROUNDING_GATE": false,
+    "FINANCE_INTEGRITY_GATE": true
+  },
+  "decision": {
+    "decision": "PRODUCTION_FINAL_NOT_READY",
+    "failed_gates": [
+      "MERCHANT_READINESS_GATE",
+      "SEARCH_READY_GATE",
+      "CATEGORY_COVERAGE_GATE",
+      "MEDIA_COVERAGE_GATE",
+      "ROLLING_GOLDEN_GATE",
+      "RANKING_REGRESSION_GATE",
+      "RANKING_PERFORMANCE_GATE",
+      "REVISION_PINNING_GATE",
+      "PLAYWRIGHT_GATE",
+      "LIVE_SSE_GATE",
+      "LLM_PARTIAL_GATE",
+      "SHADOW_GATE",
+      "UAT_GATE",
+      "LOAD_GATE",
+      "CHAOS_GATE",
+      "CLAIM_GROUNDING_GATE"
+    ],
+    "captured_at": "2026-08-01T13:30:13.463684+00:00"
+  },
+  "captured_at": "2026-08-01T13:30:13.463697+00:00"
+}

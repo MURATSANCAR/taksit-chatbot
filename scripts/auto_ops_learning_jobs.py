@@ -136,7 +136,14 @@ async def recompute_merchant_readiness(conn: Any, catalog_revision: str) -> dict
         )
     except Exception:
         thr_row = None
-    thr = ReadinessThresholds.from_mapping(thr_row or {})
+    if isinstance(thr_row, str):
+        try:
+            thr_row = json.loads(thr_row)
+        except Exception:
+            thr_row = {}
+    if not isinstance(thr_row, dict):
+        thr_row = {}
+    thr = ReadinessThresholds.from_mapping(thr_row)
 
     rows = await conn.fetch(
         """

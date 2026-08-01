@@ -1,9 +1,11 @@
 # V029 Production Rollout Plan
 
-**Status:** `PLANNED`  
+**Status:** `APPROVED`  
 **Migration:** `db/migrations/V029__recovery_p2_live_adaptive_catalog.sql`  
 **Companion:** `db/migrations/V030__p2_live_activation_flags_and_search_ready.sql`  
-**Auto-apply:** **Forbidden** — requires explicit approval.
+**Prerequisite also pending on prod:** `V028__recovery_p1_verification_and_payment_idempotency.sql`  
+**Auto-apply:** **Forbidden** — requires explicit approval.  
+**Approval reference:** TASK-P3-PRODUCTION-ACTIVATION (`scripts/run_p3_production_activation.py --approve-production`)
 
 System definition: kontrollü, versioned, event-driven adaptif katalog ve ranking sistemi  
 (not a self-learning model).
@@ -19,7 +21,7 @@ System definition: kontrollü, versioned, event-driven adaptif katalog ve rankin
 | Executor | Nanobase operator via documented window |
 | Status values | `PLANNED` → `APPROVED` → `RUNNING` → `VERIFIED` / `FAILED` / `ROLLED_BACK` |
 
-Current status: **PLANNED** (dry-run on staging required before `APPROVED`).
+Current status: **APPROVED** (staging dry-run PASS; P3 activation authorized for SHADOW-only cutover — no public ACTIVE).
 
 ---
 

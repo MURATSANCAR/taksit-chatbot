@@ -1,0 +1,23 @@
+{
+  "audit_id": "ae85f1cd-712c-47f0-8126-0377a5ecc6c8",
+  "operator": "platform-ops",
+  "change_reason": "TASK-P3-PRODUCTION-ACTIVATION post-migration SHADOW verification",
+  "deployment_id": "P3-20260801T132938Z",
+  "started_at": "2026-08-01T13:29:39.201008+00:00",
+  "completed_at": null,
+  "status": "APPROVED",
+  "doc": "docs/operations/V029-PRODUCTION-ROLLOUT.md",
+  "task": "TASK-P3-PRODUCTION-ACTIVATION",
+  "staging_dry_run_ref": "artifacts/e2e-production-verification/p2-live-activation/v029-dry-run.json",
+  "precheck_baseline_hash": "b5d020c5e52a066d",
+  "feature_flags_initial": {
+    "learning_candidate_generation_enabled": "ENABLED",
+    "learning_auto_promotion_enabled": "DISABLED",
+    "dynamic_readiness_enabled": "SHADOW",
+    "adaptive_ranking_enabled": "SHADOW",
+    "rolling_golden_enabled": "ENABLED",
+    "adaptive_catalog_enabled": "ENABLED"
+  },
+  "public_cutover": false,
+  "auto_promotion": false
+}
