@@ -14,6 +14,7 @@
         "description": "Cep telefonu ve akıllı telefon kategorisi.",
         "synonyms": [
           "telefon",
+          "tel",
           "cep telefonu",
           "akıllı telefon",
           "mobil"
@@ -22,6 +23,10 @@
       "aliases": [
         {
           "text": "telefon",
+          "type": "EXACT"
+        },
+        {
+          "text": "tel",
           "type": "EXACT"
         },
         {

@@ -449,6 +449,14 @@ def ensure_taxonomy_seed_categories() -> list[dict[str, Any]]:
             "description": "Accessories taxonomy seed",
         },
         {
+            "category_code": "MOBILE_PHONE_EXTRA",
+            "display_name": None,
+            "synonyms": [
+                "tel",
+            ],
+            "merge_into_code": "MOBILE_PHONE",
+        },
+        {
             "category_code": "FOOTWEAR_EXTRA",
             "display_name": None,
             "synonyms": [

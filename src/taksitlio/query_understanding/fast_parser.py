@@ -513,26 +513,12 @@ def _is_query_stopword(token: str) -> bool:
     return bool(folded) and folded in _QUERY_STOPWORDS
 
 
-# Colloquial product abbreviations (TR chat). Expand before free-text / category
-# resolution so "babama tel lazım" does not invent include_tokens=["tel"] and
-# substring-match Intel laptops (tel ⊂ intel).
-_PRODUCT_TOKEN_ABBREVIATIONS: dict[str, str] = {
-    "tel": "telefon",
-}
-
-
-def expand_colloquial_product_token(token: str) -> str:
-    """Map a single query token to its catalog-facing surface form when known."""
-
-    raw = (token or "").strip(".,!?;:\"'()[]{}")
-    if not raw:
-        return token
-    key = ascii_fold(raw.casefold())
-    return _PRODUCT_TOKEN_ABBREVIATIONS.get(key, raw)
-
-
 def _free_text_product_nouns(text: str) -> list[str]:
-    """Recover concrete product nouns when catalog category resolution misses."""
+    """Recover concrete product nouns when catalog category resolution misses.
+
+    Colloquial abbreviations (e.g. tel→telefon) must live as category synonyms
+    in the catalog / alias_index — not a static map here (ADR-010 §32).
+    """
 
     normalized = normalize_turkish(text).value or ""
     nouns: list[str] = []
@@ -542,7 +528,7 @@ def _free_text_product_nouns(text: str) -> list[str]:
             continue
         if re.fullmatch(r"\d+[a-zğüşıöç]*", t):  # 16gb, 12ay
             continue
-        nouns.append(expand_colloquial_product_token(tok))
+        nouns.append(tok.strip(".,!?;:\"'()[]{}"))
     # Prefer longer / more specific tokens first, keep order stable after dedupe
     nouns = list(dict.fromkeys(nouns))
     return nouns[:3]
@@ -747,7 +733,7 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
     preferred_institutions: list[dict[str, Any]] = []
     for cand in catalog.institutions:
         for name in (cand.display_name, cand.canonical_name, *cand.aliases):
-            n = _nv(name)
+            n = _nv_cached(name)
             if n and n in normalized:
                 preferred_institutions.append(
                     {"institution_id": cand.entity_id, "required": False, "display_name": cand.display_name}

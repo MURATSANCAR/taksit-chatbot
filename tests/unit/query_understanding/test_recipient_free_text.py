@@ -1,12 +1,53 @@
-"""Recipient/kinship spans must not become required free-text categories."""
+"""Recipient/kinship spans must not become required free-text categories.
+
+Colloquial abbreviations (tel) resolve via catalog synonyms / alias_index
+(ADR-010 §32) — not a static query→entity map in the parser.
+"""
 
 from __future__ import annotations
 
-from taksitlio.progressive_results.category_match import matches_required_categories
+from taksitlio.entity_resolution import EntityCandidate
+from taksitlio.progressive_results.category_match import (
+    CATEGORY_FAMILIES,
+    matches_required_categories,
+)
 from taksitlio.query_understanding import fast_parse
-from taksitlio.query_understanding.fast_parser import _free_text_product_nouns
+from taksitlio.query_understanding.fast_parser import CatalogHints, _free_text_product_nouns
 from taksitlio.search_sessions.orchestrator import SearchOrchestrator
 from taksitlio.search_sessions.repository import InMemorySearchSessionRepository
+
+
+def _mobile_phone_catalog() -> CatalogHints:
+    return CatalogHints(
+        categories=(
+            EntityCandidate(
+                entity_id="MOBILE_PHONE",
+                display_name="Akıllı Telefon",
+                canonical_name="Akıllı Telefon",
+                aliases=("telefon", "cep telefonu", "tel", "iphone", "akıllı telefon"),
+                entity_type="category",
+            ),
+        )
+    )
+
+
+def _phone_token_map() -> dict[str, tuple[str, ...]]:
+    legacy = CATEGORY_FAMILIES["category-phone"]["include"]
+    return {
+        "MOBILE_PHONE": tuple(
+            dict.fromkeys(
+                [
+                    "telefon",
+                    "cep telefonu",
+                    "tel",
+                    "iphone",
+                    "akıllı telefon",
+                    "akıllı telefon",
+                    *legacy,
+                ]
+            )
+        )
+    }
 
 
 def test_babama_telefon_free_text_keeps_only_telefon() -> None:
@@ -19,15 +60,17 @@ def test_babama_telefon_free_text_keeps_only_telefon() -> None:
     assert all(c.display_name == "telefon" for c in parse.positive_categories)
 
 
-def test_babama_tel_expands_to_telefon_not_intel_substring() -> None:
-    """Colloquial 'tel' must become telefon — never substring-match Intel laptops."""
+def test_babama_tel_resolves_via_catalog_synonym_not_intel() -> None:
+    """'tel' is a MOBILE_PHONE synonym — never substring-match Intel laptops."""
 
-    nouns = _free_text_product_nouns("babama tel lazım")
-    assert nouns == ["telefon"]
+    # Without catalog, free-text keeps the surface form (no static expansion).
+    assert _free_text_product_nouns("babama tel lazım") == ["tel"]
 
-    parse = fast_parse("babama tel lazım")
+    catalog = _mobile_phone_catalog()
+    parse = fast_parse("babama tel lazım", catalog=catalog)
     ids = [c.resolved_id for c in parse.positive_categories]
-    assert ids == ["free_text:telefon"]
+    assert ids == ["MOBILE_PHONE"]
+    assert all(c.display_name == "Akıllı Telefon" for c in parse.positive_categories)
 
     phone = {
         "product_id": "p-phone-1",
@@ -58,17 +101,8 @@ def test_babama_tel_expands_to_telefon_not_intel_substring() -> None:
         "thumbnail_cdn_url": "https://cdn.example/ideapad.jpg",
         "query_relevance": 0.5,
     }
-    # Defense in depth: raw include_tokens=["tel"] must not hit Intel laptops,
-    # and must still resolve to the phone family (tel → category-phone).
-    tel_constraint = {
-        "positive_categories": [
-            {"display_name": "tel", "include_tokens": ["tel"]},
-        ]
-    }
-    assert matches_required_categories(phone, tel_constraint)
-    assert not matches_required_categories(intel_laptop, tel_constraint)
 
-    # Bare short token without family mapping must not substring-match Intel.
+    # Structural guard: short include token must not substring-match Intel.
     assert not matches_required_categories(
         intel_laptop,
         {
@@ -78,9 +112,24 @@ def test_babama_tel_expands_to_telefon_not_intel_substring() -> None:
         },
     )
 
+    # Catalog-resolved MOBILE_PHONE (+ short synonym filter) → phone family.
+    phone_constraint = {
+        "positive_categories": [
+            {
+                "resolved_id": "MOBILE_PHONE",
+                "display_name": "Akıllı Telefon",
+                "include_tokens": ["tel"],
+            }
+        ]
+    }
+    assert matches_required_categories(phone, phone_constraint)
+    assert not matches_required_categories(intel_laptop, phone_constraint)
+
     orch = SearchOrchestrator(
         repo=InMemorySearchSessionRepository(),
         product_pool=[intel_laptop, phone],
+        catalog=catalog,
+        category_token_map=_phone_token_map(),
     )
     out = orch.start(conversation_id="kin-tel-1", message="babama tel lazım")
     products = (out.get("partial_results") or out.get("results") or {}).get("products") or []
@@ -132,10 +181,9 @@ def test_babama_telefon_returns_phone_not_empty_reply() -> None:
     assert "bulamadım" not in str(out.get("reply") or "").casefold()
 
     # Regression: kinship must not become a required free-text category.
-    # Dual free-text AND emptied the pool; matcher is OR across positives, so
-    # babama+telefon would still match — the guard is the parser (no babama noun).
     assert "babama" not in {
-        str(c.display_name or "").casefold() for c in fast_parse("babama telefon lazım").positive_categories
+        str(c.display_name or "").casefold()
+        for c in fast_parse("babama telefon lazım").positive_categories
     }
     assert not matches_required_categories(
         phone,

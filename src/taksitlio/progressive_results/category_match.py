@@ -139,7 +139,6 @@ _CODE_TO_FAMILY = {
 _NAME_TO_FAMILY = {
     "cep telefonu": "category-phone",
     "telefon": "category-phone",
-    "tel": "category-phone",
     "phone": "category-phone",
     "akıllı telefon": "category-phone",
     "dizüstü bilgisayar": "category-laptop",
@@ -221,8 +220,8 @@ def _include_tokens_for(cat: Mapping[str, Any] | str) -> tuple[str, ...]:
         if fid and fid in CATEGORY_FAMILIES
         else ()
     )
-    # Colloquial free-text like include_tokens=["tel"] must not be the sole
-    # haystack needle (tel⊂intel). Promote to the mapped family includes.
+    # When utterance matched a short catalog synonym (include_tokens=["tel"]),
+    # promote to the mapped family includes so tel≠Intel and recall stays phone-wide.
     if family_inc and (not tokens or all(len(t) <= 3 for t in tokens)):
         return family_inc
     if tokens:
