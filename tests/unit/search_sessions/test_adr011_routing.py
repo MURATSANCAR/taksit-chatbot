@@ -165,7 +165,9 @@ def test_complete_with_current_results_degraded() -> None:
 
 def test_status_transitions() -> None:
     assert can_transition(SearchSessionStatus.RECEIVED, SearchSessionStatus.FAST_PARSING)
+    assert can_transition(SearchSessionStatus.COMPLETED, SearchSessionStatus.FAST_PARSING)
     assert not can_transition(SearchSessionStatus.COMPLETED, SearchSessionStatus.LLM_RUNNING)
+    assert not can_transition(SearchSessionStatus.CANCELLED, SearchSessionStatus.FAST_PARSING)
 
 
 def test_gap_brand_without_category() -> None:

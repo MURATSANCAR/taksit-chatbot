@@ -3,12 +3,16 @@
   "use strict";
 
   var SESSION_KEY = "taksitlio_search_session_id";
-  var TERMINAL = {
+  // Hard stop — must start a new search session.
+  var HARD_TERMINAL = {
     CANCELLED: 1,
-    COMPLETED: 1,
     TIMED_OUT: 1,
-    COMPLETED_DEGRADED: 1,
     FAILED: 1,
+  };
+  // Search finished but follow-up refinements continue on the same session.
+  var CONTINUABLE_AFTER = {
+    COMPLETED: 1,
+    COMPLETED_DEGRADED: 1,
   };
 
   function apiBase() {
@@ -49,8 +53,16 @@
     }
   }
 
+  function isHardTerminalStatus(status) {
+    return !!(status && HARD_TERMINAL[String(status)]);
+  }
+
+  function isContinuableStatus(status) {
+    return !!(status && CONTINUABLE_AFTER[String(status)]);
+  }
+
   function isTerminalStatus(status) {
-    return !!(status && TERMINAL[String(status)]);
+    return isHardTerminalStatus(status) || isContinuableStatus(status);
   }
 
   function ensurePanels(thread) {
@@ -158,13 +170,22 @@
       if (payload.route) state.route = payload.route;
       if (payload.chips) state.chips = payload.chips;
       if (payload.clarification !== undefined) state.clarification = payload.clarification;
-      if (isTerminalStatus(state.status)) {
+      if (isHardTerminalStatus(state.status)) {
         persistSessionId(null);
+      } else if (state.searchSessionId) {
+        persistSessionId(state.searchSessionId);
       }
     }
 
     function isActiveSession() {
       return !!(state.searchSessionId && !isTerminalStatus(state.status));
+    }
+
+    function canContinueSession() {
+      return !!(
+        state.searchSessionId &&
+        (isActiveSession() || isContinuableStatus(state.status))
+      );
     }
 
     function renderControls(el) {
@@ -374,15 +395,22 @@
       clearTyping();
 
       if (options.announce) {
+        var resultsSnap = payload.results || payload.partial_results || {};
+        var productCount = (resultsSnap.products || []).length;
         var text =
           options.announceText ||
           (payload.route === "OUT_OF_SCOPE"
             ? payload.reply ||
-              "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve taksit ihtiyaçlarınız için buradayım."
+              "Ben Taksitlio Yapay Zeka asistanıyım; ihtiyacınız olan ürünleri en uygun ve en iyi ödeme koşullarıyla bulmanız için buradayım. Ürün veya taksit kampanyası sorarak devam edebilirsiniz."
             : payload.route === "CLARIFICATION"
               ? (payload.clarification && payload.clarification.question_text) ||
                 payload.status
-              : null);
+              : payload.reply
+                ? payload.reply
+                : productCount === 0 &&
+                    (payload.route === "FAST" || payload.route === "DEGRADED")
+                  ? "Bu kriterlere uygun ürün bulamadım. Ürün türünü veya bütçeni tekrar yazabilirsin."
+                  : null);
         if (text) botBubble(text);
       }
 
@@ -414,7 +442,7 @@
 
     async function runSearch(message) {
       var payload;
-      var wasActive = isActiveSession();
+      var wasActive = canContinueSession();
       try {
         if (wasActive) {
           payload = await client.supersedeMessage(state.searchSessionId, {
@@ -442,7 +470,11 @@
         }
       } catch (err) {
         clearTyping();
-        if (err && err.status === 404 && state.searchSessionId) {
+        if (
+          err &&
+          (err.status === 404 || err.status === 409) &&
+          state.searchSessionId
+        ) {
           persistSessionId(null);
           state.searchSessionId = null;
           state.status = null;
@@ -474,7 +506,7 @@
       if (!id) return null;
       try {
         var snap = await client.getSession(id);
-        if (isTerminalStatus(snap.status)) {
+        if (isHardTerminalStatus(snap.status)) {
           persistSessionId(null);
           return null;
         }
@@ -482,7 +514,9 @@
         state.queryVersion = snap.query_version;
         state.status = snap.status;
         var panels = ensurePanels(thread);
-        subscribe(id, panels);
+        if (!isContinuableStatus(snap.status)) {
+          subscribe(id, panels);
+        }
         return snap;
       } catch (_) {
         persistSessionId(null);
@@ -495,6 +529,7 @@
     return {
       runSearch: runSearch,
       isActiveSession: isActiveSession,
+      canContinueSession: canContinueSession,
       getState: function () {
         return {
           searchSessionId: state.searchSessionId,

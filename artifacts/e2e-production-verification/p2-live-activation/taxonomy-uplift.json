@@ -1,0 +1,80 @@
+{
+  "priority_merchants": [
+    {
+      "merchant_id": 22,
+      "category_coverage": 0.7913,
+      "gap_to_95": 0.1587,
+      "products_needing_category": 26212,
+      "method_order": [
+        "structured_source_category",
+        "source_taxonomy_node_mapping",
+        "existing_merchant_taxonomy_mapping",
+        "validated_normalized_alias",
+        "high_confidence_candidate",
+        "human_review_queue"
+      ],
+      "promotion_gate": "shadow_required_auto_promotion_disabled"
+    },
+    {
+      "merchant_id": 11,
+      "category_coverage": 0.4313,
+      "gap_to_95": 0.5187,
+      "products_needing_category": 3864,
+      "method_order": [
+        "structured_source_category",
+        "source_taxonomy_node_mapping",
+        "existing_merchant_taxonomy_mapping",
+        "validated_normalized_alias",
+        "high_confidence_candidate",
+        "human_review_queue"
+      ],
+      "promotion_gate": "shadow_required_auto_promotion_disabled"
+    },
+    {
+      "merchant_id": 29,
+      "category_coverage": 0.679,
+      "gap_to_95": 0.271,
+      "products_needing_category": 1759,
+      "method_order": [
+        "structured_source_category",
+        "source_taxonomy_node_mapping",
+        "existing_merchant_taxonomy_mapping",
+        "validated_normalized_alias",
+        "high_confidence_candidate",
+        "human_review_queue"
+      ],
+      "promotion_gate": "shadow_required_auto_promotion_disabled"
+    },
+    {
+      "merchant_id": 8,
+      "category_coverage": 0.7646,
+      "gap_to_95": 0.1854,
+      "products_needing_category": 165,
+      "method_order": [
+        "structured_source_category",
+        "source_taxonomy_node_mapping",
+        "existing_merchant_taxonomy_mapping",
+        "validated_normalized_alias",
+        "high_confidence_candidate",
+        "human_review_queue"
+      ],
+      "promotion_gate": "shadow_required_auto_promotion_disabled"
+    },
+    {
+      "merchant_id": 18,
+      "category_coverage": 1.0,
+      "gap_to_95": 0.0,
+      "products_needing_category": -3,
+      "method_order": [
+        "structured_source_category",
+        "source_taxonomy_node_mapping",
+        "existing_merchant_taxonomy_mapping",
+        "validated_normalized_alias",
+        "high_confidence_candidate",
+        "human_review_queue"
+      ],
+      "promotion_gate": "shadow_required_auto_promotion_disabled"
+    }
+  ],
+  "auto_promotion": false
+}

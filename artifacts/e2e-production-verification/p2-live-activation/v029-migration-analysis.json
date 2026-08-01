@@ -1,0 +1,46 @@
+{
+  "migration": "V029__recovery_p2_live_adaptive_catalog.sql",
+  "transactional": true,
+  "idempotent_rerun": true,
+  "destructive_existing_table_changes": false,
+  "full_table_rewrite": false,
+  "stats": {
+    "create_table_if_not_exists": 34,
+    "alter_table": 6,
+    "drop_table_or_column": 0,
+    "create_index": 15,
+    "create_index_concurrently": 0,
+    "foreign_keys": 39,
+    "merchant_check_widen": true,
+    "search_sessions_add_columns": true
+  },
+  "risks": {
+    "LOCK_RISK": {
+      "level": "LOW",
+      "detail": "Additive CREATE TABLE on empty relations; brief ACCESS EXCLUSIVE on merchants CHECK widen and search_sessions ADD COLUMN. merchants is small; ADD COLUMN IF NOT EXISTS on PG12+ is metadata-only when no default rewrite."
+    },
+    "TABLE_REWRITE_RISK": {
+      "level": "LOW",
+      "detail": "Full-table rewrite patterns found: 0. No SET DATA TYPE."
+    },
+    "LONG_TRANSACTION_RISK": {
+      "level": "MEDIUM",
+      "detail": "Single Flyway/psql script runs as one transaction by default. Many DDL statements OK on empty new tables; keep statement_timeout raised for apply window. Prefer applying during low traffic."
+    },
+    "INDEX_BUILD_RISK": {
+      "level": "LOW",
+      "detail": "Blocking CREATE INDEX count=15, CONCURRENTLY=0. Indexes are on NEW empty tables at apply time — negligible. Do not rebuild product/offer indexes in this migration."
+    },
+    "ROLLBACK_RISK": {
+      "level": "MEDIUM",
+      "detail": "Forward migration is mostly IF NOT EXISTS creates — idempotent re-run safe. Rollback = DROP new tables + restore merchants CHECK + DROP added search_sessions columns. Documented in V029-PRODUCTION-ROLLOUT.md. Cannot use simple transaction undo after COMMIT."
+    },
+    "DATA_COMPATIBILITY_RISK": {
+      "level": "LOW",
+      "detail": "No UPDATE/DELETE on products, offers, media, finance. Existing chatbot paths unaffected until feature flags enable consumers. FK targets (products/offers) validated against empty child tables."
+    }
+  },
+  "production_recommendation": "DRY_RUN_ON_CLONE_THEN_APPROVED_WINDOW",
+  "auto_apply_forbidden": true,
+  "companion_migration": "V030__p2_live_activation_flags_and_search_ready.sql"
+}

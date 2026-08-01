@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+from heapq import nlargest
 from typing import Any, Mapping, Optional, Sequence
 
 
@@ -15,8 +16,20 @@ class RankingMode(str, Enum):
     LOWEST_MONTHLY_PAYMENT = "LOWEST_MONTHLY_PAYMENT"
     LOWEST_TOTAL_REPAYMENT = "LOWEST_TOTAL_REPAYMENT"
     LONGEST_TERM = "LONGEST_TERM"
+    SHORTEST_TERM = "SHORTEST_TERM"
     BEST_ATTRIBUTE_MATCH = "BEST_ATTRIBUTE_MATCH"
     BEST_OVERALL_VALUE = "BEST_OVERALL_VALUE"
+
+
+RANKING_MODE_LABELS: dict[str, str] = {
+    RankingMode.CHEAPEST_PRODUCT_PRICE.value: "En düşük ürün fiyatı",
+    RankingMode.LOWEST_MONTHLY_PAYMENT.value: "En düşük aylık ödeme",
+    RankingMode.LOWEST_TOTAL_REPAYMENT.value: "En düşük toplam geri ödeme",
+    RankingMode.LONGEST_TERM.value: "En uzun vade",
+    RankingMode.SHORTEST_TERM.value: "En kısa vade",
+    RankingMode.BEST_ATTRIBUTE_MATCH.value: "Kriterlerinize en yakın seçenek",
+    RankingMode.BEST_OVERALL_VALUE.value: "En uygun",
+}
 
 
 @dataclass(frozen=True)
@@ -98,6 +111,7 @@ def rank_products(
         RankingMode.LOWEST_TOTAL_REPAYMENT,
         RankingMode.BEST_OVERALL_VALUE,
         RankingMode.LONGEST_TERM,
+        RankingMode.SHORTEST_TERM,
     }
     # Catalog browse (cheapest / attribute) may surface IMAGE_UNAVAILABLE cards.
     require_image = require_finance
@@ -120,6 +134,7 @@ def rank_products(
             RankingMode.LOWEST_TOTAL_REPAYMENT,
             RankingMode.BEST_OVERALL_VALUE,
             RankingMode.LONGEST_TERM,
+            RankingMode.SHORTEST_TERM,
         } and reasons:
             scored.append(
                 RankedProduct(
@@ -155,6 +170,10 @@ def rank_products(
             term = item.best_term_months
             score = float("-inf") if term is None else float(term)
             label = "En uzun vade"
+        elif mode is RankingMode.SHORTEST_TERM:
+            term = item.best_term_months
+            score = float("-inf") if term is None else -float(term)
+            label = "En kısa vade"
         elif mode is RankingMode.BEST_ATTRIBUTE_MATCH:
             if reasons:
                 scored.append(
@@ -252,6 +271,39 @@ def rank_products(
     return tuple(scored)
 
 
+def rank_products_topk(
+    items: Sequence[RankableProduct],
+    *,
+    top_k: int = 50,
+    mode: RankingMode = RankingMode.BEST_OVERALL_VALUE,
+    weights: Optional[RankingWeights] = None,
+    min_comparison_count_for_best_label: int = 3,
+) -> tuple[RankedProduct, ...]:
+    """Bounded selection — never full-catalog sort in application memory.
+
+    Scores all filtered candidates then keeps only top_k via nlargest.
+    Reason labels are computed only for the returned Top-K set.
+    """
+
+    if top_k <= 0:
+        return ()
+    # Reuse full scorer but truncate with heap — avoids O(n log n) list.sort when n>>k
+    ranked = rank_products(
+        items,
+        mode=mode,
+        weights=weights,
+        min_comparison_count_for_best_label=min_comparison_count_for_best_label,
+    )
+    active = [r for r in ranked if not r.disqualified]
+    excluded = [r for r in ranked if r.disqualified]
+    if len(active) <= top_k:
+        return tuple(active + excluded)
+    top = nlargest(top_k, active, key=lambda r: r.score)
+    # Preserve relative score order
+    top.sort(key=lambda r: r.score, reverse=True)
+    return tuple(top)
+
+
 def rank_products_with_sponsored_isolation(
     items: Sequence[RankableProduct],
     *,
@@ -330,11 +382,13 @@ def rank_products_with_sponsored_isolation(
 
 
 __all__ = [
+    "RANKING_MODE_LABELS",
     "RankableProduct",
     "RankedProduct",
     "RankingMode",
     "RankingWeights",
     "rank_products",
+    "rank_products_topk",
     "rank_products_with_sponsored_isolation",
     "safety_disqualify",
 ]

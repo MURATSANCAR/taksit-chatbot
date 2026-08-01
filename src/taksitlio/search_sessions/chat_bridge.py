@@ -46,13 +46,10 @@ def _cards_from_results(payload: dict[str, Any]) -> list[dict[str, Any]]:
 def _reply_for_route(payload: dict[str, Any]) -> tuple[str, str]:
     route = payload.get("route") or "FAST"
     if route == "OUT_OF_SCOPE":
+        from taksitlio.semantic_matching.query_intent import OUT_OF_SCOPE_ASSIST_MESSAGE
+
         return (
-            payload.get("reply")
-            or (
-                "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve "
-                "taksit ihtiyaçlarınız için buradayım; sistemde olmayan bilgi veremem ve "
-                "genel sohbet yapmam."
-            ),
+            payload.get("reply") or OUT_OF_SCOPE_ASSIST_MESSAGE,
             "SAFE_FAILURE",
         )
     if route == "CLARIFICATION":

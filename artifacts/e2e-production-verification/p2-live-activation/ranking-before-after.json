@@ -1,0 +1,14 @@
+{
+  "before": {
+    "p95_ms": 105.3,
+    "source": "P1 full-path"
+  },
+  "after_microbench_topk": {
+    "p50_ms": 2.157,
+    "p95_ms": 3.365,
+    "p99_ms": 4.741
+  },
+  "after_estimated_wired_path_p95_ms": 40.0,
+  "live_cutover": false,
+  "adaptive_ranking_flag": "SHADOW"
+}

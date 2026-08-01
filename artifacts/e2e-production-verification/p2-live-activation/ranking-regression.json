@@ -1,0 +1,13 @@
+{
+  "cheapest_top1": "cheap",
+  "cheapest_accuracy": true,
+  "lowest_monthly_top1": "mid",
+  "lowest_monthly_accuracy": true,
+  "lowest_total_top1": "low_total",
+  "lowest_total_accuracy": true,
+  "negative_filter_leakage": 0,
+  "topk_excludes_nothing_eligible_incorrectly": true,
+  "wrong_best_label": 0,
+  "pass": true,
+  "note": "Unit-level invariant check; P1 production-ID golden reused separately"
+}

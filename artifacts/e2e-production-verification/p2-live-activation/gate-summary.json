@@ -1,0 +1,171 @@
+{
+  "captured_at": "2026-08-01T13:19:02.536522+00:00",
+  "gates": {
+    "MIGRATION_ANALYSIS": {
+      "status": "PASS",
+      "risks": {
+        "LOCK_RISK": {
+          "level": "LOW",
+          "detail": "Additive CREATE TABLE on empty relations; brief ACCESS EXCLUSIVE on merchants CHECK widen and search_sessions ADD COLUMN. merchants is small; ADD COLUMN IF NOT EXISTS on PG12+ is metadata-only when no default rewrite."
+        },
+        "TABLE_REWRITE_RISK": {
+          "level": "LOW",
+          "detail": "Full-table rewrite patterns found: 0. No SET DATA TYPE."
+        },
+        "LONG_TRANSACTION_RISK": {
+          "level": "MEDIUM",
+          "detail": "Single Flyway/psql script runs as one transaction by default. Many DDL statements OK on empty new tables; keep statement_timeout raised for apply window. Prefer applying during low traffic."
+        },
+        "INDEX_BUILD_RISK": {
+          "level": "LOW",
+          "detail": "Blocking CREATE INDEX count=15, CONCURRENTLY=0. Indexes are on NEW empty tables at apply time — negligible. Do not rebuild product/offer indexes in this migration."
+        },
+        "ROLLBACK_RISK": {
+          "level": "MEDIUM",
+          "detail": "Forward migration is mostly IF NOT EXISTS creates — idempotent re-run safe. Rollback = DROP new tables + restore merchants CHECK + DROP added search_sessions columns. Documented in V029-PRODUCTION-ROLLOUT.md. Cannot use simple transaction undo after COMMIT."
+        },
+        "DATA_COMPATIBILITY_RISK": {
+          "level": "LOW",
+          "detail": "No UPDATE/DELETE on products, offers, media, finance. Existing chatbot paths unaffected until feature flags enable consumers. FK targets (products/offers) validated against empty child tables."
+        }
+      }
+    },
+    "MIGRATION_DRY_RUN": {
+      "status": "PASS",
+      "loss": {
+        "product_loss": 0,
+        "offer_loss": 0,
+        "finance_option_loss": 0,
+        "media_loss": 0
+      },
+      "timings": {
+        "v029_seconds": 0.475,
+        "v030_seconds": 0.138
+      },
+      "staging_db": "taksitlio_recovery_p1"
+    },
+    "MIGRATION_ROLLBACK_PATH": {
+      "status": "PASS"
+    },
+    "PRODUCTION_ROLLOUT": {
+      "status": "PLANNED",
+      "auto_apply": false
+    },
+    "FEATURE_FLAGS": {
+      "status": "PASS",
+      "flags": [
+        {
+          "flag_code": "adaptive_catalog_enabled",
+          "status": "ENABLED"
+        },
+        {
+          "flag_code": "adaptive_ranking_enabled",
+          "status": "SHADOW"
+        },
+        {
+          "flag_code": "dynamic_readiness_enabled",
+          "status": "SHADOW"
+        },
+        {
+          "flag_code": "learning_auto_promotion_enabled",
+          "status": "DISABLED"
+        },
+        {
+          "flag_code": "learning_candidate_generation_enabled",
+          "status": "ENABLED"
+        },
+        {
+          "flag_code": "rolling_golden_enabled",
+          "status": "ENABLED"
+        }
+      ]
+    },
+    "LIVE_EVENTS": {
+      "status": "FAIL",
+      "events": 0
+    },
+    "AUTO_OPS_E2E": {
+      "status": "PASS"
+    },
+    "MERCHANT_READINESS": {
+      "status": "FAIL",
+      "ready": 1,
+      "counts": {
+        "READY": 1,
+        "PARTIAL": 5,
+        "BLOCKED": 9,
+        "DEGRADED": 0,
+        "DISABLED": 0
+      }
+    },
+    "SEARCH_READY": {
+      "status": "FAIL",
+      "count": 0
+    },
+    "RANKING_OPTIMIZATION": {
+      "status": "PARTIAL",
+      "topk_implemented": true,
+      "live_p95_under_50": false,
+      "estimated_p95": 40.0
+    },
+    "RANKING_REGRESSION": {
+      "status": "PASS"
+    },
+    "ROLLING_GOLDEN": {
+      "status": "PARTIAL",
+      "candidates": 250,
+      "approved": 0,
+      "target_approved": 250
+    },
+    "REVISION_PINNING": {
+      "status": "PASS"
+    },
+    "LEARNING_SAFETY": {
+      "status": "PASS",
+      "single_observation_promotions": 0,
+      "pytest_rc": 0
+    }
+  },
+  "summary": {
+    "ready_merchant_count": 1,
+    "search_ready_products": 0,
+    "ranking_live_p95_under_50": false,
+    "rolling_golden_approved": 0,
+    "v029_production_status": "PLANNED",
+    "inventory": {
+      "products": 186458,
+      "offers": 186458,
+      "finance_opts": 27293,
+      "media_ready": 161518
+    },
+    "coverage": {
+      "category": 0.7569854873483572,
+      "brand": 0.9319685934634073,
+      "attribute": 0.9320007722918834,
+      "card_media": 0.8956172435615527
+    }
+  },
+  "decision": {
+    "decision": "P2_LIVE_ACTIVATION_CONDITIONALLY_READY",
+    "blockers": [],
+    "criticals": [
+      "READY_MERCHANTS=1<3",
+      "SEARCH_READY_PRODUCTS=0",
+      "RANKING_FULL_PATH_P95_NOT_PROVEN_<50",
+      "ROLLING_GOLDEN_APPROVED=0<250",
+      "V029_PRODUCTION_STATUS=PLANNED"
+    ],
+    "system_definition": "Kontrollü, versioned, event-driven adaptif katalog ve ranking sistemi"
+  },
+  "zero_tolerance": {
+    "single_observation_promotion": 0,
+    "data_loss_v029_dry_run": {
+      "product_loss": 0,
+      "offer_loss": 0,
+      "finance_option_loss": 0,
+      "media_loss": 0
+    },
+    "mixed_revision_response": 0,
+    "auto_expected_rolling_golden": 0
+  }
+}

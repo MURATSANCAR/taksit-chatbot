@@ -1,0 +1,889 @@
+{
+  "status_counts": {
+    "READY": 1,
+    "PARTIAL": 5,
+    "BLOCKED": 9,
+    "DEGRADED": 0,
+    "DISABLED": 0
+  },
+  "merchants": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "status": "PARTIAL",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 165169,
+      "coverages": {
+        "category_coverage": 0.7913,
+        "brand_coverage": 0.9975,
+        "critical_attribute_coverage": 0.9975,
+        "stock_coverage": 0.9976,
+        "card_media_coverage": 0.8995,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.7913,
+          "required": 0.95,
+          "affected_products": 26212
+        },
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.8995,
+          "required": 0.95,
+          "affected_products": 8341
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.7913,
+          "required": 0.95,
+          "affected_products": 26212
+        },
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.8995,
+          "required": 0.95,
+          "affected_products": 8341
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 7450,
+      "coverages": {
+        "category_coverage": 0.4313,
+        "brand_coverage": 0.0,
+        "critical_attribute_coverage": 0.0,
+        "stock_coverage": 0.0,
+        "card_media_coverage": 0.9997,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.9144,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 6705
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 6705
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4313,
+          "required": 0.95,
+          "affected_products": 3864
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 6705
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 6705
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4313,
+          "required": 0.95,
+          "affected_products": 3864
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "status": "PARTIAL",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 6490,
+      "coverages": {
+        "category_coverage": 0.679,
+        "brand_coverage": 0.9997,
+        "critical_attribute_coverage": 0.9997,
+        "stock_coverage": 0.9994,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.679,
+          "required": 0.95,
+          "affected_products": 1759
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.679,
+          "required": 0.95,
+          "affected_products": 1759
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 15,
+      "merchant_code": "m-arcelik",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 1244,
+      "coverages": {
+        "category_coverage": 0.1383,
+        "brand_coverage": 0.1367,
+        "critical_attribute_coverage": 0.1383,
+        "stock_coverage": 0.2355,
+        "card_media_coverage": 0.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.0,
+          "required": 0.95,
+          "affected_products": 1182
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.1383,
+          "required": 0.95,
+          "affected_products": 1010
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.1367,
+          "required": 0.9,
+          "affected_products": 950
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.0,
+          "required": 0.95,
+          "affected_products": 1182
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.1383,
+          "required": 0.95,
+          "affected_products": 1010
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.1367,
+          "required": 0.9,
+          "affected_products": 950
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.1383,
+          "required": 0.9,
+          "affected_products": 948
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 16,
+      "merchant_code": "m-beko",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 1163,
+      "coverages": {
+        "category_coverage": 0.2537,
+        "brand_coverage": 0.184,
+        "critical_attribute_coverage": 0.184,
+        "stock_coverage": 0.2253,
+        "card_media_coverage": 0.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.0,
+          "required": 0.95,
+          "affected_products": 1105
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.184,
+          "required": 0.9,
+          "affected_products": 833
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.184,
+          "required": 0.9,
+          "affected_products": 833
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.0,
+          "required": 0.95,
+          "affected_products": 1105
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.184,
+          "required": 0.9,
+          "affected_products": 833
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.184,
+          "required": 0.9,
+          "affected_products": 833
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.2537,
+          "required": 0.95,
+          "affected_products": 810
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 1007,
+      "coverages": {
+        "category_coverage": 0.4747,
+        "brand_coverage": 0.6415,
+        "critical_attribute_coverage": 0.6415,
+        "stock_coverage": 0.6415,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4747,
+          "required": 0.95,
+          "affected_products": 479
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.6415,
+          "required": 0.9,
+          "affected_products": 260
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.6415,
+          "required": 0.9,
+          "affected_products": 260
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4747,
+          "required": 0.95,
+          "affected_products": 479
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.6415,
+          "required": 0.9,
+          "affected_products": 260
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.6415,
+          "required": 0.9,
+          "affected_products": 260
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 1003,
+      "coverages": {
+        "category_coverage": 0.5902,
+        "brand_coverage": 0.995,
+        "critical_attribute_coverage": 0.999,
+        "stock_coverage": 0.0,
+        "card_media_coverage": 0.996,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.5902,
+          "required": 0.95,
+          "affected_products": 361
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.5902,
+          "required": 0.95,
+          "affected_products": 361
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 892,
+      "coverages": {
+        "category_coverage": 0.7646,
+        "brand_coverage": 0.0,
+        "critical_attribute_coverage": 0.0,
+        "stock_coverage": 0.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0504,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 803
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 803
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.7646,
+          "required": 0.95,
+          "affected_products": 165
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 803
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 803
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.7646,
+          "required": 0.95,
+          "affected_products": 165
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 19,
+      "merchant_code": "m-n11",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 850,
+      "coverages": {
+        "category_coverage": 0.4153,
+        "brand_coverage": 0.1965,
+        "critical_attribute_coverage": 0.1965,
+        "stock_coverage": 0.1965,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.1965,
+          "required": 0.9,
+          "affected_products": 598
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.1965,
+          "required": 0.9,
+          "affected_products": 598
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4153,
+          "required": 0.95,
+          "affected_products": 454
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.1965,
+          "required": 0.9,
+          "affected_products": 598
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.1965,
+          "required": 0.9,
+          "affected_products": 598
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4153,
+          "required": 0.95,
+          "affected_products": 454
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 23,
+      "merchant_code": "m-dr",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 750,
+      "coverages": {
+        "category_coverage": 0.076,
+        "brand_coverage": 0.012,
+        "critical_attribute_coverage": 0.012,
+        "stock_coverage": 0.46,
+        "card_media_coverage": 0.46,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.012,
+          "required": 0.9,
+          "affected_products": 666
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.012,
+          "required": 0.9,
+          "affected_products": 666
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.076,
+          "required": 0.95,
+          "affected_products": 656
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.012,
+          "required": 0.9,
+          "affected_products": 666
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.012,
+          "required": 0.9,
+          "affected_products": 666
+        },
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.076,
+          "required": 0.95,
+          "affected_products": 656
+        },
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.46,
+          "required": 0.95,
+          "affected_products": 367
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "status": "PARTIAL",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 130,
+      "coverages": {
+        "category_coverage": 0.5308,
+        "brand_coverage": 1.0,
+        "critical_attribute_coverage": 1.0,
+        "stock_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.5308,
+          "required": 0.95,
+          "affected_products": 54
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.5308,
+          "required": 0.95,
+          "affected_products": 54
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 130,
+      "coverages": {
+        "category_coverage": 0.4846,
+        "brand_coverage": 1.0,
+        "critical_attribute_coverage": 1.0,
+        "stock_coverage": 0.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4846,
+          "required": 0.95,
+          "affected_products": 61
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.4846,
+          "required": 0.95,
+          "affected_products": 61
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 115,
+      "coverages": {
+        "category_coverage": 0.0348,
+        "brand_coverage": 0.0,
+        "critical_attribute_coverage": 0.0,
+        "stock_coverage": 0.0,
+        "card_media_coverage": 0.2174,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.0348,
+          "required": 0.95,
+          "affected_products": 105
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 104
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 104
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.0348,
+          "required": 0.95,
+          "affected_products": 105
+        },
+        {
+          "policy": "BRAND_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 104
+        },
+        {
+          "policy": "ATTRIBUTE_COVERAGE",
+          "actual": 0.0,
+          "required": 0.9,
+          "affected_products": 104
+        },
+        {
+          "policy": "CARD_MEDIA_COVERAGE",
+          "actual": 0.2174,
+          "required": 0.95,
+          "affected_products": 84
+        }
+      ],
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "status": "READY",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 57,
+      "coverages": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.9649,
+        "critical_attribute_coverage": 0.9649,
+        "stock_coverage": 1.0,
+        "card_media_coverage": 0.9649,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [],
+      "all_failed_rules": [],
+      "reasons": []
+    },
+    {
+      "merchant_id": 24,
+      "merchant_code": "m-civil",
+      "status": "BLOCKED",
+      "db_activation_gate": "BLOCKED",
+      "active_product_count": 8,
+      "coverages": {
+        "category_coverage": 0.25,
+        "brand_coverage": 1.0,
+        "critical_attribute_coverage": 1.0,
+        "stock_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0
+      },
+      "failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.25,
+          "required": 0.95,
+          "affected_products": 6
+        }
+      ],
+      "all_failed_rules": [
+        {
+          "policy": "CATEGORY_COVERAGE",
+          "actual": 0.25,
+          "required": 0.95,
+          "affected_products": 6
+        }
+      ],
+      "reasons": [
+        "insufficient_searchable_products",
+        "category_coverage_below_threshold"
+      ]
+    }
+  ],
+  "top_priority": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "score": 0.682751,
+      "components": {
+        "searchable_product_potential": 0.2,
+        "category_coverage": 0.15826,
+        "media_coverage": 0.134925,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.1,
+        "unresolved_product_penalty": -0.01043385865386362,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "score": 0.48274,
+      "components": {
+        "searchable_product_potential": 0.009021063274585425,
+        "category_coverage": 0.08626,
+        "media_coverage": 0.149955,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.09144000000000001,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.0745,
+        "unresolved_product_penalty": -0.028436241610738256,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "score": 0.445374,
+      "components": {
+        "searchable_product_potential": 6.902021565790191e-05,
+        "category_coverage": 0.2,
+        "media_coverage": 0.144735,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.0005700000000000001,
+        "unresolved_product_penalty": -0.0,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "score": 0.442511,
+      "components": {
+        "searchable_product_potential": 0.007858617537189182,
+        "category_coverage": 0.1358,
+        "media_coverage": 0.15,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.0649,
+        "unresolved_product_penalty": -0.01604776579352851,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "score": 0.406189,
+      "components": {
+        "searchable_product_potential": 0.0010801058309973422,
+        "category_coverage": 0.15292,
+        "media_coverage": 0.15,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.00504,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.00892,
+        "unresolved_product_penalty": -0.011771300448430494,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    }
+  ],
+  "ready_merchant_count": 1,
+  "captured_at": "2026-08-01T13:18:57.216589+00:00"
+}

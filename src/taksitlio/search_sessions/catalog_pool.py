@@ -59,6 +59,8 @@ def candidate_to_pool_dict(cand: Any) -> dict[str, Any]:
         "rate_fresh": cand.rate_fresh,
         "best_monthly_payment": cand.best_monthly_payment,
         "best_total_repayment": cand.best_total_repayment,
+        "best_term_months": getattr(cand, "best_term_months", None)
+        or (finance.get("term_months") if isinstance(finance, dict) else None),
         "best_finance": finance,
     }
 

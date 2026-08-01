@@ -1,0 +1,6 @@
+{
+  "schema_present": false,
+  "events_produced": 0,
+  "pass": false,
+  "note": "V029 not on this DB — events cannot be validated as live yet"
+}

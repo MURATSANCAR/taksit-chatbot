@@ -22,14 +22,17 @@ from taksitlio.search_sessions.repository import (
     SessionEvent,
 )
 from taksitlio.search_sessions.status import (
+    HARD_TERMINAL_STATUSES,
     InvalidTransitionError,
     SearchSessionStatus,
     can_transition,
+    is_hard_terminal,
     transition,
 )
 
 __all__ = [
     "GLOBAL_SEARCH_METRICS",
+    "HARD_TERMINAL_STATUSES",
     "InMemorySearchSessionRepository",
     "InvalidTransitionError",
     "MetricsRegistry",
@@ -47,6 +50,7 @@ __all__ = [
     "build_demo_orchestrator",
     "build_empty_orchestrator",
     "can_transition",
+    "is_hard_terminal",
     "refresh_orchestrator_from_catalog",
     "transition",
 ]

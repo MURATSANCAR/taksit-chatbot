@@ -16,6 +16,7 @@ from taksitlio.search_sessions import SearchOrchestrator, build_empty_orchestrat
 from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
 from taksitlio.search_sessions.hydrate import ensure_session_loaded
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
+from taksitlio.search_sessions.status import InvalidTransitionError
 
 router = APIRouter(tags=["search-sessions"])
 
@@ -253,6 +254,8 @@ async def supersede_message(
         return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except InvalidTransitionError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.post("/search-sessions/{session_id}/llm-jobs/drain")

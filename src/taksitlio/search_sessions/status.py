@@ -78,6 +78,7 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
         {
             SearchSessionStatus.RANKING,
             SearchSessionStatus.FINANCE_OPTIONS_LOADING,
+            SearchSessionStatus.FAST_PARSING,
             SearchSessionStatus.FAILED,
             SearchSessionStatus.CANCELLED,
         }
@@ -85,6 +86,7 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
     SearchSessionStatus.LLM_QUEUED: frozenset(
         {
             SearchSessionStatus.LLM_RUNNING,
+            SearchSessionStatus.FAST_PARSING,
             SearchSessionStatus.CANCELLED,
             SearchSessionStatus.SUPERSEDED,
             SearchSessionStatus.TIMED_OUT,
@@ -94,6 +96,7 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
         {
             SearchSessionStatus.PARTIAL_RESULTS_READY,
             SearchSessionStatus.RANKING,
+            SearchSessionStatus.FAST_PARSING,
             SearchSessionStatus.TIMED_OUT,
             SearchSessionStatus.FAILED,
             SearchSessionStatus.CANCELLED,
@@ -105,6 +108,7 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
         {
             SearchSessionStatus.FINANCE_OPTIONS_LOADING,
             SearchSessionStatus.RANKING,
+            SearchSessionStatus.FAST_PARSING,
             SearchSessionStatus.COMPLETED,
             SearchSessionStatus.COMPLETED_DEGRADED,
             SearchSessionStatus.CANCELLED,
@@ -116,6 +120,7 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
         {
             SearchSessionStatus.RANKING,
             SearchSessionStatus.PARTIAL_RESULTS_READY,
+            SearchSessionStatus.FAST_PARSING,
             SearchSessionStatus.CANCELLED,
             SearchSessionStatus.TIMED_OUT,
         }
@@ -124,6 +129,7 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
         {
             SearchSessionStatus.COMPLETED,
             SearchSessionStatus.COMPLETED_DEGRADED,
+            SearchSessionStatus.FAST_PARSING,
             SearchSessionStatus.FAILED,
             SearchSessionStatus.CANCELLED,
         }
@@ -131,12 +137,23 @@ _TRANSITIONS: dict[SearchSessionStatus, frozenset[SearchSessionStatus]] = {
     SearchSessionStatus.TIMED_OUT: frozenset(
         {SearchSessionStatus.COMPLETED_DEGRADED, SearchSessionStatus.RANKING, SearchSessionStatus.CANCELLED}
     ),
-    SearchSessionStatus.COMPLETED: frozenset(),
-    SearchSessionStatus.COMPLETED_DEGRADED: frozenset(),
+    # Follow-up refinement reopen (same search session).
+    SearchSessionStatus.COMPLETED: frozenset({SearchSessionStatus.FAST_PARSING}),
+    SearchSessionStatus.COMPLETED_DEGRADED: frozenset({SearchSessionStatus.FAST_PARSING}),
     SearchSessionStatus.FAILED: frozenset(),
     SearchSessionStatus.CANCELLED: frozenset(),
     SearchSessionStatus.SUPERSEDED: frozenset(),
 }
+
+# Hard terminals: follow-up must start a new search session.
+HARD_TERMINAL_STATUSES: frozenset[SearchSessionStatus] = frozenset(
+    {
+        SearchSessionStatus.CANCELLED,
+        SearchSessionStatus.FAILED,
+        SearchSessionStatus.TIMED_OUT,
+        SearchSessionStatus.SUPERSEDED,
+    }
+)
 
 
 class InvalidTransitionError(ValueError):
@@ -147,6 +164,10 @@ def can_transition(current: SearchSessionStatus, target: SearchSessionStatus) ->
     if current == target:
         return True
     return target in _TRANSITIONS.get(current, frozenset())
+
+
+def is_hard_terminal(status: SearchSessionStatus) -> bool:
+    return status in HARD_TERMINAL_STATUSES
 
 
 def transition(current: SearchSessionStatus, target: SearchSessionStatus) -> SearchSessionStatus:

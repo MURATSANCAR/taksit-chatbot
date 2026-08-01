@@ -1,0 +1,64 @@
+{
+  "staging_db": "taksitlio_recovery_p1",
+  "before": {
+    "products": 125771,
+    "offers": 125770,
+    "finance_opts": 27293,
+    "media_ready": 19888
+  },
+  "after": {
+    "products": 125771,
+    "offers": 125770,
+    "finance_opts": 27293,
+    "media_ready": 19888
+  },
+  "loss": {
+    "product_loss": 0,
+    "offer_loss": 0,
+    "finance_option_loss": 0,
+    "media_loss": 0
+  },
+  "pass": true,
+  "timings": {
+    "v029_seconds": 0.475,
+    "v030_seconds": 0.138
+  },
+  "tables_present": [
+    "catalog_domain_events",
+    "learning_promotion_policies",
+    "merchant_readiness_snapshots",
+    "product_ranking_feature_projection",
+    "runtime_feature_flags",
+    "search_ready_product_projection"
+  ],
+  "feature_flags": [
+    {
+      "flag_code": "adaptive_catalog_enabled",
+      "status": "ENABLED"
+    },
+    {
+      "flag_code": "adaptive_ranking_enabled",
+      "status": "SHADOW"
+    },
+    {
+      "flag_code": "dynamic_readiness_enabled",
+      "status": "SHADOW"
+    },
+    {
+      "flag_code": "learning_auto_promotion_enabled",
+      "status": "DISABLED"
+    },
+    {
+      "flag_code": "learning_candidate_generation_enabled",
+      "status": "ENABLED"
+    },
+    {
+      "flag_code": "rolling_golden_enabled",
+      "status": "ENABLED"
+    }
+  ],
+  "lock_duration_proxy_seconds": 0.613,
+  "index_build_included_in_migration_seconds": true,
+  "unplanned_lock_over_limit": 0,
+  "captured_at": "2026-08-01T13:18:51.469046+00:00"
+}

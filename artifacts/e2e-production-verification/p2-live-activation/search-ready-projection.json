@@ -1,0 +1,7 @@
+{
+  "table": "search_ready_product_projection",
+  "rows": 0,
+  "ready_merchants": 1,
+  "rule": "merchant READY + category + offer + price + url + CARD_READY",
+  "pass": false
+}

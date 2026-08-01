@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Optional, Sequence
 
+from taksitlio.product_query.ranking import RANKING_MODE_LABELS
 from taksitlio.progressive_results.category_match import matches_required_categories
 
 
@@ -63,7 +64,24 @@ def can_partial_retrieve(constraints: dict[str, Any]) -> bool:
         or constraints.get("merchant")
         or constraints.get("brands")
         or constraints.get("product_type")
+        or constraints.get("ranking_mode")
     )
+
+
+def _best_term_months(product: Mapping[str, Any]) -> Optional[int]:
+    raw = product.get("best_term_months")
+    if raw is not None:
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            pass
+    finance = product.get("best_finance") or product.get("best_finance_summary") or {}
+    if isinstance(finance, Mapping) and finance.get("term_months") is not None:
+        try:
+            return int(finance["term_months"])
+        except (TypeError, ValueError):
+            return None
+    return None
 
 
 def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]) -> float:
@@ -72,6 +90,50 @@ def score_partial_candidate(product: dict[str, Any], constraints: dict[str, Any]
         return float("-inf")
     if not matches_required_categories(product, constraints):
         return float("-inf")
+
+    mode = str(constraints.get("ranking_mode") or "").upper()
+    soft = _soft_relevance_score(product, constraints)
+    if not mode:
+        return soft
+
+    term = _best_term_months(product)
+    price = float(product.get("price") or 0)
+    monthly = product.get("best_monthly_payment")
+    if monthly is None:
+        finance = product.get("best_finance") or {}
+        if isinstance(finance, Mapping):
+            monthly = finance.get("monthly_payment")
+    total = product.get("best_total_repayment")
+    if total is None:
+        finance = product.get("best_finance") or {}
+        if isinstance(finance, Mapping):
+            total = finance.get("total_repayment")
+
+    # Primary ranking key dominates; soft score is a small tie-breaker.
+    if mode == "SHORTEST_TERM":
+        if term is None:
+            return float("-inf")
+        return (-float(term)) * 1000.0 + soft
+    if mode == "LONGEST_TERM":
+        if term is None:
+            return float("-inf")
+        return float(term) * 1000.0 + soft
+    if mode == "CHEAPEST_PRODUCT_PRICE":
+        if price <= 0:
+            return float("-inf")
+        return (-price) + soft * 0.01
+    if mode == "LOWEST_MONTHLY_PAYMENT":
+        if monthly is None:
+            return float("-inf")
+        return (-float(monthly)) * 10.0 + soft
+    if mode == "LOWEST_TOTAL_REPAYMENT":
+        if total is None:
+            return float("-inf")
+        return (-float(total)) + soft * 0.01
+    return soft
+
+
+def _soft_relevance_score(product: dict[str, Any], constraints: dict[str, Any]) -> float:
     score = float(product.get("query_relevance") or 0.5)
     score += 0.15 if product.get("stock_status") == "AVAILABLE" else -0.2
     freshness = str(product.get("price_freshness") or "")
@@ -127,6 +189,13 @@ def _matches_negative_constraint(product: dict[str, Any], constraints: dict[str,
     return False
 
 
+def snapshot_label_for_constraints(constraints: dict[str, Any]) -> str:
+    mode = str(constraints.get("ranking_mode") or "").upper()
+    if mode and mode in RANKING_MODE_LABELS:
+        return RANKING_MODE_LABELS[mode]
+    return PARTIAL_LABEL
+
+
 def build_partial_snapshot(
     *,
     query_version: int,
@@ -147,6 +216,7 @@ def build_partial_snapshot(
         key=lambda p: score_partial_candidate(p, constraints),
         reverse=True,
     )[:limit]
+    label = snapshot_label_for_constraints(constraints)
     out = [
         PartialProduct(
             product_id=str(p.get("product_id")),
@@ -162,7 +232,11 @@ def build_partial_snapshot(
         )
         for p in ranked
     ]
-    return PartialResultSnapshot(query_version=query_version, products=out)
+    return PartialResultSnapshot(
+        query_version=query_version,
+        products=out,
+        label=label,
+    )
 
 
 __all__ = [
@@ -172,4 +246,5 @@ __all__ = [
     "build_partial_snapshot",
     "can_partial_retrieve",
     "score_partial_candidate",
+    "snapshot_label_for_constraints",
 ]

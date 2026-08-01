@@ -205,7 +205,7 @@ Progressive: 0–100 ms “arıyorum” → 100–300 ms kartlar → 300–600 m
 finans → lazy detail.
 
 Sıralama modları: `CHEAPEST_PRODUCT_PRICE`, `LOWEST_MONTHLY_PAYMENT`,
-`LOWEST_TOTAL_REPAYMENT`, `LONGEST_TERM`, `BEST_ATTRIBUTE_MATCH`,
+`LOWEST_TOTAL_REPAYMENT`, `LONGEST_TERM`, `SHORTEST_TERM`, `BEST_ATTRIBUTE_MATCH`,
 `BEST_OVERALL_VALUE` (varsayılan).
 
 En uygun güvenlik: stock AVAILABLE, price FRESH, image AVAILABLE,

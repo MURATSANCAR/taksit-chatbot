@@ -1,0 +1,90 @@
+{
+  "top5": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "score": 0.682751,
+      "components": {
+        "searchable_product_potential": 0.2,
+        "category_coverage": 0.15826,
+        "media_coverage": 0.134925,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.1,
+        "unresolved_product_penalty": -0.01043385865386362,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "score": 0.48274,
+      "components": {
+        "searchable_product_potential": 0.009021063274585425,
+        "category_coverage": 0.08626,
+        "media_coverage": 0.149955,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.09144000000000001,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.0745,
+        "unresolved_product_penalty": -0.028436241610738256,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "score": 0.445374,
+      "components": {
+        "searchable_product_potential": 6.902021565790191e-05,
+        "category_coverage": 0.2,
+        "media_coverage": 0.144735,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.0005700000000000001,
+        "unresolved_product_penalty": -0.0,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "score": 0.442511,
+      "components": {
+        "searchable_product_potential": 0.007858617537189182,
+        "category_coverage": 0.1358,
+        "media_coverage": 0.15,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.0,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.0649,
+        "unresolved_product_penalty": -0.01604776579352851,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "score": 0.406189,
+      "components": {
+        "searchable_product_potential": 0.0010801058309973422,
+        "category_coverage": 0.15292,
+        "media_coverage": 0.15,
+        "price_freshness": 0.1,
+        "finance_coverage": 0.00504,
+        "payment_plan_coverage": 0.0,
+        "user_query_demand": 0.00892,
+        "unresolved_product_penalty": -0.011771300448430494,
+        "drift_risk_penalty": -0.0,
+        "critical_error_penalty": -0.0
+      }
+    }
+  ],
+  "policy": "activation_priority:v1"
+}

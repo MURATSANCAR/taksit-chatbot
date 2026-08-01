@@ -24,6 +24,9 @@ from taksitlio.model_gateway.gateway import ModelGateway, ModelGatewayError
 from taksitlio.model_gateway.types import CompletionRequest, ModelProfile
 
 
+from taksitlio.semantic_matching.query_intent import OUT_OF_SCOPE_ASSIST_MESSAGE
+
+
 @dataclass(frozen=True)
 class ResponsePolicy:
     policy_code: str = "DEFAULT"
@@ -31,11 +34,7 @@ class ResponsePolicy:
     require_grounding: bool = True
     allow_fabricated_prices: bool = False
     membership_cta_enabled: bool = True
-    out_of_scope_message: str = (
-        "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve "
-        "taksit ihtiyaçlarınız için buradayım; sistemde olmayan bilgi veremem ve "
-        "genel sohbet yapmam."
-    )
+    out_of_scope_message: str = OUT_OF_SCOPE_ASSIST_MESSAGE
     clarification_template: str = (
         "Daha iyi önerebilmem için netleştirmem gerekiyor: {question}"
     )
@@ -157,8 +156,8 @@ class GroundedResponseGenerator:
 
         if not top:
             text = (
-                "Bu ihtiyaca uygun aktif bir kampanya bulamadım. "
-                "Bütçeyi veya ürün tercihini biraz değiştirebilir miyiz?"
+                "Seçtiğiniz ürün için şu an aktif bir kampanya bulunmuyor. "
+                "Farklı bir ürünle tekrar deneyin, size uygun seçenekleri birlikte bakalım."
             )
             return GroundedReply(
                 text=text,

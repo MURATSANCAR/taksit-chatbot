@@ -176,12 +176,13 @@ async def enforce_quarantine(conn: Any) -> dict[str, int]:
           AND (
             p.category_id IS NULL
             OR NOT (
-              p.metadata->>'primary_media_status' = 'READY'
-              OR EXISTS (
+              EXISTS (
                 SELECT 1 FROM product_media_links pml
                 JOIN media_assets ma ON ma.id = pml.media_asset_id
                 WHERE pml.product_id = p.id AND pml.is_primary
-                  AND ma.status = 'READY' AND coalesce(ma.cdn_url,'') <> ''
+                  AND ma.status = 'READY'
+                  AND ma.cdn_url IS NOT NULL
+                  AND length(ma.cdn_url) > 0
               )
             )
           )
@@ -196,19 +197,13 @@ async def enforce_quarantine(conn: Any) -> dict[str, int]:
           updated_at = NOW()
         WHERE p.status = 'ACTIVE'
           AND p.category_id IS NOT NULL
-          AND (
-            p.metadata->>'primary_media_status' = 'READY'
-            OR EXISTS (
-              SELECT 1 FROM product_media_links pml
-              JOIN media_assets ma ON ma.id = pml.media_asset_id
-              WHERE pml.product_id = p.id AND pml.is_primary
-                AND ma.status = 'READY' AND coalesce(ma.cdn_url,'') <> ''
-            )
-          )
-          AND (
-            p.data_quality_status = 'QUARANTINED'
-            OR p.metadata ? 'integrity_block'
-            OR p.data_quality_status IS DISTINCT FROM 'READY'
+          AND EXISTS (
+            SELECT 1 FROM product_media_links pml
+            JOIN media_assets ma ON ma.id = pml.media_asset_id
+            WHERE pml.product_id = p.id AND pml.is_primary
+              AND ma.status = 'READY'
+              AND ma.cdn_url IS NOT NULL
+              AND length(ma.cdn_url) > 0
           )
         """
     )

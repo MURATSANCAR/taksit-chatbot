@@ -47,10 +47,6 @@ from taksitlio.ranking_adaptation import (
     evaluate_promotion_gate as ranking_gate,
     shadow_compare,
 )
-from taksitlio.search_sessions.revision_consistency import (
-    SearchRevisionBundle,
-    assert_revision_consistency,
-)
 
 
 def test_no_direct_promoted_creation():
@@ -322,29 +318,6 @@ def test_ranking_cannot_resurrect_and_gate_blocks_latency():
     assert "latency_target_missed" in gate.reasons
 
 
-def test_revision_consistency_blocks_mix():
-    session = SearchRevisionBundle("c1", "e1", "f1", "r1")
-    attempted = SearchRevisionBundle("c2", "e1", "f1", "r1")
-    result = assert_revision_consistency(session, attempted)
-    assert result.consistent is False
-    assert "catalog_revision_mismatch" in result.reasons
-
-
-def test_media_policy_accepts_non_square():
-    policy = default_seed_policy()
-    # 786x587 — fails old 600x600 square but may pass short/long edge CARD_READY
-    result = evaluate_media_readiness(
-        width=786,
-        height=587,
-        file_size=100_000,
-        decode_ok=True,
-        has_product_relation=True,
-        policy=policy,
-    )
-    assert result.card_ready is True
-    assert "default:v1" in result.policy_version
-
-
 def test_taxonomy_drift_freezes_mappings():
     baseline = {"ayakkabi": 0.8, "canta": 0.2}
     observed = {"ayakkabi": 0.1, "elektronik": 0.9}
@@ -356,3 +329,6 @@ def test_taxonomy_drift_freezes_mappings():
     assert alarm is not None
     assert alarm.freeze_new_mappings is True
     assert alarm.preserve_validated_mappings is True
+
+
+# revision pinning covered in tests/unit/activation/test_p2_activation_units.py

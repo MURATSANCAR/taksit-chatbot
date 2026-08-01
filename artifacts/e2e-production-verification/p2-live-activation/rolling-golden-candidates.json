@@ -1,0 +1,366 @@
+{
+  "count": 250,
+  "cases": [
+    {
+      "case_id": "rolling-typo_alias-001",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_1",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-002",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_2",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-003",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_3",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-004",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_4",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-005",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_5",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-006",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_6",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-007",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_7",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-008",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_8",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-009",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_9",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-010",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_10",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-011",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_11",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-012",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_12",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-013",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_13",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-014",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_14",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-015",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_15",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-016",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_16",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-017",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_17",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-018",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_18",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-019",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_19",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    },
+    {
+      "case_id": "rolling-typo_alias-020",
+      "bucket": "typo_alias",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "query_text_anonymized": "[typo_alias] anonymized_query_20",
+      "prepared_by": "activation_orchestrator",
+      "reviewed_by": null,
+      "expected_entities": {},
+      "expected_constraints": {},
+      "expected_route": null,
+      "expected_invariants": [
+        "no_negative_leakage",
+        "no_unverified_campaign"
+      ],
+      "auto_expected_from_system_answer": false,
+      "anonymized": true,
+      "catalog_revision": null
+    }
+  ],
+  "buckets_total": 250
+}

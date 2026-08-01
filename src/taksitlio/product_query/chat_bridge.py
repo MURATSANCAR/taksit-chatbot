@@ -71,7 +71,27 @@ def budget_max_price(need_profile: Mapping[str, Any]) -> Optional[float]:
 
 
 def infer_ranking_mode(need_profile: Mapping[str, Any]) -> RankingMode:
-    """Prefer browse-safe cheapest until monthly-payment budget is explicit."""
+    """Prefer explicit sort cues, then monthly budget, else cheapest browse."""
+
+    explicit = need_profile.get("ranking_mode")
+    pay = need_profile.get("payment_preferences")
+    if not explicit and isinstance(pay, Mapping):
+        explicit = pay.get("ranking_mode")
+    if not explicit:
+        for pref in need_profile.get("preferences") or []:
+            text = str(pref)
+            if text.startswith("ranking:"):
+                explicit = text.split(":", 1)[1]
+                break
+            upper = text.upper()
+            if upper in RankingMode.__members__:
+                explicit = upper
+                break
+    if explicit:
+        try:
+            return RankingMode(str(explicit).upper())
+        except ValueError:
+            pass
 
     budget = need_profile.get("budget") or {}
     if isinstance(budget, Mapping):

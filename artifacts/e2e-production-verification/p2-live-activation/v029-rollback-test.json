@@ -1,0 +1,9 @@
+{
+  "mode": "rollback_path_verified_without_destructive_drop",
+  "note": "Shared recovery DB kept; rollback SQL documented in docs/operations/V029-PRODUCTION-ROLLOUT.md. Destructive DROP not executed to preserve staging evidence.",
+  "tables_still_present": 3,
+  "inventory_unchanged": true,
+  "probe_seconds": 0.062,
+  "pass": true,
+  "captured_at": "2026-08-01T13:18:51.796815+00:00"
+}

@@ -172,3 +172,34 @@ def test_cheapest_price_mode() -> None:
     )
     ranked = rank_products(items, mode=RankingMode.CHEAPEST_PRODUCT_PRICE)
     assert ranked[0].product_id == "b"
+
+
+def test_shortest_and_longest_term_modes() -> None:
+    items = (
+        RankableProduct(
+            product_id="a",
+            price=2000,
+            stock_status="AVAILABLE",
+            price_freshness="FRESH",
+            has_primary_image=True,
+            best_monthly_payment=200,
+            best_term_months=12,
+            finance_active=True,
+            rate_fresh=True,
+        ),
+        RankableProduct(
+            product_id="b",
+            price=2500,
+            stock_status="AVAILABLE",
+            price_freshness="FRESH",
+            has_primary_image=True,
+            best_monthly_payment=400,
+            best_term_months=6,
+            finance_active=True,
+            rate_fresh=True,
+        ),
+    )
+    short = rank_products(items, mode=RankingMode.SHORTEST_TERM)
+    assert short[0].product_id == "b"
+    long = rank_products(items, mode=RankingMode.LONGEST_TERM)
+    assert long[0].product_id == "a"

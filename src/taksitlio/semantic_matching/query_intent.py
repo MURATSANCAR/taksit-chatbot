@@ -211,9 +211,9 @@ _CHOICE_RE = re.compile(
 )
 
 OUT_OF_SCOPE_ASSIST_MESSAGE = (
-    "Bu konuda yardımcı olamıyorum. Yalnızca Taksitlio katalogundaki ürün ve "
-    "taksit ihtiyaçlarınız için buradayım; sistemde olmayan bilgi veremem ve "
-    "genel sohbet yapmam."
+    "Ben Taksitlio Yapay Zeka asistanıyım; ihtiyacınız olan ürünleri "
+    "en uygun ve en iyi ödeme koşullarıyla bulmanız için buradayım. "
+    "Ürün veya taksit kampanyası sorarak devam edebilirsiniz."
 )
 
 

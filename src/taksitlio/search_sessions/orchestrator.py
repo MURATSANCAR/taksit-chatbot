@@ -23,7 +23,12 @@ from taksitlio.query_clarification import (
     should_ask_clarification,
 )
 from taksitlio.query_fallback import degrade_with_deterministic, evaluate_deadlines
-from taksitlio.query_state import QueryNeedState, chips_from_state, merge_parse_into_state
+from taksitlio.query_state import (
+    QueryNeedState,
+    chips_from_state,
+    hydrate_parse_from_state,
+    merge_parse_into_state,
+)
 from taksitlio.query_understanding import CatalogHints, detect_gaps, fast_parse
 from taksitlio.search_progress import (
     DataOrigin,
@@ -36,7 +41,12 @@ from taksitlio.search_sessions.repository import (
     InMemorySearchSessionRepository,
     SearchSession,
 )
-from taksitlio.search_sessions.status import SearchSessionStatus, can_transition
+from taksitlio.search_sessions.status import (
+    InvalidTransitionError,
+    SearchSessionStatus,
+    can_transition,
+    is_hard_terminal,
+)
 from taksitlio.semantic_matching.query_intent import (
     OUT_OF_SCOPE_ASSIST_MESSAGE,
     is_off_domain_for_assist,
@@ -251,6 +261,15 @@ class SearchOrchestrator:
             )
         self._emit(session, SearchProgressEventType.ENTITY_RESOLUTION_COMPLETED)
 
+        state = merge_parse_into_state(self.states[session.id], parse.to_dict())
+        self.states[session.id] = state
+        parse = hydrate_parse_from_state(parse, state)
+        self.parses[session.id] = parse
+        if version:
+            version.state_snapshot = parse.to_dict()
+            version.confidence = parse.confidence
+            version.requires_llm = parse.requires_llm
+
         self.repo.set_status(session.id, SearchSessionStatus.GAP_ANALYSIS)
         gaps = detect_gaps(parse, category_candidates=self.category_clarify_options)
         self._emit(
@@ -259,8 +278,6 @@ class SearchOrchestrator:
             payload=gaps.to_dict(),
         )
 
-        state = merge_parse_into_state(self.states[session.id], parse.to_dict())
-        self.states[session.id] = state
         chips = chips_from_state(state)
         policy = self.repo.policy
 
@@ -342,6 +359,12 @@ class SearchOrchestrator:
         constraints = self._constraints_with_category_tokens(
             parse, utterance=self.utterances.get(session.id, "")
         )
+        state = self.states.get(session.id)
+        ranking_mode = getattr(parse, "ranking_mode", None) or (
+            (state.payment_preferences or {}).get("ranking_mode") if state else None
+        )
+        if ranking_mode:
+            constraints["ranking_mode"] = str(ranking_mode)
         partial = build_partial_snapshot(
             query_version=session.active_query_version,
             products=self.product_pool,
@@ -421,7 +444,7 @@ class SearchOrchestrator:
         if not degraded:
             self._record_latency(session.id, "fast_path_completion_ms", self._elapsed_ms(session.id))
         chips = chips_from_state(self.states[session.id])
-        return {
+        payload: dict[str, Any] = {
             "search_session_id": session.id,
             "query_version": session.active_query_version,
             "status": session.status.value,
@@ -433,6 +456,13 @@ class SearchOrchestrator:
             "results": partial.to_dict(),
             "logos": self._logos_public(session.id),
         }
+        if not partial.products:
+            payload["reply"] = (
+                "Bu kriterlere uygun ürün bulamadım. Ürün türünü veya bütçeni tekrar yazabilirsin."
+            )
+        elif ranking_mode:
+            payload["reply"] = f"Sonuçları «{partial.label}» olarak sıraladım."
+        return payload
 
     def _start_llm_route(
         self,
@@ -603,11 +633,15 @@ class SearchOrchestrator:
         return self._fast_retrieve(session, parse)
 
     def supersede_with_message(self, session_id: str, message: str) -> dict[str, Any]:
-        """User sends a correction while LLM may be running."""
+        """User correction / follow-up refinement on the same search session."""
 
         session = self.repo.get(session_id)
         if session is None:
             raise KeyError("search_session_not_found")
+        if is_hard_terminal(session.status):
+            raise InvalidTransitionError(
+                f"Cannot supersede hard-terminal session status={session.status.value}"
+            )
         # Cancel old LLM jobs
         for job in self.llm_jobs.values():
             if job.search_session_id == session_id and job.status in {

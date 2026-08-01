@@ -52,6 +52,13 @@ def test_monthly_budget_selects_finance_ranking() -> None:
     assert infer_ranking_mode(profile) is RankingMode.LOWEST_MONTHLY_PAYMENT
 
 
+def test_explicit_shortest_term_ranking_preference() -> None:
+    assert (
+        infer_ranking_mode({"ranking_mode": "SHORTEST_TERM", "budget": {"value": 40000}})
+        is RankingMode.SHORTEST_TERM
+    )
+
+
 @pytest.mark.asyncio
 async def test_chat_returns_catalog_cards_when_products_exist() -> None:
     container = build_in_memory_container()

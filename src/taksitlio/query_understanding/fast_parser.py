@@ -41,6 +41,7 @@ class FastParseResult:
     preferred_institutions: list[dict[str, Any]] = field(default_factory=list)
     usage_contexts: list[str] = field(default_factory=list)
     preferences: list[str] = field(default_factory=list)
+    ranking_mode: Optional[str] = None
     confidence: float = 0.0
     field_confidence: dict[str, float] = field(default_factory=dict)
     route: str = "FAST_PATH"  # FAST_PATH | CLARIFICATION_REQUIRED | LLM_REQUIRED | UNSUPPORTED
@@ -95,6 +96,7 @@ class FastParseResult:
             "preferred_institutions": list(self.preferred_institutions),
             "usage_contexts": list(self.usage_contexts),
             "preferences": list(self.preferences),
+            "ranking_mode": self.ranking_mode,
             "confidence": self.confidence,
             "overall_confidence": self.confidence,
             "field_confidence": dict(self.field_confidence),
@@ -216,12 +218,117 @@ _QUERY_STOPWORDS = frozenset(
         "ürünler",
         "model",
         "modeller",
+        "getir",
+        "olanlari",
+        "olanları",
+        "olan",
+        "sayisi",
+        "sayısı",
+        "sayisin",
+        "sayısın",
+        "taksitli",
+        "kisa",
+        "kısa",
+        "uzun",
+        "vadeli",
+        "vade",
+        "az",
+        "bana",
+        "olanlar",
+        "secenek",
+        "seçenek",
+        "secenekleri",
+        "seçenekleri",
+        "sirala",
+        "sırala",
+        "dusuk",
+        "düşük",
+        "yuksek",
+        "yüksek",
+        "aylik",
+        "aylık",
+        "odeme",
+        "ödeme",
+        "odemesi",
+        "ödemesi",
+        "cok",
+        "çok",
     }
 )
 
 
 def _has_max_budget_cue(lower: str) -> bool:
     return any(cue in lower for cue in _MAX_BUDGET_CUES)
+
+
+# More specific phrases first. Values are RankingMode string codes.
+_RANKING_CUE_TABLE: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "SHORTEST_TERM",
+        (
+            "taksit sayisi en az",
+            "taksit sayısı en az",
+            "taksit sayisin en az",
+            "taksit sayısın en az",
+            "en az taksit",
+            "az taksitli",
+            "en kisa vade",
+            "en kısa vade",
+            "kisa vadeli",
+            "kısa vadeli",
+            "kisa taksit",
+            "kısa taksit",
+        ),
+    ),
+    (
+        "LONGEST_TERM",
+        (
+            "en uzun vade",
+            "uzun vadeli",
+            "cok taksit",
+            "çok taksit",
+            "uzun taksit",
+            "en fazla taksit",
+        ),
+    ),
+    (
+        "LOWEST_MONTHLY_PAYMENT",
+        (
+            "en dusuk aylik",
+            "en düşük aylık",
+            "aylik odemesi en az",
+            "aylık ödemesi en az",
+            "en az aylik odeme",
+            "en az aylık ödeme",
+            "en dusuk aylik odeme",
+            "en düşük aylık ödeme",
+        ),
+    ),
+    (
+        "CHEAPEST_PRODUCT_PRICE",
+        (
+            "en ucuz",
+            "en dusuk fiyat",
+            "en düşük fiyat",
+            "fiyati en dusuk",
+            "fiyatı en düşük",
+        ),
+    ),
+)
+
+
+def detect_ranking_mode(text: str) -> Optional[str]:
+    """Map Turkish refinement cues to a RankingMode value string."""
+
+    lower = turkish_lower(text or "")
+    folded = normalize_turkish(text or "").value or lower
+    for mode, cues in _RANKING_CUE_TABLE:
+        for cue in cues:
+            cue_l = turkish_lower(cue)
+            cue_n = normalize_turkish(cue).value or cue_l
+            if cue_l in lower or (cue_n and cue_n in folded):
+                return mode
+    return None
 
 
 def _parse_budget(text: str) -> Optional[dict[str, Any]]:
@@ -407,11 +514,13 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
 
     abstract_cues = ("herkes", "yer kapla", "mantıklı", "zorlamasın")
     abstract_hits = sum(1 for c in abstract_cues if c in lower)
+    ranking_mode = detect_ranking_mode(text)
 
     # Catalog miss (e.g. "ayakkabı" before FOOTWEAR is seeded): keep the noun so we
     # search products instead of asking electronics product-type clarification.
     # Skip on abstract multi-need utterances that still need LLM / clarification.
-    if not positive_categories and not brands and abstract_hits < 2:
+    # Skip free-text invent when utterance is ranking refinement only.
+    if not positive_categories and not brands and abstract_hits < 2 and not ranking_mode:
         for noun in _free_text_product_nouns(text):
             slug = normalize_turkish(noun).ascii_fold or noun.casefold()
             positive_categories.append(
@@ -460,9 +569,12 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
                 usage.append(code)
     usage = list(dict.fromkeys(usage))
     prefs = list(dict.fromkeys(prefs))
+    if ranking_mode:
+        prefs.append(f"ranking:{ranking_mode}")
+        prefs = list(dict.fromkeys(prefs))
 
     has_product_signal = bool(positive_categories or brands or attributes)
-    has_finance = bool(terms or preferred_institutions)
+    has_finance = bool(terms or preferred_institutions or ranking_mode)
     intent = "PRODUCT_WITH_FINANCE" if (has_product_signal and has_finance) else "PRODUCT_SEARCH"
 
     # Confidence: high when category/brand/budget clear and no multi-candidate brand-only ambiguity
@@ -479,12 +591,14 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
         conf += 0.05
     if terms:
         conf += 0.03
+    if ranking_mode:
+        conf += 0.05
     # Brand without category → often needs clarification (Apple / cihaz)
     if brands and not positive_categories:
         conf = min(conf, 0.72)
-    if not positive_categories and not brands and usage:
+    if not positive_categories and not brands and usage and not ranking_mode:
         conf = min(conf, 0.55)
-    if not positive_categories and not brands and not budget:
+    if not positive_categories and not brands and not budget and not ranking_mode:
         conf = min(conf, 0.45)
     # Abstract multi-dimension household use → likely LLM
     requires_llm = False
@@ -504,6 +618,7 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
         "budget": 1.0 if budget else 0.0,
         "term": 1.0 if terms else 0.0,
         "attributes": 1.0 if attributes else 0.0,
+        "ranking_mode": 1.0 if ranking_mode else 0.0,
     }
     # Field confidences are independent — high merchant must not validate low institution.
     route = "FAST_PATH"
@@ -511,7 +626,7 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
         route = "LLM_REQUIRED"
     elif brands and not positive_categories:
         route = "CLARIFICATION_REQUIRED"
-    elif not positive_categories and not brands and (usage or prefs):
+    elif not positive_categories and not brands and (usage or prefs) and not ranking_mode:
         route = "CLARIFICATION_REQUIRED"
     elif merchant and not merchant.resolved_id and merchant.confidence >= 0.78:
         route = "CLARIFICATION_REQUIRED"
@@ -528,10 +643,16 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
         preferred_institutions=preferred_institutions,
         usage_contexts=usage,
         preferences=prefs,
+        ranking_mode=ranking_mode,
         confidence=conf,
         field_confidence=field_confidence,
         route=route,
         requires_llm=requires_llm,
-        unresolved_spans=[] if positive_categories or brands else [text[:80]],
-        evidence={"normalized": normalized, "neg_spans": neg_spans, "positive_text": positive_text[:120]},
+        unresolved_spans=[] if positive_categories or brands or ranking_mode else [text[:80]],
+        evidence={
+            "normalized": normalized,
+            "neg_spans": neg_spans,
+            "positive_text": positive_text[:120],
+            "ranking_mode": ranking_mode,
+        },
     )

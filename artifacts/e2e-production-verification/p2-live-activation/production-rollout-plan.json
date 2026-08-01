@@ -1,0 +1,27 @@
+{
+  "status": "PLANNED",
+  "auto_apply": false,
+  "requires_approval": true,
+  "doc": "docs/operations/V029-PRODUCTION-ROLLOUT.md",
+  "order": [
+    "V029 dry-run",
+    "V029 approval",
+    "Production migration",
+    "Candidate generation only",
+    "Dynamic readiness shadow",
+    "Learning candidates accumulate",
+    "Rolling golden",
+    "Merchant readiness validation",
+    "Ranking optimization shadow",
+    ">=3 READY merchants",
+    "Search-ready projection active",
+    "Controlled internal traffic"
+  ],
+  "feature_flags_initial": {
+    "learning_candidate_generation_enabled": "ENABLED",
+    "learning_auto_promotion_enabled": "DISABLED",
+    "dynamic_readiness_enabled": "SHADOW",
+    "adaptive_ranking_enabled": "SHADOW",
+    "rolling_golden_enabled": "ENABLED"
+  }
+}

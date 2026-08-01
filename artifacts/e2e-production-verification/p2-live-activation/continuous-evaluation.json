@@ -1,0 +1,14 @@
+{
+  "triggers": [
+    "catalog_revision",
+    "taxonomy_mapping_promotion",
+    "alias_promotion",
+    "attribute_extractor_promotion",
+    "media_policy_activation",
+    "merchant_readiness_policy_activation",
+    "ranking_challenger_promotion"
+  ],
+  "gate_blocks_active_on_fail": true,
+  "ran_this_sprint": false,
+  "note": "Wiring present in design; production continuous runner not cut over"
+}

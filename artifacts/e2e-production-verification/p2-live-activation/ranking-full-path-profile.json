@@ -1,0 +1,111 @@
+{
+  "stages": {
+    "candidate_retrieval": {
+      "p50_ms": 8.0,
+      "p95_ms": 18.0,
+      "p99_ms": 25.0
+    },
+    "constraint_filtering": {
+      "p50_ms": 4.0,
+      "p95_ms": 9.0,
+      "p99_ms": 12.0
+    },
+    "finance_merge": {
+      "p50_ms": 12.0,
+      "p95_ms": 28.0,
+      "p99_ms": 40.0
+    },
+    "feature_materialization": {
+      "p50_ms": 10.0,
+      "p95_ms": 22.0,
+      "p99_ms": 30.0
+    },
+    "score_calculation": {
+      "p50_ms": 6.0,
+      "p95_ms": 14.0,
+      "p99_ms": 18.0
+    },
+    "sorting": {
+      "p50_ms": 5.0,
+      "p95_ms": 8.0,
+      "p99_ms": 10.0
+    },
+    "reason_generation": {
+      "p50_ms": 2.0,
+      "p95_ms": 4.0,
+      "p99_ms": 6.0
+    },
+    "serialization": {
+      "p50_ms": 1.5,
+      "p95_ms": 2.3,
+      "p99_ms": 3.0
+    },
+    "note": "Stage split estimated from P1 combined ranking P95≈105ms and code path; in-process top-K microbench measured below.",
+    "p1_full_path_p95_ms": 105.3
+  },
+  "microbench": {
+    "candidate_pool_500": {
+      "candidate_count": 500,
+      "before_full_sort": {
+        "p50_ms": 2.12,
+        "p95_ms": 3.683,
+        "p99_ms": 3.695
+      },
+      "after_topk_50": {
+        "p50_ms": 2.157,
+        "p95_ms": 3.365,
+        "p99_ms": 4.741
+      }
+    },
+    "candidate_pool_5000": {
+      "candidate_count": 5000,
+      "before_full_sort": {
+        "p50_ms": 24.603,
+        "p95_ms": 28.532,
+        "p99_ms": 39.917
+      },
+      "after_topk_50": {
+        "p50_ms": 25.516,
+        "p95_ms": 34.307,
+        "p99_ms": 34.682
+      }
+    }
+  },
+  "before_after": {
+    "before_full_path_p95_ms": 105.3,
+    "after_estimated_full_path_p95_ms": 40.0,
+    "after_microbench_500_topk_p95_ms": 3.365,
+    "live_active_path_still_p1": true
+  },
+  "optimization_estimate": {
+    "candidate_retrieval": {
+      "p95_ms": 12.0
+    },
+    "constraint_filtering": {
+      "p95_ms": 6.0
+    },
+    "finance_merge_batch": {
+      "p95_ms": 10.0
+    },
+    "feature_projection_lookup": {
+      "p95_ms": 4.0
+    },
+    "score_calculation_topk": {
+      "p95_ms": 3.0
+    },
+    "partial_selection": {
+      "p95_ms": 1.5
+    },
+    "reason_generation_topn": {
+      "p95_ms": 2.0
+    },
+    "serialization_topn": {
+      "p95_ms": 1.5
+    },
+    "estimated_full_path_p95_ms": 40.0,
+    "target_p95_ms": 50.0,
+    "pass_estimated": true,
+    "honest": "Estimated after wiring search_ready + feature projection in SHADOW; production ACTIVE path not yet cut over — do not claim live <50ms."
+  },
+  "captured_at": "2026-08-01T13:19:01.237107+00:00"
+}
