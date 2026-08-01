@@ -56,10 +56,30 @@ def _feed_image_index() -> dict[tuple[str, str], str]:
     return out
 
 
+async def download_image_resilient(url: str) -> bytes:
+    """httpx first; on failure try curl_cffi TLS impersonation (bytes)."""
+    from taksitlio.media.pipeline import download_image
+
+    try:
+        return await download_image(url)
+    except Exception as first:
+        try:
+            from curl_cffi import requests as creq
+
+            r = await asyncio.to_thread(
+                creq.get, url, impersonate="chrome124", timeout=45, allow_redirects=True
+            )
+            if int(getattr(r, "status_code", 0)) == 200 and r.content:
+                return bytes(r.content)
+        except Exception:
+            pass
+        raise first
+
+
 async def main() -> None:
     import asyncpg
 
-    from taksitlio.media.pipeline import download_image, ingest_image_bytes
+    from taksitlio.media.pipeline import ingest_image_bytes
     from taksitlio.media.quality import MediaQualityPolicy
     from taksitlio.media.s3_storage import build_object_storage_from_env
     from taksitlio.product.catalog import PostgresProductCatalogRepository
@@ -71,6 +91,11 @@ async def main() -> None:
         "--merchants",
         default="",
         help="comma merchant_codes e.g. m-vatan,m-flo (empty = all)",
+    )
+    p.add_argument(
+        "--prefer-merchants",
+        default="",
+        help="comma merchant_codes processed first (still includes others unless --merchants set)",
     )
     args = p.parse_args()
 
@@ -113,6 +138,9 @@ async def main() -> None:
         )
     if merchants:
         rows = [r for r in rows if r["merchant_code"] in merchants]
+    prefer = {m.strip() for m in args.prefer_merchants.split(",") if m.strip()}
+    if prefer:
+        rows = sorted(rows, key=lambda r: (0 if r["merchant_code"] in prefer else 1, int(r["product_id"])))
     if args.limit and args.limit > 0:
         rows = rows[: args.limit]
     print(f"todo={len(rows)} concurrency={args.concurrency}", flush=True)
@@ -145,7 +173,7 @@ async def main() -> None:
         async with sem:
             try:
                 await catalog.set_pending_source_image(pid, url)
-                data = await download_image(url)
+                data = await download_image_resilient(url)
                 async with lock:
                     known_snap = set(known)
                 outcome = await asyncio.to_thread(

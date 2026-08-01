@@ -8,7 +8,7 @@
       '<div class="clarification-card" role="group" aria-label="Netleştirme">' +
       "<p>" +
       escapeHtml(clarification.question_text) +
-      "</p><div class="clarification-options">";
+      '</p><div class="clarification-options">';
     (clarification.options || []).forEach(function (opt) {
       html +=
         '<button type="button" data-option-id="' +

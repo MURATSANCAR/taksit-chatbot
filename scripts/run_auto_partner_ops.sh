@@ -6,6 +6,7 @@ mkdir -p /tmp/taksitlio-partner-crawls
 export PYTHONUNBUFFERED=1
 export CRAWL_GLOBAL_PRODUCT_CAP="${CRAWL_GLOBAL_PRODUCT_CAP:-1000000}"
 export AUTO_MAX_PARALLEL_CRAWLS="${AUTO_MAX_PARALLEL_CRAWLS:-4}"
+export AUTO_COMPLETE_ONLY="${AUTO_COMPLETE_ONLY:-1}"
 
 # Load runtime env for ingest/backfill children
 if [[ -f .env.runtime ]]; then

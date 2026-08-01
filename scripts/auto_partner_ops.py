@@ -26,6 +26,12 @@ LOG = Path("/tmp/taksitlio-partner-crawls")
 STATE = Path("/tmp/taksitlio-auto-ops-state.json")
 
 TARGET = int(os.environ.get("CRAWL_GLOBAL_PRODUCT_CAP", "1000000"))
+# When set: do not start new merchant crawls — only ingest/backfill/completeness.
+COMPLETE_ONLY = os.environ.get("AUTO_COMPLETE_ONLY", "").strip().lower() in {
+    "1",
+    "true",
+    "yes",
+}
 
 # (code, delay, workers) — fast first; slow/WAF last
 CRAWL_QUEUE: list[tuple[str, float, int]] = [
@@ -294,6 +300,8 @@ def start_backfill_if_idle() -> None:
 
 
 def fill_crawl_slots(st: dict) -> None:
+    if COMPLETE_ONLY:
+        return
     running = running_crawl_codes()
     slots = max(0, MAX_PARALLEL_CRAWLS - len(running))
     if slots <= 0:
@@ -370,7 +378,7 @@ def main() -> None:
     st = load_state()
     print(
         f"auto_partner_ops start total={total_feeds()}/{TARGET} "
-        f"parallel={MAX_PARALLEL_CRAWLS}",
+        f"parallel={MAX_PARALLEL_CRAWLS} complete_only={COMPLETE_ONLY}",
         flush=True,
     )
     # Kill old sequential supervisor so we don't double-schedule
