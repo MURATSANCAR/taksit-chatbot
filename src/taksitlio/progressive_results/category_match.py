@@ -299,6 +299,7 @@ def utterance_name_terms(
     utterance: str,
     *,
     category_candidates: Sequence[Any] = (),
+    alias_index: Any = None,
 ) -> tuple[str, ...]:
     """DB search terms from live category aliases matching the utterance."""
 
@@ -306,13 +307,12 @@ def utterance_name_terms(
     if not u:
         return ()
 
-    # Fast path: inverted alias index over category candidates.
-    if category_candidates:
+    from taksitlio.query_understanding.alias_index import matched_alias_labels
+
+    index = alias_index
+    if index is None and category_candidates:
         from taksitlio.entity_resolution import EntityCandidate
-        from taksitlio.query_understanding.alias_index import (
-            build_alias_index,
-            matched_alias_labels,
-        )
+        from taksitlio.query_understanding.alias_index import build_alias_index
 
         entities: list[EntityCandidate] = []
         for cand in category_candidates:
@@ -350,13 +350,15 @@ def utterance_name_terms(
                 )
             )
         index = build_alias_index(categories=entities)
-        matched: list[str] = []
+
+    if index is not None:
+        matched_idx: list[str] = []
         for cand in index.lookup_categories(utterance):
-            matched.extend(matched_alias_labels(cand, utterance))
-        if matched:
-            return tuple(dict.fromkeys(str(m).strip() for m in matched if str(m).strip()))[
-                :12
-            ]
+            matched_idx.extend(matched_alias_labels(cand, utterance))
+        if matched_idx:
+            return tuple(
+                dict.fromkeys(str(m).strip() for m in matched_idx if str(m).strip())
+            )[:12]
 
     matched: list[str] = []
     for cand in category_candidates or ():

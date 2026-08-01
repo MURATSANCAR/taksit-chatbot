@@ -126,11 +126,14 @@ async def load_search_candidates_from_catalog(
     finance_index: Optional[FinanceOptionIndex] = None,
     institutions: Optional[InstitutionLabelResolver] = None,
     category_candidates: Optional[Sequence[Any]] = None,
+    alias_index: Any = None,
 ) -> tuple[SearchProductCandidate, ...]:
     from taksitlio.progressive_results.category_match import utterance_name_terms
 
     terms = utterance_name_terms(
-        utterance, category_candidates=category_candidates or ()
+        utterance,
+        category_candidates=category_candidates or (),
+        alias_index=alias_index,
     )
     if terms and hasattr(catalog, "list_products_matching"):
         products = await catalog.list_products_matching(

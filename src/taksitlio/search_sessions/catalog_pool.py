@@ -227,14 +227,39 @@ def apply_catalog_hints(
     brand_t = tuple(brands) if brands else orch.catalog.brands
     inst_t = tuple(institutions) if institutions else orch.catalog.institutions
     cats_t = cat_entities if categories else orch.catalog.categories
+    prev = orch.catalog
+    reuse_index = (
+        prev.alias_index is not None
+        and prev.categories is cats_t
+        and prev.merchants is merchant_t
+        and prev.brands is brand_t
+    )
+    # Identity reuse when refresh keeps same cached tuples; else rebuild.
+    if not reuse_index:
+        reuse_index = (
+            prev.alias_index is not None
+            and len(prev.categories) == len(cats_t)
+            and len(prev.merchants) == len(merchant_t)
+            and len(prev.brands) == len(brand_t)
+            and (not cats_t or prev.categories[0].entity_id == cats_t[0].entity_id)
+            and (
+                not cats_t
+                or prev.categories[-1].entity_id == cats_t[-1].entity_id
+            )
+        )
+    alias_index = (
+        prev.alias_index
+        if reuse_index
+        else build_alias_index(
+            categories=cats_t, merchants=merchant_t, brands=brand_t
+        )
+    )
     orch.catalog = CatalogHints(
         merchants=merchant_t,
         categories=cats_t,
         brands=brand_t,
         institutions=inst_t,
-        alias_index=build_alias_index(
-            categories=cats_t, merchants=merchant_t, brands=brand_t
-        ),
+        alias_index=alias_index,
     )
     if categories:
         orch.category_clarify_options = clarify_options_from_categories(list(categories))
@@ -282,6 +307,7 @@ async def refresh_orchestrator_from_catalog(
         _hints_cache["ts"] = now
         _hints_cache["categories"] = category_rows
         _hints_cache["merchants"] = merchant_cands
+        _hints_cache["alias_index"] = None
 
     pool_key = _pool_cache_key(utterance, limit)
     cached = _pool_cache.get(pool_key)
@@ -290,14 +316,15 @@ async def refresh_orchestrator_from_catalog(
         if logos is not None:
             orch.logo_resolver = logos  # type: ignore[attr-defined]
     else:
-        # Resolve name terms from live category synonyms before product fetch.
-        category_entities = tuple(category_to_entity(c) for c in category_rows)
         from taksitlio.query_understanding.alias_index import build_alias_index
 
-        term_index = build_alias_index(categories=category_entities)
-        # Prefer indexed terms inside load_search_candidates via category entities;
-        # stash index on a thin CatalogHints for reuse after apply_catalog_hints.
-        _ = term_index
+        category_entities = tuple(category_to_entity(c) for c in category_rows)
+        alias_index = _hints_cache.get("alias_index")
+        if (not hints_fresh) or alias_index is None:
+            alias_index = build_alias_index(
+                categories=category_entities, merchants=merchant_cands
+            )
+            _hints_cache["alias_index"] = alias_index
         cands = await load_search_candidates_from_catalog(
             catalog,
             utterance=utterance,
@@ -306,6 +333,7 @@ async def refresh_orchestrator_from_catalog(
             finance_index=finance_index,
             institutions=institutions,
             category_candidates=category_entities or orch.catalog.categories,
+            alias_index=alias_index,
         )
 
         if logos is not None:

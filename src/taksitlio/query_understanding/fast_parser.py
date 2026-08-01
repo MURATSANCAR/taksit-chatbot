@@ -607,7 +607,6 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
     normalized = normalize_turkish(text).value
     lower = turkish_lower(text)
     positive_text, neg_spans = _split_negation_clauses(text)
-    neg_norm = tuple(_nv_cached(ns) for ns in neg_spans)
 
     from taksitlio.query_understanding.alias_index import (
         build_alias_index,
