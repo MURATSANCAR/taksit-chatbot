@@ -172,17 +172,21 @@ def classify_one(
     if isinstance(trace, dict):
         ranking_ms = trace.get("ranking_span_ms")
         present = {s.get("name") for s in (trace.get("spans") or [])}
-        # Route-aware required chain: clarification/LLM may omit ranking/retrieve.
+        # Route-aware required chain: clarification/LLM/out-of-scope omit ranking.
         base = {
             "search.http",
             "search.authorization",
             "search.cohort.resolve",
             "search.session",
-            "query.parse",
-            "entity.resolve",
         }
-        if route in {None, "FAST", "DEGRADED"}:
+        if route == "OUT_OF_SCOPE":
+            pass
+        elif route in {"CLARIFICATION", "LLM"}:
+            base |= {"query.parse", "entity.resolve"}
+        else:
             base |= {
+                "query.parse",
+                "entity.resolve",
                 "product.retrieve",
                 "constraint.filter",
                 "ranking.score",
