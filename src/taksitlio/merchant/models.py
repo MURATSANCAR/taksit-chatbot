@@ -11,6 +11,8 @@ class MerchantActivationGate(str, Enum):
     READY = "READY"
     PARTIAL = "PARTIAL"
     BLOCKED = "BLOCKED"
+    DEGRADED = "DEGRADED"
+    DISABLED = "DISABLED"
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,66 @@
+{
+  "state_path_exists": true,
+  "log_path_exists": true,
+  "host_note": "populated when orchestrator runs on nanobase",
+  "state": {
+    "fails": {
+      "dr": {
+        "count": 2,
+        "cooldown_until": 1785567319.3216581,
+        "last_fail": "2026-08-01 09:25:19"
+      },
+      "n11": {
+        "count": 0,
+        "cooldown_until": 0,
+        "last_fail": "2026-08-01 08:55:03"
+      },
+      "decathlon": {
+        "count": 1,
+        "cooldown_until": 1785566369.7034168,
+        "last_fail": "2026-08-01 09:09:29"
+      }
+    },
+    "last_ingest_feed_total": 212723,
+    "round": 779,
+    "started": {}
+  },
+  "log_tail": [
+    "heartbeat total=210738/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=210738/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=210960/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211045/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211045/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211265/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211351/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211497/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211569/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211656/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211805/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211961/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=211963/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212170/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212259/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212414/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212481/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212574/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212723/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "signal 15 — graceful stop after current cycle",
+    "2026-08-01T15:51:05+03:00 starting auto_partner_ops",
+    "auto_partner_ops start total=212723/1000000 parallel=4 complete_only=True",
+    "DONE civil 61->462",
+    "DONE n11 14670->26375",
+    "START ingest merchants=flo",
+    "auto_partner_ops exit total=212723",
+    "heartbeat total=212723/1000000 running=[] ingest=True",
+    "signal 15 — graceful stop after current cycle",
+    "auto_partner_ops exit total=212723",
+    "2026-08-01T15:57:18+03:00 auto_partner_ops exited rc=0 — restart in 15s"
+  ],
+  "recent_heartbeats": [
+    "heartbeat total=212414/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212481/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212574/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212723/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+    "heartbeat total=212723/1000000 running=[] ingest=True"
+  ]
+}

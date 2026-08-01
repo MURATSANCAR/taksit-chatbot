@@ -1,0 +1,249 @@
+{
+  "captured_at": "2026-08-01T13:04:25.855272+00:00",
+  "gates": {
+    "LIVE_INGESTION_GATE": {
+      "status": "PASS",
+      "feed_received": 212723,
+      "db_persisted": 186458,
+      "pending": 26265
+    },
+    "AUTO_OPS_GATE": {
+      "status": "PASS",
+      "detail": {
+        "state_path_exists": true,
+        "log_path_exists": true,
+        "host_note": "populated when orchestrator runs on nanobase",
+        "state": {
+          "fails": {
+            "dr": {
+              "count": 2,
+              "cooldown_until": 1785567319.3216581,
+              "last_fail": "2026-08-01 09:25:19"
+            },
+            "n11": {
+              "count": 0,
+              "cooldown_until": 0,
+              "last_fail": "2026-08-01 08:55:03"
+            },
+            "decathlon": {
+              "count": 1,
+              "cooldown_until": 1785566369.7034168,
+              "last_fail": "2026-08-01 09:09:29"
+            }
+          },
+          "last_ingest_feed_total": 212723,
+          "round": 779,
+          "started": {}
+        },
+        "log_tail": [
+          "heartbeat total=210738/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=210738/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=210960/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211045/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211045/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211265/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211351/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211497/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211569/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211656/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211805/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211961/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=211963/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212170/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212259/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212414/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212481/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212574/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212723/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "signal 15 — graceful stop after current cycle",
+          "2026-08-01T15:51:05+03:00 starting auto_partner_ops",
+          "auto_partner_ops start total=212723/1000000 parallel=4 complete_only=True",
+          "DONE civil 61->462",
+          "DONE n11 14670->26375",
+          "START ingest merchants=flo",
+          "auto_partner_ops exit total=212723",
+          "heartbeat total=212723/1000000 running=[] ingest=True",
+          "signal 15 — graceful stop after current cycle",
+          "auto_partner_ops exit total=212723",
+          "2026-08-01T15:57:18+03:00 auto_partner_ops exited rc=0 — restart in 15s"
+        ],
+        "recent_heartbeats": [
+          "heartbeat total=212414/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212481/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212574/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212723/1000000 running=['civil', 'mediamarkt', 'n11', 'trendyol'] ingest=True",
+          "heartbeat total=212723/1000000 running=[] ingest=True"
+        ]
+      },
+      "assume_active": true
+    },
+    "DYNAMIC_TAXONOMY_GATE": {
+      "status": "PASS",
+      "schema_applied": false,
+      "candidates": 0,
+      "promoted": 0,
+      "note": "Unit safety + schema; no uncontrolled publish"
+    },
+    "DYNAMIC_BRAND_GATE": {
+      "status": "PASS",
+      "candidates": 0
+    },
+    "DYNAMIC_ATTRIBUTE_GATE": {
+      "status": "PASS",
+      "candidates": 0,
+      "numeric_safety": "unit_tested"
+    },
+    "ALIAS_LEARNING_GATE": {
+      "status": "PASS",
+      "single_observation_promote_forbidden": true,
+      "candidates": 0,
+      "promoted": 0
+    },
+    "LEARNING_SAFETY_GATE": {
+      "status": "PASS",
+      "pytest": {
+        "ran": true,
+        "passed": true,
+        "exit_code": 0,
+        "elapsed_ms": 1096.0,
+        "stdout_tail": "............                                                             [100%]\n12 passed in 0.51s\n",
+        "stderr_tail": "",
+        "suite": "tests/unit/continuous_learning/test_p2_live_safety.py"
+      }
+    },
+    "DRIFT_DETECTION_GATE": {
+      "status": "PASS",
+      "open_alarms": 0,
+      "unit_covered": true
+    },
+    "MEDIA_PIPELINE_GATE": {
+      "status": "PASS",
+      "media_ready": 156006,
+      "card_media_pct": 86.47,
+      "policy": "short/long edge via media_quality_policies seed"
+    },
+    "MERCHANT_READINESS_GATE": {
+      "status": "FAIL",
+      "status_counts": {
+        "READY": 0,
+        "PARTIAL": 6,
+        "BLOCKED": 9,
+        "DEGRADED": 0,
+        "DISABLED": 0
+      },
+      "searchable": 0
+    },
+    "RANKING_ADAPTATION_GATE": {
+      "status": "PASS",
+      "champion": {
+        "policy_code": "product_overall_value",
+        "version": 1
+      },
+      "challenger": {
+        "policy_code": "product_overall_value",
+        "version": 2,
+        "status": "SHADOW",
+        "promotion": "NOT_PROMOTED"
+      },
+      "promotion": "NOT_PROMOTED",
+      "shadow_only": true
+    },
+    "CONTINUOUS_GOLDEN_GATE": {
+      "status": "PARTIAL",
+      "core": {
+        "tests": 500,
+        "passed": 500,
+        "failed": 0,
+        "required_filter_leakage": 0,
+        "negative_filter_leakage": 0,
+        "wrong_merchant_leakage": 0,
+        "wrong_category_leakage": 0,
+        "snapshot_bound": true,
+        "reused_from": "recovery-p1",
+        "status": "PASS_REUSED_P1_EVIDENCE"
+      },
+      "rolling_reviewed": 0,
+      "note": "CORE reused from P1; ROLLING empty until reviewed cases added"
+    },
+    "REVISION_CONSISTENCY_GATE": {
+      "status": "PASS",
+      "unit_covered": true
+    },
+    "PERFORMANCE_GATE": {
+      "status": "PARTIAL",
+      "microbench": {
+        "candidate_set_size": 500,
+        "iterations": 40,
+        "p50_ms": 2.638,
+        "p95_ms": 2.691,
+        "p99_ms": 2.692,
+        "target_p95_ms": 50,
+        "pass": true,
+        "note": "Precomputed-feature path microbench on 500 candidates; not full-catalog sort",
+        "champion": {
+          "policy_code": "product_overall_value",
+          "version": 1
+        },
+        "challenger": {
+          "policy_code": "product_overall_value",
+          "version": 2,
+          "status": "SHADOW",
+          "promotion": "NOT_PROMOTED"
+        },
+        "shadow": {
+          "champion_version": 1,
+          "challenger_version": 2,
+          "champion_top": [
+            "p9",
+            "p19",
+            "p29",
+            "p39",
+            "p49",
+            "p8",
+            "p18",
+            "p28",
+            "p38",
+            "p48"
+          ],
+          "challenger_top": [
+            "p9",
+            "p19",
+            "p29",
+            "p39",
+            "p49",
+            "p8",
+            "p18",
+            "p28",
+            "p38",
+            "p48"
+          ],
+          "safety_floor_ok": true,
+          "safety_floor_reasons": [],
+          "mode": "SHADOW"
+        }
+      },
+      "p1_ranking_p95_ms": 105.3,
+      "ranking_p95_pass": false,
+      "note": "Microbench may pass on prefiltered candidates; READY requires full ranking path P95 < 50 ms (P1 measured ~105 ms)."
+    }
+  },
+  "decision": {
+    "decision": "RECOVERY_P2_LIVE_CONDITIONALLY_READY",
+    "blockers": [],
+    "criticals": [
+      "READY_MERCHANTS=0 (need >=3 for RECOVERY_P2_LIVE_READY)",
+      "GLOBAL_CATEGORY_COVERAGE=75.7% < 95%",
+      "RANKING_P95_TARGET not met on measured path or P1 residual",
+      "CONTINUOUS_GOLDEN incomplete (rolling not reviewed)"
+    ],
+    "ready_merchant_count": 0,
+    "system_definition": "Event-driven adaptive catalog and ranking system (controlled, versioned; not uncontrolled self-learning)"
+  },
+  "zero_tolerance": {
+    "static_merchant_mapping_in_new_code": 0,
+    "single_observation_alias_promotion": 0,
+    "uncontrolled_model_promotion": 0,
+    "cross_tenant_learning_leakage": 0,
+    "revision_mixing": 0
+  }
+}

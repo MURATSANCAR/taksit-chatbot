@@ -302,12 +302,12 @@ def start_backfill_if_idle() -> None:
 
 
 def maybe_rescore_and_rebuild(st: dict) -> None:
-    """After backfill waves, refresh READY flags + search projections."""
+    """After backfill waves, enforce integrity + refresh projections."""
     if not COMPLETE_ONLY:
         return
     if pgrep("backfill_product_images.py") or pgrep("complete_catalog_gaps.py"):
         return
-    if pgrep("rebuild_catalog_projections.py"):
+    if pgrep("enforce_catalog_integrity.py") or pgrep("rebuild_catalog_projections.py"):
         return
     last = float(st.get("last_rebuild_ts") or 0)
     if time.time() - last < 1800:
@@ -320,16 +320,15 @@ def maybe_rescore_and_rebuild(st: dict) -> None:
                 continue
             k, v = line.split("=", 1)
             env.setdefault(k.strip(), v.strip())
-    print("START rescore + projection rebuild", flush=True)
+    print("START enforce_catalog_integrity", flush=True)
     log = Path("/tmp/auto-complete-refresh.log")
     with log.open("a", encoding="utf-8") as fh:
-        fh.write(f"\n--- refresh {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
+        fh.write(f"\n--- enforce {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
         subprocess.Popen(
             [
-                "bash",
-                "-lc",
-                f"{PY_APP} -u scripts/complete_catalog_gaps.py --rescore && "
-                f"{PY_APP} -u scripts/rebuild_catalog_projections.py --allow-write --catalog-revision 1",
+                str(PY_APP),
+                "-u",
+                str(ROOT / "scripts" / "enforce_catalog_integrity.py"),
             ],
             cwd=str(ROOT),
             stdout=fh,
@@ -338,6 +337,41 @@ def maybe_rescore_and_rebuild(st: dict) -> None:
             start_new_session=True,
         )
     st["last_rebuild_ts"] = time.time()
+
+
+def maybe_run_learning_jobs(st: dict) -> None:
+    """P2-LIVE side jobs: feed metrics + readiness. Never auto-promotes."""
+    if pgrep("auto_ops_learning_jobs.py"):
+        return
+    last = float(st.get("last_learning_jobs_ts") or 0)
+    if time.time() - last < 600:
+        return
+    env_file = ROOT / ".env.runtime"
+    env = os.environ.copy()
+    if env_file.exists():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            env.setdefault(k.strip(), v.strip())
+    py = PY_APP if PY_APP.exists() else PY_CRAWL
+    log = Path("/tmp/auto-learning-jobs.log")
+    print("START auto_ops_learning_jobs", flush=True)
+    with log.open("a", encoding="utf-8") as fh:
+        fh.write(f"\n--- learning {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
+        subprocess.Popen(
+            [
+                str(py),
+                "-u",
+                str(ROOT / "scripts" / "auto_ops_learning_jobs.py"),
+            ],
+            cwd=str(ROOT),
+            stdout=fh,
+            stderr=subprocess.STDOUT,
+            env=env,
+            start_new_session=True,
+        )
+    st["last_learning_jobs_ts"] = time.time()
 
 
 def fill_crawl_slots(st: dict) -> None:
@@ -447,6 +481,9 @@ def main() -> None:
             if COMPLETE_ONLY or len(running_crawl_codes()) >= MAX_PARALLEL_CRAWLS or not ingest_running():
                 start_backfill_if_idle()
             maybe_rescore_and_rebuild(st)
+            # P2-LIVE: feed metrics + readiness snapshots (no uncontrolled promotion)
+            if int(st.get("round") or 0) % 10 == 0:
+                maybe_run_learning_jobs(st)
             st["round"] = int(st.get("round") or 0) + 1
             if st["round"] % 6 == 0:
                 print(

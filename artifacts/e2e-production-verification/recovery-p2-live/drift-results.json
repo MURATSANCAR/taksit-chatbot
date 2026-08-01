@@ -1,0 +1,5 @@
+{
+  "open_alarms": 0,
+  "detector_unit_tests_passed": true,
+  "action_on_critical": "freeze_new_mappings + preserve_validated"
+}

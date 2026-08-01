@@ -1,0 +1,18 @@
+{
+  "core_source": "artifacts/e2e-production-verification/recovery-p1/production-retrieval-results.json",
+  "core_ran_this_sprint": false,
+  "rolling_cases_reviewed": 0,
+  "note": "Expected values are never auto-generated; rolling requires human review",
+  "core_evidence": {
+    "tests": 500,
+    "passed": 500,
+    "failed": 0,
+    "required_filter_leakage": 0,
+    "negative_filter_leakage": 0,
+    "wrong_merchant_leakage": 0,
+    "wrong_category_leakage": 0,
+    "snapshot_bound": true,
+    "reused_from": "recovery-p1",
+    "status": "PASS_REUSED_P1_EVIDENCE"
+  }
+}

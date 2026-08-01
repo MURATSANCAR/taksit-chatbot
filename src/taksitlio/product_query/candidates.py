@@ -45,11 +45,16 @@ async def product_to_search_candidate(
         return None
     if offer is None:
         return None
+    # Hard integrity: never surface products without CDN-ready image or category.
+    if product.category_id is None:
+        return None
 
     has_image = (
         product.primary_media_status == "READY"
         and bool(product.primary_cdn_url)
     )
+    if not has_image:
+        return None
     relevance = _token_overlap(utterance, product.display_name)
     brand_model = None
     brand_name = None

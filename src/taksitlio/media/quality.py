@@ -1,4 +1,8 @@
-"""Primary image quality policy (ADR-010 §39)."""
+"""Primary image quality policy (ADR-010 §39).
+
+Prefer versioned MediaEdgeRules from media_quality_policies (P2-LIVE).
+Legacy MediaQualityPolicy remains for backward-compatible callers.
+"""
 
 from __future__ import annotations
 
@@ -8,12 +12,16 @@ from typing import Any, Mapping, Optional
 
 @dataclass(frozen=True)
 class MediaQualityPolicy:
+    # Legacy square-ish defaults — prefer policy store short/long edge rules.
     min_width: int = 600
     min_height: int = 600
     preferred_width: int = 1000
     aspect_min: float = 0.75
     aspect_max: float = 1.33
     max_bytes: int = 15 * 1024 * 1024
+    # P2-LIVE optional edge overrides (when set, square is not required)
+    min_short_edge: Optional[int] = None
+    min_long_edge: Optional[int] = None
 
 
 @dataclass(frozen=True)
@@ -50,8 +58,17 @@ def evaluate_image_quality(
     size_ok = 0 < file_size <= pol.max_bytes
     w = width or 0
     h = height or 0
-    min_w = decode_ok and w >= pol.min_width
-    min_h = decode_ok and h >= pol.min_height
+    short_e = min(w, h) if w and h else 0
+    long_e = max(w, h) if w and h else 0
+    if pol.min_short_edge is not None or pol.min_long_edge is not None:
+        # Event-driven adaptive media policy: short/long edge, not forced square.
+        min_short = pol.min_short_edge if pol.min_short_edge is not None else pol.min_width
+        min_long = pol.min_long_edge if pol.min_long_edge is not None else pol.min_height
+        min_w = decode_ok and short_e >= min_short
+        min_h = decode_ok and long_e >= min_long
+    else:
+        min_w = decode_ok and w >= pol.min_width
+        min_h = decode_ok and h >= pol.min_height
     pref_w = decode_ok and w >= pol.preferred_width
     aspect_ok = False
     aspect = None
@@ -79,7 +96,14 @@ def evaluate_image_quality(
         decode_ok=decode_ok,
         size_ok=size_ok,
         quality_score=round(score, 4),
-        detail={"width": width, "height": height, "aspect": aspect, "file_size": file_size},
+        detail={
+            "width": width,
+            "height": height,
+            "short_edge": short_e,
+            "long_edge": long_e,
+            "aspect": aspect,
+            "file_size": file_size,
+        },
     )
 
 

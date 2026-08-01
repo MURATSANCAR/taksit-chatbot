@@ -20,12 +20,17 @@ LIVE = Path(os.environ.get("LIVE_FEED_DIR", str(ROOT / "crawler" / "feeds" / "li
 
 
 async def ensure_merchant(conn, *, code: str, name: str) -> int:
+    # Never overwrite a real ops display_name with the opaque merchant_code.
     row = await conn.fetchrow(
         """
         INSERT INTO merchants (merchant_code, display_name, status)
         VALUES ($1, $2, 'ACTIVE')
         ON CONFLICT (merchant_code) DO UPDATE
-          SET display_name = EXCLUDED.display_name,
+          SET display_name = CASE
+                WHEN EXCLUDED.display_name = EXCLUDED.merchant_code
+                  THEN merchants.display_name
+                ELSE EXCLUDED.display_name
+              END,
               status = 'ACTIVE',
               updated_at = NOW()
         RETURNING id
@@ -39,6 +44,28 @@ async def ensure_merchant(conn, *, code: str, name: str) -> int:
             "SELECT id FROM merchants WHERE merchant_code=$1", code
         )
     return int(row["id"])
+
+
+def _load_merchant_ops_registry() -> dict[str, tuple[str, str]]:
+    """source_code → (merchant_code, display_name) from ops YAML (ADR-010)."""
+    reg_path = ROOT / "crawler" / "ops" / "verified-partners-public.yaml"
+    if not reg_path.is_file():
+        return {}
+    try:
+        import yaml
+    except ImportError:
+        return {}
+    data = yaml.safe_load(reg_path.read_text(encoding="utf-8")) or {}
+    out: dict[str, tuple[str, str]] = {}
+    for row in data.get("merchants_verified_public") or []:
+        code = str(row.get("merchant_code") or "").strip()
+        name = str(row.get("display_name") or "").strip()
+        if not code or not name:
+            continue
+        source = str(row.get("source_code") or "").strip() or f"src-{code}"
+        out[source] = (code, name)
+        out[code] = (code, name)
+    return out
 
 
 async def ensure_institution(conn, *, code: str, name: str) -> int:
@@ -214,12 +241,7 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
     )
 
     # Opaque codes → display names from ops registry (not app hardcode maps).
-    name_by_code = {
-        "src-m-vatan": ("m-vatan", "Vatan Bilgisayar"),
-        "src-m-mediamarkt": ("m-mediamarkt", "MediaMarkt"),
-        "src-m-koctas": ("m-koctas", "Koçtaş"),
-        "src-m-dr": ("m-dr", "D&R"),
-    }
+    name_by_code = _load_merchant_ops_registry()
     reports = []
     catalog = PostgresProductCatalogRepository(pool)
     only = {
@@ -254,9 +276,9 @@ async def ingest_products(pool) -> list[dict[str, Any]]:
                 continue
             meta = name_by_code.get(path.stem)
             if meta is None:
-                # Derive opaque code from stem: src-m-foo -> m-foo
+                # Opaque code only — keep existing DB display_name (do not clobber).
                 code = path.stem.replace("src-", "", 1)
-                meta = (code, code)
+                meta = name_by_code.get(code) or (code, code)
             code, name = meta
             # Skip empty product feeds (blocked/unparseable sites)
             raw = json.loads(path.read_text(encoding="utf-8"))

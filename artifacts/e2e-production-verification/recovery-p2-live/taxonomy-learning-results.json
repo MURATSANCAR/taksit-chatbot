@@ -1,0 +1,8 @@
+{
+  "candidates": 0,
+  "promoted": 0,
+  "rejected": 0,
+  "schema_applied": false,
+  "safety_tests_passed": true,
+  "production_behavior": "candidates_only_until_gate"
+}

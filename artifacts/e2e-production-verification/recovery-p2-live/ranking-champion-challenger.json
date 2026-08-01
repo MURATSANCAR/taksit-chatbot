@@ -1,0 +1,45 @@
+{
+  "champion": {
+    "policy_code": "product_overall_value",
+    "version": 1
+  },
+  "challenger": {
+    "policy_code": "product_overall_value",
+    "version": 2,
+    "status": "SHADOW",
+    "promotion": "NOT_PROMOTED"
+  },
+  "shadow": {
+    "champion_version": 1,
+    "challenger_version": 2,
+    "champion_top": [
+      "p9",
+      "p19",
+      "p29",
+      "p39",
+      "p49",
+      "p8",
+      "p18",
+      "p28",
+      "p38",
+      "p48"
+    ],
+    "challenger_top": [
+      "p9",
+      "p19",
+      "p29",
+      "p39",
+      "p49",
+      "p8",
+      "p18",
+      "p28",
+      "p38",
+      "p48"
+    ],
+    "safety_floor_ok": true,
+    "safety_floor_reasons": [],
+    "mode": "SHADOW"
+  },
+  "promotion_result": "NOT_PROMOTED",
+  "honest_label": "shadow_comparison_only"
+}

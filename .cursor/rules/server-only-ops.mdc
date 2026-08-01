@@ -21,7 +21,14 @@ This project’s **runtime, crawls, feeds, ingest, media, and verification** run
 - Run **fast unit tests** that need no live DB/Redis/external crawl (if the user asks).
 - Read-only `git` / code search.
 
-## Autonomous ops (no user wait)
+## Catalog integrity (hard)
+
+Chatbot must **never** surface a product that lacks:
+- CDN-ready primary image (`primary_media_status=READY` + `primary_cdn_url`)
+- Linked `category_id`
+
+Incomplete rows are **QUARANTINED** (`scripts/enforce_catalog_integrity.py`). Do not invent images or categories.
+
 
 Crawl/ingest/backfill must **continue automatically** on nanobase even after errors. Do not pause for user confirmation mid-pipeline.
 

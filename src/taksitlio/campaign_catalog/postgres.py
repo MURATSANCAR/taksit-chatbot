@@ -51,12 +51,19 @@ async def ensure_institution(conn: Any, *, code: str, name: str) -> int:
 
 
 async def ensure_merchant(conn: Any, *, code: str, name: str) -> int:
+    # Preserve ops-provided display names; campaign feeds may only know codes.
     row = await conn.fetchrow(
         """
         INSERT INTO merchants (merchant_code, display_name, status)
         VALUES ($1, $2, 'ACTIVE')
         ON CONFLICT (merchant_code) DO UPDATE
-          SET display_name = EXCLUDED.display_name,
+          SET display_name = CASE
+                WHEN merchants.display_name IS DISTINCT FROM merchants.merchant_code
+                  THEN merchants.display_name
+                WHEN EXCLUDED.display_name = EXCLUDED.merchant_code
+                  THEN merchants.display_name
+                ELSE EXCLUDED.display_name
+              END,
               status = 'ACTIVE',
               updated_at = NOW()
         RETURNING id

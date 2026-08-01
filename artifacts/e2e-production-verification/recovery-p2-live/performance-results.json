@@ -1,0 +1,64 @@
+{
+  "ranking_microbench": {
+    "candidate_set_size": 500,
+    "iterations": 40,
+    "p50_ms": 2.638,
+    "p95_ms": 2.691,
+    "p99_ms": 2.692,
+    "target_p95_ms": 50,
+    "pass": true,
+    "note": "Precomputed-feature path microbench on 500 candidates; not full-catalog sort",
+    "champion": {
+      "policy_code": "product_overall_value",
+      "version": 1
+    },
+    "challenger": {
+      "policy_code": "product_overall_value",
+      "version": 2,
+      "status": "SHADOW",
+      "promotion": "NOT_PROMOTED"
+    },
+    "shadow": {
+      "champion_version": 1,
+      "challenger_version": 2,
+      "champion_top": [
+        "p9",
+        "p19",
+        "p29",
+        "p39",
+        "p49",
+        "p8",
+        "p18",
+        "p28",
+        "p38",
+        "p48"
+      ],
+      "challenger_top": [
+        "p9",
+        "p19",
+        "p29",
+        "p39",
+        "p49",
+        "p8",
+        "p18",
+        "p28",
+        "p38",
+        "p48"
+      ],
+      "safety_floor_ok": true,
+      "safety_floor_reasons": [],
+      "mode": "SHADOW"
+    }
+  },
+  "targets": {
+    "entity_resolution_p95_ms": 50,
+    "product_retrieval_p95_ms": 150,
+    "finance_projection_p95_ms": 100,
+    "ranking_p95_ms": 50,
+    "combined_backend_p95_ms": 500,
+    "fast_first_card_p95_ms": 500
+  },
+  "p1_reference": {
+    "ranking_p95_ms": 105.3
+  }
+}

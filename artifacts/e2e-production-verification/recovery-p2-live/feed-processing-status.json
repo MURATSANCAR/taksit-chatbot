@@ -1,0 +1,27 @@
+{
+  "metrics": {
+    "feed_received_count": 212723,
+    "feed_deduplicated_count": null,
+    "feed_processed_count": 186458,
+    "feed_rejected_count": null,
+    "feed_quarantined_count": null,
+    "feed_pending_count": 26265,
+    "feed_failed_count": null,
+    "feed_retry_count": null,
+    "feed_processing_lag_seconds": null,
+    "db_persisted": 186458,
+    "projection_ready": 186458,
+    "media_ready": 156006,
+    "finance_ready": 27293,
+    "search_ready": 0
+  },
+  "revisions": {
+    "catalog_revision": "2026-08-01 13:03:16.087765+00:00",
+    "feed_revision": "feed_total=212723",
+    "offer_revision": "offers=186458",
+    "media_revision": "media_ready=156006",
+    "finance_revision": "finance_opts=27293",
+    "ranking_policy_version": "champion_seed=product_overall_value:v1 (pending V029)"
+  },
+  "note": "Dedup/reject/quarantine counters require V029 feed_processing_metrics population by Auto Ops; pending approximated as feed_total - db_active"
+}

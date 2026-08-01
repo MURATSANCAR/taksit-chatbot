@@ -1,0 +1,14 @@
+{
+  "champion": {
+    "policy_code": "product_overall_value",
+    "version": 1
+  },
+  "weights_source": "ranking_policy_versions (seed) / RankingWeights",
+  "precomputed_projection": "product_ranking_feature_projection (V029)",
+  "microbench": {
+    "p50_ms": 2.638,
+    "p95_ms": 2.691,
+    "p99_ms": 2.692
+  },
+  "p1_path_p95_ms": 105.3
+}
