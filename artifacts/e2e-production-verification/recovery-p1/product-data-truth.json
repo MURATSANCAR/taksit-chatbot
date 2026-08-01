@@ -1,0 +1,2019 @@
+{
+  "scanned": 5000,
+  "status_counts": {
+    "PARTIAL": 3438,
+    "READY": 1562
+  },
+  "samples": [
+    {
+      "product_id": 1,
+      "offer_id": 1,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 3,
+      "offer_id": 2,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 4,
+      "offer_id": 3,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 5,
+      "offer_id": 4,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 6,
+      "offer_id": 5,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 7,
+      "offer_id": 6,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "MISSING",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 8,
+      "offer_id": 7,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 9,
+      "offer_id": 8,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 10,
+      "offer_id": 9,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 11,
+      "offer_id": 10,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 12,
+      "offer_id": 11,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 13,
+      "offer_id": 12,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 14,
+      "offer_id": 13,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 15,
+      "offer_id": 14,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 16,
+      "offer_id": 15,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 17,
+      "offer_id": 16,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 18,
+      "offer_id": 17,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 19,
+      "offer_id": 18,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 20,
+      "offer_id": 19,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 21,
+      "offer_id": 20,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 22,
+      "offer_id": 21,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 23,
+      "offer_id": 22,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 24,
+      "offer_id": 23,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 25,
+      "offer_id": 24,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 26,
+      "offer_id": 25,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 27,
+      "offer_id": 26,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 28,
+      "offer_id": 27,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 29,
+      "offer_id": 28,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 30,
+      "offer_id": 29,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 31,
+      "offer_id": 30,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 32,
+      "offer_id": 31,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 33,
+      "offer_id": 32,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 34,
+      "offer_id": 33,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 35,
+      "offer_id": 34,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 36,
+      "offer_id": 35,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 37,
+      "offer_id": 36,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 38,
+      "offer_id": 37,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 39,
+      "offer_id": 38,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 40,
+      "offer_id": 39,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 41,
+      "offer_id": 40,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 42,
+      "offer_id": 41,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 43,
+      "offer_id": 42,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 44,
+      "offer_id": 43,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 45,
+      "offer_id": 44,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 46,
+      "offer_id": 45,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 47,
+      "offer_id": 46,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 48,
+      "offer_id": 47,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 49,
+      "offer_id": 48,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 50,
+      "offer_id": 49,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 51,
+      "offer_id": 50,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 52,
+      "offer_id": 51,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 53,
+      "offer_id": 52,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 54,
+      "offer_id": 53,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 55,
+      "offer_id": 54,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 56,
+      "offer_id": 55,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 57,
+      "offer_id": 56,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 58,
+      "offer_id": 57,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 59,
+      "offer_id": 58,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 60,
+      "offer_id": 59,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 61,
+      "offer_id": 60,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 62,
+      "offer_id": 61,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 63,
+      "offer_id": 62,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 64,
+      "offer_id": 63,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 65,
+      "offer_id": 64,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 66,
+      "offer_id": 65,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 67,
+      "offer_id": 66,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 68,
+      "offer_id": 67,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 69,
+      "offer_id": 68,
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "RESOLVED_HIGH_CONFIDENCE",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 70,
+      "offer_id": 69,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 70,
+      "offer_id": 69,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 71,
+      "offer_id": 70,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 71,
+      "offer_id": 70,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 72,
+      "offer_id": 71,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 73,
+      "offer_id": 72,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 73,
+      "offer_id": 72,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 74,
+      "offer_id": 73,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 74,
+      "offer_id": 73,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 75,
+      "offer_id": 74,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 75,
+      "offer_id": 74,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 76,
+      "offer_id": 75,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 76,
+      "offer_id": 75,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 77,
+      "offer_id": 76,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 77,
+      "offer_id": 76,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 78,
+      "offer_id": 77,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 78,
+      "offer_id": 77,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 79,
+      "offer_id": 78,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 79,
+      "offer_id": 78,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 80,
+      "offer_id": 79,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 80,
+      "offer_id": 79,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 81,
+      "offer_id": 80,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 81,
+      "offer_id": 80,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "PARTIAL",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "MISSING",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 82,
+      "offer_id": 81,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 82,
+      "offer_id": 81,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 83,
+      "offer_id": 82,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 83,
+      "offer_id": 82,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 84,
+      "offer_id": 83,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 85,
+      "offer_id": 84,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 85,
+      "offer_id": 84,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 86,
+      "offer_id": 85,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    },
+    {
+      "product_id": 86,
+      "offer_id": 85,
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "status": "READY",
+      "fields": {
+        "product_id": "VERIFIED",
+        "offer_id": "VERIFIED",
+        "merchant_id": "VERIFIED",
+        "internal_category": "RESOLVED_HIGH_CONFIDENCE",
+        "brand": "MISSING",
+        "product_title": "VERIFIED",
+        "current_price": "SOURCE_PROVIDED",
+        "currency": "SOURCE_PROVIDED",
+        "stock_status": "SOURCE_PROVIDED",
+        "primary_image": "VERIFIED",
+        "product_url": "SOURCE_PROVIDED"
+      }
+    }
+  ],
+  "ready_definition": [
+    "valid product id",
+    "active merchant",
+    "active offer",
+    "positive price",
+    "valid currency",
+    "valid product URL",
+    "resolved category",
+    "accessible primary image"
+  ]
+}

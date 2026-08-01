@@ -1,0 +1,1410 @@
+{
+  "applied": 0,
+  "method_counts": {
+    "existing_relation": 150,
+    "unresolved": 50
+  },
+  "sample": [
+    {
+      "product_id": 1,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 3,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 4,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 5,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 6,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 7,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 8,
+      "brand_id": 795,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=795"
+    },
+    {
+      "product_id": 9,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 10,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 11,
+      "brand_id": 795,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=795"
+    },
+    {
+      "product_id": 12,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 13,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 14,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 15,
+      "brand_id": 795,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=795"
+    },
+    {
+      "product_id": 16,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 17,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 18,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 19,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 20,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 21,
+      "brand_id": 795,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=795"
+    },
+    {
+      "product_id": 22,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 23,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 24,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 25,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 26,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 27,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 28,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 29,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 30,
+      "brand_id": 384,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=384"
+    },
+    {
+      "product_id": 31,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 32,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 33,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 34,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 35,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 36,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 37,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 38,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 39,
+      "brand_id": 9240,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9240"
+    },
+    {
+      "product_id": 40,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 41,
+      "brand_id": 94,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=94"
+    },
+    {
+      "product_id": 42,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 43,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 44,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 45,
+      "brand_id": 94,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=94"
+    },
+    {
+      "product_id": 46,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 47,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 48,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 49,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 50,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 51,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 52,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 53,
+      "brand_id": 94,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=94"
+    },
+    {
+      "product_id": 54,
+      "brand_id": 9240,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9240"
+    },
+    {
+      "product_id": 55,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 56,
+      "brand_id": 94,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=94"
+    },
+    {
+      "product_id": 57,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 58,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 59,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 60,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 61,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 62,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 63,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 64,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 65,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 66,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 67,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 68,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 69,
+      "brand_id": 94,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=94"
+    },
+    {
+      "product_id": 70,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 71,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 72,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 73,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 74,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 75,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 76,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 77,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 78,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 79,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 80,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 81,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 82,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 83,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 84,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 85,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 86,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 87,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 88,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 89,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 90,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 91,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 92,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 93,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 94,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 95,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 96,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 97,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 98,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 99,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 100,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 101,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 102,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 103,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 104,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 105,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 106,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 249,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 250,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 251,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 252,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 253,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 254,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 255,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 256,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 266,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 325,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 326,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 327,
+      "brand_id": 418,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=418"
+    },
+    {
+      "product_id": 328,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 329,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 330,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 331,
+      "brand_id": 418,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=418"
+    },
+    {
+      "product_id": 332,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 333,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 334,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 335,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 336,
+      "brand_id": 418,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=418"
+    },
+    {
+      "product_id": 337,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 338,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 339,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 340,
+      "brand_id": 418,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=418"
+    },
+    {
+      "product_id": 341,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 342,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 343,
+      "brand_id": 418,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=418"
+    },
+    {
+      "product_id": 344,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 345,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 346,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 347,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 348,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 349,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 350,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 351,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 352,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 353,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 354,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 355,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 356,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 357,
+      "brand_id": 399,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=399"
+    },
+    {
+      "product_id": 358,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 359,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 360,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 361,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 362,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 363,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 364,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 365,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 366,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 367,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 368,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 369,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 370,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 371,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 372,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 373,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 374,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 375,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 376,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 377,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 378,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 379,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 380,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 381,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 382,
+      "brand_id": 9668,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9668"
+    },
+    {
+      "product_id": 383,
+      "brand_id": 8899,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=8899"
+    },
+    {
+      "product_id": 384,
+      "brand_id": 8899,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=8899"
+    },
+    {
+      "product_id": 385,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 386,
+      "brand_id": 8899,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=8899"
+    },
+    {
+      "product_id": 387,
+      "brand_id": 105,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=105"
+    },
+    {
+      "product_id": 388,
+      "brand_id": 105,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=105"
+    },
+    {
+      "product_id": 389,
+      "brand_id": 1191,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=1191"
+    },
+    {
+      "product_id": 390,
+      "brand_id": 401,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=401"
+    },
+    {
+      "product_id": 391,
+      "brand_id": 9651,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=9651"
+    },
+    {
+      "product_id": 392,
+      "brand_id": 8899,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=8899"
+    },
+    {
+      "product_id": 393,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 394,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 395,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 396,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 397,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 398,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 399,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 400,
+      "brand_id": null,
+      "source_method": "unresolved",
+      "confidence": "LOW",
+      "evidence_span": ""
+    },
+    {
+      "product_id": 401,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 402,
+      "brand_id": 381,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=381"
+    },
+    {
+      "product_id": 403,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 404,
+      "brand_id": 122,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=122"
+    },
+    {
+      "product_id": 405,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 406,
+      "brand_id": 398,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=398"
+    },
+    {
+      "product_id": 407,
+      "brand_id": 384,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=384"
+    },
+    {
+      "product_id": 408,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    },
+    {
+      "product_id": 409,
+      "brand_id": 397,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=397"
+    },
+    {
+      "product_id": 410,
+      "brand_id": 382,
+      "source_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence_span": "products.brand_id=382"
+    }
+  ],
+  "brand_coverage_pct": 90.01
+}

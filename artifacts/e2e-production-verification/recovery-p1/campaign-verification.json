@@ -1,0 +1,144 @@
+{
+  "campaigns": [
+    {
+      "campaign_id": 6,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "merchant_ids": [
+        40
+      ],
+      "merchant_codes": [
+        "m-evofone"
+      ],
+      "category_ids": [],
+      "brand_ids": [],
+      "product_ids": [],
+      "minimum_amount": null,
+      "maximum_amount": 250000.0,
+      "allowed_terms": [
+        3
+      ],
+      "fees": null,
+      "valid_from": null,
+      "valid_until": null,
+      "channel": "public_table",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "source_captured_at": "2026-08-01T06:43:01.624220+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "verified_by": "recovery_p1_source_file_probe",
+      "verified_at": "2026-08-01T06:43:01.624257+00:00"
+    },
+    {
+      "campaign_id": 2,
+      "institution_id": 2,
+      "financial_product_id": null,
+      "merchant_ids": [],
+      "merchant_codes": [],
+      "category_ids": [],
+      "brand_ids": [],
+      "product_ids": [],
+      "minimum_amount": null,
+      "maximum_amount": null,
+      "allowed_terms": [],
+      "fees": null,
+      "valid_from": null,
+      "valid_until": null,
+      "channel": "public_table",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "source_captured_at": "2026-08-01T06:43:01.626525+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "verified_by": "recovery_p1_source_file_probe",
+      "verified_at": "2026-08-01T06:43:01.626541+00:00"
+    },
+    {
+      "campaign_id": 17,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "merchant_ids": [
+        11
+      ],
+      "merchant_codes": [
+        "m-teknosa"
+      ],
+      "category_ids": [],
+      "brand_ids": [],
+      "product_ids": [],
+      "minimum_amount": 500.0,
+      "maximum_amount": null,
+      "allowed_terms": [
+        3,
+        6,
+        10,
+        12
+      ],
+      "fees": null,
+      "valid_from": null,
+      "valid_until": null,
+      "channel": "public_table",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "source_captured_at": "2026-08-01T06:43:01.628201+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "verified_by": "recovery_p1_source_file_probe",
+      "verified_at": "2026-08-01T06:43:01.628210+00:00"
+    },
+    {
+      "campaign_id": 1,
+      "institution_id": 1,
+      "financial_product_id": 1,
+      "merchant_ids": [
+        8
+      ],
+      "merchant_codes": [
+        "m-mediamarkt"
+      ],
+      "category_ids": [],
+      "brand_ids": [],
+      "product_ids": [],
+      "minimum_amount": null,
+      "maximum_amount": null,
+      "allowed_terms": [
+        9
+      ],
+      "fees": null,
+      "valid_from": null,
+      "valid_until": null,
+      "channel": "public_table",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-isbank.json",
+      "source_captured_at": "2026-08-01T06:43:01.630029+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "verified_by": "recovery_p1_source_file_probe",
+      "verified_at": "2026-08-01T06:43:01.630041+00:00"
+    },
+    {
+      "campaign_id": 7,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "merchant_ids": [
+        20
+      ],
+      "merchant_codes": [
+        "m-trendyol"
+      ],
+      "category_ids": [],
+      "brand_ids": [],
+      "product_ids": [],
+      "minimum_amount": null,
+      "maximum_amount": 250000.0,
+      "allowed_terms": [
+        3
+      ],
+      "fees": null,
+      "valid_from": null,
+      "valid_until": null,
+      "channel": "public_table",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "source_captured_at": "2026-08-01T06:43:01.631776+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "verified_by": "recovery_p1_source_file_probe",
+      "verified_at": "2026-08-01T06:43:01.631785+00:00"
+    }
+  ],
+  "status_counts": {
+    "SOURCE_PROVIDED": 5
+  }
+}

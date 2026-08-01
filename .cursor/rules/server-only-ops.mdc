@@ -21,14 +21,17 @@ This project’s **runtime, crawls, feeds, ingest, media, and verification** run
 - Run **fast unit tests** that need no live DB/Redis/external crawl (if the user asks).
 - Read-only `git` / code search.
 
-## When starting crawls or catalog work
+## Autonomous ops (no user wait)
+
+Crawl/ingest/backfill must **continue automatically** on nanobase even after errors. Do not pause for user confirmation mid-pipeline.
 
 ```bash
-# ✅ GOOD — server
-ssh nanobase 'cd /data/nanobaseai/taksitlio-chatbot && nohup .venv-crawl/bin/python -u scripts/supervise_partner_crawls.py > /tmp/supervise-partners.log 2>&1 &'
+# ✅ GOOD — immortal watchdog (restarts itself + skips failed merchants)
+ssh nanobase 'cd /data/nanobaseai/taksitlio-chatbot && nohup bash scripts/run_auto_partner_ops.sh > /tmp/auto-partner-ops.wrapper.log 2>&1 &'
 
 # ❌ BAD — Mac local
 .venv-crawl/bin/python -u scripts/fetch_live_merchant_feeds.py --merchants flo ...
 ```
 
-If work was accidentally started on Mac: **stop it**, sync needed artifacts to nanobase if any, continue only on the server.
+Logs: `/tmp/auto-partner-ops.log`, `/tmp/taksitlio-partner-crawls/`, `/tmp/auto-ingest.log`.  
+If work was accidentally started on Mac: **stop it**, sync artifacts to nanobase, continue only on the server.

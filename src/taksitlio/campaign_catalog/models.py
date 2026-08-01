@@ -28,7 +28,10 @@ class CampaignStatus(str, Enum):
 
 class VerificationStatus(str, Enum):
     UNVERIFIED = "UNVERIFIED"
+    SOURCE_PROVIDED = "SOURCE_PROVIDED"
     VERIFIED = "VERIFIED"
+    CONFLICTED = "CONFLICTED"
+    EXPIRED = "EXPIRED"
     REJECTED = "REJECTED"
 
 

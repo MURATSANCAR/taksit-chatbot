@@ -1,0 +1,30 @@
+{
+  "snapshot_id": "0501c2fc156eaadf",
+  "snapshot_created_at": "2026-08-01T05:54:01.413193+00:00",
+  "catalog_revision": "2026-07-31 23:39:30.847091+00:00",
+  "offer_revision": "offers=125770",
+  "media_revision": "2026-08-01 05:53:41.263123+00:00",
+  "finance_revision": "agreements=4,finance_opts=27293",
+  "campaign_revision": "campaigns_active=4",
+  "rate_revision": "rate_snapshots=7",
+  "staging_database": "taksitlio_recovery_p1",
+  "source_database": "taksitlio",
+  "active_products": 125771,
+  "pii_tables_truncated": [
+    "search_sessions",
+    "search_session_events",
+    "search_session_results",
+    "search_session_clarifications",
+    "llm_understanding_jobs",
+    "llm_job_events",
+    "feedback_result_snapshots",
+    "chat_messages",
+    "chat_sessions",
+    "user_applications"
+  ],
+  "ids_preserved": true,
+  "migration_applied": [
+    "V028"
+  ],
+  "staging_dsn_template": "postgresql://USER:PASS@HOST:PORT/taksitlio_recovery_p1"
+}

@@ -6,7 +6,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional
 
-from taksitlio.campaign_catalog.models import CampaignStatus, FinanceCampaignRecord
+from taksitlio.campaign_catalog.models import (
+    CampaignStatus,
+    FinanceCampaignRecord,
+    VerificationStatus,
+)
 
 
 @dataclass(frozen=True)
@@ -33,6 +37,14 @@ def evaluate_campaign_eligibility(
 
     if campaign.status is not CampaignStatus.ACTIVE:
         reasons.append("campaign_not_active")
+    # Recovery-P1: UNVERIFIED campaigns must not be shown as active offers.
+    if campaign.verification_status in {
+        VerificationStatus.UNVERIFIED,
+        VerificationStatus.CONFLICTED,
+        VerificationStatus.EXPIRED,
+        VerificationStatus.REJECTED,
+    }:
+        reasons.append(f"campaign_verification_{campaign.verification_status.value.lower()}")
     if not campaign.agreement_active:
         reasons.append("merchant_agreement_inactive")
 

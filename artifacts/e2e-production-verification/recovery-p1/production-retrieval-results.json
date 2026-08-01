@@ -1,0 +1,16 @@
+{
+  "total": 500,
+  "passed": 500,
+  "failed": 0,
+  "required_filter_leakage": 0,
+  "negative_filter_leakage": 0,
+  "wrong_merchant_leakage": 0,
+  "wrong_category_leakage": 0,
+  "invalid_offer_leakage": 0,
+  "latency_ms": {
+    "p50": 8.233,
+    "p95": 363.056,
+    "p99": 789.29
+  },
+  "failures_sample": []
+}

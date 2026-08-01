@@ -1,0 +1,63 @@
+{
+  "agreements": [
+    {
+      "agreement_id": 3,
+      "merchant": "m-evofone",
+      "institution": "fi-fibabanka",
+      "financial_product_id": 3,
+      "channel": "public_table",
+      "minimum_amount": null,
+      "maximum_amount": null,
+      "allowed_term": null,
+      "valid_from": null,
+      "valid_until": null,
+      "source": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED"
+    },
+    {
+      "agreement_id": 1,
+      "merchant": "m-mediamarkt",
+      "institution": "fi-isbank",
+      "financial_product_id": 1,
+      "channel": "public_table",
+      "minimum_amount": null,
+      "maximum_amount": null,
+      "allowed_term": null,
+      "valid_from": null,
+      "valid_until": null,
+      "source": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-isbank.json",
+      "verification_status": "SOURCE_PROVIDED"
+    },
+    {
+      "agreement_id": 5,
+      "merchant": "m-teknosa",
+      "institution": "fi-fibabanka",
+      "financial_product_id": 3,
+      "channel": "public_table",
+      "minimum_amount": null,
+      "maximum_amount": null,
+      "allowed_term": null,
+      "valid_from": null,
+      "valid_until": null,
+      "source": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED"
+    },
+    {
+      "agreement_id": 4,
+      "merchant": "m-trendyol",
+      "institution": "fi-fibabanka",
+      "financial_product_id": 3,
+      "channel": "public_table",
+      "minimum_amount": null,
+      "maximum_amount": null,
+      "allowed_term": null,
+      "valid_from": null,
+      "valid_until": null,
+      "source": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED"
+    }
+  ],
+  "status_counts": {
+    "SOURCE_PROVIDED": 4
+  }
+}

@@ -9,6 +9,7 @@ from taksitlio.campaign_catalog import (
     CampaignStatus,
     CampaignType,
     FinanceCampaignRecord,
+    VerificationStatus,
     evaluate_campaign_eligibility,
 )
 
@@ -20,6 +21,7 @@ def _campaign(**kwargs) -> FinanceCampaignRecord:
         display_name="Example Campaign",
         campaign_type=CampaignType.INSTALLMENT,
         status=CampaignStatus.ACTIVE,
+        verification_status=VerificationStatus.SOURCE_PROVIDED,
         agreement_active=True,
         eligible_merchant_codes=("m1",),
         eligible_terms=(6, 9, 12),
@@ -34,6 +36,15 @@ def test_eligible_happy_path() -> None:
         CampaignEligibilityInput(merchant_code="m1", purchase_amount=10000, term_months=12),
     )
     assert result.eligible is True
+
+
+def test_unverified_campaign_rejected() -> None:
+    result = evaluate_campaign_eligibility(
+        _campaign(verification_status=VerificationStatus.UNVERIFIED),
+        CampaignEligibilityInput(merchant_code="m1", purchase_amount=10000, term_months=12),
+    )
+    assert result.eligible is False
+    assert "campaign_verification_unverified" in result.reasons
 
 
 def test_expired_campaign_rejected() -> None:

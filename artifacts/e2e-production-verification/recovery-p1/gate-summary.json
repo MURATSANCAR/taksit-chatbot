@@ -1,0 +1,128 @@
+{
+  "decision": "RECOVERY_P1_CONDITIONALLY_READY",
+  "gates": {
+    "PRODUCTION_SNAPSHOT_GATE": "PASS",
+    "PRODUCT_CATEGORY_COVERAGE_GATE": "PASS",
+    "PRODUCT_BRAND_COVERAGE_GATE": "PASS",
+    "PRODUCT_ATTRIBUTE_COVERAGE_GATE": "PARTIAL",
+    "IMAGE_HTTP_VALIDATION_GATE": "PASS",
+    "PRODUCTION_RETRIEVAL_GOLDEN_GATE": "PASS",
+    "FINANCE_AGREEMENT_VERIFICATION_GATE": "PASS",
+    "CAMPAIGN_VERIFICATION_GATE": "PASS",
+    "RATE_VERIFICATION_GATE": "PASS",
+    "PAYMENT_PLAN_PERSISTENCE_GATE": "PASS",
+    "PAYMENT_RECONCILIATION_GATE": "PASS",
+    "PRODUCT_FINANCE_PROJECTION_GATE": "PASS",
+    "RECOMMENDATION_INTEGRITY_GATE": "PASS",
+    "RETRIEVAL_PERFORMANCE_GATE": "PASS"
+  },
+  "blockers": [],
+  "criticals": [
+    {
+      "code": "PERFORMANCE_WARNING",
+      "summary": "ranking P95=105.26ms exceeds 50ms target"
+    },
+    {
+      "code": "SOURCE_DATA_ERROR",
+      "summary": "Searchable scope covers only 57/125771 products (0.05%); global category 77.42%. Most merchants remain release-blocked.",
+      "scoped_in_merchants": [
+        {
+          "merchant_code": "m-hepsiburada",
+          "products": 57,
+          "with_category": 57,
+          "category_pct": 100.0
+        }
+      ],
+      "scoped_out_blocked_merchants": [
+        {
+          "merchant_code": "m-flo",
+          "products": 104482,
+          "with_category": 89403,
+          "category_pct": 85.57
+        },
+        {
+          "merchant_code": "m-teknosa",
+          "products": 7450,
+          "with_category": 1755,
+          "category_pct": 23.56
+        },
+        {
+          "merchant_code": "m-network",
+          "products": 6490,
+          "with_category": 4246,
+          "category_pct": 65.42
+        },
+        {
+          "merchant_code": "m-arcelik",
+          "products": 1244,
+          "with_category": 49,
+          "category_pct": 3.94
+        },
+        {
+          "merchant_code": "m-beko",
+          "products": 1163,
+          "with_category": 69,
+          "category_pct": 5.93
+        },
+        {
+          "merchant_code": "m-trendyol",
+          "products": 1007,
+          "with_category": 403,
+          "category_pct": 40.02
+        },
+        {
+          "merchant_code": "m-vatan",
+          "products": 1003,
+          "with_category": 402,
+          "category_pct": 40.08
+        },
+        {
+          "merchant_code": "m-mediamarkt",
+          "products": 892,
+          "with_category": 571,
+          "category_pct": 64.01
+        },
+        {
+          "merchant_code": "m-n11",
+          "products": 850,
+          "with_category": 299,
+          "category_pct": 35.18
+        },
+        {
+          "merchant_code": "m-dr",
+          "products": 750,
+          "with_category": 24,
+          "category_pct": 3.2
+        },
+        {
+          "merchant_code": "m-vivense",
+          "products": 130,
+          "with_category": 66,
+          "category_pct": 50.77
+        },
+        {
+          "merchant_code": "m-evofone",
+          "products": 130,
+          "with_category": 23,
+          "category_pct": 17.69
+        },
+        {
+          "merchant_code": "m-koctas",
+          "products": 115,
+          "with_category": 3,
+          "category_pct": 2.61
+        },
+        {
+          "merchant_code": "m-civil",
+          "products": 8,
+          "with_category": 5,
+          "category_pct": 62.5
+        }
+      ]
+    }
+  ],
+  "snapshot_id": "0501c2fc156eaadf",
+  "generated_at": "2026-08-01T06:43:43.039404+00:00",
+  "decision_note": "Category gate PASS only on merchant-scoped subset (>=95% within merchant). Global category coverage remains below 95%; READY deferred.",
+  "amended_at": "2026-08-01T06:56:35.978651+00:00"
+}

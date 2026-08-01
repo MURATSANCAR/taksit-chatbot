@@ -1,0 +1,10 @@
+{
+  "stats": {
+    "candidates": 27293,
+    "persisted": 27293,
+    "unavailable": 0,
+    "reconciliation_failed": 0,
+    "errors": 0
+  },
+  "payment_plans": 27293
+}

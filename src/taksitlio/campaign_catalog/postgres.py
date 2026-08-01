@@ -417,6 +417,7 @@ async def load_term_option_inputs_for_merchant(
         FROM finance_campaigns c
         JOIN financial_institutions i ON i.id = c.institution_id
         WHERE c.status = 'ACTIVE'
+          AND c.verification_status IN ('VERIFIED', 'SOURCE_PROVIDED')
           AND (
             NOT EXISTS (
               SELECT 1 FROM campaign_merchants cm WHERE cm.campaign_id = c.id

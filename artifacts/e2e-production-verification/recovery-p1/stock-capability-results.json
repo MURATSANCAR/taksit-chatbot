@@ -1,0 +1,154 @@
+{
+  "merchants": [
+    {
+      "merchant_code": "m-flo",
+      "offers": 104481,
+      "known_stock": 104199,
+      "unknown_stock": 282,
+      "known_stock_pct": 99.73,
+      "capability": "supports_stock_snapshot",
+      "gate_target_met": true,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-teknosa",
+      "offers": 7450,
+      "known_stock": 0,
+      "unknown_stock": 7450,
+      "known_stock_pct": 0.0,
+      "capability": "stock_not_provided",
+      "gate_target_met": true,
+      "best_product_label_eligible": false
+    },
+    {
+      "merchant_code": "m-network",
+      "offers": 6490,
+      "known_stock": 6486,
+      "unknown_stock": 4,
+      "known_stock_pct": 99.94,
+      "capability": "supports_stock_snapshot",
+      "gate_target_met": true,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-arcelik",
+      "offers": 1244,
+      "known_stock": 293,
+      "unknown_stock": 951,
+      "known_stock_pct": 23.55,
+      "capability": "partial_stock_source",
+      "gate_target_met": false,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-beko",
+      "offers": 1163,
+      "known_stock": 262,
+      "unknown_stock": 901,
+      "known_stock_pct": 22.53,
+      "capability": "partial_stock_source",
+      "gate_target_met": false,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-trendyol",
+      "offers": 1007,
+      "known_stock": 646,
+      "unknown_stock": 361,
+      "known_stock_pct": 64.15,
+      "capability": "partial_stock_source",
+      "gate_target_met": false,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-vatan",
+      "offers": 1003,
+      "known_stock": 0,
+      "unknown_stock": 1003,
+      "known_stock_pct": 0.0,
+      "capability": "stock_not_provided",
+      "gate_target_met": true,
+      "best_product_label_eligible": false
+    },
+    {
+      "merchant_code": "m-mediamarkt",
+      "offers": 892,
+      "known_stock": 0,
+      "unknown_stock": 892,
+      "known_stock_pct": 0.0,
+      "capability": "stock_not_provided",
+      "gate_target_met": true,
+      "best_product_label_eligible": false
+    },
+    {
+      "merchant_code": "m-n11",
+      "offers": 850,
+      "known_stock": 167,
+      "unknown_stock": 683,
+      "known_stock_pct": 19.65,
+      "capability": "stock_not_provided",
+      "gate_target_met": true,
+      "best_product_label_eligible": false
+    },
+    {
+      "merchant_code": "m-dr",
+      "offers": 750,
+      "known_stock": 345,
+      "unknown_stock": 405,
+      "known_stock_pct": 46.0,
+      "capability": "partial_stock_source",
+      "gate_target_met": false,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-vivense",
+      "offers": 130,
+      "known_stock": 130,
+      "unknown_stock": 0,
+      "known_stock_pct": 100.0,
+      "capability": "supports_stock_snapshot",
+      "gate_target_met": true,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-evofone",
+      "offers": 130,
+      "known_stock": 0,
+      "unknown_stock": 130,
+      "known_stock_pct": 0.0,
+      "capability": "stock_not_provided",
+      "gate_target_met": true,
+      "best_product_label_eligible": false
+    },
+    {
+      "merchant_code": "m-koctas",
+      "offers": 115,
+      "known_stock": 0,
+      "unknown_stock": 115,
+      "known_stock_pct": 0.0,
+      "capability": "stock_not_provided",
+      "gate_target_met": true,
+      "best_product_label_eligible": false
+    },
+    {
+      "merchant_code": "m-hepsiburada",
+      "offers": 57,
+      "known_stock": 57,
+      "unknown_stock": 0,
+      "known_stock_pct": 100.0,
+      "capability": "supports_stock_snapshot",
+      "gate_target_met": true,
+      "best_product_label_eligible": true
+    },
+    {
+      "merchant_code": "m-civil",
+      "offers": 8,
+      "known_stock": 8,
+      "unknown_stock": 0,
+      "known_stock_pct": 100.0,
+      "capability": "supports_stock_snapshot",
+      "gate_target_met": true,
+      "best_product_label_eligible": true
+    }
+  ]
+}

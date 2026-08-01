@@ -1,0 +1,175 @@
+{
+  "rates": [
+    {
+      "rate_snapshot_id": 7,
+      "financial_product_id": 3,
+      "campaign_id": 17,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        10,
+        10
+      ],
+      "rate": 0.0399,
+      "rate_type": "INTEREST",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.670304+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    },
+    {
+      "rate_snapshot_id": 8,
+      "financial_product_id": 3,
+      "campaign_id": 17,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        12,
+        12
+      ],
+      "rate": 0.0399,
+      "rate_type": "INTEREST",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.671353+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    },
+    {
+      "rate_snapshot_id": 2,
+      "financial_product_id": 1,
+      "campaign_id": 1,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        9,
+        9
+      ],
+      "rate": 0.0,
+      "rate_type": "ZERO_RATE",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.467558+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-isbank.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    },
+    {
+      "rate_snapshot_id": 3,
+      "financial_product_id": 3,
+      "campaign_id": 6,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        3,
+        3
+      ],
+      "rate": 0.0,
+      "rate_type": "ZERO_RATE",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.656322+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    },
+    {
+      "rate_snapshot_id": 4,
+      "financial_product_id": 3,
+      "campaign_id": 7,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        3,
+        3
+      ],
+      "rate": 0.0099,
+      "rate_type": "INTEREST",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.662163+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    },
+    {
+      "rate_snapshot_id": 5,
+      "financial_product_id": 3,
+      "campaign_id": 17,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        3,
+        3
+      ],
+      "rate": 0.0399,
+      "rate_type": "INTEREST",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.668000+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    },
+    {
+      "rate_snapshot_id": 6,
+      "financial_product_id": 3,
+      "campaign_id": 17,
+      "merchant_id": null,
+      "category_id": null,
+      "amount_range": [
+        null,
+        null
+      ],
+      "term_range": [
+        6,
+        6
+      ],
+      "rate": 0.0399,
+      "rate_type": "INTEREST",
+      "fee": null,
+      "valid_from": null,
+      "valid_until": null,
+      "captured_at": "2026-07-31 22:04:21.669190+00:00",
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "verification_status": "SOURCE_PROVIDED",
+      "freshness_status": "FRESH"
+    }
+  ],
+  "status_counts": {
+    "SOURCE_PROVIDED": 7
+  }
+}

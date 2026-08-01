@@ -1,0 +1,1719 @@
+{
+  "taxonomy_seed": {
+    "seeded_or_upserted": 3,
+    "synonym_merges": 1
+  },
+  "global_category_pct": 77.42,
+  "searchable_scoped_category_pct": 100.0,
+  "scoped_in_merchants": [
+    {
+      "merchant_code": "m-hepsiburada",
+      "products": 57,
+      "with_category": 57,
+      "category_pct": 100.0
+    }
+  ],
+  "scoped_out_blocked_merchants": [
+    {
+      "merchant_code": "m-flo",
+      "products": 104482,
+      "with_category": 89403,
+      "category_pct": 85.57
+    },
+    {
+      "merchant_code": "m-teknosa",
+      "products": 7450,
+      "with_category": 1755,
+      "category_pct": 23.56
+    },
+    {
+      "merchant_code": "m-network",
+      "products": 6490,
+      "with_category": 4246,
+      "category_pct": 65.42
+    },
+    {
+      "merchant_code": "m-arcelik",
+      "products": 1244,
+      "with_category": 49,
+      "category_pct": 3.94
+    },
+    {
+      "merchant_code": "m-beko",
+      "products": 1163,
+      "with_category": 69,
+      "category_pct": 5.93
+    },
+    {
+      "merchant_code": "m-trendyol",
+      "products": 1007,
+      "with_category": 403,
+      "category_pct": 40.02
+    },
+    {
+      "merchant_code": "m-vatan",
+      "products": 1003,
+      "with_category": 402,
+      "category_pct": 40.08
+    },
+    {
+      "merchant_code": "m-mediamarkt",
+      "products": 892,
+      "with_category": 571,
+      "category_pct": 64.01
+    },
+    {
+      "merchant_code": "m-n11",
+      "products": 850,
+      "with_category": 299,
+      "category_pct": 35.18
+    },
+    {
+      "merchant_code": "m-dr",
+      "products": 750,
+      "with_category": 24,
+      "category_pct": 3.2
+    },
+    {
+      "merchant_code": "m-vivense",
+      "products": 130,
+      "with_category": 66,
+      "category_pct": 50.77
+    },
+    {
+      "merchant_code": "m-evofone",
+      "products": 130,
+      "with_category": 23,
+      "category_pct": 17.69
+    },
+    {
+      "merchant_code": "m-koctas",
+      "products": 115,
+      "with_category": 3,
+      "category_pct": 2.61
+    },
+    {
+      "merchant_code": "m-civil",
+      "products": 8,
+      "with_category": 5,
+      "category_pct": 62.5
+    }
+  ],
+  "products_scanned": 125771,
+  "category_high_confidence_applied": 4557,
+  "brand_high_confidence_applied": 0,
+  "attribute_resolutions_persisted": 581,
+  "low_confidence_category": 28396,
+  "blocked_no_category": 28396,
+  "searchable_category_coverage_pct": 77.42,
+  "category_results_sample": [
+    {
+      "product_id": 1,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 3,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 4,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 5,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 6,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 7,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 8,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 9,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 10,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 11,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 12,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 13,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 14,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 15,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 16,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 17,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 18,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 19,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 20,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 21,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 22,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 23,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 24,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 25,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 26,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 27,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 28,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 29,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 30,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 31,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 32,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 33,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 34,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 35,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 36,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 37,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 38,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 39,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 40,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 41,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 42,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 43,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 44,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 45,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 46,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 47,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 48,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 49,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 50,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 51,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 52,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 53,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 54,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 55,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 56,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 57,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 58,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 59,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 60,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 61,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 62,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 63,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 64,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 65,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 66,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 67,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 68,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 69,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 70,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 71,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 72,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 73,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 74,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 75,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 76,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 77,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 78,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 79,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 80,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 81,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 82,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 83,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 84,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 85,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 86,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 87,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 88,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 89,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 90,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 91,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 92,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 93,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 94,
+      "source_category": null,
+      "resolved_category_id": 1,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=1"
+    },
+    {
+      "product_id": 95,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 96,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 97,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 98,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 99,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 100,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 101,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 102,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 103,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 104,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 105,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 106,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 249,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 250,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 251,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 252,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 253,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 254,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 255,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 256,
+      "source_category": null,
+      "resolved_category_id": 2,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=2"
+    },
+    {
+      "product_id": 266,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 325,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 326,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 327,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 328,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 329,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 330,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 331,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 332,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 333,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 334,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 335,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 336,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 337,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 338,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 339,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 340,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 341,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 342,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 343,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 344,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 345,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 346,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 347,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 348,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 349,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 350,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 351,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 352,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 353,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 354,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 355,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 356,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 357,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 358,
+      "source_category": null,
+      "resolved_category_id": 3,
+      "resolution_method": "existing_relation",
+      "confidence": "HIGH",
+      "evidence": "products.category_id=3"
+    },
+    {
+      "product_id": 359,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 360,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 361,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 362,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 363,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 364,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 365,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 366,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 367,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 368,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 369,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 370,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 371,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 372,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 373,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 374,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 375,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 376,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 377,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 378,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 379,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 380,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 381,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 382,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 383,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 384,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 385,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 386,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 387,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 388,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 389,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 390,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 391,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 392,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 393,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 394,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 395,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 396,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 397,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 398,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 399,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 400,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 401,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 402,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 403,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 404,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 405,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 406,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 407,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 408,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 409,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    },
+    {
+      "product_id": 410,
+      "source_category": null,
+      "resolved_category_id": null,
+      "resolution_method": "unresolved",
+      "confidence": "LOW",
+      "evidence": "no_high_confidence_match"
+    }
+  ],
+  "category_method_counts": {
+    "unresolved": 91,
+    "existing_relation": 109
+  },
+  "brand_method_counts": {
+    "existing_relation": 150,
+    "unresolved": 50
+  }
+}

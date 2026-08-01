@@ -1,0 +1,14 @@
+{
+  "groups": 1,
+  "wrong_best_product_label": 0,
+  "cheapest_accuracy": 1.0,
+  "lowest_monthly_accuracy": 1.0,
+  "lowest_total_accuracy": 1.0,
+  "sample": [
+    {
+      "category_id": 1,
+      "label": "Kriterlerinize en yakın seçenek",
+      "candidates": 0
+    }
+  ]
+}

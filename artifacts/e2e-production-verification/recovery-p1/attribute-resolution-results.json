@@ -1,0 +1,2007 @@
+{
+  "persisted": 581,
+  "attribute_coverage_pct": 91.28,
+  "sample": [
+    {
+      "product_id": 39,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 54,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 359,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 359,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 360,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 360,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 361,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 362,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 362,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 363,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 363,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 364,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 364,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 365,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 365,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 366,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 366,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 367,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 367,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 368,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 368,
+      "attribute_key": "screen_inch",
+      "normalized_value": "50",
+      "unit": null,
+      "raw_value": "50",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 369,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 369,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 370,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 370,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 371,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 371,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 372,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 372,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 373,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 373,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 374,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 374,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 375,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 375,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 376,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 376,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 377,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 377,
+      "attribute_key": "screen_inch",
+      "normalized_value": "50",
+      "unit": null,
+      "raw_value": "50",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 378,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 378,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 379,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 379,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 380,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 380,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 381,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 381,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 382,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 382,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 383,
+      "attribute_key": "brand",
+      "normalized_value": "Onvo",
+      "unit": null,
+      "raw_value": "Onvo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 383,
+      "attribute_key": "screen_inch",
+      "normalized_value": "32",
+      "unit": null,
+      "raw_value": "32",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 384,
+      "attribute_key": "brand",
+      "normalized_value": "Onvo",
+      "unit": null,
+      "raw_value": "Onvo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 384,
+      "attribute_key": "screen_inch",
+      "normalized_value": "43",
+      "unit": null,
+      "raw_value": "43",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 385,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 385,
+      "attribute_key": "screen_inch",
+      "normalized_value": "50",
+      "unit": null,
+      "raw_value": "50",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 386,
+      "attribute_key": "brand",
+      "normalized_value": "Onvo",
+      "unit": null,
+      "raw_value": "Onvo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 386,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 387,
+      "attribute_key": "brand",
+      "normalized_value": "Philips",
+      "unit": null,
+      "raw_value": "Philips",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 387,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 388,
+      "attribute_key": "brand",
+      "normalized_value": "Philips",
+      "unit": null,
+      "raw_value": "Philips",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 388,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 389,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 389,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 390,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 390,
+      "attribute_key": "screen_inch",
+      "normalized_value": "50",
+      "unit": null,
+      "raw_value": "50",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 391,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 391,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 392,
+      "attribute_key": "brand",
+      "normalized_value": "Onvo",
+      "unit": null,
+      "raw_value": "Onvo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 731,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 740,
+      "attribute_key": "brand",
+      "normalized_value": "Bilicra",
+      "unit": null,
+      "raw_value": "Bilicra",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 744,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 757,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 772,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 776,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 785,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 788,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 789,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 790,
+      "attribute_key": "brand",
+      "normalized_value": "General Mobile",
+      "unit": null,
+      "raw_value": "General Mobile",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 792,
+      "attribute_key": "brand",
+      "normalized_value": "General Mobile",
+      "unit": null,
+      "raw_value": "General Mobile",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 796,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 799,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 811,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 820,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 826,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 827,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 834,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 853,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 861,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 867,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 875,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 882,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 911,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 921,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 937,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 942,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 945,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 947,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 949,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 957,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 961,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 962,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 963,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 965,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 968,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 971,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 973,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 974,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 976,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 977,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 978,
+      "attribute_key": "brand",
+      "normalized_value": "Omix",
+      "unit": null,
+      "raw_value": "Omix",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 985,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 986,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 987,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 989,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1007,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1013,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1014,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1016,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1027,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1028,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1029,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1036,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1037,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1038,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1045,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1046,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1047,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1048,
+      "attribute_key": "brand",
+      "normalized_value": "Oppo",
+      "unit": null,
+      "raw_value": "Oppo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1049,
+      "attribute_key": "brand",
+      "normalized_value": "Huawei",
+      "unit": null,
+      "raw_value": "Huawei",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1055,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1056,
+      "attribute_key": "brand",
+      "normalized_value": "Apple",
+      "unit": null,
+      "raw_value": "Apple",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1106,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1106,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1132,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1132,
+      "attribute_key": "screen_inch",
+      "normalized_value": "43",
+      "unit": null,
+      "raw_value": "43",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1133,
+      "attribute_key": "brand",
+      "normalized_value": "Onvo",
+      "unit": null,
+      "raw_value": "Onvo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1133,
+      "attribute_key": "screen_inch",
+      "normalized_value": "32",
+      "unit": null,
+      "raw_value": "32",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1134,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1134,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1135,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1135,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1136,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1136,
+      "attribute_key": "screen_inch",
+      "normalized_value": "32",
+      "unit": null,
+      "raw_value": "32",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1137,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1137,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1138,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1138,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1139,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1139,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1140,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1140,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1141,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1141,
+      "attribute_key": "screen_inch",
+      "normalized_value": "40",
+      "unit": null,
+      "raw_value": "40",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1142,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1142,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1143,
+      "attribute_key": "brand",
+      "normalized_value": "Onvo",
+      "unit": null,
+      "raw_value": "Onvo",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1143,
+      "attribute_key": "screen_inch",
+      "normalized_value": "40",
+      "unit": null,
+      "raw_value": "40",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1144,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1144,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1145,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1145,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1146,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1146,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1147,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1147,
+      "attribute_key": "screen_inch",
+      "normalized_value": "27",
+      "unit": null,
+      "raw_value": "27",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1148,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1148,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1149,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1149,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1150,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1150,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1151,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1151,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1152,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1152,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1153,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1153,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1154,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1154,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1155,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1155,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1157,
+      "attribute_key": "brand",
+      "normalized_value": "Philips",
+      "unit": null,
+      "raw_value": "Philips",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1157,
+      "attribute_key": "screen_inch",
+      "normalized_value": "43",
+      "unit": null,
+      "raw_value": "43",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1158,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1158,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1159,
+      "attribute_key": "brand",
+      "normalized_value": "Philips",
+      "unit": null,
+      "raw_value": "Philips",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1159,
+      "attribute_key": "screen_inch",
+      "normalized_value": "65",
+      "unit": null,
+      "raw_value": "65",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1160,
+      "attribute_key": "brand",
+      "normalized_value": "Samsung",
+      "unit": null,
+      "raw_value": "Samsung",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1160,
+      "attribute_key": "screen_inch",
+      "normalized_value": "98",
+      "unit": null,
+      "raw_value": "98",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1161,
+      "attribute_key": "brand",
+      "normalized_value": "Tcl",
+      "unit": null,
+      "raw_value": "Tcl",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1161,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1162,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1162,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1163,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1163,
+      "attribute_key": "screen_inch",
+      "normalized_value": "75",
+      "unit": null,
+      "raw_value": "75",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1164,
+      "attribute_key": "brand",
+      "normalized_value": "Lg",
+      "unit": null,
+      "raw_value": "Lg",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1164,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1165,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    },
+    {
+      "product_id": 1165,
+      "attribute_key": "screen_inch",
+      "normalized_value": "55",
+      "unit": null,
+      "raw_value": "55",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.screen_inch"
+    },
+    {
+      "product_id": 1166,
+      "attribute_key": "brand",
+      "normalized_value": "Grundig",
+      "unit": null,
+      "raw_value": "Grundig",
+      "source": "structured_source_specs",
+      "confidence": "HIGH",
+      "evidence": "attributes.brand"
+    }
+  ],
+  "note": "Global coverage informational; critical attrs are pattern/structured HIGH only"
+}
