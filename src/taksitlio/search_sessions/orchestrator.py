@@ -586,9 +586,12 @@ class SearchOrchestrator:
         )
         self.repo.set_status(session_id, SearchSessionStatus.FAST_PARSING)
         # Re-run gap analysis on updated parse without re-parsing raw text
+        state = merge_parse_into_state(self.states[session_id], parse.to_dict())
+        self.states[session_id] = state
+        parse = hydrate_parse_from_state(parse, state)
+        self.parses[session_id] = parse
         gaps = detect_gaps(parse, category_candidates=self.category_clarify_options)
-        merge_parse_into_state(self.states[session_id], parse.to_dict())
-        chips = chips_from_state(self.states[session_id])
+        chips = chips_from_state(state)
         policy = self.repo.policy
 
         if gaps.confidence_band == "HIGH" or parse.confidence >= 0.90:
