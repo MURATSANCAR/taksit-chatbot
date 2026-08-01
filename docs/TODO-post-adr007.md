@@ -184,7 +184,8 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [x] Real trainer `training/train_lora.py` + CPU smoke config (`lora_fast_need_profile.cpu.yaml`)
 - [x] Nanobase: `var/lora-venv` (torch CPU + peft) + SFT export 120 rows
 - [x] CPU smoke LoRA complete → adapter under `training/exports/lora-out-cpu-smoke`
-- [ ] Optional 9B HF LoRA (`lora_fast_need_profile.9b.cpu.yaml`) — multi-day CPU; GGUF inference ayrı kalır
+- [x] Optional 9B HF LoRA v2 overnight (`lora_fast_need_profile.9b.cpu.yaml`) — train OK; HR100 REJECT (pos recall≈0.27)
+- [ ] 9B LoRA v3 constraint-aligned SFT (`need_profile_sft.v3` + `lora_fast_need_profile.9b.v3.cpu.yaml`) — hard-neg/DRAFT upsample; HR val held out
 - [x] Runbook: `docs/runbooks/ADR-009-fast-lora-scaffold.md`
 - [x] Unit tests
 - [ ] ADR-009 HR100 after adapter deploy (no quality claim until then)
