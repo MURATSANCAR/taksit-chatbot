@@ -38,6 +38,9 @@ async def product_to_search_candidate(
     merchants: Optional[MerchantDirectory] = None,
     finance_index: Optional[FinanceOptionIndex] = None,
     institutions: Optional[InstitutionLabelResolver] = None,
+    finance_rows: Optional[Sequence[Any]] = None,
+    merchant_display_name: Optional[str] = None,
+    merchant_logo_cdn_url: Optional[str] = None,
 ) -> Optional[SearchProductCandidate]:
     if product.status in {"QUARANTINED", "REJECTED", "DRAFT"}:
         return None
@@ -66,9 +69,12 @@ async def product_to_search_candidate(
     if brand_name or model:
         brand_model = " / ".join(str(x) for x in (brand_name, model) if x)
 
-    merchant_name = await resolve_merchant_display_name(product.merchant_id, merchants)
-    merchant_logo = None
-    if merchants is not None:
+    if merchant_display_name is not None:
+        merchant_name = merchant_display_name
+    else:
+        merchant_name = await resolve_merchant_display_name(product.merchant_id, merchants)
+    merchant_logo = merchant_logo_cdn_url
+    if merchant_logo is None and merchants is not None:
         get_logo = getattr(merchants, "get_logo_cdn_url", None)
         if callable(get_logo):
             merchant_logo = await get_logo(product.merchant_id)
@@ -100,8 +106,10 @@ async def product_to_search_candidate(
         price_snapshot_id=f"offer:{offer.id}",
         stock_snapshot_id=f"offer:{offer.id}:stock",
     )
-    if finance_index is not None:
+    rows = finance_rows
+    if rows is None and finance_index is not None:
         rows = await finance_index.list_for_product(str(product.id))
+    if rows:
         candidate = enrich_candidate_with_finance(
             candidate, rows, institutions=institutions
         )
@@ -144,6 +152,32 @@ async def load_search_candidates_from_catalog(
             if offer is not None:
                 offers[product.id] = offer
 
+    finance_by_pid: dict[str, Sequence[Any]] = {}
+    if finance_index is not None and products:
+        batch_fin = getattr(finance_index, "list_for_products", None)
+        if callable(batch_fin):
+            finance_by_pid = await batch_fin([str(p.id) for p in products])
+        else:
+            for product in products:
+                finance_by_pid[str(product.id)] = await finance_index.list_for_product(
+                    str(product.id)
+                )
+
+    merchant_names: dict[int, str] = {}
+    merchant_logos: dict[int, Optional[str]] = {}
+    if merchants is not None and products:
+        unique_mids = {int(p.merchant_id) for p in products}
+        for mid in unique_mids:
+            merchant_names[mid] = await resolve_merchant_display_name(mid, merchants)
+            get_logo = getattr(merchants, "get_logo_cdn_url", None)
+            if callable(get_logo):
+                merchant_logos[mid] = await get_logo(mid)
+            else:
+                entry = await merchants.get(mid)
+                merchant_logos[mid] = (
+                    getattr(entry, "logo_cdn_url", None) if entry else None
+                )
+
     out: list[SearchProductCandidate] = []
     for product in products:
         cand = await product_to_search_candidate(
@@ -151,8 +185,11 @@ async def load_search_candidates_from_catalog(
             offers.get(product.id),
             utterance=utterance,
             merchants=merchants,
-            finance_index=finance_index,
+            finance_index=None,
             institutions=institutions,
+            finance_rows=finance_by_pid.get(str(product.id)),
+            merchant_display_name=merchant_names.get(int(product.merchant_id)),
+            merchant_logo_cdn_url=merchant_logos.get(int(product.merchant_id)),
         )
         if cand is not None:
             out.append(cand)

@@ -6,6 +6,8 @@ never from hardcoded demo electronics lists.
 
 from __future__ import annotations
 
+import time
+from copy import deepcopy
 from typing import Any, Optional, Protocol, Sequence
 
 from taksitlio.category.matcher import Category
@@ -18,6 +20,20 @@ from taksitlio.product_query.finance_index import FinanceOptionIndex, Institutio
 from taksitlio.progressive_results.category_match import legacy_family_includes
 from taksitlio.query_understanding import CatalogHints
 from taksitlio.search_sessions.orchestrator import SearchOrchestrator
+
+# Process-local hydrate caches (single API worker). Short TTLs keep catalog fresh.
+_HINTS_TTL_S = 120.0
+_POOL_TTL_S = 45.0
+_hints_cache: dict[str, Any] = {"ts": 0.0, "categories": None, "merchants": None}
+_pool_cache: dict[str, tuple[float, list[dict[str, Any]]]] = {}
+_POOL_CACHE_MAX = 64
+
+
+def _pool_cache_key(utterance: str, limit: int) -> str:
+    from taksitlio.semantic_matching.turkish_normalize import turkish_lower
+
+    folded = " ".join((turkish_lower(utterance or "") or "").split())
+    return f"{limit}|{folded[:160]}"
 
 
 class CategoryListSource(Protocol):
@@ -232,48 +248,72 @@ async def refresh_orchestrator_from_catalog(
 ) -> int:
     """Load product pool + entity hints from production catalog sources."""
 
+    now = time.monotonic()
     category_rows: list[Category] = []
-    if categories is not None:
-        category_rows = list(await categories.list_active())
-
-    # Resolve name terms from live category synonyms before product fetch.
-    category_entities = tuple(category_to_entity(c) for c in category_rows)
-    cands = await load_search_candidates_from_catalog(
-        catalog,
-        utterance=utterance,
-        limit=limit,
-        merchants=merchants,
-        finance_index=finance_index,
-        institutions=institutions,
-        category_candidates=category_entities or orch.catalog.categories,
-    )
-
-    if logos is not None:
-        orch.logo_resolver = logos  # type: ignore[attr-defined]
-
-    if cands:
-        pool = [candidate_to_pool_dict(c) for c in cands]
-        if logos is not None:
-            for row in pool:
-                if not row.get("merchant_logo_cdn_url"):
-                    row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
-        orch.product_pool = pool
-    else:
-        # Production: empty catalog → empty pool (no synthetic demo products).
-        orch.product_pool = []
-
     merchant_cands: list[EntityCandidate] = []
-    if merchants is not None:
-        for m in await merchants.list_active(limit=200):
-            merchant_cands.append(
-                EntityCandidate(
-                    entity_id=str(m.id),
-                    display_name=m.display_name,
-                    canonical_name=m.display_name,
-                    aliases=(m.merchant_code, m.display_name),
-                    entity_type="merchant",
+
+    hints_fresh = (now - float(_hints_cache["ts"])) < _HINTS_TTL_S
+    if hints_fresh and _hints_cache["categories"] is not None:
+        category_rows = list(_hints_cache["categories"])
+        merchant_cands = list(_hints_cache["merchants"] or [])
+    else:
+        if categories is not None:
+            category_rows = list(await categories.list_active())
+        if merchants is not None:
+            for m in await merchants.list_active(limit=200):
+                merchant_cands.append(
+                    EntityCandidate(
+                        entity_id=str(m.id),
+                        display_name=m.display_name,
+                        canonical_name=m.display_name,
+                        aliases=(m.merchant_code, m.display_name),
+                        entity_type="merchant",
+                    )
                 )
-            )
+        _hints_cache["ts"] = now
+        _hints_cache["categories"] = category_rows
+        _hints_cache["merchants"] = merchant_cands
+
+    pool_key = _pool_cache_key(utterance, limit)
+    cached = _pool_cache.get(pool_key)
+    if cached and (now - cached[0]) < _POOL_TTL_S:
+        orch.product_pool = deepcopy(cached[1])
+        if logos is not None:
+            orch.logo_resolver = logos  # type: ignore[attr-defined]
+    else:
+        # Resolve name terms from live category synonyms before product fetch.
+        category_entities = tuple(category_to_entity(c) for c in category_rows)
+        cands = await load_search_candidates_from_catalog(
+            catalog,
+            utterance=utterance,
+            limit=limit,
+            merchants=merchants,
+            finance_index=finance_index,
+            institutions=institutions,
+            category_candidates=category_entities or orch.catalog.categories,
+        )
+
+        if logos is not None:
+            orch.logo_resolver = logos  # type: ignore[attr-defined]
+
+        if cands:
+            pool = [candidate_to_pool_dict(c) for c in cands]
+            if logos is not None:
+                for row in pool:
+                    if not row.get("merchant_logo_cdn_url"):
+                        row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
+            orch.product_pool = pool
+        else:
+            # Production: empty catalog → empty pool (no synthetic demo products).
+            orch.product_pool = []
+
+        _pool_cache[pool_key] = (now, deepcopy(orch.product_pool))
+        if len(_pool_cache) > _POOL_CACHE_MAX:
+            # Drop oldest entries.
+            for k, _ in sorted(_pool_cache.items(), key=lambda kv: kv[1][0])[
+                : len(_pool_cache) - _POOL_CACHE_MAX
+            ]:
+                _pool_cache.pop(k, None)
 
     brand_cands = brands_from_pool(orch.product_pool)
     inst_cands = institutions_from_labels(institutions)

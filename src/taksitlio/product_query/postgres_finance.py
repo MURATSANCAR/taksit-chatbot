@@ -77,6 +77,31 @@ class PostgresFinanceOptionIndex:
             )
         return tuple(_row_from_db(r) for r in rows)
 
+    async def list_for_products(
+        self, product_ids: Sequence[str]
+    ) -> dict[str, tuple[ProductFinanceOptionRow, ...]]:
+        ids = [int(x) for x in product_ids if str(x).strip()]
+        if not ids:
+            return {}
+        async with self._pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT po.product_id, pfo.*
+                FROM product_finance_options pfo
+                JOIN product_offers po ON po.id = pfo.product_offer_id
+                WHERE po.product_id = ANY($1::bigint[])
+                ORDER BY po.product_id,
+                         pfo.monthly_payment ASC NULLS LAST,
+                         pfo.id ASC
+                """,
+                ids,
+            )
+        out: dict[str, list[ProductFinanceOptionRow]] = {str(i): [] for i in ids}
+        for row in rows:
+            pid = str(row["product_id"])
+            out.setdefault(pid, []).append(_row_from_db(row))
+        return {k: tuple(v) for k, v in out.items()}
+
     async def put(
         self, product_id: str, rows: Sequence[ProductFinanceOptionRow]
     ) -> None:

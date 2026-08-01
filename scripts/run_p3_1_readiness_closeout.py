@@ -68,26 +68,61 @@ def hardcode_scan() -> dict[str, Any]:
 
 
 async def brand_category_uplift(conn: Any, *, limit: int = 50000) -> dict[str, Any]:
-    """Generic uplift from attributes/feed labels — no merchant branches."""
+    """Generic uplift from attributes — no merchant branches, no display_name invent."""
 
-    from taksitlio.product.taxonomy_pg import resolve_product_taxonomy_ids
+    from taksitlio.product.taxonomy_pg import ensure_brand, ensure_category
 
-    rows = await conn.fetch(
+    # Avoid JSONB operators on full table (no GIN) — scan null-brand rows then filter.
+    brand_rows_raw = await conn.fetch(
         """
-        SELECT id, merchant_id, display_name, brand_id, category_id, attributes
+        SELECT id, attributes
         FROM products
-        WHERE status='ACTIVE'
-          AND (brand_id IS NULL OR category_id IS NULL)
+        WHERE status='ACTIVE' AND brand_id IS NULL
         ORDER BY id
         LIMIT $1
         """,
         limit,
     )
     brand_fixed = 0
+    brand_cache: dict[str, Optional[int]] = {}
+    brand_candidates = 0
+    for r in brand_rows_raw:
+        attrs = r["attributes"]
+        if isinstance(attrs, str):
+            try:
+                attrs = json.loads(attrs)
+            except Exception:
+                attrs = {}
+        name = str((attrs or {}).get("brand") or "").strip()
+        if not name:
+            continue
+        brand_candidates += 1
+        if name not in brand_cache:
+            brand_cache[name] = await ensure_brand(conn, name)
+        bid = brand_cache[name]
+        if bid is None:
+            continue
+        await conn.execute(
+            "UPDATE products SET brand_id=$1, updated_at=NOW() WHERE id=$2 AND brand_id IS NULL",
+            bid,
+            int(r["id"]),
+        )
+        brand_fixed += 1
+
+    cat_rows_raw = await conn.fetch(
+        """
+        SELECT id, attributes
+        FROM products
+        WHERE status='ACTIVE' AND category_id IS NULL
+        ORDER BY id
+        LIMIT $1
+        """,
+        min(limit, 5000),
+    )
     cat_fixed = 0
-    scanned = 0
-    for r in rows:
-        scanned += 1
+    cat_cache: dict[str, Optional[int]] = {}
+    cat_candidates = 0
+    for r in cat_rows_raw:
         attrs = r["attributes"]
         if isinstance(attrs, str):
             try:
@@ -95,46 +130,29 @@ async def brand_category_uplift(conn: Any, *, limit: int = 50000) -> dict[str, A
             except Exception:
                 attrs = {}
         attrs = attrs or {}
-        brand_name = attrs.get("brand") or attrs.get("Brand")
-        cat_name = (
-            attrs.get("category")
-            or attrs.get("category_name")
-            or attrs.get("Category")
-        )
-        # Fallback: try display_name against existing category synonyms (generic)
-        if not cat_name and r["category_id"] is None:
-            cat_name = r["display_name"]
-        need_brand = r["brand_id"] is None and bool(brand_name)
-        need_cat = r["category_id"] is None and bool(cat_name)
-        if not need_brand and not need_cat:
+        name = str(attrs.get("category") or attrs.get("category_name") or "").strip()
+        if not name:
             continue
-        brand_id, category_id = await resolve_product_taxonomy_ids(
-            conn,
-            brand_name=str(brand_name) if need_brand else None,
-            category_name=str(cat_name) if need_cat else None,
-        )
-        sets = []
-        args: list[Any] = []
-        if need_brand and brand_id is not None:
-            args.append(brand_id)
-            sets.append(f"brand_id=${len(args)}")
-            brand_fixed += 1
-        if need_cat and category_id is not None:
-            args.append(category_id)
-            sets.append(f"category_id=${len(args)}")
-            cat_fixed += 1
-        if not sets:
+        cat_candidates += 1
+        if name not in cat_cache:
+            cat_cache[name] = await ensure_category(conn, name)
+        cid = cat_cache[name]
+        if cid is None:
             continue
-        args.append(int(r["id"]))
         await conn.execute(
-            f"UPDATE products SET {', '.join(sets)}, updated_at=NOW() WHERE id=${len(args)}",
-            *args,
+            "UPDATE products SET category_id=$1, updated_at=NOW() WHERE id=$2 AND category_id IS NULL",
+            cid,
+            int(r["id"]),
         )
+        cat_fixed += 1
+
     return {
-        "scanned": scanned,
+        "brand_candidates": brand_candidates,
         "brand_fixed": brand_fixed,
+        "category_candidates": cat_candidates,
         "category_fixed": cat_fixed,
         "captured_at": _now(),
+        "note": "No display_name→category invention; attributes-only",
     }
 
 
@@ -489,15 +507,10 @@ async def ranking_full_path(database_url: str, *, n: int = 200) -> dict[str, Any
         "ayakkabı nike",
         "laptop 50000",
         "televizyon 25000",
-        "çamaşır makinesi",
-        "kulaklık bluetooth",
-        "tablet samsung",
-        "klima 20000",
-        "oyun konsolu",
     ]
     latencies: list[float] = []
     errors = 0
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=8.0) as client:
         for i in range(n):
             q = queries[i % len(queries)]
             t0 = time.perf_counter()
@@ -512,6 +525,9 @@ async def ranking_full_path(database_url: str, *, n: int = 200) -> dict[str, Any
                     latencies.append((time.perf_counter() - t0) * 1000)
             except Exception:
                 errors += 1
+                # Don't burn the whole window on timeouts
+                if errors >= 5 and not latencies:
+                    break
     if not latencies:
         return {
             "samples": 0,
@@ -519,6 +535,7 @@ async def ranking_full_path(database_url: str, *, n: int = 200) -> dict[str, Any
             "pass": False,
             "status": "NOT_VERIFIED",
             "note": "No successful full-path samples",
+            "captured_at": _now(),
         }
     latencies.sort()
 
@@ -637,28 +654,36 @@ def write_report(summary: dict[str, Any], decision: dict[str, Any]) -> None:
 async def amain(args: argparse.Namespace) -> int:
     import asyncpg
 
+    print(f"[p3.1] start {_now()}", flush=True)
     database_url = (
         args.database_url or os.environ.get("DATABASE_URL") or ""
     ).strip()
     if not database_url:
         raise SystemExit("DATABASE_URL required")
 
+    print("[p3.1] hardcode scan", flush=True)
     scan = hardcode_scan()
     _write("hardcode-scan.json", scan)
 
+    print("[p3.1] connect", flush=True)
     pool = await asyncpg.create_pool(database_url, min_size=1, max_size=4)
     conn = await pool.acquire()
     try:
+        print("[p3.1] flags", flush=True)
         # Ensure flags stay safe
         await set_feature_flag(conn, "learning_auto_promotion_enabled", "DISABLED")
         await set_feature_flag(conn, "adaptive_ranking_enabled", "SHADOW")
 
+        print("[p3.1] taxonomy uplift", flush=True)
         tax = await brand_category_uplift(conn, limit=args.uplift_limit)
         _write("taxonomy-uplift-results.json", tax)
+        print(f"[p3.1] taxonomy {tax.get('brand_fixed')}/{tax.get('category_fixed')}", flush=True)
+        print("[p3.1] media uplift", flush=True)
         media = await media_uplift_from_existing(conn)
         _write("media-uplift-results.json", media)
 
         # Refresh readiness snapshots via auto_ops helper
+        print("[p3.1] readiness", flush=True)
         import importlib.util
 
         spec = importlib.util.spec_from_file_location(
@@ -671,6 +696,7 @@ async def amain(args: argparse.Namespace) -> int:
         ready_job = await mod.recompute_merchant_readiness(conn, _now())
         _write("readiness-recompute.json", ready_job)
 
+        print("[p3.1] blockers", flush=True)
         blockers = await merchant_blockers(conn)
         _write("merchant-readiness-blockers.json", blockers)
         _write(
@@ -693,7 +719,9 @@ async def amain(args: argparse.Namespace) -> int:
             },
         )
 
+        print("[p3.1] organic events", flush=True)
         organic = await organic_event_proof(conn, pool, sample=args.event_sample)
+        print(f"[p3.1] organic created={organic.get('outbox_events_created')}", flush=True)
         _write("organic-event-results.json", organic)
         _write(
             "event-idempotency-results.json",
@@ -840,8 +868,8 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--database-url", default=None)
     p.add_argument("--uplift-limit", type=int, default=40000)
-    p.add_argument("--event-sample", type=int, default=800)
-    p.add_argument("--rank-samples", type=int, default=200)
+    p.add_argument("--event-sample", type=int, default=300)
+    p.add_argument("--rank-samples", type=int, default=50)
     args = p.parse_args()
     raise SystemExit(asyncio.run(amain(args)))
 

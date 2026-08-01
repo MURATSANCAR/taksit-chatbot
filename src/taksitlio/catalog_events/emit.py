@@ -28,14 +28,16 @@ async def insert_domain_event(
               processing_status
             )
             SELECT
-              $1::uuid,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13::jsonb,$14,$15
+              $1::uuid,$2::text,$3::text,$4::text,$5::text,$6::text,$7::text,
+              $8::text,$9::text,$10::bigint,$11::bigint,$12::bigint,
+              $13::jsonb,$14::text,$15::text
             WHERE NOT EXISTS (
               SELECT 1 FROM catalog_domain_events
-               WHERE source_id IS NOT DISTINCT FROM $3
-                 AND source_item_id IS NOT DISTINCT FROM $5
-                 AND source_revision IS NOT DISTINCT FROM $4
-                 AND content_hash IS NOT DISTINCT FROM $7
-                 AND event_type = $2
+               WHERE source_id IS NOT DISTINCT FROM $3::text
+                 AND source_item_id IS NOT DISTINCT FROM $5::text
+                 AND source_revision IS NOT DISTINCT FROM $4::text
+                 AND content_hash IS NOT DISTINCT FROM $7::text
+                 AND event_type = $2::text
             )
             RETURNING event_id::text
             """,

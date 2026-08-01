@@ -817,10 +817,34 @@ class PostgresProductCatalogRepository:
         terms = [str(t).strip() for t in name_terms if t and str(t).strip()]
         if not terms:
             return await self.list_products(merchant_id=merchant_id, limit=limit)
-        # Fast path: ILIKE ANY on product name fields only.
-        # Avoid correlated brand_aliases / synonym scans (were timing out >25s on 180k rows).
-        patterns = [f"%{t}%" for t in terms]
-        select_cols = """
+        # Prefer longer terms first for ILIKE ANY ordering (no expression ORDER BY —
+        # that prevents early LIMIT and can force full-catalog scans).
+        patterns = [f"%{t}%" for t in sorted(terms, key=len, reverse=True)]
+        # Two-step shape matching the proven ~3ms plan: id filter with EXISTS, then join media.
+        sql_ids = """
+                    SELECT p.id
+                    FROM products p
+                    WHERE p.status = 'ACTIVE'
+                      AND p.data_quality_status = 'READY'
+                      AND p.category_id IS NOT NULL
+                      AND (
+                        p.display_name ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.normalized_name, '') ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.model_number, '') ILIKE ANY($PATTERNS$::text[])
+                      )
+                      AND EXISTS (
+                        SELECT 1
+                        FROM product_media_links pml
+                        JOIN media_assets ma ON ma.id = pml.media_asset_id
+                        WHERE pml.product_id = p.id
+                          AND pml.is_primary = TRUE
+                          AND ma.status = 'READY'
+                          AND COALESCE(ma.cdn_url, '') <> ''
+                      )
+                    ORDER BY p.id ASC
+                    LIMIT $LIMIT$
+        """
+        sql_rows = """
                     SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
                            p.model_number, p.brand_id, p.category_id,
                            p.content_hash, p.data_quality_status, p.status, p.attributes,
@@ -830,61 +854,30 @@ class PostgresProductCatalogRepository:
                            p.metadata->>'pending_source_image_url' AS pending_source_image_url,
                            ma.storage_key AS storage_key
                     FROM products p
-                    LEFT JOIN product_media_links pml
+                    JOIN product_media_links pml
                       ON pml.product_id = p.id AND pml.is_primary = TRUE
-                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
-        """
-        eligible = """
-                    WHERE p.status = 'ACTIVE'
-                      AND p.data_quality_status = 'READY'
-                      AND p.category_id IS NOT NULL
-                      AND COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
-                      AND COALESCE(NULLIF(ma.cdn_url, ''), NULLIF(p.metadata->>'primary_cdn_url', ''))
-                          IS NOT NULL
-                      AND (
-                        p.display_name ILIKE ANY($PATTERNS$::text[])
-                        OR COALESCE(p.normalized_name, '') ILIKE ANY($PATTERNS$::text[])
-                        OR COALESCE(p.model_number, '') ILIKE ANY($PATTERNS$::text[])
-                        OR COALESCE(p.attributes->>'brand', '') ILIKE ANY($PATTERNS$::text[])
-                        OR COALESCE(p.attributes->>'model', '') ILIKE ANY($PATTERNS$::text[])
-                        OR COALESCE(p.attributes->>'category', '') ILIKE ANY($PATTERNS$::text[])
-                      )
+                    JOIN media_assets ma ON ma.id = pml.media_asset_id
+                    WHERE p.id = ANY($1::bigint[])
+                    ORDER BY p.id ASC
         """
         async with self._pool.acquire() as conn:
             if merchant_id is None:
-                sql = (
-                    select_cols
-                    + eligible.replace("$PATTERNS$", "$1")
-                    + """
-                    ORDER BY p.id ASC
-                    LIMIT $2
-                    """
-                )
-                rows = await conn.fetch(sql, patterns, limit)
+                id_sql = sql_ids.replace("$PATTERNS$", "$1").replace("$LIMIT$", "$2")
+                id_rows = await conn.fetch(id_sql, patterns, limit)
             else:
-                sql = (
-                    select_cols
-                    + """
-                    WHERE p.merchant_id = $1
-                      AND p.status = 'ACTIVE'
-                      AND p.data_quality_status = 'READY'
-                      AND p.category_id IS NOT NULL
-                      AND COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
-                      AND COALESCE(NULLIF(ma.cdn_url, ''), NULLIF(p.metadata->>'primary_cdn_url', ''))
-                          IS NOT NULL
-                      AND (
-                        p.display_name ILIKE ANY($2::text[])
-                        OR COALESCE(p.normalized_name, '') ILIKE ANY($2::text[])
-                        OR COALESCE(p.model_number, '') ILIKE ANY($2::text[])
-                        OR COALESCE(p.attributes->>'brand', '') ILIKE ANY($2::text[])
-                        OR COALESCE(p.attributes->>'model', '') ILIKE ANY($2::text[])
-                        OR COALESCE(p.attributes->>'category', '') ILIKE ANY($2::text[])
-                      )
-                    ORDER BY p.id ASC
-                    LIMIT $3
-                    """
+                id_sql = (
+                    sql_ids.replace(
+                        "WHERE p.status = 'ACTIVE'",
+                        "WHERE p.merchant_id = $1\n                      AND p.status = 'ACTIVE'",
+                    )
+                    .replace("$PATTERNS$", "$2")
+                    .replace("$LIMIT$", "$3")
                 )
-                rows = await conn.fetch(sql, merchant_id, patterns, limit)
+                id_rows = await conn.fetch(id_sql, merchant_id, patterns, limit)
+            ids = [int(r["id"]) for r in id_rows]
+            if not ids:
+                return ()
+            rows = await conn.fetch(sql_rows, ids)
         return tuple(_row_to_stored_product(row) for row in rows)
 
     async def get_offers_for_products(

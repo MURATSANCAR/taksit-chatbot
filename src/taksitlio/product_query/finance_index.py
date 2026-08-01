@@ -29,6 +29,11 @@ class InMemoryFinanceOptionIndex:
     ) -> Sequence[ProductFinanceOptionRow]:
         return self._by_product.get(str(product_id), ())
 
+    async def list_for_products(
+        self, product_ids: Sequence[str]
+    ) -> dict[str, tuple[ProductFinanceOptionRow, ...]]:
+        return {str(pid): self._by_product.get(str(pid), ()) for pid in product_ids}
+
     async def put(
         self, product_id: str, rows: Sequence[ProductFinanceOptionRow]
     ) -> None:
