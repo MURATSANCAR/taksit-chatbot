@@ -6,7 +6,15 @@
     var root = (baseUrl || "").replace(/\/$/, "");
 
     function parseResponse(r) {
-      return r.json().then(function (body) {
+      return r.text().then(function (raw) {
+        var body = null;
+        if (raw) {
+          try {
+            body = JSON.parse(raw);
+          } catch (e) {
+            body = { detail: raw.slice(0, 200) };
+          }
+        }
         if (!r.ok) {
           // Keep raw detail only for console/debug; UI must use TaksitlioPublic.errorMessage.
           var detail = body && (body.detail || body.message || body.error);
@@ -15,6 +23,12 @@
           err.body = body;
           err.detail = detail;
           throw err;
+        }
+        if (body == null || typeof body !== "object") {
+          var bad = new Error("http_" + r.status + "_invalid_json");
+          bad.status = r.status || 500;
+          bad.body = body;
+          throw bad;
         }
         return body;
       });

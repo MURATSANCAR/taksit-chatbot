@@ -287,9 +287,11 @@ def start_backfill_if_idle() -> None:
                 "-u",
                 str(ROOT / "scripts" / "backfill_product_images.py"),
                 "--concurrency",
-                "8",
+                "12",
                 "--limit",
                 "0",
+                "--prefer-merchants",
+                "m-flo",
             ],
             cwd=str(ROOT),
             stdout=fh,
@@ -297,6 +299,45 @@ def start_backfill_if_idle() -> None:
             env=env,
             start_new_session=True,
         )
+
+
+def maybe_rescore_and_rebuild(st: dict) -> None:
+    """After backfill waves, refresh READY flags + search projections."""
+    if not COMPLETE_ONLY:
+        return
+    if pgrep("backfill_product_images.py") or pgrep("complete_catalog_gaps.py"):
+        return
+    if pgrep("rebuild_catalog_projections.py"):
+        return
+    last = float(st.get("last_rebuild_ts") or 0)
+    if time.time() - last < 1800:
+        return
+    env_file = ROOT / ".env.runtime"
+    env = os.environ.copy()
+    if env_file.exists():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            env.setdefault(k.strip(), v.strip())
+    print("START rescore + projection rebuild", flush=True)
+    log = Path("/tmp/auto-complete-refresh.log")
+    with log.open("a", encoding="utf-8") as fh:
+        fh.write(f"\n--- refresh {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
+        subprocess.Popen(
+            [
+                "bash",
+                "-lc",
+                f"{PY_APP} -u scripts/complete_catalog_gaps.py --rescore && "
+                f"{PY_APP} -u scripts/rebuild_catalog_projections.py --allow-write --catalog-revision 1",
+            ],
+            cwd=str(ROOT),
+            stdout=fh,
+            stderr=subprocess.STDOUT,
+            env=env,
+            start_new_session=True,
+        )
+    st["last_rebuild_ts"] = time.time()
 
 
 def fill_crawl_slots(st: dict) -> None:
@@ -403,9 +444,9 @@ def main() -> None:
             fill_crawl_slots(st)
             maybe_ingest(st)
             # periodic image backfill when crawl slots full or idle ingest
-            if len(running_crawl_codes()) >= MAX_PARALLEL_CRAWLS or not ingest_running():
+            if COMPLETE_ONLY or len(running_crawl_codes()) >= MAX_PARALLEL_CRAWLS or not ingest_running():
                 start_backfill_if_idle()
-
+            maybe_rescore_and_rebuild(st)
             st["round"] = int(st.get("round") or 0) + 1
             if st["round"] % 6 == 0:
                 print(

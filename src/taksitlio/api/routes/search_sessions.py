@@ -48,16 +48,24 @@ async def _maybe_refresh_catalog(request: Request, orch: SearchOrchestrator, utt
     if catalog is None:
         return
     logos = container.extras.get("logo_resolver")
-    await refresh_orchestrator_from_catalog(
-        orch,
-        catalog=catalog,
-        merchants=container.extras.get("merchant_directory"),
-        finance_index=container.extras.get("finance_option_index"),
-        institutions=container.extras.get("institution_labels"),
-        logos=logos,
-        categories=container.extras.get("category_repo"),
-        utterance=utterance,
-    )
+    try:
+        await asyncio.wait_for(
+            refresh_orchestrator_from_catalog(
+                orch,
+                catalog=catalog,
+                merchants=container.extras.get("merchant_directory"),
+                finance_index=container.extras.get("finance_option_index"),
+                institutions=container.extras.get("institution_labels"),
+                logos=logos,
+                categories=container.extras.get("category_repo"),
+                utterance=utterance,
+            ),
+            timeout=5.0,
+        )
+    except Exception:  # noqa: BLE001
+        # Catalog hydrate must not 500 the search UX (DB timeout under ingest load, etc.)
+        # Keep prior product_pool / catalog hints on the orchestrator.
+        pass
 
 
 async def _maybe_persist(request: Request, session_id: Optional[str]) -> None:
