@@ -228,7 +228,7 @@ async def refresh_orchestrator_from_catalog(
     logos: Optional[LogoResolver] = None,
     categories: Optional[CategoryListSource] = None,
     utterance: str = "",
-    limit: int = 400,
+    limit: int = 80,
 ) -> int:
     """Load product pool + entity hints from production catalog sources."""
 

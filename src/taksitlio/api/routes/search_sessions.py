@@ -61,7 +61,7 @@ async def _maybe_refresh_catalog(request: Request, orch: SearchOrchestrator, utt
                 categories=container.extras.get("category_repo"),
                 utterance=utterance,
             ),
-            timeout=5.0,
+            timeout=12.0,
         )
     except Exception:  # noqa: BLE001
         # Catalog hydrate must not 500 the search UX (DB timeout under ingest load, etc.)

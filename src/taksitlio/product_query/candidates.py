@@ -133,12 +133,22 @@ async def load_search_candidates_from_catalog(
             products = await catalog.list_products(merchant_id=merchant_id, limit=limit)
     else:
         products = await catalog.list_products(merchant_id=merchant_id, limit=limit)
+
+    offers: dict[int, StoredOffer] = {}
+    batch = getattr(catalog, "get_offers_for_products", None)
+    if callable(batch):
+        offers = await batch([p.id for p in products])
+    else:
+        for product in products:
+            offer = await catalog.get_offer(product.id)
+            if offer is not None:
+                offers[product.id] = offer
+
     out: list[SearchProductCandidate] = []
     for product in products:
-        offer = await catalog.get_offer(product.id)
         cand = await product_to_search_candidate(
             product,
-            offer,
+            offers.get(product.id),
             utterance=utterance,
             merchants=merchants,
             finance_index=finance_index,

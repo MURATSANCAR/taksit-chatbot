@@ -603,6 +603,8 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
 
     positive_categories: list[ResolvedEntityRef] = []
     negative_categories: list[ResolvedEntityRef] = []
+    from taksitlio.progressive_results.category_match import alias_mentioned_in_text
+
     for cand in catalog.categories:
         names = (cand.display_name, cand.canonical_name, *cand.aliases)
         for name in names:
@@ -619,7 +621,8 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
                     )
                 )
                 break
-            if n in normalized or name.casefold() in lower:
+            # Whole-token/phrase only — "kamp" must not match "kampanyalı".
+            if n in normalized or alias_mentioned_in_text(name, text):
                 positive_categories.append(
                     ResolvedEntityRef(
                         resolved_id=cand.entity_id,

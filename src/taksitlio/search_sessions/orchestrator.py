@@ -97,6 +97,10 @@ class SearchOrchestrator:
             if tokens and (u_raw or u_norm):
                 display_n = str(row.get("display_name") or "").casefold()
                 specific: list[str] = []
+                from taksitlio.progressive_results.category_match import (
+                    alias_mentioned_in_text,
+                )
+
                 for t in tokens:
                     t_raw = str(t or "").strip()
                     if not t_raw:
@@ -106,7 +110,9 @@ class SearchOrchestrator:
                         t_n = normalize_turkish(t_raw).value or t_cf
                     except Exception:  # noqa: BLE001
                         t_n = t_cf
-                    if t_cf in u_raw or (t_n and t_n in u_norm):
+                    if alias_mentioned_in_text(t_raw, utterance) or (
+                        t_n and alias_mentioned_in_text(t_n, u_norm)
+                    ):
                         # Prefer concrete synonym (buzdolabı) over broad category label.
                         if t_cf != display_n and t_n != normalize_turkish(display_n).value:
                             specific.append(t_raw)

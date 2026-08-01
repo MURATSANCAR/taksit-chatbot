@@ -7,7 +7,29 @@ catalog (synonyms / display_name) via constraints.include_tokens.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Mapping, Optional, Sequence
+
+# Letters used for Turkish-aware token boundaries (avoid "kamp" ⊂ "kampanyalı").
+_TR_WORD = r"0-9a-zçğıöşü"
+
+
+def alias_mentioned_in_text(alias: str, text: str) -> bool:
+    """True when alias appears as a whole token/phrase, not a substring of a longer word."""
+
+    a = (alias or "").casefold().strip()
+    u = (text or "").casefold()
+    if not a or not u:
+        return False
+    # Extremely short aliases are too ambiguous for substring/token recall.
+    if len(a) < 3:
+        return False
+    pattern = (
+        rf"(?<![{_TR_WORD}])"
+        + re.escape(a).replace(r"\ ", r"\s+")
+        + rf"(?![{_TR_WORD}])"
+    )
+    return re.search(pattern, u) is not None
 
 # Optional enrichment for well-known V003 / legacy ids (not the sole source of truth).
 CATEGORY_FAMILIES: dict[str, dict[str, tuple[str, ...]]] = {
@@ -246,7 +268,9 @@ def matches_required_categories(
         cats.append(ptype)
     if not cats:
         return True
-    return all(matches_category_tokens(product, cat) for cat in cats)
+    # OR across positives: compound cues like "spor ayakkabı" resolve FOOTWEAR+SPORTS,
+    # but catalog titles often carry only the noun. AND emptied recall incorrectly.
+    return any(matches_category_tokens(product, cat) for cat in cats)
 
 
 def utterance_name_terms(
@@ -275,14 +299,22 @@ def utterance_name_terms(
                 str(getattr(cand, "canonical_name", "") or ""),
                 *[str(a) for a in (getattr(cand, "aliases", ()) or ())],
             ]
-        hit = False
-        for name in names:
-            n = name.casefold().strip()
-            if n and n in u:
-                hit = True
-                break
-        if hit:
-            matched.extend(n for n in names if n and str(n).strip())
+        hit_names = [
+            n for n in names if n and alias_mentioned_in_text(str(n).strip(), u)
+        ]
+        if not hit_names:
+            continue
+        # Prefer concrete hits + display name — do NOT dump every alias ("bot", "tv", "pc").
+        display = str(names[0]).strip() if names else ""
+        chosen: list[str] = []
+        if display:
+            chosen.append(display)
+        for n in hit_names:
+            ns = str(n).strip()
+            if ns and ns not in chosen:
+                chosen.append(ns)
+        matched.extend(chosen)
+
     if matched:
         return tuple(dict.fromkeys(str(m).strip() for m in matched if str(m).strip()))[:12]
 
@@ -297,8 +329,16 @@ def utterance_name_terms(
         return ("Televizyon", "TV")
     if any(t in u for t in ("buzdolab", "beyaz eşya", "beyaz esya", "çamaşır", "camasir")):
         return ("Buzdolabı", "Beyaz Eşya", "Çamaşır")
-    if any(t in u for t in ("ayakkab", "sneaker", "bot ", " bot", "terlik", "sandalet")):
-        return ("Ayakkabı", "Spor Ayakkabı", "Sneaker", "Bot")
+    if any(
+        alias_mentioned_in_text(t, u)
+        for t in ("ayakkabı", "ayakkabi", "sneaker", "terlik", "sandalet")
+    ) or alias_mentioned_in_text("bot", u):
+        return ("Ayakkabı", "Spor Ayakkabı", "Sneaker")
+    if any(
+        alias_mentioned_in_text(t, u)
+        for t in ("kulaklık", "kulaklik", "earbud", "airpods", "kulaklı")
+    ):
+        return ("Kulaklık", "Earbud", "AirPods", "Kulaklık")
 
     # Last resort: content tokens from the utterance so catalog search still runs
     # when the DB category list has not caught up (ADR-010 dynamic resolution).
@@ -312,6 +352,7 @@ def utterance_name_terms(
 
 __all__ = [
     "CATEGORY_FAMILIES",
+    "alias_mentioned_in_text",
     "family_id_for_category",
     "legacy_family_includes",
     "matches_category_family",

@@ -10,12 +10,16 @@ from typing import FrozenSet, Mapping, Optional, Sequence
 class CatalogEventType(str, Enum):
     PRODUCT_DISCOVERED = "PRODUCT_DISCOVERED"
     PRODUCT_CHANGED = "PRODUCT_CHANGED"
+    PRODUCT_STATUS_CHANGED = "PRODUCT_STATUS_CHANGED"
     OFFER_CHANGED = "OFFER_CHANGED"
     PRICE_CHANGED = "PRICE_CHANGED"
     STOCK_CHANGED = "STOCK_CHANGED"
     MEDIA_DISCOVERED = "MEDIA_DISCOVERED"
     MEDIA_CHANGED = "MEDIA_CHANGED"
     SOURCE_CATEGORY_DISCOVERED = "SOURCE_CATEGORY_DISCOVERED"
+    SOURCE_CATEGORY_CHANGED = "SOURCE_CATEGORY_CHANGED"
+    BRAND_CHANGED = "BRAND_CHANGED"
+    ATTRIBUTE_CHANGED = "ATTRIBUTE_CHANGED"
     ENTITY_RESOLUTION_CHANGED = "ENTITY_RESOLUTION_CHANGED"
     CATEGORY_MAPPING_CHANGED = "CATEGORY_MAPPING_CHANGED"
     ATTRIBUTE_MAPPING_CHANGED = "ATTRIBUTE_MAPPING_CHANGED"
@@ -23,6 +27,9 @@ class CatalogEventType(str, Enum):
     CAMPAIGN_CHANGED = "CAMPAIGN_CHANGED"
     RATE_CHANGED = "RATE_CHANGED"
     RANKING_POLICY_CHANGED = "RANKING_POLICY_CHANGED"
+    MERCHANT_READINESS_RECALCULATION_REQUESTED = (
+        "MERCHANT_READINESS_RECALCULATION_REQUESTED"
+    )
 
 
 class ProjectionKind(str, Enum):
@@ -108,6 +115,25 @@ _EVENT_PROJECTIONS: Mapping[CatalogEventType, FrozenSet[ProjectionKind]] = {
         {ProjectionKind.FINANCE, ProjectionKind.RANKING_FEATURES}
     ),
     CatalogEventType.RANKING_POLICY_CHANGED: frozenset({ProjectionKind.RANKING_FEATURES}),
+    CatalogEventType.MERCHANT_READINESS_RECALCULATION_REQUESTED: frozenset(
+        {ProjectionKind.MERCHANT_READINESS, ProjectionKind.RELEASE_SCOPE}
+    ),
+    CatalogEventType.PRODUCT_STATUS_CHANGED: frozenset(
+        {
+            ProjectionKind.SEARCH,
+            ProjectionKind.MERCHANT_READINESS,
+            ProjectionKind.RELEASE_SCOPE,
+        }
+    ),
+    CatalogEventType.SOURCE_CATEGORY_CHANGED: frozenset(
+        {ProjectionKind.ENTITY_INDEX, ProjectionKind.MERCHANT_READINESS}
+    ),
+    CatalogEventType.BRAND_CHANGED: frozenset(
+        {ProjectionKind.ENTITY_INDEX, ProjectionKind.MERCHANT_READINESS}
+    ),
+    CatalogEventType.ATTRIBUTE_CHANGED: frozenset(
+        {ProjectionKind.SEARCH, ProjectionKind.RANKING_FEATURES}
+    ),
 }
 
 

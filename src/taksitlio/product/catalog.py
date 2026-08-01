@@ -253,6 +253,16 @@ class InMemoryProductCatalogRepository:
     async def get_offer(self, product_id: int) -> Optional[StoredOffer]:
         return self._offers.get(product_id)
 
+    async def get_offers_for_products(
+        self, product_ids: Sequence[int]
+    ) -> dict[int, StoredOffer]:
+        out: dict[int, StoredOffer] = {}
+        for pid in product_ids:
+            offer = self._offers.get(int(pid))
+            if offer is not None:
+                out[int(pid)] = offer
+        return out
+
     async def upsert_product(
         self,
         *,
@@ -497,6 +507,14 @@ class PostgresProductCatalogRepository:
 
         async with self._pool.acquire() as conn:
             async with conn.transaction():
+                existed = await conn.fetchval(
+                    """
+                    SELECT id FROM products
+                    WHERE merchant_id=$1 AND external_product_id=$2
+                    """,
+                    merchant_id,
+                    plan.external_product_id,
+                )
                 brand_id, category_id = await resolve_product_taxonomy_ids(
                     conn,
                     brand_name=plan.brand_name,
@@ -559,6 +577,29 @@ class PostgresProductCatalogRepository:
                     plan.source_reference,
                     json.dumps(dict(plan.attributes or {})),
                 )
+                # Organic domain events in the same transaction as the product write.
+                try:
+                    from taksitlio.catalog_events.emit import (
+                        emit_events,
+                        events_for_product_upsert,
+                    )
+
+                    catalog_revision = plan.content_hash or f"prod:{row['id']}"
+                    await emit_events(
+                        conn,
+                        events_for_product_upsert(
+                            merchant_id=merchant_id,
+                            product_id=int(row["id"]),
+                            external_product_id=str(row["external_product_id"]),
+                            content_hash=plan.content_hash,
+                            was_insert=existed is None,
+                            source_id=f"merchant:{merchant_id}",
+                            catalog_revision=catalog_revision,
+                        ),
+                    )
+                except Exception:
+                    # Event table may be absent on pre-V029 DBs; product write still commits.
+                    pass
         attrs = row["attributes"]
         if isinstance(attrs, str):
             attrs = json.loads(attrs)
@@ -677,6 +718,34 @@ class PostgresProductCatalogRepository:
                         plan.content_hash,
                         plan.source_reference,
                     )
+                try:
+                    from taksitlio.catalog_events.emit import (
+                        emit_events,
+                        events_for_product_upsert,
+                    )
+
+                    ext = await conn.fetchval(
+                        "SELECT external_product_id FROM products WHERE id=$1",
+                        product_id,
+                    )
+                    await emit_events(
+                        conn,
+                        events_for_product_upsert(
+                            merchant_id=merchant_id,
+                            product_id=product_id,
+                            external_product_id=str(ext or product_id),
+                            content_hash=plan.content_hash,
+                            was_insert=False,
+                            source_id=f"merchant:{merchant_id}",
+                            catalog_revision=plan.content_hash or f"offer:{offer_id}",
+                            offer_id=offer_id,
+                            offer_changed=True,
+                            price_changed=True,
+                            stock_changed=True,
+                        ),
+                    )
+                except Exception:
+                    pass
         return StoredOffer(
             id=int(row["id"]),
             product_id=product_id,
@@ -691,11 +760,11 @@ class PostgresProductCatalogRepository:
     async def list_products(
         self, *, merchant_id: Optional[int] = None, limit: int = 100
     ) -> Sequence[StoredProduct]:
-        async with self._pool.acquire() as conn:
-            if merchant_id is None:
-                rows = await conn.fetch(
-                    """
+        # Prefer chatbot-eligible rows (category + READY media) so short LIMIT windows
+        # are usable by the integrity gate — never omit category_id from the SELECT.
+        select_cols = """
                     SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                           p.model_number, p.brand_id, p.category_id,
                            p.content_hash, p.data_quality_status, p.status, p.attributes,
                            COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
                            COALESCE(p.metadata->>'primary_media_status', ma.status)
@@ -706,40 +775,33 @@ class PostgresProductCatalogRepository:
                     LEFT JOIN product_media_links pml
                       ON pml.product_id = p.id AND pml.is_primary = TRUE
                     LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+        """
+        order_eligible = """
                     ORDER BY
-                      CASE WHEN EXISTS (
-                        SELECT 1
-                        FROM product_offers po
-                        JOIN product_finance_options pfo ON pfo.product_offer_id = po.id
-                        WHERE po.product_id = p.id
-                          AND pfo.eligibility_status = 'ELIGIBLE'
-                          AND pfo.monthly_payment IS NOT NULL
-                      ) THEN 0 ELSE 1 END,
-                      CASE WHEN COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
-                           THEN 0 ELSE 1 END,
+                      CASE
+                        WHEN p.category_id IS NOT NULL
+                         AND p.data_quality_status = 'READY'
+                         AND COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
+                         AND COALESCE(NULLIF(ma.cdn_url, ''), NULLIF(p.metadata->>'primary_cdn_url', ''))
+                             IS NOT NULL
+                        THEN 0 ELSE 1
+                      END,
                       p.id ASC
-                    LIMIT $1
-                    """,
+        """
+        async with self._pool.acquire() as conn:
+            if merchant_id is None:
+                rows = await conn.fetch(
+                    select_cols + order_eligible + "\n                    LIMIT $1\n                    ",
                     limit,
                 )
             else:
                 rows = await conn.fetch(
-                    """
-                    SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
-                           p.content_hash, p.data_quality_status, p.status, p.attributes,
-                           COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
-                           COALESCE(p.metadata->>'primary_media_status', ma.status)
-                             AS primary_media_status,
-                           p.metadata->>'pending_source_image_url' AS pending_source_image_url,
-                           ma.storage_key AS storage_key
-                    FROM products p
-                    LEFT JOIN product_media_links pml
-                      ON pml.product_id = p.id AND pml.is_primary = TRUE
-                    LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+                    select_cols
+                    + """
                     WHERE p.merchant_id = $1
-                    ORDER BY p.id ASC
-                    LIMIT $2
-                    """,
+                    """
+                    + order_eligible
+                    + "\n                    LIMIT $2\n                    ",
                     merchant_id,
                     limit,
                 )
@@ -755,39 +817,9 @@ class PostgresProductCatalogRepository:
         terms = [str(t).strip() for t in name_terms if t and str(t).strip()]
         if not terms:
             return await self.list_products(merchant_id=merchant_id, limit=limit)
-        # Match display_name, model, brand, category (attrs + joined tables).
+        # Fast path: ILIKE ANY on product name fields only.
+        # Avoid correlated brand_aliases / synonym scans (were timing out >25s on 180k rows).
         patterns = [f"%{t}%" for t in terms]
-        match_sql = """
-                      AND (
-                        SELECT bool_or(
-                          p.display_name ILIKE x
-                          OR COALESCE(p.normalized_name, '') ILIKE x
-                          OR COALESCE(p.model_number, '') ILIKE x
-                          OR COALESCE(p.attributes->>'brand', '') ILIKE x
-                          OR COALESCE(p.attributes->>'model', '') ILIKE x
-                          OR COALESCE(p.attributes->>'category', '') ILIKE x
-                          OR COALESCE(b.display_name, '') ILIKE x
-                          OR COALESCE(b.normalized_name, '') ILIKE x
-                          OR COALESCE(c.display_name, '') ILIKE x
-                          OR EXISTS (
-                            SELECT 1
-                            FROM unnest(COALESCE(c.synonyms, '{}'::text[])) AS syn
-                            WHERE syn ILIKE x
-                          )
-                          OR EXISTS (
-                            SELECT 1
-                            FROM brand_aliases ba
-                            WHERE ba.brand_id = b.id
-                              AND ba.status = 'ACTIVE'
-                              AND (
-                                ba.alias_text ILIKE x
-                                OR ba.normalized_alias ILIKE x
-                              )
-                          )
-                        )
-                        FROM unnest($PATTERNS$::text[]) AS x
-                      )
-        """
         select_cols = """
                     SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
                            p.model_number, p.brand_id, p.category_id,
@@ -798,33 +830,33 @@ class PostgresProductCatalogRepository:
                            p.metadata->>'pending_source_image_url' AS pending_source_image_url,
                            ma.storage_key AS storage_key
                     FROM products p
-                    LEFT JOIN brands b ON b.id = p.brand_id
-                    LEFT JOIN categories c ON c.id = p.category_id
                     LEFT JOIN product_media_links pml
                       ON pml.product_id = p.id AND pml.is_primary = TRUE
                     LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
+        """
+        eligible = """
+                    WHERE p.status = 'ACTIVE'
+                      AND p.data_quality_status = 'READY'
+                      AND p.category_id IS NOT NULL
+                      AND COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
+                      AND COALESCE(NULLIF(ma.cdn_url, ''), NULLIF(p.metadata->>'primary_cdn_url', ''))
+                          IS NOT NULL
+                      AND (
+                        p.display_name ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.normalized_name, '') ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.model_number, '') ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.attributes->>'brand', '') ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.attributes->>'model', '') ILIKE ANY($PATTERNS$::text[])
+                        OR COALESCE(p.attributes->>'category', '') ILIKE ANY($PATTERNS$::text[])
+                      )
         """
         async with self._pool.acquire() as conn:
             if merchant_id is None:
                 sql = (
                     select_cols
+                    + eligible.replace("$PATTERNS$", "$1")
                     + """
-                    WHERE p.status = 'ACTIVE'
-                    """
-                    + match_sql.replace("$PATTERNS$", "$1")
-                    + """
-                    ORDER BY
-                      CASE WHEN EXISTS (
-                        SELECT 1
-                        FROM product_offers po
-                        JOIN product_finance_options pfo ON pfo.product_offer_id = po.id
-                        WHERE po.product_id = p.id
-                          AND pfo.eligibility_status = 'ELIGIBLE'
-                          AND pfo.monthly_payment IS NOT NULL
-                      ) THEN 0 ELSE 1 END,
-                      CASE WHEN COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
-                           THEN 0 ELSE 1 END,
-                      p.id ASC
+                    ORDER BY p.id ASC
                     LIMIT $2
                     """
                 )
@@ -835,9 +867,19 @@ class PostgresProductCatalogRepository:
                     + """
                     WHERE p.merchant_id = $1
                       AND p.status = 'ACTIVE'
-                    """
-                    + match_sql.replace("$PATTERNS$", "$2")
-                    + """
+                      AND p.data_quality_status = 'READY'
+                      AND p.category_id IS NOT NULL
+                      AND COALESCE(p.metadata->>'primary_media_status', ma.status) = 'READY'
+                      AND COALESCE(NULLIF(ma.cdn_url, ''), NULLIF(p.metadata->>'primary_cdn_url', ''))
+                          IS NOT NULL
+                      AND (
+                        p.display_name ILIKE ANY($2::text[])
+                        OR COALESCE(p.normalized_name, '') ILIKE ANY($2::text[])
+                        OR COALESCE(p.model_number, '') ILIKE ANY($2::text[])
+                        OR COALESCE(p.attributes->>'brand', '') ILIKE ANY($2::text[])
+                        OR COALESCE(p.attributes->>'model', '') ILIKE ANY($2::text[])
+                        OR COALESCE(p.attributes->>'category', '') ILIKE ANY($2::text[])
+                      )
                     ORDER BY p.id ASC
                     LIMIT $3
                     """
@@ -845,11 +887,45 @@ class PostgresProductCatalogRepository:
                 rows = await conn.fetch(sql, merchant_id, patterns, limit)
         return tuple(_row_to_stored_product(row) for row in rows)
 
+    async def get_offers_for_products(
+        self, product_ids: Sequence[int]
+    ) -> dict[int, StoredOffer]:
+        ids = [int(x) for x in product_ids if x is not None]
+        if not ids:
+            return {}
+        async with self._pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT DISTINCT ON (product_id)
+                       id, product_id, merchant_id, current_price, currency,
+                       stock_status, content_hash, freshness_status
+                FROM product_offers
+                WHERE product_id = ANY($1::bigint[])
+                ORDER BY product_id, id DESC
+                """,
+                ids,
+            )
+        out: dict[int, StoredOffer] = {}
+        for row in rows:
+            pid = int(row["product_id"])
+            out[pid] = StoredOffer(
+                id=int(row["id"]),
+                product_id=pid,
+                merchant_id=int(row["merchant_id"]),
+                current_price=float(row["current_price"]),
+                currency=str(row["currency"]),
+                stock_status=str(row["stock_status"]),
+                content_hash=row["content_hash"],
+                freshness_status=str(row["freshness_status"]),
+            )
+        return out
+
     async def get_product(self, product_id: int) -> Optional[StoredProduct]:
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
                 """
                 SELECT p.id, p.merchant_id, p.external_product_id, p.display_name,
+                       p.model_number, p.brand_id, p.category_id,
                        p.content_hash, p.data_quality_status, p.status, p.attributes,
                        COALESCE(p.metadata->>'primary_cdn_url', ma.cdn_url) AS primary_cdn_url,
                        COALESCE(p.metadata->>'primary_media_status', ma.status)
