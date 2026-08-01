@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "mode": "read_only_transaction",
+  "captured_at": "2026-07-31T23:43:17.656985+00:00",
+  "snapshot": {
+    "snapshot_id": "5939e3b8e5e7a686",
+    "snapshot_created_at": "2026-07-31T23:43:17.657031+00:00",
+    "catalog_revision": "2026-07-31 23:39:30.847091+00:00",
+    "offer_revision": "offers=14341",
+    "finance_revision": "agreements=4,finance_opts=27293,payment_plans=0",
+    "campaign_revision": "campaigns_active=4"
+  },
+  "counts": {
+    "products_active": 14341,
+    "merchants_active": 26,
+    "brands_active": 301,
+    "categories_active": 9,
+    "offers": 14341,
+    "institutions": 4,
+    "financial_products": 2,
+    "agreements_active": 4,
+    "campaigns_active": 4,
+    "rate_snapshots": 7,
+    "payment_plans": 0,
+    "finance_options_eligible": 27293,
+    "media_ready": 9773,
+    "search_proj": 14341,
+    "entity_idx": 15202
+  },
+  "coverage": {
+    "primary_image_pct": 75.98,
+    "valid_product_url_pct": 100.0,
+    "fresh_price_pct": 100.0,
+    "stock_known_pct": 12.45,
+    "brand_pct": 11.2,
+    "category_pct": 0.45,
+    "attribute_pct": 13.88,
+    "finance_mapping_pct": 47.81,
+    "gallery_pct": 0.88,
+    "payment_plan_persisted_count": 0
+  },
+  "raw_coverage": {
+    "primary_img": 10896,
+    "valid_url": 14341,
+    "fresh": 14341,
+    "stock_known": 1785,
+    "brand": 1606,
+    "category": 64,
+    "attrs": 1990,
+    "with_finance": 6857,
+    "gallery": 126
+  },
+  "quality_projection": {
+    "PARTIAL": 13220,
+    "READY": 1119,
+    "REJECTED": 2
+  },
+  "campaign_verification_status": {
+    "UNVERIFIED": 5
+  },
+  "active_expired_campaigns": 0,
+  "active_campaigns_missing_source_reference": 0
+}

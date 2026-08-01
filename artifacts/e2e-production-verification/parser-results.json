@@ -1,0 +1,306 @@
+{
+  "lanes": {
+    "parser": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "parser"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"parser\", \"gate\": \"BOOTSTRAP\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-parser.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 2406.04
+      },
+      "gate": {
+        "status": "BOOTSTRAP",
+        "violations": [
+          "price_extraction_accuracy: 0.9424 < 0.98",
+          "clarification_accuracy: 0.3600 < 0.9",
+          "llm_routing_accuracy: 0.6844 < 0.95"
+        ],
+        "notes": [
+          "full ACCEPT deferred until DRAFT=0 and HUMAN_REVIEWED≥100 (ADR-005/013 bootstrap); hr=100 draft=900",
+          "warn:price_extraction_accuracy: 0.9424 < 0.98",
+          "warn:clarification_accuracy: 0.3600 < 0.9",
+          "warn:llm_routing_accuracy: 0.6844 < 0.95"
+        ],
+        "minimum_human_reviewed": 100,
+        "human_reviewed_count": 100,
+        "draft_count": 900,
+        "review_complete": false
+      },
+      "metrics": {
+        "case_count": 1000,
+        "human_reviewed_count": 100,
+        "merchant_precision": 1.0,
+        "institution_precision": 1.0,
+        "category_precision": 1.0,
+        "price_extraction_accuracy": 0.9424460431654677,
+        "term_extraction_accuracy": 1.0,
+        "negation_recall": 1.0,
+        "correction_recall": 1.0,
+        "clarification_accuracy": 0.36,
+        "llm_routing_accuracy": 0.6843783209351754,
+        "false_auto_resolution_count": 0,
+        "unnecessary_llm_on_fast_count": 0,
+        "unnecessary_llm_on_clarification_count": 0,
+        "support": {
+          "merchant": 376,
+          "institution": 136,
+          "category": 612,
+          "price": 278,
+          "term": 75,
+          "negation": 112,
+          "correction": 38,
+          "clarification": 250,
+          "llm_routing": 941
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "clarification": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "clarification"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"clarification\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-clarification.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 594.38
+      },
+      "gate": {
+        "status": "PASS",
+        "violations": [],
+        "notes": []
+      },
+      "metrics": {
+        "case_count": 1000,
+        "clarification_bucket_cases": 191,
+        "clarification_accuracy": 0.16230366492146597,
+        "llm_avoided_by_clarification_rate": 1.0,
+        "unnecessary_llm_on_clarification_count": 0,
+        "multi_question_violations": 0,
+        "support": {
+          "clarification": 191,
+          "avoidance": 191
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "perf": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "perf"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"perf\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-perf.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 2341.28
+      },
+      "gate": {
+        "status": "PASS",
+        "violations": [],
+        "notes": []
+      },
+      "metrics": {
+        "samples": 1000,
+        "parser_p50_ms": 1.8828124999999973,
+        "parser_p95_ms": 2.8659128000000695,
+        "parser_p99_ms": 3.6565296700000522,
+        "gap_p95_ms": 0.0041669999999438545,
+        "total_p95_ms": 2.8685829999999575,
+        "warm": true,
+        "support": {
+          "samples": 1000
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "shadow": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "shadow"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"shadow\", \"gate\": \"BOOTSTRAP\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-shadow.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 2298.32
+      },
+      "gate": {
+        "status": "BOOTSTRAP",
+        "violations": [],
+        "notes": [
+          "offline expected-vs-parser shadow smoke; live anonymous dual-run ≥1000 still open",
+          "diff_rate=0.393",
+          "route_diffs=335",
+          "merchant_diffs=0"
+        ]
+      },
+      "metrics": {
+        "case_count": 1000,
+        "compared": 1000,
+        "diff_rate": 0.393,
+        "route_diffs": 335,
+        "merchant_diffs": 0,
+        "category_diffs": 58,
+        "llm_routing_diffs": 100,
+        "support": {
+          "compared": 1000,
+          "with_diff": 393
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "product_data": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "product_data"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"product_data\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-product_data.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 226.11
+      },
+      "gate": {
+        "status": "PASS",
+        "violations": [],
+        "notes": []
+      },
+      "metrics": {
+        "total_rows": 100,
+        "by_merchant_type": {
+          "api_feed": 40,
+          "html_jsonld": 40,
+          "store_only": 20
+        },
+        "clean_rows": 76,
+        "known_defect_rows": 4,
+        "wrong_name": 0,
+        "wrong_price": 0,
+        "wrong_url": 0,
+        "wrong_variant": 0,
+        "broken_image_on_clean": 0,
+        "primary_image_coverage": 1.0,
+        "fresh_price_coverage": 0.9868421052631579,
+        "invented_products_on_store_only": 0,
+        "defect_detection_misses": 0,
+        "support": {
+          "clean": 76,
+          "known_bad": 4,
+          "store_only": 20
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "finance": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "finance"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"finance\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-finance.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 218.81
+      },
+      "gate": {
+        "status": "PASS",
+        "violations": [],
+        "notes": []
+      },
+      "metrics": {
+        "eligibility_cases": 12,
+        "eligibility_accuracy": 1.0,
+        "wrong_eligible_shown": 0,
+        "wrong_rejected": 0,
+        "expired_campaign_shown_active": 0,
+        "no_agreement_shown": 0,
+        "payment_cases": 10,
+        "wrong_monthly_payment": 0,
+        "wrong_total_repayment": 0,
+        "support": {
+          "eligibility": 12,
+          "payment": 10
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "bank_mapping": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "bank_mapping"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"bank_mapping\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-bank_mapping.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 220.27
+      },
+      "gate": {
+        "status": "PASS",
+        "violations": [],
+        "notes": []
+      },
+      "metrics": {
+        "row_count": 10,
+        "accuracy": 1.0,
+        "wrong_bank_mapping": 0,
+        "wrong_merchant_mapping": 0,
+        "expired_shown": 0,
+        "no_agreement_shown": 0,
+        "support": {
+          "rows": 10
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    },
+    "chaos": {
+      "runner": {
+        "cmd": [
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+          "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+          "--lane",
+          "chaos"
+        ],
+        "returncode": 0,
+        "stdout_tail": "{\"lane\": \"chaos\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-chaos.json\"}\n",
+        "stderr_tail": "",
+        "elapsed_ms": 225.8
+      },
+      "gate": {
+        "status": "PASS",
+        "violations": [],
+        "notes": []
+      },
+      "metrics": {
+        "scenario_count": 10,
+        "passed": 10,
+        "failed": 0,
+        "accuracy": 1.0,
+        "support": {
+          "scenarios": 10
+        }
+      },
+      "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+    }
+  },
+  "generated_at": "2026-07-31T23:44:38.942565+00:00"
+}

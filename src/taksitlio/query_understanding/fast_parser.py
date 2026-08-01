@@ -42,6 +42,8 @@ class FastParseResult:
     usage_contexts: list[str] = field(default_factory=list)
     preferences: list[str] = field(default_factory=list)
     confidence: float = 0.0
+    field_confidence: dict[str, float] = field(default_factory=dict)
+    route: str = "FAST_PATH"  # FAST_PATH | CLARIFICATION_REQUIRED | LLM_REQUIRED | UNSUPPORTED
     requires_llm: bool = False
     unresolved_spans: list[str] = field(default_factory=list)
     evidence: dict[str, Any] = field(default_factory=dict)
@@ -56,19 +58,47 @@ class FastParseResult:
                 "required": e.required,
             }
 
+        budget = self.budget
+        if isinstance(budget, dict) and "maximum" in budget and "type" not in budget:
+            budget = {**budget, "type": "TOTAL_MAXIMUM", "value": budget.get("maximum")}
+        elif isinstance(budget, dict) and budget.get("type") == "RANGE" and "maximum" in budget:
+            budget = {
+                **budget,
+                "type": "TOTAL_MAXIMUM",
+                "value": budget.get("maximum"),
+            }
+
         return {
             "intent": self.intent,
+            "entities": {
+                "merchants": [_ent(self.merchant)] if self.merchant else [],
+                "institutions": list(self.preferred_institutions),
+                "brands": [_ent(b) for b in self.brands],
+                "categories": [_ent(c) for c in self.positive_categories],
+                "products": [],
+            },
             "merchant": _ent(self.merchant) if self.merchant else None,
             "positive_categories": [_ent(c) for c in self.positive_categories],
             "negative_categories": [_ent(c) for c in self.negative_categories],
             "brands": [_ent(b) for b in self.brands],
-            "budget": self.budget,
+            "budget": budget if budget is not None else self.budget,
+            "terms": {
+                "type": "EXACT",
+                "values": list(self.requested_terms),
+            }
+            if self.requested_terms
+            else None,
             "attributes": list(self.attributes),
+            "negative_constraints": [_ent(c) for c in self.negative_categories],
+            "corrections": [],
             "requested_terms": list(self.requested_terms),
             "preferred_institutions": list(self.preferred_institutions),
             "usage_contexts": list(self.usage_contexts),
             "preferences": list(self.preferences),
             "confidence": self.confidence,
+            "overall_confidence": self.confidence,
+            "field_confidence": dict(self.field_confidence),
+            "route": self.route,
             "requires_llm": self.requires_llm,
             "unresolved_spans": list(self.unresolved_spans),
         }
@@ -463,6 +493,29 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
         conf = min(conf, 0.48)
     conf = max(0.0, min(0.99, conf))
 
+    field_confidence = {
+        "intent": 0.99 if intent else 0.5,
+        "merchant": float(merchant.confidence)
+        if merchant and merchant.resolved_id
+        else (float(merchant.confidence) if merchant else 0.0),
+        "category": max((c.confidence for c in positive_categories), default=0.0),
+        "brand": max((b.confidence for b in brands), default=0.0),
+        "institution": 0.95 if preferred_institutions else 0.0,
+        "budget": 1.0 if budget else 0.0,
+        "term": 1.0 if terms else 0.0,
+        "attributes": 1.0 if attributes else 0.0,
+    }
+    # Field confidences are independent — high merchant must not validate low institution.
+    route = "FAST_PATH"
+    if requires_llm:
+        route = "LLM_REQUIRED"
+    elif brands and not positive_categories:
+        route = "CLARIFICATION_REQUIRED"
+    elif not positive_categories and not brands and (usage or prefs):
+        route = "CLARIFICATION_REQUIRED"
+    elif merchant and not merchant.resolved_id and merchant.confidence >= 0.78:
+        route = "CLARIFICATION_REQUIRED"
+
     return FastParseResult(
         intent=intent,
         merchant=merchant if merchant and merchant.resolved_id else merchant,
@@ -476,6 +529,8 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
         usage_contexts=usage,
         preferences=prefs,
         confidence=conf,
+        field_confidence=field_confidence,
+        route=route,
         requires_llm=requires_llm,
         unresolved_spans=[] if positive_categories or brands else [text[:80]],
         evidence={"normalized": normalized, "neg_spans": neg_spans, "positive_text": positive_text[:120]},

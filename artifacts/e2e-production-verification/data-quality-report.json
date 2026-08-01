@@ -1,0 +1,25 @@
+{
+  "status": "PARTIAL",
+  "quality_projection": {
+    "PARTIAL": 13220,
+    "READY": 1119,
+    "REJECTED": 2
+  },
+  "coverage": {
+    "primary_image_pct": 75.98,
+    "valid_product_url_pct": 100.0,
+    "fresh_price_pct": 100.0,
+    "stock_known_pct": 12.45,
+    "brand_pct": 11.2,
+    "category_pct": 0.45,
+    "attribute_pct": 13.88,
+    "finance_mapping_pct": 47.81,
+    "gallery_pct": 0.88,
+    "payment_plan_persisted_count": 0
+  },
+  "active_expired_campaigns": 0,
+  "campaign_verification_status": {
+    "UNVERIFIED": 5
+  },
+  "note": "Batch HTTP image decode/reachability NOT run in this pass"
+}

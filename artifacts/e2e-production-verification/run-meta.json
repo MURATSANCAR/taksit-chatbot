@@ -1,0 +1,6 @@
+{
+  "run_id": "09abfc0c-91fe-45ba-bb23-77e145c2a7eb",
+  "finished_at": "2026-07-31T23:44:51.395019+00:00",
+  "decision": "PRODUCTION_E2E_NOT_READY",
+  "artifacts_dir": "artifacts/e2e-production-verification"
+}

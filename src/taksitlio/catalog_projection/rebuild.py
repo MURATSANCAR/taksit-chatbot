@@ -6,12 +6,14 @@ Projection tables are truncated and rebuilt — never mutate source rows.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Any, Mapping, Optional, Sequence
 
 from taksitlio.data_quality import (
     DataQualityStatus,
     ProductQualitySignals,
+    ProductQualityVerdict,
     score_product_quality,
 )
 from taksitlio.entity_resolution import EntityCandidate
@@ -144,8 +146,13 @@ class CatalogProjectionRepository:
                         ORDER BY po.updated_at DESC NULLS LAST, po.id DESC
                         LIMIT 1
                     ) o ON TRUE
-                    LEFT JOIN product_media_links pml
-                      ON pml.product_id = p.id AND pml.is_primary = TRUE
+                    LEFT JOIN LATERAL (
+                        SELECT pml.media_asset_id
+                        FROM product_media_links pml
+                        WHERE pml.product_id = p.id AND pml.is_primary = TRUE
+                        ORDER BY pml.id ASC
+                        LIMIT 1
+                    ) pml ON TRUE
                     LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
                     LEFT JOIN product_data_quality_projection q ON q.product_id = p.id
                     WHERE p.status = 'ACTIVE'
@@ -172,6 +179,7 @@ class CatalogProjectionRepository:
                     WHERE m.status = 'ACTIVE'
                     """,
                     catalog_revision,
+                    derive_code_aliases=True,
                 )
                 # Brands
                 total += await self._insert_entities(
@@ -186,19 +194,60 @@ class CatalogProjectionRepository:
                     """,
                     catalog_revision,
                 )
-                # Categories
-                total += await self._insert_entities(
-                    conn,
+                # Categories — synonyms[] on `categories` (V003); catalog_categories aliases are UUID-scoped
+                cat_rows = await conn.fetch(
                     """
-                    SELECT 'CATEGORY'::text, c.id::text, c.display_name, c.category_code,
-                           COALESCE(ca.alias_text, ''), c.status
-                    FROM categories c
-                    LEFT JOIN category_aliases ca
-                      ON ca.category_id = c.id AND ca.status = 'ACTIVE'
-                    WHERE c.status = 'ACTIVE'
-                    """,
-                    catalog_revision,
+                    SELECT id::text AS entity_id, display_name, category_code, synonyms, status
+                    FROM categories
+                    WHERE status = 'ACTIVE'
+                    """
                 )
+                cat_payload: list[tuple[Any, ...]] = []
+                cat_seen: set[tuple[str, str]] = set()
+                for crow in cat_rows:
+                    canonical = str(crow["display_name"] or crow["category_code"])
+                    norm_name = _norm(canonical)
+                    aliases = {str(crow["category_code"] or "")}
+                    for syn in crow["synonyms"] or []:
+                        if syn:
+                            aliases.add(str(syn))
+                    aliases.add("")
+                    for al in aliases:
+                        norm_alias = _norm(al) if al else ""
+                        key = (str(crow["entity_id"]), norm_alias)
+                        if key in cat_seen:
+                            continue
+                        cat_seen.add(key)
+                        cat_payload.append(
+                            (
+                                "CATEGORY",
+                                str(crow["entity_id"]),
+                                canonical,
+                                norm_name,
+                                al,
+                                norm_alias,
+                                catalog_revision,
+                                "ACTIVE",
+                            )
+                        )
+                if cat_payload:
+                    await conn.executemany(
+                        """
+                        INSERT INTO entity_search_index (
+                            entity_type, entity_id, canonical_name, normalized_name,
+                            alias, normalized_alias, catalog_revision, status, rebuilt_at
+                        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8, NOW())
+                        ON CONFLICT (entity_type, entity_id, normalized_alias) DO UPDATE SET
+                            canonical_name = EXCLUDED.canonical_name,
+                            normalized_name = EXCLUDED.normalized_name,
+                            alias = EXCLUDED.alias,
+                            catalog_revision = EXCLUDED.catalog_revision,
+                            status = EXCLUDED.status,
+                            rebuilt_at = NOW()
+                        """,
+                        cat_payload,
+                    )
+                    total += len(cat_payload)
                 # Financial institutions
                 total += await self._insert_entities(
                     conn,
@@ -245,7 +294,12 @@ class CatalogProjectionRepository:
                 return total
 
     async def _insert_entities(
-        self, conn: Any, select_sql: str, catalog_revision: int
+        self,
+        conn: Any,
+        select_sql: str,
+        catalog_revision: int,
+        *,
+        derive_code_aliases: bool = False,
     ) -> int:
         rows = await conn.fetch(select_sql)
         if not rows:
@@ -259,6 +313,12 @@ class CatalogProjectionRepository:
             canonical = str(display or code or entity_id)
             norm_name = _norm(canonical)
             aliases = {str(alias or "").strip(), str(code or "").strip()}
+            if derive_code_aliases:
+                code_s = str(code or "").strip()
+                if code_s.lower().startswith("m-") and len(code_s) > 2:
+                    aliases.add(code_s[2:])  # m-teknosa → teknosa (catalog-derived)
+                if canonical.lower().startswith("m-") and len(canonical) > 2:
+                    aliases.add(canonical[2:])
             aliases.discard("")
             aliases.add("")  # canonical-only row
             for al in aliases:
@@ -337,8 +397,13 @@ class CatalogProjectionRepository:
                     ORDER BY po.updated_at DESC NULLS LAST, po.id DESC
                     LIMIT 1
                 ) o ON TRUE
-                LEFT JOIN product_media_links pml
-                  ON pml.product_id = p.id AND pml.is_primary = TRUE
+                LEFT JOIN LATERAL (
+                    SELECT pml.media_asset_id
+                    FROM product_media_links pml
+                    WHERE pml.product_id = p.id AND pml.is_primary = TRUE
+                    ORDER BY pml.id ASC
+                    LIMIT 1
+                ) pml ON TRUE
                 LEFT JOIN media_assets ma ON ma.id = pml.media_asset_id
                 """
             )
@@ -401,7 +466,7 @@ class CatalogProjectionRepository:
                         flags["active_without_offer"],
                         flags["in_stock_without_price"],
                         flags["missing_price_updated_at"],
-                        dict(verdict.diagnostics),
+                        json.dumps(dict(verdict.diagnostics)),
                     )
                 )
             if batch:
@@ -416,7 +481,7 @@ class CatalogProjectionRepository:
                         active_without_offer, in_stock_without_price,
                         missing_price_updated_at, diagnostics, audited_at
                     ) VALUES (
-                        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22, NOW()
+                        $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22::jsonb, NOW()
                     )
                     """,
                     batch,
@@ -562,15 +627,13 @@ def _audit_row(
     # Soft flags for projection — do not escalate PARTIAL solely for missing brand/category
     if empty_name or missing_merchant or invalid_price or active_no_offer:
         if verdict.status == DataQualityStatus.READY:
-            from taksitlio.data_quality import ProductQualityVerdict
-
             verdict = ProductQualityVerdict(
                 status=DataQualityStatus.QUARANTINED,
                 score=min(verdict.score, 0.2),
                 reasons=tuple(
                     dict.fromkeys(
                         list(verdict.reasons)
-                        + ([ "empty_name"] if empty_name else [])
+                        + (["empty_name"] if empty_name else [])
                         + (["missing_merchant"] if missing_merchant else [])
                         + (["invalid_price"] if invalid_price else [])
                         + (["active_without_offer"] if active_no_offer else [])

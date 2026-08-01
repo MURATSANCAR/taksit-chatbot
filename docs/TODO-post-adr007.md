@@ -202,6 +202,32 @@ ADR: [`docs/adr/ADR-010-real-product-catalog-campaigns-and-fast-offers.md`](adr/
 - [ ] GPU LoRA train + live FAST eval (runbook P17)
 - [x] ADR-010 §80 metrics scaffold: `evaluation/_run_adr010_metrics_scaffold.py`
 
+## Open — TASK-ADR010-011-PROD (production catalog fast search) — first delivery
+
+Task brief: production catalog → projections → fast parse / fuzzy / clarification /
+search sessions / SSE / golden runner. **No new crawl / demo products.**
+
+### First delivery (2026-08-01)
+
+- [x] Production schema audit + field mapping
+- [x] Production data inventory (read-only on nanobase)
+- [x] Product data quality projection (source rows untouched)
+- [x] `V027` `product_search_projection` + `entity_search_index` + indexes
+- [x] Projection rebuild scripts (`audit_production_catalog`, `rebuild_catalog_projections`)
+- [x] Fast parser field_confidence + route envelope
+- [x] Dynamic fuzzy resolution (existing) wired to entity index loader
+- [x] Gap analyzer + clarification engine (existing)
+- [x] Search session/versioning + SSE contract (existing ADR-011)
+- [x] Golden test runner lanes (parser BOOTSTRAP; clarification/perf PASS)
+- [x] Report: `evaluation/reports/adr010-011-prod-first-delivery.md`
+
+### Second delivery (deferred)
+
+- [ ] Finance mapping in chatbot cards / payment plans / recommendation winners
+- [ ] Async LLM progressive UI completion on live traffic
+- [ ] Live shadow ≥1000 + retrieval P95 on production projection
+- [ ] Brand/category/stock coverage uplift (taxonomy; no hardcode)
+
 ## Open — ADR-011 clarification-first LLM routing + progressive search
 
 ADR: [`docs/adr/ADR-011-clarification-first-llm-routing-and-progressive-search.md`](adr/ADR-011-clarification-first-llm-routing-and-progressive-search.md)

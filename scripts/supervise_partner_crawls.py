@@ -2,6 +2,7 @@
 """Sequential durable partner crawl supervisor (ADR-010).
 
 Hard stop at TARGET_PRODUCTS (default 1_000_000) across crawler/feeds/live.
+Prioritizes high-yield / faster merchants; slow ones (n11, decathlon) last.
 
   nohup .venv-crawl/bin/python -u scripts/supervise_partner_crawls.py > /tmp/supervise-partners.log 2>&1 &
 """
@@ -21,20 +22,40 @@ FEED = ROOT / "crawler" / "feeds" / "live"
 
 TARGET_PRODUCTS = int(os.environ.get("CRAWL_GLOBAL_PRODUCT_CAP", "1000000"))
 
+# Fast / high-yield first; n11 & decathlon last (slow / WAF).
 QUEUE: list[tuple[str, float, int]] = [
-    ("flo", 0.12, 6),
+    ("trendyol", 0.25, 4),
+    ("mediamarkt", 0.1, 10),
+    ("dr", 0.1, 10),
+    ("civil", 0.12, 6),
+    ("network", 0.12, 6),
+    ("evofone", 0.15, 4),
     ("teknosa", 0.12, 6),
-    ("n11", 0.15, 4),
-    ("dr", 0.12, 8),
-    ("mediamarkt", 0.12, 8),
-    ("trendyol", 0.3, 3),
-    ("civil", 0.15, 4),
-    ("network", 0.15, 4),
+    ("flo", 0.12, 6),
     ("arcelik", 0.2, 3),
     ("beko", 0.2, 3),
     ("decathlon", 0.5, 2),
-    ("evofone", 0.2, 3),
+    ("n11", 0.15, 4),  # huge but slow — last
 ]
+
+# Skip merchant if feed already at/above this count (resume later rounds if needed).
+SKIP_IF_AT_LEAST: dict[str, int] = {
+    "flo": 150_000,
+    "teknosa": 7_000,
+    "network": 6_000,
+    "arcelik": 1_000,
+    "beko": 1_000,
+    "evofone": 100,
+    "vatan": 900,
+    "mediamarkt": 2_000,  # allow growth until 2k then skip
+    "dr": 2_000,
+    "trendyol": 50_000,  # keep growing TY hard
+    "civil": 500,
+    "n11": 10**12,  # always skip in normal rounds unless FORCE_N11=1
+    "decathlon": 10**12 if os.environ.get("FORCE_DECATHLON") != "1" else 0,
+}
+
+FORCE_N11 = os.environ.get("FORCE_N11", "").strip() in {"1", "true", "yes"}
 
 
 def feed_count(code: str) -> int:
@@ -65,8 +86,22 @@ def hit_target() -> bool:
     return False
 
 
+def should_skip(code: str) -> bool:
+    if code == "n11" and not FORCE_N11:
+        print(f"skip {code} (deferred — set FORCE_N11=1 to run)", flush=True)
+        return True
+    if code == "decathlon" and os.environ.get("FORCE_DECATHLON") != "1":
+        print(f"skip {code} (WAF — set FORCE_DECATHLON=1 to retry)", flush=True)
+        return True
+    thresh = SKIP_IF_AT_LEAST.get(code)
+    if thresh is not None and feed_count(code) >= thresh:
+        print(f"skip {code} (already {feed_count(code)} >= {thresh})", flush=True)
+        return True
+    return False
+
+
 def run_one(code: str, delay: float, workers: int) -> int:
-    if hit_target():
+    if hit_target() or should_skip(code):
         return 0
     LOG.mkdir(parents=True, exist_ok=True)
     log = LOG / f"supervise-{code}.log"
@@ -114,24 +149,11 @@ def run_one(code: str, delay: float, workers: int) -> int:
 def main() -> None:
     print(
         f"supervisor starting TARGET={TARGET_PRODUCTS} "
-        f"current={total_live_products()}",
+        f"current={total_live_products()} FORCE_N11={FORCE_N11}",
         flush=True,
     )
     if hit_target():
         return
-
-    # Wait for any in-flight FLO crawl (memory-safe single runner)
-    while True:
-        r = subprocess.run(
-            ["pgrep", "-f", "fetch_live_merchant_feeds.py --merchants flo"],
-            capture_output=True,
-        )
-        if r.returncode != 0:
-            break
-        print(f"  waiting FLO... total={total_live_products()}", flush=True)
-        if hit_target():
-            return
-        time.sleep(120)
 
     rounds = 0
     while rounds < 3:
@@ -142,15 +164,12 @@ def main() -> None:
         for code, delay, workers in QUEUE:
             if hit_target():
                 break
-            # Skip FLO if already near-complete from prior run
-            if code == "flo" and feed_count("flo") >= 200000:
-                print("skip flo (already large)", flush=True)
-                continue
             run_one(code, delay, workers)
             time.sleep(2)
         if hit_target():
             break
         log = LOG / "supervise-c4ai.log"
+        print("=== crawl4ai hepsiburada,vivense,koctas ===", flush=True)
         with log.open("a", encoding="utf-8") as fh:
             subprocess.run(
                 [

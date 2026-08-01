@@ -1,0 +1,69 @@
+{
+  "finance": {
+    "runner": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+        "--lane",
+        "finance"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\"lane\": \"finance\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-finance.json\"}\n",
+      "stderr_tail": "",
+      "elapsed_ms": 218.81
+    },
+    "gate": {
+      "status": "PASS",
+      "violations": [],
+      "notes": []
+    },
+    "metrics": {
+      "eligibility_cases": 12,
+      "eligibility_accuracy": 1.0,
+      "wrong_eligible_shown": 0,
+      "wrong_rejected": 0,
+      "expired_campaign_shown_active": 0,
+      "no_agreement_shown": 0,
+      "payment_cases": 10,
+      "wrong_monthly_payment": 0,
+      "wrong_total_repayment": 0,
+      "support": {
+        "eligibility": 12,
+        "payment": 10
+      }
+    },
+    "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+  },
+  "fixture_bound": true,
+  "bank_mapping": {
+    "runner": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+        "--lane",
+        "bank_mapping"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\"lane\": \"bank_mapping\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-bank_mapping.json\"}\n",
+      "stderr_tail": "",
+      "elapsed_ms": 220.27
+    },
+    "gate": {
+      "status": "PASS",
+      "violations": [],
+      "notes": []
+    },
+    "metrics": {
+      "row_count": 10,
+      "accuracy": 1.0,
+      "wrong_bank_mapping": 0,
+      "wrong_merchant_mapping": 0,
+      "expired_shown": 0,
+      "no_agreement_shown": 0,
+      "support": {
+        "rows": 10
+      }
+    },
+    "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+  }
+}

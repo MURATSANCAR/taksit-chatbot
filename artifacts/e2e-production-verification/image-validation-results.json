@@ -1,0 +1,5 @@
+{
+  "status": "NOT_VERIFIED",
+  "reason": "No HTTP content-type/decode batch against CDN in this run",
+  "captured_at": "2026-07-31T23:43:07.157761+00:00"
+}

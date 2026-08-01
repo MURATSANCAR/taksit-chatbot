@@ -14,11 +14,32 @@ from taksitlio.understanding.fast.schema_utils import (
     validate_need_profile,
 )
 
-DEFAULT_SYSTEM_PROMPT = (
-    "Türkçe alışveriş ihtiyacını NeedProfile JSON olarak çıkar. "
-    "Merchant, banka veya katalog fixture kimliği uydurma. "
-    "Yalnızca geçerli NeedProfile JSON üret."
-)
+# Keep aligned with FAST remote extractor (constraint-boost): HR100 scores
+# semantic_constraints.positive/negative, not category_hint preferences alone.
+DEFAULT_SYSTEM_PROMPT = """You extract Turkish purchase needs as one compact JSON object only (NeedProfile).
+Rules:
+- Output minified JSON on one logical object: no markdown, no pretty-print, no extra whitespace.
+- Keep need_description <= 120 chars; keep arrays short (prefer empty over filler).
+- Never emit category IDs, fixture keys, or UUIDs.
+- Never invent facts not present in the user utterance (no external knowledge).
+- Do not answer general chat, weather, homework, translation, politics, or open-world Q&A;
+  set intent.type=OUT_OF_SCOPE for those.
+- intent: {type, confidence}; type enum PRODUCT_PURCHASE|COMPARE_OPTIONS|BUDGET_INQUIRY|INSTALLMENT_INQUIRY|OUT_OF_SCOPE|CLARIFICATION_RESPONSE|OTHER
+- need_description: short Turkish string from the utterance
+- budget: {type, value, minimum, maximum, monthly_payment, currency}; type UNKNOWN/EXACT/APPROXIMATE/RANGE/MONTHLY_PAYMENT; currency TRY; unused numerics null
+- preferences: [{concept, importance}] — positive wants only
+- usage_context: string array (usually empty)
+- entities: [{type, value, confidence?}]
+- ambiguities: [{code, description}] (usually empty)
+- clarification: {required, question_intent}
+- confidence: 0..1
+- semantic_constraints: {positive, negative, corrections} each [{concept, provenance, weight?}]; provenance EXPLICIT|INFERRED|EXPLICIT_NEGATION|USER_CORRECTION|SESSION_CONTEXT
+CRITICAL for Turkish utterances:
+- Every wanted product/concept MUST appear in semantic_constraints.positive with provenance EXPLICIT.
+- Every rejected/excluded product (istemiyorum, değil, boşver, yerine) MUST appear in semantic_constraints.negative with provenance EXPLICIT_NEGATION.
+- If the user corrects (yanlış, demedim, özür, değil X lazım Y): add corrections with previous_concept+replacement_concept when possible; also put Y in positive and X in negative.
+- Put exclusions ONLY in semantic_constraints.negative — never as low-importance preferences.
+No markdown."""
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 _DEFAULT_GOLDEN = _REPO_ROOT / "eval" / "golden" / "tr_need_understanding.jsonl"
@@ -48,12 +69,21 @@ def need_profile_from_golden_expected(
             "currency": budget_in.get("currency") or "TRY",
         }
     prefs: list[dict[str, Any]] = []
+    positive: list[dict[str, Any]] = []
     for concept in expected.get("preferences") or []:
-        prefs.append({"concept": str(concept), "importance": 0.8})
+        c = str(concept)
+        prefs.append({"concept": c, "importance": 0.8})
+        positive.append({"concept": c, "provenance": "EXPLICIT", "weight": 0.8})
     hint = expected.get("category_hint")
     if hint:
         # Opaque concept label only — not a DB category id.
         prefs.append({"concept": f"category_hint:{hint}", "importance": 0.7})
+        # Surface concept for constraint recall (lowercase hint token).
+        surface = str(hint).strip().lower().replace("_", " ")
+        if surface and not any(p["concept"] == surface for p in positive):
+            positive.append(
+                {"concept": surface, "provenance": "EXPLICIT", "weight": 0.7}
+            )
     profile["preferences"] = prefs
     if expected.get("clarify"):
         profile["clarification"] = {
@@ -69,6 +99,11 @@ def need_profile_from_golden_expected(
     signals = expected.get("signals")
     if isinstance(signals, Mapping) and signals:
         profile["signals"] = dict(signals)
+    profile["semantic_constraints"] = {
+        "positive": positive,
+        "negative": [],
+        "corrections": [],
+    }
     profile["confidence"] = 0.9 if intent != "OUT_OF_SCOPE" else 0.95
     validate_need_profile(profile)
     return profile
@@ -214,7 +249,16 @@ def iter_hr_validation_sft_rows(
     *,
     limit: Optional[int] = None,
     human_reviewed_only: bool = True,
+    draft_only: bool = False,
+    exclude_human_reviewed: bool = False,
 ) -> Iterator[dict[str, Any]]:
+    """Export HR/validation rows as SFT.
+
+    For honest HR100 eval, prefer ``draft_only=True`` (or
+    ``exclude_human_reviewed=True``) so HUMAN_REVIEWED val cases are not
+    memorized during train.
+    """
+
     src = path or _DEFAULT_HR
     n = 0
     with src.open(encoding="utf-8") as fh:
@@ -224,13 +268,23 @@ def iter_hr_validation_sft_rows(
                 continue
             row = json.loads(line)
             status = ((row.get("annotation") or {}).get("status") or "").upper()
-            if human_reviewed_only and status != "HUMAN_REVIEWED":
+            if draft_only and status != "DRAFT":
                 continue
+            if exclude_human_reviewed and status == "HUMAN_REVIEWED":
+                continue
+            if human_reviewed_only and not draft_only and not exclude_human_reviewed:
+                if status != "HUMAN_REVIEWED":
+                    continue
             utterance = str(row.get("utterance") or "")
             case_id = str(row.get("case_id") or f"hr-{n}")
             profile = need_profile_from_hr_constraints(
                 utterance, row.get("semantic_constraints") or {}
             )
+            # Hold out *val* HUMAN_REVIEWED for eval; drafts may train.
+            if status == "HUMAN_REVIEWED" and "val" in case_id:
+                split = "eval"
+            else:
+                split = "train"
             yield build_sft_row(
                 case_id=case_id,
                 utterance=utterance,
@@ -238,7 +292,7 @@ def iter_hr_validation_sft_rows(
                 source_path=str(src.as_posix()),
                 annotation_status="HUMAN_REVIEWED" if status == "HUMAN_REVIEWED" else "DRAFT",
                 locale=str(row.get("locale") or "tr-TR"),
-                split="eval" if "val" in case_id else "train",
+                split=split,
             )
             n += 1
             if limit is not None and n >= limit:

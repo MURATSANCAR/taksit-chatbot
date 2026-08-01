@@ -1,0 +1,396 @@
+{
+  "generated_at": "2026-07-31T23:37:24.540262+00:00",
+  "counts": {
+    "categories": 9,
+    "merchants": 26,
+    "merchants_active": 26,
+    "brand_aliases": 301,
+    "merchant_aliases": 0,
+    "financial_institutions": 4,
+    "brands": 301,
+    "finance_campaigns": 5,
+    "product_media_links": 10804,
+    "media_variants": 11526,
+    "product_offers": 14341,
+    "media_assets": 9673,
+    "products_active": 14341,
+    "products": 14341
+  },
+  "coverage": {
+    "primary_image_pct": 73.95,
+    "primary_image_ge600_pct": 40.39,
+    "gallery_image_pct": 0.88,
+    "valid_product_url_pct": 100.0,
+    "fresh_price_pct": 99.71,
+    "stock_available_pct": 12.4,
+    "brand_pct": 11.17,
+    "category_pct": 0.44,
+    "attribute_pct": 13.84,
+    "positive_price_pct": 99.71
+  },
+  "raw_coverage_counts": {
+    "active_products": 14383,
+    "with_brand": 1606,
+    "with_category": 64,
+    "with_valid_url": 14383,
+    "with_attributes": 1990,
+    "in_stock": 1783,
+    "fresh_price": 14341,
+    "positive_price": 14341,
+    "primary_image": 10636,
+    "primary_ge600": 5809,
+    "with_gallery": 126
+  },
+  "quality_scan": {
+    "products": {
+      "empty_name": 0,
+      "no_merchant": 0,
+      "no_brand": 12735,
+      "no_category": 14277,
+      "bad_or_missing_url": 0,
+      "invalid_gtin_format": 1
+    },
+    "offers": {
+      "nonpositive_price": 0,
+      "bad_currency": 0,
+      "stock_no_price": 0
+    },
+    "media": {
+      "broken_or_quarantined": 120,
+      "non_image_mime": 0,
+      "below_600": 4355
+    }
+  },
+  "merchants": [
+    {
+      "id": 11,
+      "merchant_code": "m-teknosa",
+      "display_name": "m-teknosa",
+      "status": "ACTIVE",
+      "active_products": 7399
+    },
+    {
+      "id": 15,
+      "merchant_code": "m-arcelik",
+      "display_name": "m-arcelik",
+      "status": "ACTIVE",
+      "active_products": 1244
+    },
+    {
+      "id": 16,
+      "merchant_code": "m-beko",
+      "display_name": "m-beko",
+      "status": "ACTIVE",
+      "active_products": 1163
+    },
+    {
+      "id": 5,
+      "merchant_code": "m-vatan",
+      "display_name": "m-vatan",
+      "status": "ACTIVE",
+      "active_products": 1003
+    },
+    {
+      "id": 8,
+      "merchant_code": "m-mediamarkt",
+      "display_name": "MediaMarkt",
+      "status": "ACTIVE",
+      "active_products": 892
+    },
+    {
+      "id": 19,
+      "merchant_code": "m-n11",
+      "display_name": "m-n11",
+      "status": "ACTIVE",
+      "active_products": 850
+    },
+    {
+      "id": 23,
+      "merchant_code": "m-dr",
+      "display_name": "D&R",
+      "status": "ACTIVE",
+      "active_products": 750
+    },
+    {
+      "id": 20,
+      "merchant_code": "m-trendyol",
+      "display_name": "m-trendyol",
+      "status": "ACTIVE",
+      "active_products": 200
+    },
+    {
+      "id": 22,
+      "merchant_code": "m-flo",
+      "display_name": "m-flo",
+      "status": "ACTIVE",
+      "active_products": 200
+    },
+    {
+      "id": 29,
+      "merchant_code": "m-network",
+      "display_name": "m-network",
+      "status": "ACTIVE",
+      "active_products": 200
+    },
+    {
+      "id": 21,
+      "merchant_code": "m-vivense",
+      "display_name": "m-vivense",
+      "status": "ACTIVE",
+      "active_products": 130
+    },
+    {
+      "id": 40,
+      "merchant_code": "m-evofone",
+      "display_name": "m-evofone",
+      "status": "ACTIVE",
+      "active_products": 130
+    },
+    {
+      "id": 14,
+      "merchant_code": "m-koctas",
+      "display_name": "Koçtaş",
+      "status": "ACTIVE",
+      "active_products": 115
+    },
+    {
+      "id": 18,
+      "merchant_code": "m-hepsiburada",
+      "display_name": "m-hepsiburada",
+      "status": "ACTIVE",
+      "active_products": 57
+    },
+    {
+      "id": 24,
+      "merchant_code": "m-civil",
+      "display_name": "m-civil",
+      "status": "ACTIVE",
+      "active_products": 8
+    },
+    {
+      "id": 1,
+      "merchant_code": "DEMO_TECH",
+      "display_name": "Demo Teknoloji Mağazası",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 2,
+      "merchant_code": "DEMO_HOME",
+      "display_name": "Demo Ev Mağazası",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 17,
+      "merchant_code": "m-decathlon",
+      "display_name": "Decathlon",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 25,
+      "merchant_code": "m-fujifilm",
+      "display_name": "Fujifilm",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 26,
+      "merchant_code": "m-gurgenciler",
+      "display_name": "Gürgençler",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 27,
+      "merchant_code": "m-ets",
+      "display_name": "ETS",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 28,
+      "merchant_code": "m-generalmobile",
+      "display_name": "General Mobile",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 30,
+      "merchant_code": "m-setur",
+      "display_name": "Setur",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 31,
+      "merchant_code": "m-troy",
+      "display_name": "Troy",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 32,
+      "merchant_code": "m-vivo",
+      "display_name": "Vivo",
+      "status": "ACTIVE",
+      "active_products": 0
+    },
+    {
+      "id": 33,
+      "merchant_code": "m-zuhalmuzik",
+      "display_name": "Zuhal Müzik",
+      "status": "ACTIVE",
+      "active_products": 0
+    }
+  ],
+  "field_mapping": [
+    {
+      "concept": "product_id",
+      "table": "products",
+      "column": "id",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "merchant_id",
+      "table": "products",
+      "column": "merchant_id",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "external_product_id",
+      "table": "products",
+      "column": "external_product_id",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "merchant_sku",
+      "table": "products",
+      "column": "merchant_sku",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "gtin/ean",
+      "table": "products",
+      "column": "gtin / ean",
+      "quality": "SPARSE",
+      "gap": "Most rows null",
+      "suggested_change": "Backfill from feeds when present; no invent"
+    },
+    {
+      "concept": "brand",
+      "table": "products / brands",
+      "column": "brand_id",
+      "quality": "LOW_COVERAGE",
+      "gap": "~11% linked",
+      "suggested_change": "Taxonomy bridge + brand upsert from attributes"
+    },
+    {
+      "concept": "category",
+      "table": "products / categories",
+      "column": "category_id",
+      "quality": "VERY_LOW",
+      "gap": "<1% linked",
+      "suggested_change": "Feed taxonomy → categories mapping (no hardcode)"
+    },
+    {
+      "concept": "product title",
+      "table": "products",
+      "column": "display_name",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "description",
+      "table": "products",
+      "column": "short_description / full_description",
+      "quality": "UNKNOWN",
+      "gap": "Not required for first-card path",
+      "suggested_change": null
+    },
+    {
+      "concept": "attributes",
+      "table": "products",
+      "column": "attributes JSONB",
+      "quality": "PARTIAL",
+      "gap": "~14% non-empty",
+      "suggested_change": "Normalize into product_attribute_values later"
+    },
+    {
+      "concept": "current price",
+      "table": "product_offers",
+      "column": "current_price",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "list price",
+      "table": "product_offers",
+      "column": "list_price",
+      "quality": "SPARSE",
+      "gap": "Often null",
+      "suggested_change": null
+    },
+    {
+      "concept": "stock status",
+      "table": "product_offers",
+      "column": "stock_status",
+      "quality": "MOSTLY_UNKNOWN",
+      "gap": "Majority UNKNOWN",
+      "suggested_change": "Feed stock capability; do not invent AVAILABLE"
+    },
+    {
+      "concept": "product URL",
+      "table": "products",
+      "column": "source_url",
+      "quality": "OK_FORMAT",
+      "gap": "Live HTTP reachability not batch-probed in this pass",
+      "suggested_change": "Optional async URL probe job (separate task)"
+    },
+    {
+      "concept": "primary image",
+      "table": "product_media_links + media_assets",
+      "column": "is_primary / cdn_url",
+      "quality": "GOOD",
+      "gap": "~24% missing primary; many <600px",
+      "suggested_change": "Quality projection flags; no re-download in this task"
+    },
+    {
+      "concept": "gallery images",
+      "table": "product_media_links",
+      "column": "is_primary=false",
+      "quality": "SPARSE",
+      "gap": "Few non-primary links",
+      "suggested_change": null
+    },
+    {
+      "concept": "source updated time",
+      "table": "products",
+      "column": "source_updated_at",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    },
+    {
+      "concept": "last verified time",
+      "table": "products / product_offers",
+      "column": "last_verified_at",
+      "quality": "OK",
+      "gap": null,
+      "suggested_change": null
+    }
+  ],
+  "mode": "read_only",
+  "write_projections": false
+}

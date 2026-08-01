@@ -1,0 +1,32 @@
+{
+  "chaos": {
+    "runner": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+        "--lane",
+        "chaos"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\"lane\": \"chaos\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-chaos.json\"}\n",
+      "stderr_tail": "",
+      "elapsed_ms": 225.8
+    },
+    "gate": {
+      "status": "PASS",
+      "violations": [],
+      "notes": []
+    },
+    "metrics": {
+      "scenario_count": 10,
+      "passed": 10,
+      "failed": 0,
+      "accuracy": 1.0,
+      "support": {
+        "scenarios": 10
+      }
+    },
+    "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+  },
+  "fixture_bound": true
+}

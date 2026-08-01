@@ -1,0 +1,35 @@
+{
+  "perf": {
+    "runner": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/_run_query_golden_v1.py",
+        "--lane",
+        "perf"
+      ],
+      "returncode": 0,
+      "stdout_tail": "{\"lane\": \"perf\", \"gate\": \"PASS\", \"out\": \"/Users/msancar/Documents/GitHub/Fibabank_Chatbot/evaluation/reports/query-golden-v1-perf.json\"}\n",
+      "stderr_tail": "",
+      "elapsed_ms": 2341.28
+    },
+    "gate": {
+      "status": "PASS",
+      "violations": [],
+      "notes": []
+    },
+    "metrics": {
+      "samples": 1000,
+      "parser_p50_ms": 1.8828124999999973,
+      "parser_p95_ms": 2.8659128000000695,
+      "parser_p99_ms": 3.6565296700000522,
+      "gap_p95_ms": 0.0041669999999438545,
+      "total_p95_ms": 2.8685829999999575,
+      "warm": true,
+      "support": {
+        "samples": 1000
+      }
+    },
+    "fixture_note": "Query Golden uses TEST catalog fixtures unless staging dataset is bound; not a live production ID golden"
+  },
+  "fixture_bound": true
+}

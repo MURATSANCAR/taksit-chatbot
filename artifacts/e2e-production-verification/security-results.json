@@ -1,0 +1,5 @@
+{
+  "status": "NOT_VERIFIED",
+  "reason": "Injection unit tests only; full authz/SSE hijack suite NOT_VERIFIED",
+  "captured_at": "2026-07-31T23:43:07.159588+00:00"
+}

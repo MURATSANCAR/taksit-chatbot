@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "needle_literal_hits_in_non_test": [],
+  "static_map_pattern_hits": [],
+  "note": "Generic fuzzy resolution required; static typo maps forbidden"
+}

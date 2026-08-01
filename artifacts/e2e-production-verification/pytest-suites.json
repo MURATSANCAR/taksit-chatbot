@@ -1,0 +1,139 @@
+{
+  "entity_resolution": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/entity_resolution",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": "....                                                                     [100%]\n4 passed in 0.10s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 327.74
+    }
+  },
+  "search_sessions_routing": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/search_sessions/test_adr011_routing.py",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": ".......s....                                                             [100%]\n11 passed, 1 skipped in 0.61s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 885.11
+    }
+  },
+  "search_sessions_gates": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/acceptance/search_sessions",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": ".....                                                                    [100%]\n5 passed in 0.21s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 423.98
+    }
+  },
+  "payment_plan": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/payment_plan",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": "......                                                                   [100%]\n6 passed in 0.04s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 230.84
+    }
+  },
+  "claim_validation": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/claim_validation",
+        "tests/unit/answer_integrity",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": ".....................................                                    [100%]\n37 passed in 0.34s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 587.72
+    }
+  },
+  "recommendation_safety": {
+    "status": "FAIL",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/recommendation_safety",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 5,
+      "stdout_tail": "\nno tests ran in 0.01s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 193.28
+    }
+  },
+  "query_golden_fuzzy": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/acceptance/query_golden",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": "...                                                                      [100%]\n3 passed in 0.10s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 303.55
+    }
+  },
+  "progress_messages": {
+    "status": "PASS",
+    "result": {
+      "cmd": [
+        "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/unit/search_sessions",
+        "-q",
+        "--tb=line"
+      ],
+      "returncode": 0,
+      "stdout_tail": "......s..............s..................s                                [100%]\n38 passed, 3 skipped in 0.66s\n",
+      "stderr_tail": "",
+      "elapsed_ms": 963.91
+    }
+  }
+}
