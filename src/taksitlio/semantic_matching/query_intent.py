@@ -207,6 +207,8 @@ _PRODUCT_DOMAIN_NOUNS = (
     "konsol",
     "playstation",
     "xbox",
+    "ayakkab",
+    "sneaker",
     "ürün",
     "urun",
     "taksit",

@@ -1,0 +1,54 @@
+[
+  {
+    "code": "m-beko",
+    "merchant_id": 16,
+    "products_scanned": 1007,
+    "category_fixed": 58,
+    "brand_fixed": 0,
+    "media_promoted": 0,
+    "methods": {
+      "existing_taxonomy_from_url_breadcrumb": 58
+    },
+    "shared_url_taxonomy_roots": [
+      "hoparlor",
+      "kulaklik"
+    ],
+    "skipped_product_slug_token_lookups": 1620,
+    "synonym_index_size": 7221,
+    "note": "Categories only from structured attrs or shared URL breadcrumb roots matching existing taxonomy; no product-slug invention",
+    "captured_at": "2026-08-01T14:13:17.725020+00:00"
+  },
+  {
+    "code": "m-arcelik",
+    "merchant_id": 15,
+    "products_scanned": 1176,
+    "category_fixed": 60,
+    "brand_fixed": 0,
+    "media_promoted": 0,
+    "methods": {
+      "existing_taxonomy_from_url_breadcrumb": 60
+    },
+    "shared_url_taxonomy_roots": [
+      "hoparlor",
+      "kulaklik"
+    ],
+    "skipped_product_slug_token_lookups": 2024,
+    "synonym_index_size": 7221,
+    "note": "Categories only from structured attrs or shared URL breadcrumb roots matching existing taxonomy; no product-slug invention",
+    "captured_at": "2026-08-01T14:13:18.163063+00:00"
+  },
+  {
+    "code": "m-koctas",
+    "merchant_id": 14,
+    "products_scanned": 115,
+    "category_fixed": 0,
+    "brand_fixed": 0,
+    "media_promoted": 0,
+    "methods": {},
+    "shared_url_taxonomy_roots": [],
+    "skipped_product_slug_token_lookups": 0,
+    "synonym_index_size": 7221,
+    "note": "Categories only from structured attrs or shared URL breadcrumb roots matching existing taxonomy; no product-slug invention",
+    "captured_at": "2026-08-01T14:13:18.415956+00:00"
+  }
+]

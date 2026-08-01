@@ -1,0 +1,18 @@
+{
+  "rows": 1810,
+  "status_counts": {
+    "READY_FOR_SEARCH": 1390,
+    "PARTIAL": 419,
+    "BLOCKED": 1
+  },
+  "policy_version": "1",
+  "merchant_ids": [
+    5,
+    18,
+    23
+  ],
+  "brand_not_applicable_category_ids": [
+    23
+  ],
+  "captured_at": "2026-08-01T14:27:36.721090+00:00"
+}

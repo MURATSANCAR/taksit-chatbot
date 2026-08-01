@@ -1,0 +1,12 @@
+{
+  "ready_merchant_count": 2,
+  "ready_active_product_count": 1060,
+  "ready_search_demand_coverage": "NOT_VERIFIED",
+  "finance_ready_product_count": 0,
+  "search_ready_product_count": "pending_rebuild",
+  "minimum_total_ready_products_policy": 500,
+  "minimum_medium_or_high_volume_merchant_count_policy": 1,
+  "minimum_finance_ready_products_policy": 0,
+  "medium_high_volume_ready_merchants": 1,
+  "pass": false
+}

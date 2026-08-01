@@ -1,0 +1,82 @@
+{
+  "before_ready": [
+    [
+      "m-vatan",
+      1003
+    ],
+    [
+      "m-hepsiburada",
+      57
+    ]
+  ],
+  "after_ready": [
+    [
+      "m-vatan",
+      1003
+    ],
+    [
+      "m-hepsiburada",
+      57
+    ]
+  ],
+  "recompute": {
+    "snapshots_written": 15,
+    "status_counts": {
+      "READY": 2,
+      "PARTIAL": 9,
+      "BLOCKED": 4
+    }
+  },
+  "selected": {
+    "merchant_id": 23,
+    "merchant_code": "m-dr",
+    "active_products": 750,
+    "status": "BLOCKED",
+    "metrics": {
+      "category_coverage": 0.1147,
+      "brand_coverage": 0.012,
+      "attribute_coverage": 0.012,
+      "card_media_coverage": 0.46,
+      "fresh_price_coverage": 1.0,
+      "valid_url_coverage": 1.0,
+      "finance_coverage": 0.0
+    },
+    "gaps": {
+      "category_gap": 626,
+      "media_gap": 367,
+      "brand_gap": 666,
+      "attribute_gap": 666,
+      "price_gap": 0,
+      "url_gap": 0
+    },
+    "source_availability": {
+      "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+      "brand": "SOURCE_AVAILABLE_IN_ATTRIBUTES",
+      "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+    },
+    "feed": {
+      "feed_n": 750,
+      "sample": 750,
+      "cat_field": 9,
+      "brand": 9,
+      "img": 345,
+      "attrs_cat": 0,
+      "attrs_brand": 0,
+      "url_taxonomy_roots": {
+        "kitap": 740,
+        "elektronik": 7,
+        "muzik": 3
+      },
+      "url_taxonomy_coverage": 1.0
+    },
+    "estimated_recoverable_count": 1659,
+    "unrecoverable_count": 0,
+    "activation_gap_score": 2317.5,
+    "reasons": [
+      "category_coverage_below_threshold",
+      "brand_coverage_below_threshold",
+      "attribute_coverage_below_threshold",
+      "card_media_coverage_below_threshold"
+    ]
+  }
+}

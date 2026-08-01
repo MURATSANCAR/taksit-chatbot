@@ -1,0 +1,293 @@
+{
+  "classes": {
+    "APPLICATION_EXCEPTION": 80
+  },
+  "successful_request_rate": 0.0,
+  "ok_samples": 0,
+  "ok_p95_ms": null,
+  "details": [
+    {
+      "test_case_id": "p33-0",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.49,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-1",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.46,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-2",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.88,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-3",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.84,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-4",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.12,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-5",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 5.63,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-6",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 12.29,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-7",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.1,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-8",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.5,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-9",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.49,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-10",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.48,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-11",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 3.1,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-12",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.98,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-13",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.82,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-14",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.14,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-15",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.99,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-16",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.99,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-17",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.05,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-18",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.04,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-19",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.89,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-20",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.21,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-21",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.23,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-22",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 2.06,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-23",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.15,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-24",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.84,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-25",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.85,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-26",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.2,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-27",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.83,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-28",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.82,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-29",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.8,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-30",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.81,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-31",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.79,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-32",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.07,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-33",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.79,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-34",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.8,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-35",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.78,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-36",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.79,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-37",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.78,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-38",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 0.79,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    },
+    {
+      "test_case_id": "p33-39",
+      "http_status": 422,
+      "class": "APPLICATION_EXCEPTION",
+      "duration_ms": 1.06,
+      "body_excerpt": "HTTP Error 422: Unprocessable Entity"
+    }
+  ],
+  "note": "Requested 80 < 700 minimum for INTERNAL smoke gate",
+  "requested": 80,
+  "pass": false
+}

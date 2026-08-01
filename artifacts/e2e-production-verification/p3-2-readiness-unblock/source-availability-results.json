@@ -1,0 +1,77 @@
+{
+  "m-flo": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-teknosa": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_NOT_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-network": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-arcelik": {
+    "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+    "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-beko": {
+    "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+    "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-trendyol": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-vatan": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-mediamarkt": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_NOT_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-n11": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-dr": {
+    "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+    "brand": "SOURCE_AVAILABLE_IN_ATTRIBUTES",
+    "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+  },
+  "m-vivense": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-evofone": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-koctas": {
+    "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+    "brand": "SOURCE_NOT_AVAILABLE",
+    "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+  },
+  "m-hepsiburada": {
+    "category": "SOURCE_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  },
+  "m-civil": {
+    "category": "SOURCE_NOT_AVAILABLE",
+    "brand": "SOURCE_AVAILABLE",
+    "media": "SOURCE_AVAILABLE"
+  }
+}

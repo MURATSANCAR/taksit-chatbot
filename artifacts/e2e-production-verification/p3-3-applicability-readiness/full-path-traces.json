@@ -1,0 +1,20 @@
+{
+  "status": "PARTIAL",
+  "required_spans": [
+    "search.http",
+    "search.session",
+    "query.parse",
+    "entity.resolve",
+    "product.retrieve",
+    "constraint.filter",
+    "finance.lookup",
+    "feature.materialize",
+    "ranking.score",
+    "ranking.select_topk",
+    "ranking.reason_codes",
+    "response.compose",
+    "response.serialize"
+  ],
+  "instrumentation": "TraceRecorder module added; HTTP path not fully wired",
+  "pass": false
+}

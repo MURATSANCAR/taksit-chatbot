@@ -1,0 +1,9 @@
+{
+  "ranking_span_p95_ms": "NOT_VERIFIED",
+  "total_backend_ok_p95_ms": null,
+  "successful_request_rate": 0.0,
+  "ok_samples": 0,
+  "required_ok_samples": 1000,
+  "pass": false,
+  "note": "Need named ranking spans + >=1000 successes at >=99.9%"
+}

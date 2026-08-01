@@ -1,0 +1,5 @@
+{
+  "status": "NOT_VERIFIED",
+  "required_samples": 100,
+  "note": "Human stratified review required before HUMAN_VERIFIED"
+}

@@ -119,33 +119,49 @@ async def compute_gaps(conn: Any) -> dict[str, Any]:
     return out
 
 
+_GENERIC_URL_ROOTS = {
+    "urun",
+    "product",
+    "products",
+    "p",
+    "tr",
+    "en",
+    "cdn",
+    "img",
+    "images",
+}
+
+
 async def source_backed_uplift(conn: Any, merchant_id: int) -> dict[str, Any]:
     """Uplift using feed/URL source only; never invent empty categories.
 
-    Category: only assign when an existing category matches a source token
-    (pick_existing_category) — does NOT create new category codes from noise.
-    Brand: from attributes.brand or feed-equivalent attributes only via ensure_brand.
+    Category assign only when:
+      - structured attributes.category / category_name match existing taxonomy, OR
+      - shared URL taxonomy root (e.g. /kitap/) appears on >=10 products and matches synonym
+    Product-slug token matching is forbidden (DERIVABLE noise ≠ source truth).
+    Brand: from attributes.brand via ensure_brand only.
     Media: promote existing READY non-primary links.
     """
-    from taksitlio.product.taxonomy import pick_existing_category
+    from collections import Counter
+
+    from taksitlio.product.normalize import normalize_display_name
     from taksitlio.product.taxonomy_pg import ensure_brand
 
     cats = await conn.fetch(
         """
-        SELECT id, category_code, display_name, synonyms, description
-        FROM categories WHERE status='ACTIVE' ORDER BY id
+        SELECT id, category_code, display_name, synonyms
+        FROM categories WHERE status='ACTIVE'
         """
     )
-    mapped = [
-        {
-            "id": int(r["id"]),
-            "category_code": r["category_code"],
-            "display_name": r["display_name"],
-            "synonyms": tuple(r["synonyms"] or ()),
-            "description": r["description"],
-        }
-        for r in cats
-    ]
+    synonym_index: dict[str, int] = {}
+    for r in cats:
+        cid = int(r["id"])
+        for label in (r["display_name"], r["category_code"], *(r["synonyms"] or ())):
+            if not label:
+                continue
+            key = normalize_display_name(str(label))
+            if key and key not in synonym_index:
+                synonym_index[key] = cid
 
     products = await conn.fetch(
         """
@@ -161,9 +177,32 @@ async def source_backed_uplift(conn: Any, merchant_id: int) -> dict[str, Any]:
         """,
         merchant_id,
     )
+
+    # Precompute shared URL taxonomy roots for this merchant (not product slugs).
+    root_counts: Counter[str] = Counter()
+    for r in products:
+        for url in (r["source_url"], r["checkout_url"]):
+            if not url:
+                continue
+            try:
+                parts = [p for p in urlparse(str(url)).path.split("/") if p]
+            except Exception:
+                parts = []
+            if not parts:
+                continue
+            root = parts[0].lower()
+            if root in _GENERIC_URL_ROOTS or len(root) > 48 or "-p-" in root:
+                continue
+            root_counts[root] += 1
+            break
+    shared_roots = {
+        root for root, n in root_counts.items() if n >= 10 and normalize_display_name(root) in synonym_index
+    }
+
     cat_fixed = 0
     brand_fixed = 0
     reviewed_methods: dict[str, int] = {}
+    skipped_slug_token = 0
     for r in products:
         attrs = r["attributes"]
         if isinstance(attrs, str):
@@ -174,7 +213,7 @@ async def source_backed_uplift(conn: Any, merchant_id: int) -> dict[str, Any]:
         attrs = attrs or {}
 
         if r["brand_id"] is None:
-            bname = str(attrs.get("brand") or "").strip()
+            bname = str(attrs.get("brand") or attrs.get("marka") or "").strip()
             if bname:
                 bid = await ensure_brand(conn, bname)
                 if bid is not None:
@@ -189,42 +228,45 @@ async def source_backed_uplift(conn: Any, merchant_id: int) -> dict[str, Any]:
                     )
 
         if r["category_id"] is None:
-            labels: list[str] = []
-            for key in ("category", "category_name"):
-                v = attrs.get(key)
-                if v:
-                    labels.append(str(v))
-            # URL / checkout breadcrumb tokens (raw payload)
-            for url in (r["source_url"], r["checkout_url"]):
-                labels.extend(_tokens_from_url(url))
-            # Also try multi-token phrases from URL path first segment
-            for url in (r["source_url"], r["checkout_url"]):
-                if not url:
-                    continue
-                try:
-                    parts = [p for p in urlparse(url).path.split("/") if p]
-                except Exception:
-                    parts = []
-                if parts:
-                    labels.append(parts[0].replace("-", " "))
             hit_id = None
             method = None
-            for label in labels:
-                hit = pick_existing_category(label, categories=mapped)
-                if hit is not None:
-                    hit_id = int(hit["id"])
-                    method = "existing_taxonomy_from_source_token"
+            for key in ("category", "category_name"):
+                v = attrs.get(key)
+                if not v:
+                    continue
+                nk = normalize_display_name(str(v))
+                if nk in synonym_index:
+                    hit_id = synonym_index[nk]
+                    method = "existing_taxonomy_from_structured_attr"
                     break
-            if hit_id is not None:
+            if hit_id is None:
+                for url in (r["source_url"], r["checkout_url"]):
+                    if not url:
+                        continue
+                    try:
+                        parts = [p for p in urlparse(str(url)).path.split("/") if p]
+                    except Exception:
+                        parts = []
+                    if not parts:
+                        continue
+                    root = parts[0].lower()
+                    if root in shared_roots:
+                        hit_id = synonym_index[normalize_display_name(root)]
+                        method = "existing_taxonomy_from_url_breadcrumb"
+                        break
+                    if root not in _GENERIC_URL_ROOTS and "-p-" not in root:
+                        # Explicitly do not match product-slug tokens to synonyms.
+                        skipped_slug_token += 1
+            if hit_id is not None and method:
                 await conn.execute(
                     "UPDATE products SET category_id=$1, updated_at=NOW() WHERE id=$2 AND category_id IS NULL",
                     hit_id,
                     int(r["id"]),
                 )
                 cat_fixed += 1
-                reviewed_methods[method or "cat"] = reviewed_methods.get(method or "cat", 0) + 1
+                reviewed_methods[method] = reviewed_methods.get(method, 0) + 1
 
-    # Media promote
+
     promoted = await conn.execute(
         """
         WITH candidates AS (
@@ -258,7 +300,13 @@ async def source_backed_uplift(conn: Any, merchant_id: int) -> dict[str, Any]:
         "brand_fixed": brand_fixed,
         "media_promoted": media_promoted,
         "methods": reviewed_methods,
-        "note": "Categories assigned only via pick_existing_category on source tokens; no new category invention",
+        "shared_url_taxonomy_roots": sorted(shared_roots),
+        "skipped_product_slug_token_lookups": skipped_slug_token,
+        "synonym_index_size": len(synonym_index),
+        "note": (
+            "Categories only from structured attrs or shared URL breadcrumb roots "
+            "matching existing taxonomy; no product-slug invention"
+        ),
         "captured_at": _now(),
     }
 
@@ -399,41 +447,64 @@ def write_report(summary: dict[str, Any], decision: dict[str, Any]) -> None:
         "**System:** Kontrollü, versioned, event-driven adaptif katalog ve ranking sistemi "
         "(not a self-learning model).",
         "",
-        "**Public cutover:** not performed.",
+        "**Public cutover:** not performed. `learning_auto_promotion_enabled=DISABLED`, "
+        "`adaptive_ranking_enabled=SHADOW`.",
         "",
         "Artifacts: `artifacts/e2e-production-verification/p3-2-readiness-unblock/`",
         "",
         "## Merchant activation",
         "",
+        "- Candidate matrix: see `merchant-activation-gap.json`",
         f"- Selected candidate: `{summary.get('selected_code')}`",
-        f"- Source availability: {summary.get('selected_source')}",
-        f"- Uplift: {summary.get('uplift')}",
-        f"- READY after: {summary.get('ready_count')}",
-        f"- READY merchants: {summary.get('ready_codes')}",
+        f"- Source availability: `{summary.get('selected_source')}`",
+        f"- Uplift (source-backed only): `{summary.get('uplift')}`",
+        f"- READY before → after: `{summary.get('ready_before')}` → `{summary.get('ready_codes')}`",
+        f"- READY count: **{summary.get('ready_count')}**",
+        "- Honesty: FLO category feed empty → `SOURCE_NOT_AVAILABLE`; not forced READY.",
+        "- Network product-slug URLs ≠ taxonomy → slug-token category invention forbidden.",
+        "- DR `/kitap|elektronik|muzik/` = `SOURCE_AVAILABLE_IN_TAXONOMY` but brand ~1% → "
+        "brand `SOURCE_NOT_AVAILABLE`; cannot invent brands.",
         "",
-        "## Search-ready / INTERNAL",
+        "## READY scope",
         "",
-        f"- Flag: {summary.get('dynamic_readiness')}",
-        f"- Rows: {summary.get('search_ready_rows')}",
-        f"- Leakage: {summary.get('leakage')}",
+        f"- `{summary.get('scope')}`",
+        "",
+        "## Search-ready",
+        "",
+        f"- Flag: `{summary.get('dynamic_readiness')}`",
+        f"- Rows: `{summary.get('search_ready_rows')}`",
+        f"- Leakage: `{summary.get('leakage')}`",
+        f"- Revision consistency: `{summary.get('revision_consistency', 'NOT_VERIFIED')}`",
         "",
         "## Ranking",
         "",
-        f"- Error classes: {summary.get('ranking_classes')}",
-        f"- Success rate: {summary.get('ranking_success_rate')}",
-        f"- Ranking span P95: {summary.get('ranking_span_p95')}",
-        f"- Total backend P95 (ok only, diagnostic): {summary.get('ok_p95')}",
+        f"- Error classification: `{summary.get('ranking_classes')}`",
+        f"- Successful request rate (diagnostic): `{summary.get('ranking_success_rate')}`",
+        f"- OK samples: `{summary.get('ok_samples')}` (need ≥1000 for performance claim)",
+        f"- Ranking span P50/P95/P99: `{summary.get('ranking_span_p95')}`",
+        f"- Total backend OK P95 (HTTP): `{summary.get('ok_p95')}`",
+        f"- Accuracy regression: `{summary.get('ranking_regression', 'NOT_VERIFIED')}`",
         "",
         "## Rolling golden",
         "",
-        "- APPROVED: 0 (human dual-control required; auto-approve forbidden)",
+        "- Candidates: 250 REVIEW_REQUIRED",
+        "- APPROVED: **0** (PREPARER ≠ REVIEWER; auto-approve forbidden)",
+        "- Continuous golden: NOT_VERIFIED",
         "",
-        "## Failed gates",
+        "## Internal E2E",
+        "",
+        "- Playwright / SSE / LLM partial / Revision / Downgrade: **NOT_VERIFIED** "
+        "(require INTERNAL search-ready)",
+        "",
+        "## Blockers / Criticals",
+        "",
+        f"- Failed gates: `{decision.get('failed_gates')}`",
+        "",
+        "## Gate summary",
+        "",
+        f"- Decision: **{decision['decision']}**",
         "",
     ]
-    for g in decision.get("failed_gates") or []:
-        lines.append(f"- `{g}`")
-    lines.append("")
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -466,19 +537,32 @@ async def amain(args: argparse.Namespace) -> int:
 
         ready_before = gaps.get("ready") or []
         candidates = gaps.get("third_merchant_candidates") or []
-        # Prefer PARTIAL with brand+media already OK (URL/token category uplift viable),
-        # never force FLO when category source is empty.
-        scored = sorted(
-            [c for c in candidates if c.get("merchant_code") != "m-flo"],
-            key=lambda m: (
-                0
-                if m["gaps"]["brand_gap"] == 0 and m["gaps"]["media_gap"] == 0
-                else 1,
+        # Dynamic selection: never force FLO; never invent SOURCE_NOT_AVAILABLE fields.
+        # Prefer recoverable category source (taxonomy/attrs) with lowest activation cost.
+        def _cand_key(m: dict[str, Any]) -> tuple:
+            src = m.get("source_availability") or {}
+            cat_src = str(src.get("category") or "")
+            brand_src = str(src.get("brand") or "")
+            cat_recoverable = cat_src.startswith("SOURCE_AVAILABLE")
+            brand_ok_or_recoverable = m["gaps"]["brand_gap"] == 0 or brand_src.startswith(
+                "SOURCE_AVAILABLE"
+            )
+            media_ok = m["gaps"]["media_gap"] == 0
+            return (
+                0 if cat_recoverable else 1,
+                0 if brand_ok_or_recoverable else 1,
+                0 if media_ok else 1,
                 m["unrecoverable_count"],
                 m["activation_gap_score"],
-            ),
+                m["gaps"]["category_gap"],
+                m.get("merchant_code") or "",
+            )
+
+        scored = sorted(
+            [c for c in candidates if c.get("merchant_code") != "m-flo"],
+            key=_cand_key,
         )
-        selected = scored[0] if scored else (candidates[0] if candidates else None)
+        selected = scored[0] if scored else None
 
         uplift = None
         if selected:
@@ -492,15 +576,16 @@ async def amain(args: argparse.Namespace) -> int:
         else:
             _write("third-merchant-uplift.json", {"selected": None})
 
-        # Also uplift other near-ready PARTIAL candidates with recoverable media/brand
+        # Also uplift other candidates with recoverable source gaps (not FLO).
         extra = []
-        for c in candidates[1:6]:
+        for c in scored[1:6]:
             if c["estimated_recoverable_count"] <= 0:
                 continue
             if c["merchant_code"] == "m-flo":
                 continue
+            print(f"[p3.2] extra uplift {c['merchant_code']}", flush=True)
             u = await source_backed_uplift(conn, int(c["merchant_id"]))
-            extra.append(u)
+            extra.append({"code": c["merchant_code"], **u})
         if extra:
             _write("extra-uplifts.json", extra)
 
@@ -519,16 +604,31 @@ async def amain(args: argparse.Namespace) -> int:
         ready_list = gaps_after.get("ready") or []
         ready_count = len(ready_list)
         ready_products = sum(int(m["active_products"]) for m in ready_list)
-        medium_high = sum(1 for m in ready_list if int(m["active_products"]) >= 200)
+        thr_map = gaps_after.get("thresholds") or gaps.get("thresholds") or {}
+        min_ready_products = int(thr_map.get("minimum_total_ready_products") or 500)
+        min_medium = int(thr_map.get("minimum_medium_or_high_volume_merchant_count") or 1)
+        vol_floor = int(thr_map.get("medium_high_volume_product_floor") or 200)
+        min_finance = int(thr_map.get("minimum_finance_ready_products") or 0)
+        medium_high = sum(1 for m in ready_list if int(m["active_products"]) >= vol_floor)
+        finance_ready = sum(
+            int(round(float((m.get("metrics") or {}).get("finance_coverage") or 0) * int(m["active_products"])))
+            for m in ready_list
+        )
+        search_demand = "NOT_VERIFIED"
         scope = {
             "ready_merchant_count": ready_count,
             "ready_active_product_count": ready_products,
-            "minimum_total_ready_products_policy": 500,
-            "minimum_medium_or_high_volume_merchant_count_policy": 1,
+            "ready_search_demand_coverage": search_demand,
+            "finance_ready_product_count": finance_ready,
+            "search_ready_product_count": "pending_rebuild",
+            "minimum_total_ready_products_policy": min_ready_products,
+            "minimum_medium_or_high_volume_merchant_count_policy": min_medium,
+            "minimum_finance_ready_products_policy": min_finance,
             "medium_high_volume_ready_merchants": medium_high,
             "pass": ready_count >= 3
-            and ready_products >= 500
-            and medium_high >= 1,
+            and ready_products >= min_ready_products
+            and medium_high >= min_medium
+            and finance_ready >= min_finance,
         }
         _write("ready-scope-quality.json", scope)
 
@@ -646,15 +746,20 @@ async def amain(args: argparse.Namespace) -> int:
             "selected_code": (selected or {}).get("merchant_code"),
             "selected_source": (selected or {}).get("source_availability"),
             "uplift": uplift,
+            "ready_before": [(m["merchant_code"], m["active_products"]) for m in ready_before],
             "ready_count": ready_count,
             "ready_codes": [m["merchant_code"] for m in ready_list],
+            "scope": scope,
             "dynamic_readiness": dyn,
             "search_ready_rows": sr.get("rows"),
             "leakage": sr.get("leakage"),
+            "revision_consistency": "NOT_VERIFIED",
             "ranking_classes": rank_err.get("classes"),
             "ranking_success_rate": rank_err.get("successful_request_rate"),
+            "ok_samples": rank_err.get("ok_samples"),
             "ranking_span_p95": "NOT_VERIFIED",
             "ok_p95": rank_err.get("ok_p95_ms"),
+            "ranking_regression": "NOT_VERIFIED",
         }
         write_report(summary, decision)
         console = {

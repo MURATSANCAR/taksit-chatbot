@@ -17,12 +17,30 @@ def _pct(n: int, d: int) -> float:
     return round(n / max(d, 1), 4)
 
 
+_GENERIC_URL_ROOTS = {
+    "urun",
+    "product",
+    "products",
+    "p",
+    "tr",
+    "en",
+    "cdn",
+    "img",
+    "images",
+}
+
+
 def classify_source(feed_stats: dict[str, Any], field: str) -> str:
     total = max(int(feed_stats.get("sample") or 0), 1)
     if field == "category":
         hit = int(feed_stats.get("cat_field") or 0) + int(feed_stats.get("attrs_cat") or 0)
+        tax_ratio = float(feed_stats.get("url_taxonomy_coverage") or 0.0)
+        if tax_ratio >= 0.5:
+            return "SOURCE_AVAILABLE_IN_TAXONOMY"
+        if tax_ratio >= 0.05 and hit == 0:
+            return "SOURCE_AVAILABLE_IN_TAXONOMY"
     elif field == "brand":
-        hit = int(feed_stats.get("brand") or 0)
+        hit = int(feed_stats.get("brand") or 0) + int(feed_stats.get("attrs_brand") or 0)
     elif field == "media":
         hit = int(feed_stats.get("img") or 0)
     else:
@@ -73,6 +91,23 @@ async def amain() -> dict[str, Any]:
             continue
         sample = prods[: min(3000, len(prods))]
         code = "m-" + path.name.replace("src-m-", "").replace(".json", "")
+        from collections import Counter
+        from urllib.parse import urlparse
+
+        url_roots: Counter[str] = Counter()
+        for p in sample:
+            raw = str(p.get("url") or p.get("product_url") or p.get("link") or "")
+            try:
+                parts = [x for x in urlparse(raw).path.split("/") if x]
+            except Exception:
+                parts = []
+            if not parts:
+                continue
+            root = parts[0].lower()
+            if root in _GENERIC_URL_ROOTS or len(root) > 48 or "-p-" in root:
+                continue
+            url_roots[root] += 1
+        top_n = sum(c for _, c in url_roots.most_common(5))
         feed_by_code[code] = {
             "feed_n": len(prods),
             "sample": len(sample),
@@ -90,6 +125,14 @@ async def amain() -> dict[str, Any]:
                     or p["attributes"].get("category_name")
                 )
             ),
+            "attrs_brand": sum(
+                1
+                for p in sample
+                if isinstance(p.get("attributes"), dict)
+                and (p["attributes"].get("brand") or p["attributes"].get("marka"))
+            ),
+            "url_taxonomy_roots": dict(url_roots.most_common(8)),
+            "url_taxonomy_coverage": round(top_n / max(len(sample), 1), 4),
         }
 
     rows = await conn.fetch(
@@ -167,20 +210,30 @@ async def amain() -> dict[str, Any]:
             "brand": classify_source(feed, "brand"),
             "media": classify_source(feed, "media"),
         }
-        # Recoverable only when SOURCE_* and gap > 0
+        sample_n = max(int(feed.get("sample") or 0), 1)
+        # Cap recoverable by actual source hit counts (do not treat 9 brand rows as 666 recoverable).
+        cat_src_hits = int(feed.get("cat_field") or 0) + int(feed.get("attrs_cat") or 0)
+        tax_hits = int(round(float(feed.get("url_taxonomy_coverage") or 0.0) * sample_n))
+        brand_src_hits = int(feed.get("brand") or 0) + int(feed.get("attrs_brand") or 0)
+        media_src_hits = int(feed.get("img") or 0)
+        # Scale sample hits to active product population when feed sample < n
+        scale = n / sample_n if feed else 0.0
+
+        def _avail(hits: int) -> int:
+            return int(round(hits * scale)) if feed else 0
+
         recoverable = 0
         unrecoverable = 0
-        for gap, kind in (
-            (cat_gap, "category"),
-            (brand_gap, "brand"),
-            (media_gap, "media"),
+        for gap, avail in (
+            (cat_gap, max(_avail(cat_src_hits), _avail(tax_hits))),
+            (brand_gap, _avail(brand_src_hits)),
+            (media_gap, _avail(media_src_hits)),
         ):
             if gap <= 0:
                 continue
-            if src[kind].startswith("SOURCE_AVAILABLE"):
-                recoverable += gap
-            else:
-                unrecoverable += gap
+            take = min(gap, max(avail, 0))
+            recoverable += take
+            unrecoverable += max(0, gap - take)
         # activation_gap_score: lower is better; demand/finance reduce score
         volume_bonus = min(n / 1000.0, 5.0)
         finance_bonus = metrics.finance_coverage * 100

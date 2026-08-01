@@ -1,0 +1,9 @@
+{
+  "ranking_span_p95_ms": "NOT_VERIFIED",
+  "total_backend_ok_p95_ms": 1182.9,
+  "successful_request_rate": 1.0,
+  "required_successful_samples": 1000,
+  "ok_samples": 20,
+  "pass": false,
+  "note": "Cannot claim P95<50ms without ranking span + >=1000 successes"
+}

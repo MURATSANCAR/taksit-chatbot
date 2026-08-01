@@ -1,0 +1,153 @@
+{
+  "classes": {
+    "OK": 20
+  },
+  "successful_request_rate": 1.0,
+  "ok_samples": 20,
+  "ok_p95_ms": 1182.9,
+  "details": [
+    {
+      "test_case_id": "p32-diag-0",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 1182.9,
+      "body_excerpt": "{\"search_session_id\":\"a32e72cb-34cb-4ee7-803b-6cbba995e638\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/a32e72cb-34cb-4ee7-803b-6cb"
+    },
+    {
+      "test_case_id": "p32-diag-1",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 654.83,
+      "body_excerpt": "{\"search_session_id\":\"a0361f42-bbb6-4ba5-8f26-a75330c50a02\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/a0361f42-bbb6-4ba5-8f26-a75"
+    },
+    {
+      "test_case_id": "p32-diag-2",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 662.4,
+      "body_excerpt": "{\"search_session_id\":\"4a1de90e-d7d9-4a79-97df-302a7d1c2f7b\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/4a1de90e-d7d9-4a79-97df-302"
+    },
+    {
+      "test_case_id": "p32-diag-3",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 775.59,
+      "body_excerpt": "{\"search_session_id\":\"74ebf49e-be9f-4608-8c33-3bf558bf7bd6\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/74ebf49e-be9f-4608-8c33-3bf"
+    },
+    {
+      "test_case_id": "p32-diag-4",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 1445.06,
+      "body_excerpt": "{\"search_session_id\":\"994c4dce-9010-41a8-99e1-c11cde419a46\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/994c4dce-9010-41a8-99e1-c11"
+    },
+    {
+      "test_case_id": "p32-diag-5",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 2.79,
+      "body_excerpt": "{\"search_session_id\":\"e12980bb-53e5-44a0-b120-4ecaf58d78e4\",\"query_version\":1,\"status\":\"FAILED\",\"route\":\"OUT_OF_SCOPE\",\"reply\":\"Bu konuda yardımcı olamam. Ben T"
+    },
+    {
+      "test_case_id": "p32-diag-6",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 325.97,
+      "body_excerpt": "{\"search_session_id\":\"6c29a7b8-30bf-4632-9c54-4ea3180bdae4\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/6c29a7b8-30bf-4632-9c54-4ea"
+    },
+    {
+      "test_case_id": "p32-diag-7",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 566.0,
+      "body_excerpt": "{\"search_session_id\":\"6bcf9311-6698-4e45-acfb-6cda5cf67834\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/6bcf9311-6698-4e45-acfb-6cd"
+    },
+    {
+      "test_case_id": "p32-diag-8",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 251.02,
+      "body_excerpt": "{\"search_session_id\":\"3a3ac9ff-bd58-4222-8725-3bcee7cece59\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/3a3ac9ff-bd58-4222-8725-3bc"
+    },
+    {
+      "test_case_id": "p32-diag-9",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 230.78,
+      "body_excerpt": "{\"search_session_id\":\"8d6db0f4-2792-44ef-90c9-4d3b330afb87\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/8d6db0f4-2792-44ef-90c9-4d3"
+    },
+    {
+      "test_case_id": "p32-diag-10",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 351.32,
+      "body_excerpt": "{\"search_session_id\":\"27786693-3629-4b25-ae6e-9be19ceeb897\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/27786693-3629-4b25-ae6e-9be"
+    },
+    {
+      "test_case_id": "p32-diag-11",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 62.3,
+      "body_excerpt": "{\"search_session_id\":\"b26d473d-9331-473f-ab73-ff29714f5320\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/b26d473d-9331-473f-ab73-ff2"
+    },
+    {
+      "test_case_id": "p32-diag-12",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 252.05,
+      "body_excerpt": "{\"search_session_id\":\"7d441754-02d5-40c6-a106-582781e3b074\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/7d441754-02d5-40c6-a106-582"
+    },
+    {
+      "test_case_id": "p32-diag-13",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 3.9,
+      "body_excerpt": "{\"search_session_id\":\"771ebafa-f04e-4bf7-9c0f-def985291042\",\"query_version\":1,\"status\":\"FAILED\",\"route\":\"OUT_OF_SCOPE\",\"reply\":\"Bu konuda yardımcı olamam. Ben T"
+    },
+    {
+      "test_case_id": "p32-diag-14",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 249.53,
+      "body_excerpt": "{\"search_session_id\":\"a83855ba-c4d4-4161-96e1-3000b129b912\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/a83855ba-c4d4-4161-96e1-300"
+    },
+    {
+      "test_case_id": "p32-diag-15",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 344.9,
+      "body_excerpt": "{\"search_session_id\":\"48779866-7713-44a4-b008-bf64d4e7673b\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/48779866-7713-44a4-b008-bf6"
+    },
+    {
+      "test_case_id": "p32-diag-16",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 267.2,
+      "body_excerpt": "{\"search_session_id\":\"aebd3fcd-6797-43f4-a79b-6692a703f601\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/aebd3fcd-6797-43f4-a79b-669"
+    },
+    {
+      "test_case_id": "p32-diag-17",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 225.17,
+      "body_excerpt": "{\"search_session_id\":\"e9514e8a-f1cc-43fb-b79d-b04916a73c59\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/e9514e8a-f1cc-43fb-b79d-b04"
+    },
+    {
+      "test_case_id": "p32-diag-18",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 321.97,
+      "body_excerpt": "{\"search_session_id\":\"2f2a0fa9-8503-431c-8469-b5e44c750bed\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/2f2a0fa9-8503-431c-8469-b5e"
+    },
+    {
+      "test_case_id": "p32-diag-19",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 55.14,
+      "body_excerpt": "{\"search_session_id\":\"418b74d4-4def-4841-8a26-fc7b90cb335a\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/418b74d4-4def-4841-8a26-fc7"
+    }
+  ],
+  "pass_success_rate": true,
+  "note": "Failed requests are classified and NOT dropped from success-rate denominator",
+  "captured_at": "2026-08-01T14:13:41.984921+00:00"
+}

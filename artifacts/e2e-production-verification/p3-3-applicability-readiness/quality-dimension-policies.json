@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "dimensions": {
+    "MPN": "OPTIONAL",
+    "GTIN": "OPTIONAL",
+    "ISBN": "OPTIONAL",
+    "BRAND": "REQUIRED",
+    "MODEL": "OPTIONAL",
+    "PRICE": "REQUIRED",
+    "STOCK": "OPTIONAL",
+    "AUTHOR": "OPTIONAL",
+    "FINANCE": "OPTIONAL",
+    "VARIANT": "OPTIONAL",
+    "CATEGORY": "REQUIRED",
+    "PUBLISHER": "OPTIONAL",
+    "CARD_MEDIA": "REQUIRED",
+    "PRODUCT_URL": "REQUIRED",
+    "PAYMENT_PLAN": "OPTIONAL",
+    "CRITICAL_ATTRIBUTES": "OPTIONAL"
+  },
+  "category_overrides": {
+    "23": {
+      "ISBN": "OPTIONAL",
+      "BRAND": "NOT_APPLICABLE",
+      "AUTHOR": "OPTIONAL",
+      "PUBLISHER": "OPTIONAL"
+    }
+  },
+  "note": "Overrides are data (category_id keys); code does not hardcode vertical names"
+}

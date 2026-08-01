@@ -1,0 +1,17 @@
+{
+  "merchant_id": 23,
+  "products_scanned": 741,
+  "category_fixed": 663,
+  "brand_fixed": 0,
+  "media_promoted": 0,
+  "methods": {
+    "existing_taxonomy_from_url_breadcrumb": 663
+  },
+  "shared_url_taxonomy_roots": [
+    "kitap"
+  ],
+  "skipped_product_slug_token_lookups": 2,
+  "synonym_index_size": 7221,
+  "note": "Categories only from structured attrs or shared URL breadcrumb roots matching existing taxonomy; no product-slug invention",
+  "captured_at": "2026-08-01T14:13:17.290591+00:00"
+}

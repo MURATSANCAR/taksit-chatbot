@@ -1,0 +1,44 @@
+{
+  "cohort_id": 1,
+  "cohort_version": 1,
+  "cohort_version_id": 1,
+  "status": "INTERNAL",
+  "policy_passed": true,
+  "policy_reasons": [],
+  "search_ready_product_count": 1054,
+  "finance_ready_product_count": 0,
+  "merchant_count": 2,
+  "category_scope_count": 326,
+  "members_sql": "INSERT 0 1054",
+  "v2_rows": 1054,
+  "v2_sql": "INSERT 0 1054",
+  "legacy": {
+    "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+    "ready_merchants": 2,
+    "ready_merchant_ids": [
+      5,
+      18
+    ],
+    "rows": 1054,
+    "finance_ready_rows": 0,
+    "leakage": {
+      "blocked_partial_degraded": 0,
+      "non_ready_rows": 0,
+      "unresolved_category": 0,
+      "invalid_price": 0,
+      "invalid_url": 0,
+      "non_card_ready": 0
+    },
+    "pass_leakage": true,
+    "captured_at": "2026-08-01T14:27:42.769328+00:00"
+  },
+  "leakage": {
+    "legacy_total": 0,
+    "v2_unresolved_category": 0,
+    "v2_invalid_price": 0,
+    "v2_non_card_ready": 0,
+    "v2_blocked_product": 0
+  },
+  "flag_status": "INTERNAL",
+  "captured_at": "2026-08-01T14:27:42.834216+00:00"
+}

@@ -1,0 +1,272 @@
+[
+  {
+    "merchant_id": 5,
+    "merchant_code": "m-vatan",
+    "sample_size": 1003,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 1.0,
+      "brand": 0.995015,
+      "attributes": 0.999003,
+      "media": 0.996012,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 8,
+    "merchant_code": "m-mediamarkt",
+    "sample_size": 892,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "NOT_SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.769058,
+      "brand": 0.0,
+      "attributes": 0.0,
+      "media": 1.0,
+      "finance": 1.0
+    }
+  },
+  {
+    "merchant_id": 11,
+    "merchant_code": "m-teknosa",
+    "sample_size": 7450,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "NOT_SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.88349,
+      "brand": 0.0,
+      "attributes": 0.0,
+      "media": 0.999732,
+      "finance": 0.92094
+    }
+  },
+  {
+    "merchant_id": 14,
+    "merchant_code": "m-koctas",
+    "sample_size": 115,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "NOT_SUPPORTED",
+      "media": "PARTIALLY_SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 1.0,
+      "brand": 0.0,
+      "attributes": 0.0,
+      "media": 0.217391,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 15,
+    "merchant_code": "m-arcelik",
+    "sample_size": 1244,
+    "capabilities": {
+      "category": "PARTIALLY_SUPPORTED",
+      "brand": "PARTIALLY_SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.186495,
+      "brand": 0.136656,
+      "attributes": 0.138264,
+      "media": 0.881029,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 16,
+    "merchant_code": "m-beko",
+    "sample_size": 1163,
+    "capabilities": {
+      "category": "PARTIALLY_SUPPORTED",
+      "brand": "PARTIALLY_SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.303525,
+      "brand": 0.184007,
+      "attributes": 0.184007,
+      "media": 0.852107,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 18,
+    "merchant_code": "m-hepsiburada",
+    "sample_size": 57,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 1.0,
+      "brand": 0.964912,
+      "attributes": 0.964912,
+      "media": 0.964912,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 19,
+    "merchant_code": "m-n11",
+    "sample_size": 850,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "PARTIALLY_SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.503529,
+      "brand": 0.196471,
+      "attributes": 0.196471,
+      "media": 1.0,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 20,
+    "merchant_code": "m-trendyol",
+    "sample_size": 1007,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.560079,
+      "brand": 0.641509,
+      "attributes": 0.641509,
+      "media": 1.0,
+      "finance": 0.999007
+    }
+  },
+  {
+    "merchant_id": 21,
+    "merchant_code": "m-vivense",
+    "sample_size": 130,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.676923,
+      "brand": 1.0,
+      "attributes": 1.0,
+      "media": 1.0,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 22,
+    "merchant_code": "m-flo",
+    "sample_size": 165169,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.791323,
+      "brand": 0.997512,
+      "attributes": 0.997524,
+      "media": 0.999873,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 23,
+    "merchant_code": "m-dr",
+    "sample_size": 750,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "PARTIALLY_SUPPORTED",
+      "media": "PARTIALLY_SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.998667,
+      "brand": 0.012,
+      "attributes": 0.012,
+      "media": 0.46,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 24,
+    "merchant_code": "m-civil",
+    "sample_size": 8,
+    "capabilities": {
+      "category": "PARTIALLY_SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.25,
+      "brand": 1.0,
+      "attributes": 1.0,
+      "media": 1.0,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 29,
+    "merchant_code": "m-network",
+    "sample_size": 6490,
+    "capabilities": {
+      "category": "SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "NOT_SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.866718,
+      "brand": 0.999692,
+      "attributes": 0.999692,
+      "media": 1.0,
+      "finance": 0.0
+    }
+  },
+  {
+    "merchant_id": 40,
+    "merchant_code": "m-evofone",
+    "sample_size": 130,
+    "capabilities": {
+      "category": "PARTIALLY_SUPPORTED",
+      "brand": "SUPPORTED",
+      "media": "SUPPORTED",
+      "finance": "SUPPORTED"
+    },
+    "observed_coverage": {
+      "category": 0.484615,
+      "brand": 1.0,
+      "attributes": 1.0,
+      "media": 1.0,
+      "finance": 1.0
+    }
+  }
+]

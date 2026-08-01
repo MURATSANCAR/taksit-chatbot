@@ -127,10 +127,11 @@ async def load_search_candidates_from_catalog(
     institutions: Optional[InstitutionLabelResolver] = None,
     category_candidates: Optional[Sequence[Any]] = None,
     alias_index: Any = None,
+    name_terms: Optional[Sequence[str]] = None,
 ) -> tuple[SearchProductCandidate, ...]:
     from taksitlio.progressive_results.category_match import utterance_name_terms
 
-    terms = utterance_name_terms(
+    terms = tuple(name_terms) if name_terms is not None else utterance_name_terms(
         utterance,
         category_candidates=category_candidates or (),
         alias_index=alias_index,

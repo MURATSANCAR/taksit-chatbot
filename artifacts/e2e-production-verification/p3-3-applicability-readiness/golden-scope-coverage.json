@@ -1,0 +1,8 @@
+{
+  "active_scope_approved_minimum_policy": 0.0,
+  "approved_for_active_scope": 0,
+  "total_approved": 0,
+  "review_required": 250,
+  "pass": true,
+  "note": "Full 250 APPROVED still required for public; INTERNAL allows 0 by policy"
+}

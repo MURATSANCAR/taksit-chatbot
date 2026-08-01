@@ -23,17 +23,56 @@ from taksitlio.search_sessions.orchestrator import SearchOrchestrator
 
 # Process-local hydrate caches (single API worker). Short TTLs keep catalog fresh.
 _HINTS_TTL_S = 120.0
-_POOL_TTL_S = 45.0
+_POOL_TTL_S = 90.0
 _hints_cache: dict[str, Any] = {"ts": 0.0, "categories": None, "merchants": None}
 _pool_cache: dict[str, tuple[float, list[dict[str, Any]]]] = {}
-_POOL_CACHE_MAX = 64
+_POOL_CACHE_MAX = 128
+# Verbs/filler stripped from term-cache key so near-duplicate asks share a pool.
+_CACHE_STOPWORDS = frozenset(
+    {
+        "arıyorum",
+        "ariyorum",
+        "bakıyorum",
+        "bakiyorum",
+        "istiyorum",
+        "lazım",
+        "lazim",
+        "gerek",
+        "alacağım",
+        "alacagim",
+        "almak",
+        "öner",
+        "oner",
+        "tavsiye",
+        "bana",
+        "bir",
+        "tane",
+        "lütfen",
+        "lutfen",
+        "merhaba",
+        "selam",
+    }
+)
 
 
-def _pool_cache_key(utterance: str, limit: int) -> str:
+def _pool_cache_key(utterance: str, limit: int, terms: Sequence[str] = ()) -> str:
+    """Key by search terms (not full utterance) so near-duplicates share pools."""
+
+    cleaned = [
+        " ".join(str(t).casefold().split())
+        for t in terms
+        if t and str(t).strip() and str(t).casefold() not in _CACHE_STOPWORDS
+    ]
+    if cleaned:
+        return f"{limit}|terms:" + "|".join(sorted(set(cleaned)))
     from taksitlio.semantic_matching.turkish_normalize import turkish_lower
 
-    folded = " ".join((turkish_lower(utterance or "") or "").split())
-    return f"{limit}|{folded[:160]}"
+    tokens = [
+        tok
+        for tok in (turkish_lower(utterance or "") or "").split()
+        if tok and tok not in _CACHE_STOPWORDS and len(tok) >= 2
+    ]
+    return f"{limit}|utt:" + " ".join(tokens)[:160]
 
 
 class CategoryListSource(Protocol):
@@ -309,22 +348,31 @@ async def refresh_orchestrator_from_catalog(
         _hints_cache["merchants"] = merchant_cands
         _hints_cache["alias_index"] = None
 
-    pool_key = _pool_cache_key(utterance, limit)
+    pool_key = None
+    cached = None
+    # Build terms first so near-duplicate utterances share the same pool cache.
+    from taksitlio.query_understanding.alias_index import build_alias_index
+    from taksitlio.progressive_results.category_match import utterance_name_terms
+
+    category_entities = tuple(category_to_entity(c) for c in category_rows)
+    alias_index = _hints_cache.get("alias_index")
+    if (not hints_fresh) or alias_index is None:
+        alias_index = build_alias_index(
+            categories=category_entities, merchants=merchant_cands
+        )
+        _hints_cache["alias_index"] = alias_index
+    search_terms = utterance_name_terms(
+        utterance,
+        category_candidates=category_entities or orch.catalog.categories,
+        alias_index=alias_index,
+    )
+    pool_key = _pool_cache_key(utterance, limit, search_terms)
     cached = _pool_cache.get(pool_key)
     if cached and (now - cached[0]) < _POOL_TTL_S:
         orch.product_pool = deepcopy(cached[1])
         if logos is not None:
             orch.logo_resolver = logos  # type: ignore[attr-defined]
     else:
-        from taksitlio.query_understanding.alias_index import build_alias_index
-
-        category_entities = tuple(category_to_entity(c) for c in category_rows)
-        alias_index = _hints_cache.get("alias_index")
-        if (not hints_fresh) or alias_index is None:
-            alias_index = build_alias_index(
-                categories=category_entities, merchants=merchant_cands
-            )
-            _hints_cache["alias_index"] = alias_index
         cands = await load_search_candidates_from_catalog(
             catalog,
             utterance=utterance,
@@ -334,6 +382,7 @@ async def refresh_orchestrator_from_catalog(
             institutions=institutions,
             category_candidates=category_entities or orch.catalog.categories,
             alias_index=alias_index,
+            name_terms=search_terms,
         )
 
         if logos is not None:

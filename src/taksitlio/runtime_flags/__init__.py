@@ -10,6 +10,7 @@ from typing import Mapping, Optional
 class FeatureFlagStatus(str, Enum):
     DISABLED = "DISABLED"
     SHADOW = "SHADOW"
+    INTERNAL = "INTERNAL"
     ENABLED = "ENABLED"
 
 
@@ -59,6 +60,15 @@ def is_shadow_or_enabled(flags: Mapping[str, FeatureFlag], code: str) -> bool:
     f = flags.get(code)
     return f is not None and f.status in {
         FeatureFlagStatus.SHADOW,
+        FeatureFlagStatus.INTERNAL,
+        FeatureFlagStatus.ENABLED,
+    }
+
+
+def is_internal_or_enabled(flags: Mapping[str, FeatureFlag], code: str) -> bool:
+    f = flags.get(code)
+    return f is not None and f.status in {
+        FeatureFlagStatus.INTERNAL,
         FeatureFlagStatus.ENABLED,
     }
 
@@ -76,6 +86,7 @@ __all__ = [
     "auto_promotion_allowed",
     "flags_from_rows",
     "is_enabled",
+    "is_internal_or_enabled",
     "is_shadow_or_enabled",
     "seed_flags",
 ]

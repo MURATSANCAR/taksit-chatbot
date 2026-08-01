@@ -1,0 +1,10 @@
+{
+  "leakage": {
+    "legacy_total": 0,
+    "v2_unresolved_category": 0,
+    "v2_invalid_price": 0,
+    "v2_non_card_ready": 0,
+    "v2_blocked_product": 0
+  },
+  "pass": true
+}

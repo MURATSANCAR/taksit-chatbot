@@ -817,9 +817,9 @@ class PostgresProductCatalogRepository:
         terms = [str(t).strip() for t in name_terms if t and str(t).strip()]
         if not terms:
             return await self.list_products(merchant_id=merchant_id, limit=limit)
-        # Prefer longer terms first for ILIKE ANY ordering (no expression ORDER BY —
-        # that prevents early LIMIT and can force full-catalog scans).
-        patterns = [f"%{t}%" for t in sorted(terms, key=len, reverse=True)]
+        # Prefer longest/most specific patterns; cap to avoid slow ILIKE ANY fan-out.
+        ranked = sorted({t for t in terms if len(t) >= 2}, key=len, reverse=True)
+        patterns = [f"%{t}%" for t in ranked[:4]]
         # Two-step shape matching the proven ~3ms plan: id filter with EXISTS, then join media.
         sql_ids = """
                     SELECT p.id

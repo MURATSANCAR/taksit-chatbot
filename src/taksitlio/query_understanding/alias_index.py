@@ -103,13 +103,14 @@ def build_alias_index(
 def matched_alias_labels(
     cand: EntityCandidate, text: str
 ) -> tuple[str, ...]:
-    """Aliases of cand that actually appear in text (for search terms)."""
+    """Aliases of cand that actually appear in text (for search terms).
+
+    Do NOT inject broad category display names (e.g. "Cep Telefonu") when the
+    user only said "iphone" — those force slow ILIKE scans.
+    """
 
     u_keys = utterance_keys(text)
     out: list[str] = []
-    display = str(cand.display_name or "").strip()
-    if display:
-        out.append(display)
     for name in (cand.display_name, cand.canonical_name, *(cand.aliases or ())):
         raw = str(name or "").strip()
         folded = fold_alias(raw)

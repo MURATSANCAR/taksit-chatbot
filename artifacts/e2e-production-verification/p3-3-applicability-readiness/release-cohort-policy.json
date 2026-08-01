@@ -1,0 +1,16 @@
+{
+  "policy_code": "internal_release",
+  "version": 1,
+  "thresholds": {
+    "maximum_wrong_mapping": 0,
+    "require_merchant_count": false,
+    "maximum_critical_errors": 0,
+    "maximum_projection_leakage": 0,
+    "minimum_ready_category_scopes": 1,
+    "minimum_search_ready_products": 500,
+    "minimum_finance_ready_products": 0,
+    "minimum_golden_bucket_coverage": 0.0,
+    "minimum_search_demand_coverage": 0.0
+  },
+  "require_merchant_count": false
+}

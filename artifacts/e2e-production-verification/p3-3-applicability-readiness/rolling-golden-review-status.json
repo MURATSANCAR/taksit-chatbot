@@ -1,0 +1,8 @@
+{
+  "approved": 0,
+  "rejected": 0,
+  "needs_revision": 0,
+  "review_required": 250,
+  "auto_approve": false,
+  "dual_control_required": true
+}

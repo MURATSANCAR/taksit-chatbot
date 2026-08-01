@@ -30,6 +30,12 @@ class ReadinessThresholds:
     minimum_golden_pass_rate: float = 1.0
     wrong_mapping_tolerance: int = 0
     payment_calculation_error_tolerance: int = 0
+    # Fleet / scope quality (merchant readiness closeout gates; not per-SKU invent)
+    minimum_total_ready_products: int = 500
+    minimum_search_demand_coverage: float = 0.0
+    minimum_medium_or_high_volume_merchant_count: int = 1
+    minimum_finance_ready_products: int = 0
+    medium_high_volume_product_floor: int = 200
 
     @classmethod
     def from_mapping(cls, data: Mapping[str, object]) -> "ReadinessThresholds":
@@ -60,6 +66,21 @@ class ReadinessThresholds:
             wrong_mapping_tolerance=int(data.get("wrong_mapping_tolerance", 0) or 0),
             payment_calculation_error_tolerance=int(
                 data.get("payment_calculation_error_tolerance", 0) or 0
+            ),
+            minimum_total_ready_products=int(
+                data.get("minimum_total_ready_products", 500) or 500
+            ),
+            minimum_search_demand_coverage=float(
+                data.get("minimum_search_demand_coverage", 0.0) or 0.0
+            ),
+            minimum_medium_or_high_volume_merchant_count=int(
+                data.get("minimum_medium_or_high_volume_merchant_count", 1) or 1
+            ),
+            minimum_finance_ready_products=int(
+                data.get("minimum_finance_ready_products", 0) or 0
+            ),
+            medium_high_volume_product_floor=int(
+                data.get("medium_high_volume_product_floor", 200) or 200
             ),
         )
 

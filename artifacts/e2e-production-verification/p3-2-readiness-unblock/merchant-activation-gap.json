@@ -1,0 +1,1514 @@
+{
+  "thresholds": {
+    "minimum_searchable_products": 50,
+    "minimum_category_coverage": 0.95,
+    "minimum_brand_coverage": 0.9,
+    "minimum_critical_attribute_coverage": 0.9,
+    "minimum_card_media_coverage": 0.95,
+    "minimum_fresh_price_coverage": 0.95,
+    "minimum_valid_url_coverage": 0.99,
+    "maximum_critical_error": 0,
+    "minimum_golden_pass_rate": 1.0,
+    "wrong_mapping_tolerance": 0,
+    "payment_calculation_error_tolerance": 0,
+    "minimum_total_ready_products": 500,
+    "minimum_search_demand_coverage": 0.0,
+    "minimum_medium_or_high_volume_merchant_count": 1,
+    "minimum_finance_ready_products": 0,
+    "medium_high_volume_product_floor": 200
+  },
+  "merchants": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "active_products": 165169,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.7913,
+        "brand_coverage": 0.9975,
+        "attribute_coverage": 0.9975,
+        "card_media_coverage": 0.9999,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 26212,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 165169,
+        "sample": 3000,
+        "cat_field": 0,
+        "brand": 2997,
+        "img": 3000,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 26212,
+      "activation_gap_score": 78586.0,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "active_products": 7450,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.8835,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 0.9997,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.9209
+      },
+      "gaps": {
+        "category_gap": 495,
+        "media_gap": 0,
+        "brand_gap": 6705,
+        "attribute_gap": 6705,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_NOT_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 7450,
+        "sample": 3000,
+        "cat_field": 0,
+        "brand": 0,
+        "img": 3000,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 7200,
+      "activation_gap_score": 28162.91,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "active_products": 6490,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.8667,
+        "brand_coverage": 0.9997,
+        "attribute_coverage": 0.9997,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 541,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 6826,
+        "sample": 3000,
+        "cat_field": 0,
+        "brand": 2999,
+        "img": 3000,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 541,
+      "activation_gap_score": 1573.0,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 15,
+      "merchant_code": "m-arcelik",
+      "active_products": 1244,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.1383,
+        "brand_coverage": 0.1367,
+        "attribute_coverage": 0.1383,
+        "card_media_coverage": 0.881,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 1010,
+        "media_gap": 86,
+        "brand_gap": 950,
+        "attribute_gap": 948,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 1244,
+        "sample": 1244,
+        "cat_field": 0,
+        "brand": 170,
+        "img": 1242,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "kulaklik": 84,
+          "android-telefon-modelleri": 55,
+          "ekgaranti": 46,
+          "kahve-fincanlari": 34,
+          "gazli-cam-tablali-ocak": 33,
+          "hoparlor": 33,
+          "mikser-blender-aksesuarlari": 29,
+          "alttan-donduruculu-buzdolabi": 26
+        },
+        "url_taxonomy_coverage": 0.2026
+      },
+      "estimated_recoverable_count": 2046,
+      "unrecoverable_count": 0,
+      "activation_gap_score": 2981.56,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 16,
+      "merchant_code": "m-beko",
+      "active_products": 1163,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.2537,
+        "brand_coverage": 0.184,
+        "attribute_coverage": 0.184,
+        "card_media_coverage": 0.8521,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 810,
+        "media_gap": 114,
+        "brand_gap": 833,
+        "attribute_gap": 833,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 1163,
+        "sample": 1163,
+        "cat_field": 0,
+        "brand": 214,
+        "img": 1158,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "kucuk-ev-aletleri-yedek-parca-ve-aksesuarlari": 86,
+          "android-telefon-modelleri": 84,
+          "kulaklik": 76,
+          "akilli-saat": 69,
+          "ekgaranti": 48,
+          "no-frost-buzdolabi": 37,
+          "hoparlor": 37,
+          "gazli-cam-tablali-ocak": 28
+        },
+        "url_taxonomy_coverage": 0.3121
+      },
+      "estimated_recoverable_count": 1757,
+      "unrecoverable_count": 0,
+      "activation_gap_score": 2578.37,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "active_products": 1007,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.5601,
+        "brand_coverage": 0.6415,
+        "attribute_coverage": 0.6415,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.999
+      },
+      "gaps": {
+        "category_gap": 393,
+        "media_gap": 0,
+        "brand_gap": 260,
+        "attribute_gap": 260,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 1007,
+        "sample": 1007,
+        "cat_field": 0,
+        "brand": 646,
+        "img": 1007,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "ucuc": 6,
+          "adidas": 5,
+          "lc-waikiki": 5,
+          "u-s-polo-assn": 5,
+          "daniel-klein": 4,
+          "bosch": 4,
+          "guess": 3,
+          "nike": 3
+        },
+        "url_taxonomy_coverage": 0.0248
+      },
+      "estimated_recoverable_count": 260,
+      "unrecoverable_count": 393,
+      "activation_gap_score": 1589.03,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "active_products": 1003,
+      "status": "READY",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.995,
+        "attribute_coverage": 0.999,
+        "card_media_coverage": 0.996,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 0,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 998,
+        "sample": 998,
+        "cat_field": 0,
+        "brand": 998,
+        "img": 998,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "iphone-15-akilli-telefon.html": 2,
+          "iphone-15-128-gb-akilli-telefon-mavi.html": 2,
+          "iphone-16-128-gb-akilli-telefon-beyaz.html": 2,
+          "iphone-17-256-gb-akilli-telefon-beyaz.html": 2,
+          "iphone-17-pro-256-gb-akilli-telefon-gumus.html": 2,
+          "ipad-a16-tablet.html": 2,
+          "samsung-galaxy-tab-a11-android-tablet.html": 2,
+          "acton-flip-digital-kompakt-kamera.html": 2
+        },
+        "url_taxonomy_coverage": 0.01
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 0,
+      "activation_gap_score": -10.03,
+      "reasons": []
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "active_products": 892,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.7691,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 1.0
+      },
+      "gaps": {
+        "category_gap": 161,
+        "media_gap": 0,
+        "brand_gap": 803,
+        "attribute_gap": 803,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_NOT_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 847,
+        "sample": 847,
+        "cat_field": 0,
+        "brand": 0,
+        "img": 847,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 964,
+      "activation_gap_score": 3586.08,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 19,
+      "merchant_code": "m-n11",
+      "active_products": 850,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.5035,
+        "brand_coverage": 0.1965,
+        "attribute_coverage": 0.1965,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 380,
+        "media_gap": 0,
+        "brand_gap": 598,
+        "attribute_gap": 598,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 26375,
+        "sample": 3000,
+        "cat_field": 0,
+        "brand": 477,
+        "img": 3000,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 598,
+      "unrecoverable_count": 380,
+      "activation_gap_score": 2327.5,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 23,
+      "merchant_code": "m-dr",
+      "active_products": 750,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.1147,
+        "brand_coverage": 0.012,
+        "attribute_coverage": 0.012,
+        "card_media_coverage": 0.46,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 626,
+        "media_gap": 367,
+        "brand_gap": 666,
+        "attribute_gap": 666,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_AVAILABLE_IN_ATTRIBUTES",
+        "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+      },
+      "feed": {
+        "feed_n": 750,
+        "sample": 750,
+        "cat_field": 9,
+        "brand": 9,
+        "img": 345,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "kitap": 740,
+          "elektronik": 7,
+          "muzik": 3
+        },
+        "url_taxonomy_coverage": 1.0
+      },
+      "estimated_recoverable_count": 1659,
+      "unrecoverable_count": 0,
+      "activation_gap_score": 2317.5,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "active_products": 130,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.6769,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 36,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 130,
+        "sample": 130,
+        "cat_field": 0,
+        "brand": 130,
+        "img": 130,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "travo-yatak-odasi-takimi-modeli.html": 1,
+          "bold-yemek-odasi-takimi-modeli.html": 1,
+          "arles-bahce-balkon-oturma-grubu-modeli.html": 1,
+          "porto-cay-seti-takimi-1771243764044-modeli.html": 1,
+          "caly-bar-masasi-seti-modeli.html": 1,
+          "madlen-kose-koltuk-sag-modeli.html": 1,
+          "haven-yemek-odasi-takimi-modeli.html": 1,
+          "nook-moduler-mini-kose-yesil-modeli.html": 1
+        },
+        "url_taxonomy_coverage": 0.0385
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 36,
+      "activation_gap_score": 106.7,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "active_products": 130,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.4846,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 1.0
+      },
+      "gaps": {
+        "category_gap": 61,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 130,
+        "sample": 130,
+        "cat_field": 0,
+        "brand": 130,
+        "img": 130,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "cmf-buds-pro-2-2025-gri": 1,
+          "petkit-eversweet-5-mini-su-pinari": 1,
+          "nothing-ear-3-beyaz": 1,
+          "tecno-watch-pro-3": 1,
+          "petkit-nano-mama-kasesi": 1,
+          "petkit-kedi-tuvaleti-elekli-rampa": 1,
+          "petkit-pura-air-akilli-koku-giderici-sprey": 1,
+          "petkit-pura-air-akilli-sprey-yedek-likit": 1
+        },
+        "url_taxonomy_coverage": 0.0385
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 61,
+      "activation_gap_score": 81.7,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "active_products": 115,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 0.2174,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 0,
+        "media_gap": 84,
+        "brand_gap": 104,
+        "attribute_gap": 104,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_NOT_AVAILABLE",
+        "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+      },
+      "feed": {
+        "feed_n": 115,
+        "sample": 115,
+        "cat_field": 0,
+        "brand": 0,
+        "img": 25,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "katlanir-kamp-masasi-71-cm": 2,
+          "viko-karre-serisi-beyaz": 2,
+          "adore-london-4-kapili-gardirop-159x202x52": 1,
+          "burbank-132-cm-beyaz-tavan-vantilatoru-4-kanat": 1,
+          "grundig-kmp-8650-s-kitchen-machine-mutfak-sefi": 1,
+          "bosch-gdx-18v-285gsb-185-li-2-li-set": 1,
+          "johor-cok-yonlu-semsiye-300x300-cm": 1,
+          "demirdokum-termosifon-dt4-65-litre": 1
+        },
+        "url_taxonomy_coverage": 0.0609
+      },
+      "estimated_recoverable_count": 84,
+      "unrecoverable_count": 104,
+      "activation_gap_score": 498.85,
+      "reasons": [
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "active_products": 57,
+      "status": "READY",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.9649,
+        "attribute_coverage": 0.9649,
+        "card_media_coverage": 0.9649,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 0,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 57,
+        "sample": 57,
+        "cat_field": 55,
+        "brand": 55,
+        "img": 55,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "laptop-notebook-dizustu-bilgisayarlar-c-98": 1,
+          "cep-telefonlari-c-371965": 1
+        },
+        "url_taxonomy_coverage": 0.0351
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 0,
+      "activation_gap_score": -0.57,
+      "reasons": []
+    },
+    {
+      "merchant_id": 24,
+      "merchant_code": "m-civil",
+      "active_products": 8,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.25,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 6,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 462,
+        "sample": 462,
+        "cat_field": 0,
+        "brand": 459,
+        "img": 462,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 6,
+      "activation_gap_score": 17.92,
+      "reasons": [
+        "insufficient_searchable_products",
+        "category_coverage_below_threshold"
+      ]
+    }
+  ],
+  "ready": [
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "active_products": 1003,
+      "status": "READY",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.995,
+        "attribute_coverage": 0.999,
+        "card_media_coverage": 0.996,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 0,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 998,
+        "sample": 998,
+        "cat_field": 0,
+        "brand": 998,
+        "img": 998,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "iphone-15-akilli-telefon.html": 2,
+          "iphone-15-128-gb-akilli-telefon-mavi.html": 2,
+          "iphone-16-128-gb-akilli-telefon-beyaz.html": 2,
+          "iphone-17-256-gb-akilli-telefon-beyaz.html": 2,
+          "iphone-17-pro-256-gb-akilli-telefon-gumus.html": 2,
+          "ipad-a16-tablet.html": 2,
+          "samsung-galaxy-tab-a11-android-tablet.html": 2,
+          "acton-flip-digital-kompakt-kamera.html": 2
+        },
+        "url_taxonomy_coverage": 0.01
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 0,
+      "activation_gap_score": -10.03,
+      "reasons": []
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "active_products": 57,
+      "status": "READY",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.9649,
+        "attribute_coverage": 0.9649,
+        "card_media_coverage": 0.9649,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 0,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 57,
+        "sample": 57,
+        "cat_field": 55,
+        "brand": 55,
+        "img": 55,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "laptop-notebook-dizustu-bilgisayarlar-c-98": 1,
+          "cep-telefonlari-c-371965": 1
+        },
+        "url_taxonomy_coverage": 0.0351
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 0,
+      "activation_gap_score": -0.57,
+      "reasons": []
+    }
+  ],
+  "third_merchant_candidates": [
+    {
+      "merchant_id": 23,
+      "merchant_code": "m-dr",
+      "active_products": 750,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.1147,
+        "brand_coverage": 0.012,
+        "attribute_coverage": 0.012,
+        "card_media_coverage": 0.46,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 626,
+        "media_gap": 367,
+        "brand_gap": 666,
+        "attribute_gap": 666,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_AVAILABLE_IN_ATTRIBUTES",
+        "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+      },
+      "feed": {
+        "feed_n": 750,
+        "sample": 750,
+        "cat_field": 9,
+        "brand": 9,
+        "img": 345,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "kitap": 740,
+          "elektronik": 7,
+          "muzik": 3
+        },
+        "url_taxonomy_coverage": 1.0
+      },
+      "estimated_recoverable_count": 1659,
+      "unrecoverable_count": 0,
+      "activation_gap_score": 2317.5,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 16,
+      "merchant_code": "m-beko",
+      "active_products": 1163,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.2537,
+        "brand_coverage": 0.184,
+        "attribute_coverage": 0.184,
+        "card_media_coverage": 0.8521,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 810,
+        "media_gap": 114,
+        "brand_gap": 833,
+        "attribute_gap": 833,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 1163,
+        "sample": 1163,
+        "cat_field": 0,
+        "brand": 214,
+        "img": 1158,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "kucuk-ev-aletleri-yedek-parca-ve-aksesuarlari": 86,
+          "android-telefon-modelleri": 84,
+          "kulaklik": 76,
+          "akilli-saat": 69,
+          "ekgaranti": 48,
+          "no-frost-buzdolabi": 37,
+          "hoparlor": 37,
+          "gazli-cam-tablali-ocak": 28
+        },
+        "url_taxonomy_coverage": 0.3121
+      },
+      "estimated_recoverable_count": 1757,
+      "unrecoverable_count": 0,
+      "activation_gap_score": 2578.37,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 15,
+      "merchant_code": "m-arcelik",
+      "active_products": 1244,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.1383,
+        "brand_coverage": 0.1367,
+        "attribute_coverage": 0.1383,
+        "card_media_coverage": 0.881,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 1010,
+        "media_gap": 86,
+        "brand_gap": 950,
+        "attribute_gap": 948,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 1244,
+        "sample": 1244,
+        "cat_field": 0,
+        "brand": 170,
+        "img": 1242,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "kulaklik": 84,
+          "android-telefon-modelleri": 55,
+          "ekgaranti": 46,
+          "kahve-fincanlari": 34,
+          "gazli-cam-tablali-ocak": 33,
+          "hoparlor": 33,
+          "mikser-blender-aksesuarlari": 29,
+          "alttan-donduruculu-buzdolabi": 26
+        },
+        "url_taxonomy_coverage": 0.2026
+      },
+      "estimated_recoverable_count": 2046,
+      "unrecoverable_count": 0,
+      "activation_gap_score": 2981.56,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "active_products": 130,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.6769,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 36,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 130,
+        "sample": 130,
+        "cat_field": 0,
+        "brand": 130,
+        "img": 130,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "travo-yatak-odasi-takimi-modeli.html": 1,
+          "bold-yemek-odasi-takimi-modeli.html": 1,
+          "arles-bahce-balkon-oturma-grubu-modeli.html": 1,
+          "porto-cay-seti-takimi-1771243764044-modeli.html": 1,
+          "caly-bar-masasi-seti-modeli.html": 1,
+          "madlen-kose-koltuk-sag-modeli.html": 1,
+          "haven-yemek-odasi-takimi-modeli.html": 1,
+          "nook-moduler-mini-kose-yesil-modeli.html": 1
+        },
+        "url_taxonomy_coverage": 0.0385
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 36,
+      "activation_gap_score": 106.7,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "active_products": 130,
+      "status": "BLOCKED",
+      "metrics": {
+        "category_coverage": 0.4846,
+        "brand_coverage": 1.0,
+        "attribute_coverage": 1.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 1.0
+      },
+      "gaps": {
+        "category_gap": 61,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 130,
+        "sample": 130,
+        "cat_field": 0,
+        "brand": 130,
+        "img": 130,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "cmf-buds-pro-2-2025-gri": 1,
+          "petkit-eversweet-5-mini-su-pinari": 1,
+          "nothing-ear-3-beyaz": 1,
+          "tecno-watch-pro-3": 1,
+          "petkit-nano-mama-kasesi": 1,
+          "petkit-kedi-tuvaleti-elekli-rampa": 1,
+          "petkit-pura-air-akilli-koku-giderici-sprey": 1,
+          "petkit-pura-air-akilli-sprey-yedek-likit": 1
+        },
+        "url_taxonomy_coverage": 0.0385
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 61,
+      "activation_gap_score": 81.7,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "active_products": 115,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 1.0,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 0.2174,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 0,
+        "media_gap": 84,
+        "brand_gap": 104,
+        "attribute_gap": 104,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+        "brand": "SOURCE_NOT_AVAILABLE",
+        "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+      },
+      "feed": {
+        "feed_n": 115,
+        "sample": 115,
+        "cat_field": 0,
+        "brand": 0,
+        "img": 25,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "katlanir-kamp-masasi-71-cm": 2,
+          "viko-karre-serisi-beyaz": 2,
+          "adore-london-4-kapili-gardirop-159x202x52": 1,
+          "burbank-132-cm-beyaz-tavan-vantilatoru-4-kanat": 1,
+          "grundig-kmp-8650-s-kitchen-machine-mutfak-sefi": 1,
+          "bosch-gdx-18v-285gsb-185-li-2-li-set": 1,
+          "johor-cok-yonlu-semsiye-300x300-cm": 1,
+          "demirdokum-termosifon-dt4-65-litre": 1
+        },
+        "url_taxonomy_coverage": 0.0609
+      },
+      "estimated_recoverable_count": 84,
+      "unrecoverable_count": 104,
+      "activation_gap_score": 498.85,
+      "reasons": [
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold",
+        "card_media_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 19,
+      "merchant_code": "m-n11",
+      "active_products": 850,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.5035,
+        "brand_coverage": 0.1965,
+        "attribute_coverage": 0.1965,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 380,
+        "media_gap": 0,
+        "brand_gap": 598,
+        "attribute_gap": 598,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 26375,
+        "sample": 3000,
+        "cat_field": 0,
+        "brand": 477,
+        "img": 3000,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 598,
+      "unrecoverable_count": 380,
+      "activation_gap_score": 2327.5,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "active_products": 1007,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.5601,
+        "brand_coverage": 0.6415,
+        "attribute_coverage": 0.6415,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.999
+      },
+      "gaps": {
+        "category_gap": 393,
+        "media_gap": 0,
+        "brand_gap": 260,
+        "attribute_gap": 260,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 1007,
+        "sample": 1007,
+        "cat_field": 0,
+        "brand": 646,
+        "img": 1007,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {
+          "ucuc": 6,
+          "adidas": 5,
+          "lc-waikiki": 5,
+          "u-s-polo-assn": 5,
+          "daniel-klein": 4,
+          "bosch": 4,
+          "guess": 3,
+          "nike": 3
+        },
+        "url_taxonomy_coverage": 0.0248
+      },
+      "estimated_recoverable_count": 260,
+      "unrecoverable_count": 393,
+      "activation_gap_score": 1589.03,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "active_products": 6490,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.8667,
+        "brand_coverage": 0.9997,
+        "attribute_coverage": 0.9997,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 0.0
+      },
+      "gaps": {
+        "category_gap": 541,
+        "media_gap": 0,
+        "brand_gap": 0,
+        "attribute_gap": 0,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 6826,
+        "sample": 3000,
+        "cat_field": 0,
+        "brand": 2999,
+        "img": 3000,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 541,
+      "activation_gap_score": 1573.0,
+      "reasons": [
+        "category_coverage_below_threshold"
+      ]
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "active_products": 892,
+      "status": "PARTIAL",
+      "metrics": {
+        "category_coverage": 0.7691,
+        "brand_coverage": 0.0,
+        "attribute_coverage": 0.0,
+        "card_media_coverage": 1.0,
+        "fresh_price_coverage": 1.0,
+        "valid_url_coverage": 1.0,
+        "finance_coverage": 1.0
+      },
+      "gaps": {
+        "category_gap": 161,
+        "media_gap": 0,
+        "brand_gap": 803,
+        "attribute_gap": 803,
+        "price_gap": 0,
+        "url_gap": 0
+      },
+      "source_availability": {
+        "category": "SOURCE_NOT_AVAILABLE",
+        "brand": "SOURCE_NOT_AVAILABLE",
+        "media": "SOURCE_AVAILABLE"
+      },
+      "feed": {
+        "feed_n": 847,
+        "sample": 847,
+        "cat_field": 0,
+        "brand": 0,
+        "img": 847,
+        "attrs_cat": 0,
+        "attrs_brand": 0,
+        "url_taxonomy_roots": {},
+        "url_taxonomy_coverage": 0.0
+      },
+      "estimated_recoverable_count": 0,
+      "unrecoverable_count": 964,
+      "activation_gap_score": 3586.08,
+      "reasons": [
+        "category_coverage_below_threshold",
+        "brand_coverage_below_threshold",
+        "attribute_coverage_below_threshold"
+      ]
+    }
+  ],
+  "selected_candidate": {
+    "merchant_id": 23,
+    "merchant_code": "m-dr",
+    "active_products": 750,
+    "status": "BLOCKED",
+    "metrics": {
+      "category_coverage": 0.1147,
+      "brand_coverage": 0.012,
+      "attribute_coverage": 0.012,
+      "card_media_coverage": 0.46,
+      "fresh_price_coverage": 1.0,
+      "valid_url_coverage": 1.0,
+      "finance_coverage": 0.0
+    },
+    "gaps": {
+      "category_gap": 626,
+      "media_gap": 367,
+      "brand_gap": 666,
+      "attribute_gap": 666,
+      "price_gap": 0,
+      "url_gap": 0
+    },
+    "source_availability": {
+      "category": "SOURCE_AVAILABLE_IN_TAXONOMY",
+      "brand": "SOURCE_AVAILABLE_IN_ATTRIBUTES",
+      "media": "SOURCE_AVAILABLE_IN_RAW_PAYLOAD"
+    },
+    "feed": {
+      "feed_n": 750,
+      "sample": 750,
+      "cat_field": 9,
+      "brand": 9,
+      "img": 345,
+      "attrs_cat": 0,
+      "attrs_brand": 0,
+      "url_taxonomy_roots": {
+        "kitap": 740,
+        "elektronik": 7,
+        "muzik": 3
+      },
+      "url_taxonomy_coverage": 1.0
+    },
+    "estimated_recoverable_count": 1659,
+    "unrecoverable_count": 0,
+    "activation_gap_score": 2317.5,
+    "reasons": [
+      "category_coverage_below_threshold",
+      "brand_coverage_below_threshold",
+      "attribute_coverage_below_threshold",
+      "card_media_coverage_below_threshold"
+    ]
+  },
+  "priority_top": [
+    {
+      "merchant_id": 22,
+      "merchant_code": "m-flo",
+      "score": 0.60031
+    },
+    {
+      "merchant_id": 11,
+      "merchant_code": "m-teknosa",
+      "score": 0.524444
+    },
+    {
+      "merchant_id": 8,
+      "merchant_code": "m-mediamarkt",
+      "score": 0.495875
+    },
+    {
+      "merchant_id": 5,
+      "merchant_code": "m-vatan",
+      "score": 0.450615
+    },
+    {
+      "merchant_id": 18,
+      "merchant_code": "m-hepsiburada",
+      "score": 0.444804
+    },
+    {
+      "merchant_id": 20,
+      "merchant_code": "m-trendyol",
+      "score": 0.443626
+    },
+    {
+      "merchant_id": 29,
+      "merchant_code": "m-network",
+      "score": 0.427031
+    },
+    {
+      "merchant_id": 40,
+      "merchant_code": "m-evofone",
+      "score": 0.423616
+    },
+    {
+      "merchant_id": 21,
+      "merchant_code": "m-vivense",
+      "score": 0.371691
+    },
+    {
+      "merchant_id": 14,
+      "merchant_code": "m-koctas",
+      "score": 0.332749
+    }
+  ]
+}

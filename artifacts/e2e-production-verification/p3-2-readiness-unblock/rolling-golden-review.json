@@ -1,0 +1,10 @@
+{
+  "candidates": 250,
+  "approved": 0,
+  "rejected": 0,
+  "needs_revision": 0,
+  "dual_control": true,
+  "auto_approve": false,
+  "pass": false,
+  "status": "NOT_VERIFIED"
+}
