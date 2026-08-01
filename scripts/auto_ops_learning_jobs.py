@@ -153,10 +153,27 @@ async def recompute_merchant_readiness(conn: Any, catalog_revision: str) -> dict
           count(*) FILTER (WHERE p.attributes IS NOT NULL
             AND p.attributes::text NOT IN ('{}','null'))::bigint AS with_attrs,
           count(*) FILTER (WHERE EXISTS (
+            SELECT 1 FROM product_offers o WHERE o.product_id=p.id
+              AND o.stock_status IN ('AVAILABLE','LIMITED','OUT_OF_STOCK')
+          ))::bigint AS with_stock,
+          count(*) FILTER (WHERE EXISTS (
              SELECT 1 FROM product_media_links pml
                JOIN media_assets ma ON ma.id=pml.media_asset_id
               WHERE pml.product_id=p.id AND pml.is_primary AND ma.status='READY'
-          ))::bigint AS with_media
+          ))::bigint AS with_media,
+          count(*) FILTER (WHERE EXISTS (
+            SELECT 1 FROM product_offers o WHERE o.product_id=p.id
+              AND o.freshness_status='FRESH'
+          ))::bigint AS with_fresh,
+          count(*) FILTER (WHERE EXISTS (
+            SELECT 1 FROM product_offers o WHERE o.product_id=p.id
+              AND o.checkout_url IS NOT NULL AND length(o.checkout_url)>5
+          ))::bigint AS with_url,
+          count(*) FILTER (WHERE EXISTS (
+            SELECT 1 FROM product_finance_options pfo
+              JOIN product_offers o ON o.id=pfo.product_offer_id
+             WHERE o.product_id=p.id AND pfo.eligibility_status='ELIGIBLE'
+          ))::bigint AS with_finance
         FROM products p JOIN merchants m ON m.id=p.merchant_id
         WHERE p.status='ACTIVE'
         GROUP BY m.id, m.activation_gate
@@ -172,11 +189,11 @@ async def recompute_merchant_readiness(conn: Any, catalog_revision: str) -> dict
             category_coverage=int(row["with_cat"]) / max(n, 1),
             brand_coverage=int(row["with_brand"]) / max(n, 1),
             attribute_coverage=int(row["with_attrs"]) / max(n, 1),
-            stock_coverage=0.9,
+            stock_coverage=int(row["with_stock"]) / max(n, 1),
             card_media_coverage=int(row["with_media"]) / max(n, 1),
-            fresh_price_coverage=0.9,
-            valid_url_coverage=0.99,
-            finance_coverage=0.0,
+            fresh_price_coverage=int(row["with_fresh"]) / max(n, 1),
+            valid_url_coverage=int(row["with_url"]) / max(n, 1),
+            finance_coverage=int(row["with_finance"]) / max(n, 1),
             payment_plan_coverage=0.0,
         )
         decision = evaluate_merchant_readiness(metrics, thr)
