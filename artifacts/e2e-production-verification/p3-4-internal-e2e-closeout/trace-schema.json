@@ -1,0 +1,17 @@
+{
+  "required_spans": [
+    "search.http",
+    "search.authorization",
+    "search.cohort.resolve",
+    "search.session",
+    "query.parse",
+    "entity.resolve",
+    "product.retrieve",
+    "constraint.filter",
+    "ranking.score",
+    "ranking.select_topk",
+    "response.compose",
+    "response.serialize"
+  ],
+  "policy": "P3.4"
+}

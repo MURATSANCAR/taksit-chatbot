@@ -1,0 +1,7 @@
+{
+  "status": "SAMPLED",
+  "pass": true,
+  "sample_bytes": 2025,
+  "session_id": "bdfa868f-8669-446b-9555-f2dafcee5e6d",
+  "note": "Full event-order matrix NOT_VERIFIED in this harness"
+}

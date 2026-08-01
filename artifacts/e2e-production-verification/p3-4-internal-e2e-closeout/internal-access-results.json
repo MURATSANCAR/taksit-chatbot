@@ -1,0 +1,80 @@
+{
+  "logic_cases": [
+    {
+      "name": "external_no_headers",
+      "decision": {
+        "allowed": true,
+        "is_internal": false,
+        "reason": "external_legacy_path",
+        "cohort_id": null,
+        "cohort_version": null
+      }
+    },
+    {
+      "name": "forged_token",
+      "decision": {
+        "allowed": false,
+        "is_internal": true,
+        "reason": "invalid_internal_token",
+        "cohort_id": null,
+        "cohort_version": null
+      }
+    },
+    {
+      "name": "cohort_manipulation",
+      "decision": {
+        "allowed": false,
+        "is_internal": true,
+        "reason": "cohort_id_manipulation",
+        "cohort_id": null,
+        "cohort_version": null
+      }
+    }
+  ],
+  "live_probes": [
+    {
+      "test_case_id": "access-external",
+      "trace_id": null,
+      "search_session_id": "f46e7fa0-f733-4317-80fa-f17d31328d23",
+      "route": "FAST",
+      "http_status": 200,
+      "class": "OK",
+      "duration_ms": 378.11,
+      "ranking_span_ms": null,
+      "missing_required_spans": null,
+      "body_excerpt": "{\"search_session_id\":\"f46e7fa0-f733-4317-80fa-f17d31328d23\",\"query_version\":1,\"status\":\"COMPLETED\",\"events_url\":\"/v1/search-sessions/f46e7fa0-f733-4317-80fa-f17d31328d23/events\",\"r",
+      "trace": null
+    },
+    {
+      "test_case_id": "access-forged",
+      "trace_id": null,
+      "search_session_id": null,
+      "route": null,
+      "http_status": 403,
+      "class": "COHORT_ACCESS_ERROR",
+      "duration_ms": 1.69,
+      "ranking_span_ms": null,
+      "missing_required_spans": null,
+      "body_excerpt": "{\"detail\":{\"error_code\":\"COHORT_ACCESS_ERROR\",\"reason\":\"invalid_internal_token\"}}",
+      "trace": null
+    },
+    {
+      "test_case_id": "access-cohort-manip",
+      "trace_id": null,
+      "search_session_id": null,
+      "route": null,
+      "http_status": 403,
+      "class": "COHORT_ACCESS_ERROR",
+      "duration_ms": 1.34,
+      "ranking_span_ms": null,
+      "missing_required_spans": null,
+      "body_excerpt": "{\"detail\":{\"error_code\":\"COHORT_ACCESS_ERROR\",\"reason\":\"cohort_id_manipulation\"}}",
+      "trace": null
+    }
+  ],
+  "unauthorized_internal_access": 0,
+  "forged_http_blocked": true,
+  "manipulation_http_blocked": true,
+  "external_legacy_ok": true,
+  "pass": true
+}

@@ -1,0 +1,32 @@
+{
+  "cohort_id": 1,
+  "cohort_version": 1,
+  "golden_policy_version": 1,
+  "active_query_demand_total": 0,
+  "covered_query_demand": 0,
+  "demand_weighted_coverage": 0.0,
+  "active_merchant_scope_count": 2,
+  "covered_merchant_scope_count": 0,
+  "active_category_scope_count": 326,
+  "covered_category_scope_count": 0,
+  "typo_alias_approved_count": 0,
+  "negation_correction_approved_count": 0,
+  "finance_approved_count": 0,
+  "clarification_approved_count": 0,
+  "no_result_approved_count": 0,
+  "llm_required_approved_count": 0,
+  "total_approved": 0,
+  "status": "FAIL",
+  "failed_rules": [
+    "demand_weighted_coverage",
+    "merchant_scope_coverage",
+    "minimum_typo_alias_cases",
+    "minimum_negation_correction_cases",
+    "minimum_finance_cases",
+    "minimum_clarification_cases",
+    "minimum_no_result_cases",
+    "minimum_llm_required_cases"
+  ],
+  "evaluated_at": "2026-08-01T22:15:29.411585+00:00",
+  "note": "Human dual-control required; auto-approve forbidden"
+}
