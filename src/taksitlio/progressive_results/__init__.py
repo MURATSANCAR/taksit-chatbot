@@ -202,35 +202,62 @@ def build_partial_snapshot(
     products: Sequence[dict[str, Any]],
     constraints: dict[str, Any],
     limit: int = 18,
+    trace: Any = None,
 ) -> PartialResultSnapshot:
     if not can_partial_retrieve(constraints):
         return PartialResultSnapshot(query_version=query_version, products=[])
-    eligible = [
-        p
-        for p in products
-        if not _matches_negative_constraint(p, constraints)
-        and matches_required_categories(p, constraints)
-    ]
-    ranked = sorted(
-        eligible,
-        key=lambda p: score_partial_candidate(p, constraints),
-        reverse=True,
-    )[:limit]
-    label = snapshot_label_for_constraints(constraints)
+
+    def _filter() -> list[dict[str, Any]]:
+        return [
+            p
+            for p in products
+            if not _matches_negative_constraint(p, constraints)
+            and matches_required_categories(p, constraints)
+        ]
+
+    if trace is not None:
+        with trace.span("constraint.filter", candidate_count=len(products)) as bag:
+            eligible = _filter()
+            bag["filtered_candidate_count"] = len(eligible)
+    else:
+        eligible = _filter()
+
+    if trace is not None:
+        with trace.span(
+            "ranking.score",
+            candidate_count=len(eligible),
+            filtered_candidate_count=len(eligible),
+        ) as bag:
+            scored = [(p, score_partial_candidate(p, constraints)) for p in eligible]
+            bag["candidate_count"] = len(scored)
+        with trace.span(
+            "ranking.select_topk",
+            candidate_count=len(scored),
+            filtered_candidate_count=len(eligible),
+        ) as bag:
+            ranked_pairs = sorted(scored, key=lambda x: x[1], reverse=True)[:limit]
+            bag["result_count"] = len(ranked_pairs)
+        with trace.span("ranking.reason_codes", result_count=len(ranked_pairs)):
+            label = snapshot_label_for_constraints(constraints)
+    else:
+        scored = [(p, score_partial_candidate(p, constraints)) for p in eligible]
+        ranked_pairs = sorted(scored, key=lambda x: x[1], reverse=True)[:limit]
+        label = snapshot_label_for_constraints(constraints)
+
     out = [
         PartialProduct(
             product_id=str(p.get("product_id")),
             display_name=str(p.get("display_name") or ""),
             merchant_display_name=str(p.get("merchant_display_name") or ""),
             price=float(p.get("price") or 0),
-            score=score_partial_candidate(p, constraints),
+            score=float(score),
             thumbnail_cdn_url=p.get("thumbnail_cdn_url"),
             merchant_logo_cdn_url=p.get("merchant_logo_cdn_url"),
             merchant_code=str(p["merchant_code"]) if p.get("merchant_code") else None,
             stock_status=str(p["stock_status"]) if p.get("stock_status") else None,
             best_finance_summary=p.get("best_finance"),
         )
-        for p in ranked
+        for p, score in ranked_pairs
     ]
     return PartialResultSnapshot(
         query_version=query_version,

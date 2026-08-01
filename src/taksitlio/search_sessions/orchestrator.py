@@ -76,6 +76,7 @@ class SearchOrchestrator:
     started_mono: dict[str, float] = field(default_factory=dict)
     circuit_open: bool = False
     logo_resolver: Any = None
+    traces: dict[str, Any] = field(default_factory=dict)
 
     def _constraints_with_category_tokens(
         self, parse: Any, *, utterance: str = ""
@@ -189,6 +190,7 @@ class SearchOrchestrator:
         client_query_id: Optional[str] = None,
         user_id: Optional[str] = None,
         organization_id: Optional[str] = None,
+        trace: Any = None,
     ) -> dict[str, Any]:
         session, version = self.repo.create_session(
             conversation_id=conversation_id,
@@ -200,10 +202,19 @@ class SearchOrchestrator:
         self.started_mono[session.id] = time.monotonic()
         self.states[session.id] = QueryNeedState()
         self.logo_rails[session.id] = {"merchant": [], "brand": [], "institution": []}
+        if trace is not None:
+            trace.search_session_id = session.id
+            trace.query_version = session.active_query_version
+            self.traces[session.id] = trace
+            with trace.span("search.session"):
+                self._emit(session, SearchProgressEventType.SEARCH_ACCEPTED)
+                return self._run_pipeline(session, message, trace=trace)
         self._emit(session, SearchProgressEventType.SEARCH_ACCEPTED)
-        return self._run_pipeline(session, message)
+        return self._run_pipeline(session, message, trace=None)
 
-    def _run_pipeline(self, session: SearchSession, message: str) -> dict[str, Any]:
+    def _run_pipeline(
+        self, session: SearchSession, message: str, *, trace: Any = None
+    ) -> dict[str, Any]:
         self.repo.set_status(session.id, SearchSessionStatus.FAST_PARSING)
         self._emit(session, SearchProgressEventType.FAST_PARSE_STARTED)
 
@@ -212,7 +223,14 @@ class SearchOrchestrator:
             self.utterances[session.id] = message
             return self._refuse_off_domain(session, message=message)
 
-        parse = fast_parse(message, catalog=self.catalog)
+        if trace is not None:
+            with trace.span("query.normalize"):
+                pass
+            with trace.span("query.parse") as bag:
+                parse = fast_parse(message, catalog=self.catalog)
+                bag["result_count"] = 1
+        else:
+            parse = fast_parse(message, catalog=self.catalog)
         version = self.repo.get_version(session.id, session.active_query_version)
         if version:
             version.state_snapshot = parse.to_dict()
@@ -228,27 +246,37 @@ class SearchOrchestrator:
 
         self.repo.set_status(session.id, SearchSessionStatus.ENTITY_RESOLVING)
         self._emit(session, SearchProgressEventType.ENTITY_RESOLUTION_STARTED)
-        merchants: list[LogoCandidate] = []
-        brands: list[LogoCandidate] = []
-        if parse.merchant and parse.merchant.resolved_id:
-            merchants.append(
-                LogoCandidate(
-                    entity_id=parse.merchant.resolved_id,
-                    display_name=parse.merchant.display_name,
-                    logo_cdn_url=self._logo_url("merchant", parse.merchant.resolved_id),
-                    kind="merchant",
-                )
-            )
-        for b in parse.brands:
-            if b.resolved_id:
-                brands.append(
+
+        def _resolve_entities() -> tuple[list[LogoCandidate], list[LogoCandidate]]:
+            merchants_local: list[LogoCandidate] = []
+            brands_local: list[LogoCandidate] = []
+            if parse.merchant and parse.merchant.resolved_id:
+                merchants_local.append(
                     LogoCandidate(
-                        entity_id=b.resolved_id,
-                        display_name=b.display_name,
-                        logo_cdn_url=self._logo_url("brand", b.resolved_id),
-                        kind="brand",
+                        entity_id=parse.merchant.resolved_id,
+                        display_name=parse.merchant.display_name,
+                        logo_cdn_url=self._logo_url("merchant", parse.merchant.resolved_id),
+                        kind="merchant",
                     )
                 )
+            for b in parse.brands:
+                if b.resolved_id:
+                    brands_local.append(
+                        LogoCandidate(
+                            entity_id=b.resolved_id,
+                            display_name=b.display_name,
+                            logo_cdn_url=self._logo_url("brand", b.resolved_id),
+                            kind="brand",
+                        )
+                    )
+            return merchants_local, brands_local
+
+        if trace is not None:
+            with trace.span("entity.resolve") as bag:
+                merchants, brands = _resolve_entities()
+                bag["result_count"] = len(merchants) + len(brands)
+        else:
+            merchants, brands = _resolve_entities()
         self.logo_rails[session.id]["merchant"] = merchants
         self.logo_rails[session.id]["brand"] = brands
         if merchants:
@@ -278,7 +306,11 @@ class SearchOrchestrator:
             version.requires_llm = parse.requires_llm
 
         self.repo.set_status(session.id, SearchSessionStatus.GAP_ANALYSIS)
-        gaps = detect_gaps(parse, category_candidates=self.category_clarify_options)
+        if trace is not None:
+            with trace.span("query.gap_analyze"):
+                gaps = detect_gaps(parse, category_candidates=self.category_clarify_options)
+        else:
+            gaps = detect_gaps(parse, category_candidates=self.category_clarify_options)
         self._emit(
             session,
             SearchProgressEventType.GAP_ANALYSIS_COMPLETED,
@@ -289,7 +321,7 @@ class SearchOrchestrator:
         policy = self.repo.policy
 
         if gaps.confidence_band == "HIGH":
-            return self._fast_retrieve(session, parse)
+            return self._fast_retrieve(session, parse, degraded=False, trace=trace)
 
         if should_ask_clarification(
             gaps=gaps,
@@ -297,6 +329,9 @@ class SearchOrchestrator:
             max_per_session=policy.max_clarifications_per_session,
             parse=parse,
         ):
+            if trace is not None:
+                with trace.span("clarification.plan"):
+                    pass
             best = select_best_uncertainty(gaps)
             assert best is not None
             # Prefer usage question when use-case unresolved and no category options needed
@@ -349,7 +384,7 @@ class SearchOrchestrator:
             return self._start_llm_route(session, parse, message, chips)
 
         # Fallback: wide deterministic
-        return self._fast_retrieve(session, parse, degraded=False)
+        return self._fast_retrieve(session, parse, degraded=False, trace=trace)
 
     def _fast_retrieve(
         self,
@@ -357,26 +392,45 @@ class SearchOrchestrator:
         parse: Any,
         *,
         degraded: bool = False,
+        trace: Any = None,
     ) -> dict[str, Any]:
         # LLM route may already be PARTIAL_RESULTS_READY / LLM_RUNNING — do not
         # force FAST_RETRIEVAL (illegal transition). Jump ahead when allowed.
         if can_transition(session.status, SearchSessionStatus.FAST_RETRIEVAL):
             self.repo.set_status(session.id, SearchSessionStatus.FAST_RETRIEVAL)
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
-        constraints = self._constraints_with_category_tokens(
-            parse, utterance=self.utterances.get(session.id, "")
-        )
+        if trace is not None:
+            with trace.span("feature.materialize"):
+                constraints = self._constraints_with_category_tokens(
+                    parse, utterance=self.utterances.get(session.id, "")
+                )
+        else:
+            constraints = self._constraints_with_category_tokens(
+                parse, utterance=self.utterances.get(session.id, "")
+            )
         state = self.states.get(session.id)
         ranking_mode = getattr(parse, "ranking_mode", None) or (
             (state.payment_preferences or {}).get("ranking_mode") if state else None
         )
         if ranking_mode:
             constraints["ranking_mode"] = str(ranking_mode)
-        partial = build_partial_snapshot(
-            query_version=session.active_query_version,
-            products=self.product_pool,
-            constraints=constraints,
-        )
+        if trace is not None:
+            with trace.span(
+                "product.retrieve", candidate_count=len(self.product_pool)
+            ) as bag:
+                partial = build_partial_snapshot(
+                    query_version=session.active_query_version,
+                    products=self.product_pool,
+                    constraints=constraints,
+                    trace=trace,
+                )
+                bag["result_count"] = len(partial.products)
+        else:
+            partial = build_partial_snapshot(
+                query_version=session.active_query_version,
+                products=self.product_pool,
+                constraints=constraints,
+            )
         self.repo.partial_snapshots.setdefault(session.id, []).append(partial.to_dict())
         if partial.products:
             if can_transition(session.status, SearchSessionStatus.PARTIAL_RESULTS_READY):
@@ -392,11 +446,19 @@ class SearchOrchestrator:
 
         # Finance from local snapshot by default (truthful)
         origin = DataOrigin.LOCAL_VERIFIED_SNAPSHOT.value
-        self._emit(
-            session,
-            SearchProgressEventType.FINANCE_SEARCH_STARTED,
-            data_origin=origin,
-        )
+        if trace is not None:
+            with trace.span("finance.lookup"):
+                self._emit(
+                    session,
+                    SearchProgressEventType.FINANCE_SEARCH_STARTED,
+                    data_origin=origin,
+                )
+        else:
+            self._emit(
+                session,
+                SearchProgressEventType.FINANCE_SEARCH_STARTED,
+                data_origin=origin,
+            )
         institution_ids = [
             i.get("institution_id")
             for i in (parse.preferred_institutions or [])
@@ -451,6 +513,30 @@ class SearchOrchestrator:
         if not degraded:
             self._record_latency(session.id, "fast_path_completion_ms", self._elapsed_ms(session.id))
         chips = chips_from_state(self.states[session.id])
+        if trace is not None:
+            with trace.span("claim.validate", result_count=len(partial.products)):
+                pass
+            with trace.span("response.compose", result_count=len(partial.products)):
+                payload = {
+                    "search_session_id": session.id,
+                    "query_version": session.active_query_version,
+                    "status": session.status.value,
+                    "events_url": f"/api/v1/search-sessions/{session.id}/events",
+                    "route": "FAST" if not degraded else "DEGRADED",
+                    "chips": chips,
+                    "understanding": parse.to_dict(),
+                    "partial_results": partial.to_dict(),
+                    "results": partial.to_dict(),
+                    "logos": self._logos_public(session.id),
+                }
+            with trace.span("response.serialize", result_count=len(partial.products)):
+                if not partial.products:
+                    payload["reply"] = (
+                        "Bu kriterlere uygun ürün bulamadım. Ürün türünü veya bütçeni tekrar yazabilirsin."
+                    )
+                elif ranking_mode:
+                    payload["reply"] = f"Sonuçları «{partial.label}» olarak sıraladım."
+            return payload
         payload: dict[str, Any] = {
             "search_session_id": session.id,
             "query_version": session.active_query_version,
