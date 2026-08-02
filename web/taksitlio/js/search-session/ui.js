@@ -157,8 +157,11 @@
 
   function productsToCards(snapshot) {
     var products = (snapshot && snapshot.products) || [];
+    var financeAllowed = snapshot && snapshot.finance_display_enabled === true;
     return products.map(function (p) {
-      var finance = p.best_finance_summary || p.best_finance || null;
+      var finance = financeAllowed
+        ? p.best_finance_summary || p.best_finance || null
+        : null;
       return {
         product_id: p.product_id,
         display_name: p.display_name,

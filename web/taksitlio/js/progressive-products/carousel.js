@@ -38,7 +38,13 @@
       '</div><div class="partial-carousel">';
     products.forEach(function (p, i) {
       var featured = i === 0;
-      var finance = p.best_finance_summary || p.best_finance || null;
+      var financeAllowed =
+        (snapshot && snapshot.finance_display_enabled === true) ||
+        (global.TaksitlioCapabilities &&
+          global.TaksitlioCapabilities.financeDisplayEnabled === true);
+      var finance = financeAllowed
+        ? p.best_finance_summary || p.best_finance || null
+        : null;
       var financeHtml = "";
       if (
         finance &&

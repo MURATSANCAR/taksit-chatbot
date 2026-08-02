@@ -46,13 +46,16 @@
   }
 
   /** Map API product card → deal view model. CDN URL only; never invent finance. */
-  function cardToDeal(card, index) {
+  function cardToDeal(card, index, options) {
+    const financeAllowed =
+      options && options.financeDisplayEnabled === true;
     const imageReady =
       card &&
       card.image &&
       card.image.status === "READY" &&
       card.image.thumbnail_cdn_url;
-    const finance = card && card.best_finance ? card.best_finance : null;
+    const finance =
+      financeAllowed && card && card.best_finance ? card.best_finance : null;
     const merchant =
       (card.merchant && card.merchant.display_name) || "";
     const merchantLogo = resolveLogo(
@@ -138,12 +141,19 @@
 
   function dealsFromChatPayload(payload) {
     const cards = (payload && payload.cards) || [];
+    const opts = {
+      financeDisplayEnabled: payload && payload.finance_display_enabled === true,
+    };
     if (cards.length) {
       return {
         source: "catalog",
         phase: payload.phase || "FIRST_CARDS",
-        deals: cards.map(cardToDeal),
+        deals: cards.map((c, i) => cardToDeal(c, i, opts)),
       };
+    }
+    // Campaign deals require explicit finance display; otherwise suppress.
+    if (!opts.financeDisplayEnabled) {
+      return { source: "catalog", phase: payload && payload.phase, deals: [] };
     }
     const campaigns = (payload && payload.campaigns) || [];
     return {

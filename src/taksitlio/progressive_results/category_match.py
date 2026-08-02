@@ -46,86 +46,56 @@ def _token_in_haystack(tok: str, hay: str) -> bool:
     return t in hay
 
 # Optional enrichment for well-known V003 / legacy ids (not the sole source of truth).
-CATEGORY_FAMILIES: dict[str, dict[str, tuple[str, ...]]] = {
-    "category-phone": {
-        "include": (
-            "akıllı telefon",
-            "akilli telefon",
-            "cep telefon",
-            "iphone",
-            "galaxy a",
-            "galaxy s",
-            "galaxy z",
-            "galaxy m",
-            "redmi",
-            "poco",
-            "xiaomi",
-            "oppo",
-            "realme",
-            "vivo",
-            "huawei",
-            "honor",
-            "tecno",
-            "infinix",
-            "pixel",
-            "gsm",
-            "telefon",
-        ),
-        "exclude": (
-            "laptop",
-            "notebook",
-            "macbook",
-            "ideapad",
-            "thinkpad",
-            "vivobook",
-            "zenbook",
-            "süpürge",
-            "supurge",
-            "televizyon",
-            " tablet",
-            "ipad",
-            "monitor",
-            "monitör",
-        ),
-    },
-    "category-laptop": {
-        "include": (
-            "laptop",
-            "notebook",
-            "macbook",
-            "ideapad",
-            "thinkpad",
-            "vivobook",
-            "zenbook",
-            "yoga slim",
-            "loq",
-            "tuf gaming",
-            "aspire",
-            "pavilion",
-            "inspiron",
-            "latitude",
-            "dizüstü",
-            "dizustu",
-        ),
-        "exclude": (
-            "akıllı telefon",
-            "akilli telefon",
-            "cep telefon",
-            "iphone",
-            "süpürge",
-            "supurge",
-            "televizyon",
-        ),
-    },
-    "category-tablet": {
-        "include": ("tablet", "ipad", "galaxy tab"),
-        "exclude": ("laptop", "notebook", "macbook", "akıllı telefon", "iphone", "süpürge"),
-    },
-    "category-tv": {
-        "include": ("televizyon", " smart tv", "qled", "oled tv", " led tv"),
-        "exclude": ("laptop", "telefon", "iphone", "süpürge", "tablet"),
-    },
-}
+# Source of truth: versioned data/category_family_tokens/*.json (loaded below).
+CATEGORY_FAMILIES: dict[str, dict[str, tuple[str, ...]]] = {}
+
+
+def _load_category_family_tokens() -> dict[str, dict[str, tuple[str, ...]]]:
+    """Load data-driven family token maps (not hardcoded query→category)."""
+
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[3]
+    data_dir = root / "data" / "category_family_tokens"
+    # Prefer highest version file; fall back to package-adjacent path.
+    candidates = sorted(data_dir.glob("v*.json")) if data_dir.is_dir() else []
+    if not candidates:
+        alt = Path(__file__).resolve().parents[1] / "data" / "category_family_tokens"
+        candidates = sorted(alt.glob("v*.json")) if alt.is_dir() else []
+    out: dict[str, dict[str, tuple[str, ...]]] = {}
+    for path in candidates:
+        try:
+            import json
+
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            continue
+        families = payload.get("families") or {}
+        for fid, body in families.items():
+            if not isinstance(body, Mapping):
+                continue
+            out[str(fid)] = {
+                "include": tuple(str(x) for x in (body.get("include") or ()) if x),
+                "exclude": tuple(str(x) for x in (body.get("exclude") or ()) if x),
+            }
+    return out
+
+
+CATEGORY_FAMILIES.update(_load_category_family_tokens())
+
+# Runtime override for tests / alias version overlays without code edits.
+def reload_category_family_tokens(
+    overlay: Mapping[str, Mapping[str, Sequence[str]]] | None = None,
+) -> None:
+    CATEGORY_FAMILIES.clear()
+    CATEGORY_FAMILIES.update(_load_category_family_tokens())
+    if overlay:
+        for fid, body in overlay.items():
+            CATEGORY_FAMILIES[str(fid)] = {
+                "include": tuple(str(x) for x in (body.get("include") or ()) if x),
+                "exclude": tuple(str(x) for x in (body.get("exclude") or ()) if x),
+            }
+
 
 # V003 category_code → optional legacy family id for include enrichment.
 _CODE_TO_FAMILY = {

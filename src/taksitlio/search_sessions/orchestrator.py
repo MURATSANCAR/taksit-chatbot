@@ -204,6 +204,11 @@ class SearchOrchestrator:
         self.states[session.id] = QueryNeedState()
         self.logo_rails[session.id] = {"merchant": [], "brand": [], "institution": []}
         if trace is not None:
+            self.session_pins[session.id] = {
+                "cohort_id": getattr(trace, "cohort_id", None),
+                "cohort_version": getattr(trace, "cohort_version", None),
+                "catalog_revision": getattr(trace, "catalog_revision", None),
+            }
             trace.search_session_id = session.id
             trace.query_version = session.active_query_version
             self.traces[session.id] = trace
@@ -943,19 +948,31 @@ class SearchOrchestrator:
 
     def list_event_payloads(self, session_id: str, *, after_id: Optional[str] = None) -> list[dict[str, Any]]:
         events = self.repo.list_events(session_id, after_id=after_id)
-        return [
-            {
-                "event_id": e.id,
-                "search_session_id": e.search_session_id,
-                "query_version": e.query_version,
-                "type": e.event_type,
-                "timestamp": e.created_at.isoformat(),
-                "display": {"message": e.display_message, "severity": e.severity},
-                "data": e.payload,
-                "data_origin": e.data_origin,
-            }
-            for e in events
-        ]
+        pins = self.session_pins.get(session_id) or {}
+        out: list[dict[str, Any]] = []
+        for e in events:
+            data = dict(e.payload or {})
+            for k, v in pins.items():
+                if v is not None and k not in data:
+                    data[k] = v
+            out.append(
+                {
+                    "event_id": e.id,
+                    "event_type": e.event_type,
+                    "type": e.event_type,
+                    "search_session_id": e.search_session_id,
+                    "query_version": e.query_version,
+                    "cohort_id": pins.get("cohort_id"),
+                    "cohort_version": pins.get("cohort_version"),
+                    "catalog_revision": pins.get("catalog_revision"),
+                    "occurred_at": e.created_at.isoformat(),
+                    "timestamp": e.created_at.isoformat(),
+                    "display": {"message": e.display_message, "severity": e.severity},
+                    "data": data,
+                    "data_origin": e.data_origin,
+                }
+            )
+        return out
 
     def _logos_public(self, session_id: str) -> dict[str, list[dict[str, Any]]]:
         rail = self.logo_rails.get(session_id) or {}

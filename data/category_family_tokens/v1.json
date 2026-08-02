@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "families": {
+    "category-phone": {
+      "include": [
+        "akıllı telefon",
+        "akilli telefon",
+        "cep telefon",
+        "iphone",
+        "galaxy a",
+        "galaxy s",
+        "galaxy z",
+        "galaxy m",
+        "redmi",
+        "poco",
+        "xiaomi",
+        "oppo",
+        "realme",
+        "vivo",
+        "huawei",
+        "honor",
+        "tecno",
+        "infinix",
+        "pixel",
+        "gsm",
+        "telefon"
+      ],
+      "exclude": [
+        "laptop",
+        "notebook",
+        "macbook",
+        "ideapad",
+        "thinkpad",
+        "vivobook",
+        "zenbook",
+        "süpürge",
+        "supurge",
+        "televizyon",
+        " tablet",
+        "ipad",
+        "monitor",
+        "monitör"
+      ]
+    },
+    "category-laptop": {
+      "include": [
+        "laptop",
+        "notebook",
+        "macbook",
+        "ideapad",
+        "thinkpad",
+        "vivobook",
+        "zenbook",
+        "yoga slim",
+        "loq",
+        "tuf gaming",
+        "aspire",
+        "pavilion",
+        "inspiron",
+        "latitude",
+        "dizüstü",
+        "dizustu"
+      ],
+      "exclude": [
+        "akıllı telefon",
+        "akilli telefon",
+        "cep telefon",
+        "iphone",
+        "süpürge",
+        "supurge",
+        "televizyon"
+      ]
+    },
+    "category-tablet": {
+      "include": [
+        "tablet",
+        "ipad",
+        "galaxy tab"
+      ],
+      "exclude": [
+        "laptop",
+        "notebook",
+        "macbook",
+        "akıllı telefon",
+        "iphone",
+        "süpürge"
+      ]
+    },
+    "category-tv": {
+      "include": [
+        "televizyon",
+        " smart tv",
+        "qled",
+        "oled tv",
+        " led tv"
+      ],
+      "exclude": [
+        "laptop",
+        "telefon",
+        "iphone",
+        "süpürge",
+        "tablet"
+      ]
+    }
+  }
+}
