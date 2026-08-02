@@ -1,0 +1,15 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "real_participants": 0,
+  "participants_by_role": {},
+  "human_panel_cases": 0,
+  "cases_by_role": {},
+  "operator_simulated_excluded": 150,
+  "script_generated_participants": 0,
+  "cross_role_participants": 0,
+  "blocker": 0,
+  "critical": 0,
+  "note": "Genuine external panel not present. Do not invent participants.",
+  "measured_at": "2026-08-02T18:36:40.649369+00:00"
+}

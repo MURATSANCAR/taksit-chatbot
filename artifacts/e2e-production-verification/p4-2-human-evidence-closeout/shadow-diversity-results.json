@@ -1,0 +1,52 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "completed_real_unique_shadow": 42,
+  "unique_normalized": 42,
+  "unique_ratio_within_unique_set": 1.0,
+  "unique_ratio_vs_prior_with_replacement_obs": 0.042,
+  "prior_with_replacement_observations": 1000,
+  "single_query_share_of_real_traffic": 0.1174,
+  "top_10_query_share_of_real_traffic": 0.6808,
+  "by_bucket": {
+    "PRODUCT_SEARCH": 29,
+    "CLARIFICATION": 4,
+    "FINANCE_NOT_SUPPORTED": 4,
+    "LLM_REQUIRED": 2,
+    "OUT_OF_SCOPE": 3
+  },
+  "unique_session_count": 207,
+  "unique_tenant_count": 1,
+  "synthetic_queries_counted": 0,
+  "golden_counted_as_shadow": 0,
+  "with_replacement_counted_as_unique": 0,
+  "policy_version": 1,
+  "policy_thresholds": {
+    "minimum_unique_ratio": 0.5,
+    "minimum_bucket_coverage": {
+      "NO_RESULT": 5,
+      "TYPO_ALIAS": 10,
+      "LLM_REQUIRED": 10,
+      "OUT_OF_SCOPE": 10,
+      "CLARIFICATION": 10,
+      "PRODUCT_SEARCH": 50,
+      "NEGATION_CORRECTION": 10,
+      "FINANCE_NOT_SUPPORTED": 10
+    },
+    "minimum_completed_queries": 1000,
+    "exclude_golden_from_unique": true,
+    "maximum_single_query_share": 0.01,
+    "maximum_top_10_query_share": 0.1,
+    "minimum_unique_normalized_queries": 500,
+    "stratified_minor_review_sample_size": 80,
+    "with_replacement_counts_as_load_only": true
+  },
+  "failed_rules": [
+    "minimum_completed_queries",
+    "minimum_unique_normalized_queries",
+    "maximum_single_query_share",
+    "maximum_top_10_query_share"
+  ],
+  "note": "Unique set built only from search_query_versions. Insufficient real traffic cannot be filled synthetically.",
+  "measured_at": "2026-08-02T18:36:40.593606+00:00"
+}

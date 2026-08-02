@@ -1,0 +1,224 @@
+{
+  "materialize": {
+    "unique_count": 42,
+    "source": "search_query_versions",
+    "excluded": [
+      "golden",
+      "load_test",
+      "playwright",
+      "script_generated",
+      "with_replacement"
+    ],
+    "measured_at": "2026-08-02T18:36:40.584991+00:00"
+  },
+  "shadow_diversity": {
+    "status": "FAIL",
+    "pass": false,
+    "completed_real_unique_shadow": 42,
+    "unique_normalized": 42,
+    "unique_ratio_within_unique_set": 1.0,
+    "unique_ratio_vs_prior_with_replacement_obs": 0.042,
+    "prior_with_replacement_observations": 1000,
+    "single_query_share_of_real_traffic": 0.1174,
+    "top_10_query_share_of_real_traffic": 0.6808,
+    "by_bucket": {
+      "PRODUCT_SEARCH": 29,
+      "CLARIFICATION": 4,
+      "FINANCE_NOT_SUPPORTED": 4,
+      "LLM_REQUIRED": 2,
+      "OUT_OF_SCOPE": 3
+    },
+    "unique_session_count": 207,
+    "unique_tenant_count": 1,
+    "synthetic_queries_counted": 0,
+    "golden_counted_as_shadow": 0,
+    "with_replacement_counted_as_unique": 0,
+    "policy_version": 1,
+    "policy_thresholds": {
+      "minimum_unique_ratio": 0.5,
+      "minimum_bucket_coverage": {
+        "NO_RESULT": 5,
+        "TYPO_ALIAS": 10,
+        "LLM_REQUIRED": 10,
+        "OUT_OF_SCOPE": 10,
+        "CLARIFICATION": 10,
+        "PRODUCT_SEARCH": 50,
+        "NEGATION_CORRECTION": 10,
+        "FINANCE_NOT_SUPPORTED": 10
+      },
+      "minimum_completed_queries": 1000,
+      "exclude_golden_from_unique": true,
+      "maximum_single_query_share": 0.01,
+      "maximum_top_10_query_share": 0.1,
+      "minimum_unique_normalized_queries": 500,
+      "stratified_minor_review_sample_size": 80,
+      "with_replacement_counts_as_load_only": true
+    },
+    "failed_rules": [
+      "minimum_completed_queries",
+      "minimum_unique_normalized_queries",
+      "maximum_single_query_share",
+      "maximum_top_10_query_share"
+    ],
+    "note": "Unique set built only from search_query_versions. Insufficient real traffic cannot be filled synthetically.",
+    "measured_at": "2026-08-02T18:36:40.593606+00:00"
+  },
+  "shadow_review": {
+    "status": "FAIL",
+    "pass": false,
+    "population": 42,
+    "required_sample_size": 38,
+    "queued_for_human_review": 38,
+    "human_reviewed": 0,
+    "misclassified_critical": 0,
+    "policy_version": 1,
+    "policy_thresholds": {
+      "margin_of_error": 0.05,
+      "confidence_level": 0.95,
+      "risk_oversampling": {
+        "TOP1_CHANGED": 1.5,
+        "ROUTE_CHANGED": 1.25,
+        "NO_RESULT_CHANGED": 1.25,
+        "FINANCE_NOT_SUPPORTED": 1.5
+      },
+      "assumed_proportion": 0.5,
+      "maximum_sample_size": 400,
+      "minimum_sample_size": 30,
+      "bucket_stratification": true,
+      "maximum_misclassified_critical": 0,
+      "maximum_misclassified_major_rate": 0.02
+    },
+    "sample_formula": "finite_population_corrected_cochran",
+    "note": "No automatic TRUE_MINOR. Human review required.",
+    "measured_at": "2026-08-02T18:36:40.629548+00:00"
+  },
+  "provenance": {
+    "status": "FAIL",
+    "pass": false,
+    "human_verified_approved": 0,
+    "operator_dual_control_retained": 22,
+    "operator_generated_not_human": true,
+    "service_account_counted_as_human": 0,
+    "by_provenance_lifecycle": [
+      {
+        "provenance_class": "OPERATOR_GENERATED",
+        "lifecycle_status": "REVIEW_REQUIRED",
+        "n": 228
+      },
+      {
+        "provenance_class": "UNKNOWN",
+        "lifecycle_status": "REVIEW_REQUIRED",
+        "n": 175
+      },
+      {
+        "provenance_class": "OPERATOR_DUAL_CONTROL",
+        "lifecycle_status": "APPROVED",
+        "n": 22
+      }
+    ],
+    "note": "OPERATOR_DUAL_CONTROL retained but not HUMAN_VERIFIED until independent human re-review.",
+    "measured_at": "2026-08-02T18:36:40.642067+00:00"
+  },
+  "golden_policy": {
+    "status": "FAIL",
+    "pass": false,
+    "human_verified_approved": 0,
+    "minimum_approved": 250,
+    "out_of_scope_human_verified": 0,
+    "minimum_out_of_scope": 10,
+    "buckets": {},
+    "policy_bypass": false,
+    "measured_at": "2026-08-02T18:36:40.642094+00:00"
+  },
+  "continuous_golden": {
+    "status": "FAIL",
+    "pass": false,
+    "total": 0,
+    "pass_count": 0,
+    "fail": 0,
+    "critical_failure": 0,
+    "forbidden_finance_claim": 0,
+    "cohort_leakage": 0,
+    "note": "No HUMAN_VERIFIED set to run; continuous public golden skipped.",
+    "measured_at": "2026-08-02T18:36:40.642100+00:00"
+  },
+  "uat": {
+    "status": "FAIL",
+    "pass": false,
+    "real_participants": 0,
+    "participants_by_role": {},
+    "human_panel_cases": 0,
+    "cases_by_role": {},
+    "operator_simulated_excluded": 150,
+    "script_generated_participants": 0,
+    "cross_role_participants": 0,
+    "blocker": 0,
+    "critical": 0,
+    "note": "Genuine external panel not present. Do not invent participants.",
+    "measured_at": "2026-08-02T18:36:40.649369+00:00"
+  },
+  "revision": {
+    "status": "PASS",
+    "pass": true,
+    "evidence_catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+    "cohort_id": 1,
+    "cohort_version": 2,
+    "stale_unique_shadow_rows": 0,
+    "approved_golden_revision_mismatch_or_null": 0,
+    "silent_rebase_forbidden": true,
+    "measured_at": "2026-08-02T18:36:40.653672+00:00"
+  },
+  "recheck": {
+    "status": "PASS",
+    "pass": true,
+    "load_slo": "PASS",
+    "real_chaos": "PASS",
+    "backpressure": "PASS",
+    "finance_firewall": "PASS",
+    "rollback": "PASS",
+    "provenance": "P4.1_ARTIFACT_CARRY_FORWARD",
+    "catalog_revision_pin": "2026-08-01T14:27:31.026955+00:00",
+    "measured_at": "2026-08-02T18:36:40.654780+00:00"
+  },
+  "canary_state": {
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED",
+    "approval_required_for_enable": true
+  },
+  "gates": {
+    "SHADOW_DIVERSITY_GATE": "FAIL",
+    "SHADOW_MINOR_REVIEW_GATE": "FAIL",
+    "PUBLIC_GOLDEN_POLICY_GATE": "FAIL",
+    "HUMAN_GOLDEN_PROVENANCE_GATE": "FAIL",
+    "PUBLIC_CONTINUOUS_GOLDEN_GATE": "FAIL",
+    "EXTERNAL_HUMAN_UAT_GATE": "FAIL",
+    "EVIDENCE_REVISION_CONSISTENCY_GATE": "PASS",
+    "CANARY_PACKAGE_RECHECK_GATE": "PASS",
+    "LIVE_CANARY_START_GATE": "BLOCKED"
+  },
+  "decision": {
+    "decision": "P4_2_PUBLIC_NOT_READY",
+    "blockers": [
+      "SHADOW_DIVERSITY_GATE",
+      "SHADOW_MINOR_REVIEW_GATE",
+      "PUBLIC_GOLDEN_POLICY_GATE",
+      "HUMAN_GOLDEN_PROVENANCE_GATE",
+      "PUBLIC_CONTINUOUS_GOLDEN_GATE",
+      "EXTERNAL_HUMAN_UAT_GATE",
+      "LIVE_CANARY_START_GATE"
+    ],
+    "human_evidence_gaps": [
+      "SHADOW_DIVERSITY_GATE",
+      "SHADOW_MINOR_REVIEW_GATE",
+      "PUBLIC_GOLDEN_POLICY_GATE",
+      "HUMAN_GOLDEN_PROVENANCE_GATE",
+      "PUBLIC_CONTINUOUS_GOLDEN_GATE",
+      "EXTERNAL_HUMAN_UAT_GATE"
+    ],
+    "live_5pct_auto_started": false,
+    "traffic_state": "NOT_STARTED",
+    "campaign_gate": "CLOSED",
+    "finance": "NOT_APPLICABLE_BLOCKED",
+    "honesty": "Agent cannot complete human/traffic evidence. Synthetic fill forbidden."
+  }
+}

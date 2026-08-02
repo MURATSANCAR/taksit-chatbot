@@ -1,0 +1,12 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "total": 0,
+  "pass_count": 0,
+  "fail": 0,
+  "critical_failure": 0,
+  "forbidden_finance_claim": 0,
+  "cohort_leakage": 0,
+  "note": "No HUMAN_VERIFIED set to run; continuous public golden skipped.",
+  "measured_at": "2026-08-02T18:36:40.642100+00:00"
+}

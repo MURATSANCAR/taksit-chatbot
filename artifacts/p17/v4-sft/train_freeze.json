@@ -1,7 +1,7 @@
 {
   "experiment_id": "P17-V4-SFT-001",
   "adapter_name": "needprofile-fast-nine-b-lora-v4",
-  "created_at": "2026-08-02T18:24:17Z",
+  "created_at": "2026-08-02T18:26:19Z",
   "training_start": "FRESH_BASE",
   "resume_from_checkpoint": null,
   "v3_adapter_loaded": false,
@@ -18,7 +18,7 @@
   "sanitize_validation_path": "artifacts/p17/v4-sanitized/p17_v4_sanitize_validation.json",
   "sanitize_validation_hash": "434adf3c37ca85b614c529b69dfc258750e3b9fcae65115c18a60dd52bafeaf4",
   "training_script_path": "training/run_p17_v4_sft.py",
-  "training_script_hash": "402c94f80a0a73cbe57b88c860d7382ccc773508844e1c534cb850b00a41d976",
+  "training_script_hash": "7de6b52dc453df3b8689dbf521e7d1933aee2925c5c60afe03c8fa446d049db8",
   "train_lora_script_path": "training/train_lora.py",
   "train_lora_script_hash": "8d4b75f72882fe0bc63c969761bd91ee0c83a74b0d5e280abc457a80be60ef64",
   "config_path": "training/configs/lora_fast_need_profile.9b.v4.cpu.yaml",

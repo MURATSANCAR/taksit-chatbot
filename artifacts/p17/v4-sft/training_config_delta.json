@@ -34,6 +34,7 @@
     "v3 yaml had no explicit seed; v4 freezes seed=19 for shuffle/reproducibility",
     "v3 train_rows=2500 dirty; v4 train_rows=1637 clean — same max_steps=400 ⇒ more passes over data",
     "No CUDA on nanobase: precision remains float32_cpu (identical to v3 train_meta device=cpu)",
-    "FP16/BF16 in the task sense means HF peft adapter Ref (not GGUF/Q4), not CUDA amp"
+    "FP16/BF16 in the task sense means HF peft adapter Ref (not GGUF/Q4), not CUDA amp",
+    "In-trainer eval_loss skipped (lora-venv lacks app deps); same practical path as v3; smoke + DEV-EVAL select quality"
   ]
 }

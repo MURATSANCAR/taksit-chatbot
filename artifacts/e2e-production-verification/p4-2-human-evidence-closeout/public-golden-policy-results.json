@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "human_verified_approved": 0,
+  "minimum_approved": 250,
+  "out_of_scope_human_verified": 0,
+  "minimum_out_of_scope": 10,
+  "buckets": {},
+  "policy_bypass": false,
+  "measured_at": "2026-08-02T18:36:40.642094+00:00"
+}

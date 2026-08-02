@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "load_slo": "PASS",
+  "real_chaos": "PASS",
+  "backpressure": "PASS",
+  "finance_firewall": "PASS",
+  "rollback": "PASS",
+  "provenance": "P4.1_ARTIFACT_CARRY_FORWARD",
+  "catalog_revision_pin": "2026-08-01T14:27:31.026955+00:00",
+  "measured_at": "2026-08-02T18:36:40.654780+00:00"
+}

@@ -1,0 +1,234 @@
+{
+  "required": 38,
+  "queued": [
+    {
+      "shadow_id": "2afdbfa3-e6d3-4d60-ab50-2baf47f11847",
+      "anonymized_query": "iphone 15 arıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "9ac2f79e-4b03-4b9d-aa7c-f662b9ed6ec6",
+      "anonymized_query": "samsung telefon",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "a685b193-7387-4136-bf29-ed01a0a79ad6",
+      "anonymized_query": "spor ayakkabı arıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "1d0fe55e-cd96-45ff-bfe0-51a7f65abcc0",
+      "anonymized_query": "merhaba iphone arıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "becebe74-f874-43d8-8ac3-24dbf7318d7e",
+      "anonymized_query": "macbook pro",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "78700435-1990-43c2-b90b-f322b5ee1544",
+      "anonymized_query": "kampanyalı laptop bakıyorum",
+      "stratum": "FINANCE_NOT_SUPPORTED",
+      "human_class": null
+    },
+    {
+      "shadow_id": "e4ab171e-89ee-45e2-a60a-8bc41e318800",
+      "anonymized_query": "buzdolabı bakıyorum, 25–30 bin",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "03960351-5801-4ea4-a361-b623e7846ab7",
+      "anonymized_query": "iphone 15",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "153b3a34-eae5-442a-8608-3934a26ab01f",
+      "anonymized_query": "cep telefonu alacağız, bütçemiz 40 bin tl civarı",
+      "stratum": "LLM_ROUTE",
+      "human_class": null
+    },
+    {
+      "shadow_id": "a65d647a-091c-43d3-9e22-f0fbf7e38ae9",
+      "anonymized_query": "kulaklık arıyorum bütçem 3000",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "e7c750de-a9dd-4faf-90c9-c6b5f90de62f",
+      "anonymized_query": "kulaklık arıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "733dd276-b910-40c2-9936-c2e385ccacaa",
+      "anonymized_query": "merhaba, bütçem 20 bin telefon bakıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "603947c3-398f-4ead-bb9d-5d138a8018ea",
+      "anonymized_query": "selam telefon lazım",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "599551b2-82a3-480d-b684-aa9a587205ef",
+      "anonymized_query": "buzdolabı bakıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "ab6b33a3-e8ed-4206-9a32-590b2ccf3183",
+      "anonymized_query": "taksitli telefon öner",
+      "stratum": "FINANCE_NOT_SUPPORTED",
+      "human_class": null
+    },
+    {
+      "shadow_id": "de889e2b-09f0-48ce-b0ae-2b253332a483",
+      "anonymized_query": "laptop",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "fee251ad-3114-409a-9f8e-6c031f522f1e",
+      "anonymized_query": "selam",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "2b10fb3b-9f4b-4423-8db1-665b12d628b4",
+      "anonymized_query": "taksit sayısın en az olanları getir bana",
+      "stratum": "FINANCE_NOT_SUPPORTED",
+      "human_class": null
+    },
+    {
+      "shadow_id": "25bea47e-5c69-4cd7-a82a-2401d3bc7f52",
+      "anonymized_query": "iphone 15 istiyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "543796be-5acd-4ae6-826a-73fa03000298",
+      "anonymized_query": "sen kımsın",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "5e0dbaae-5948-4930-aff0-5bc2fee90151",
+      "anonymized_query": "spor ayakkabı",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "d0588302-d378-4287-8497-848d90f93d93",
+      "anonymized_query": "tanışalım mı",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "8c92e361-7c19-4e16-bbec-0441c2b69302",
+      "anonymized_query": "40 bin tl civarı iphone bakıyorum",
+      "stratum": "LLM_ROUTE",
+      "human_class": null
+    },
+    {
+      "shadow_id": "8c8e904d-f2b8-4000-b1dc-8493f26baefb",
+      "anonymized_query": "telefon alacğaım 40.000 lıralık ü",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "3ddc5c68-0a45-454f-b9ae-fe167889afc0",
+      "anonymized_query": "airpods",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "25a87bc5-5831-4a08-b44c-afdf922e054f",
+      "anonymized_query": "araba alacağım",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "2959cb15-cfab-4d95-8ade-fc12096c0a7b",
+      "anonymized_query": "ayakkabı alacağım 1000 lira bütçem",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "66f58fcd-4db7-4ff3-8289-f0c291fc33f6",
+      "anonymized_query": "ayakkabı arıyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "8a7ea4f6-15c1-4a05-b5e8-fa064f3b7150",
+      "anonymized_query": "babama telefon lazım",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "985ceb99-ba7f-4887-8541-74c3dfd79ee7",
+      "anonymized_query": "babama tel lazım",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "b3cb6620-1032-481d-9586-7461e853d7aa",
+      "anonymized_query": "bana ayakkabı lazım 5000 lira aşmasın",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "e92c7316-83c6-4c79-9819-e2a30cd61ebc",
+      "anonymized_query": "buzdolabı",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "ff93d844-93b0-46a0-87ce-9be5bd3dc5c0",
+      "anonymized_query": "en ucularını getir bana babama alacağım",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "c3e97006-2bc1-4335-b3bb-28ea18fc53ab",
+      "anonymized_query": "en ucuzlarını getir bana",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "9a88a3c6-d483-402f-a674-064724c158b1",
+      "anonymized_query": "hava nasıl",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "c7682662-0e2a-4c0e-9a52-e5d482c5d352",
+      "anonymized_query": "iphone almak istiyorum",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "b05d7ca1-2a92-4cf1-80d7-80642fc4b1ee",
+      "anonymized_query": "klima alacağızm 30.000 tl olsun",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    },
+    {
+      "shadow_id": "579e957f-e146-458f-8abd-734204dd2c3c",
+      "anonymized_query": "kulaklik",
+      "stratum": "HIGH_DEMAND_OR_LONG_TAIL",
+      "human_class": null
+    }
+  ],
+  "total_queued": 38
+}

@@ -1,0 +1,39 @@
+{
+  "gates": {
+    "SHADOW_DIVERSITY_GATE": "FAIL",
+    "SHADOW_MINOR_REVIEW_GATE": "FAIL",
+    "PUBLIC_GOLDEN_POLICY_GATE": "FAIL",
+    "HUMAN_GOLDEN_PROVENANCE_GATE": "FAIL",
+    "PUBLIC_CONTINUOUS_GOLDEN_GATE": "FAIL",
+    "EXTERNAL_HUMAN_UAT_GATE": "FAIL",
+    "EVIDENCE_REVISION_CONSISTENCY_GATE": "PASS",
+    "CANARY_PACKAGE_RECHECK_GATE": "PASS",
+    "LIVE_CANARY_START_GATE": "BLOCKED"
+  },
+  "decision": {
+    "decision": "P4_2_PUBLIC_NOT_READY",
+    "blockers": [
+      "SHADOW_DIVERSITY_GATE",
+      "SHADOW_MINOR_REVIEW_GATE",
+      "PUBLIC_GOLDEN_POLICY_GATE",
+      "HUMAN_GOLDEN_PROVENANCE_GATE",
+      "PUBLIC_CONTINUOUS_GOLDEN_GATE",
+      "EXTERNAL_HUMAN_UAT_GATE",
+      "LIVE_CANARY_START_GATE"
+    ],
+    "human_evidence_gaps": [
+      "SHADOW_DIVERSITY_GATE",
+      "SHADOW_MINOR_REVIEW_GATE",
+      "PUBLIC_GOLDEN_POLICY_GATE",
+      "HUMAN_GOLDEN_PROVENANCE_GATE",
+      "PUBLIC_CONTINUOUS_GOLDEN_GATE",
+      "EXTERNAL_HUMAN_UAT_GATE"
+    ],
+    "live_5pct_auto_started": false,
+    "traffic_state": "NOT_STARTED",
+    "campaign_gate": "CLOSED",
+    "finance": "NOT_APPLICABLE_BLOCKED",
+    "honesty": "Agent cannot complete human/traffic evidence. Synthetic fill forbidden."
+  },
+  "measured_at": "2026-08-02T18:36:40.666844+00:00"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "human_verified_approved": 0,
+  "operator_dual_control_retained": 22,
+  "operator_generated_not_human": true,
+  "service_account_counted_as_human": 0,
+  "by_provenance_lifecycle": [
+    {
+      "provenance_class": "OPERATOR_GENERATED",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "n": 228
+    },
+    {
+      "provenance_class": "UNKNOWN",
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "n": 175
+    },
+    {
+      "provenance_class": "OPERATOR_DUAL_CONTROL",
+      "lifecycle_status": "APPROVED",
+      "n": 22
+    }
+  ],
+  "note": "OPERATOR_DUAL_CONTROL retained but not HUMAN_VERIFIED until independent human re-review.",
+  "measured_at": "2026-08-02T18:36:40.642067+00:00"
+}
