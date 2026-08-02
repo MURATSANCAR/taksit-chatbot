@@ -68,6 +68,26 @@ def _token_hit(haystack: str, needle: str) -> bool:
     return False
 
 
+def _url_slug_text(url: str) -> str:
+    """Extract hyphen/underscore slug tokens from a product URL path (no invention)."""
+    if not url or not isinstance(url, str):
+        return ""
+    try:
+        from urllib.parse import urlparse
+
+        path = urlparse(url).path or ""
+    except Exception:
+        path = url
+    # Keep readable tokens from /urun/...-slug-... paths.
+    parts = re.split(r"[/_.\-]+", path)
+    keep = [
+        p
+        for p in parts
+        if p and not p.isdigit() and len(p) >= 3 and not re.fullmatch(r"[0-9a-f]{8,}", p, re.I)
+    ]
+    return " ".join(keep)
+
+
 def resolve_category_for_product(
     *,
     product_id: int,
@@ -77,6 +97,7 @@ def resolve_category_for_product(
     categories: Sequence[Mapping[str, Any]],
     existing_category_id: Optional[int] = None,
     synonym_index: Optional[Sequence[tuple[int, str]]] = None,
+    source_url: str = "",
 ) -> CategoryResolution:
     attrs = dict(attributes or {})
     source_cat = None
@@ -114,7 +135,9 @@ def resolve_category_for_product(
                 evidence=f"source_category={source_cat}",
             )
 
-    hay = f"{title} {description} {attrs.get('brand') or ''}".strip().casefold()
+    url = source_url or str(attrs.get("url") or attrs.get("product_url") or "")
+    slug = _url_slug_text(url)
+    hay = f"{title} {description} {attrs.get('brand') or ''} {slug}".strip().casefold()
     hits: list[tuple[int, str]] = []
     index = synonym_index
     if index is None:

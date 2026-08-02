@@ -70,6 +70,7 @@ MAX_PARALLEL_CRAWLS = int(os.environ.get("AUTO_MAX_PARALLEL_CRAWLS", "4"))
 INGEST_AFTER_GROWTH = int(os.environ.get("AUTO_INGEST_MIN_NEW", "200"))
 # Avoid restarting image backfill every loop when remaining todos are dead URLs.
 BACKFILL_COOLDOWN_S = int(os.environ.get("AUTO_BACKFILL_COOLDOWN_S", "1800"))
+GAPS_COOLDOWN_S = int(os.environ.get("AUTO_GAPS_COOLDOWN_S", "1800"))
 
 _stop = False
 
@@ -296,7 +297,7 @@ def start_backfill_if_idle(st: dict) -> None:
                 "--limit",
                 "0",
                 "--prefer-merchants",
-                "m-flo",
+                "m-flo,m-vatan,m-n11,m-teknosa",
             ],
             cwd=str(ROOT),
             stdout=fh,
@@ -305,6 +306,43 @@ def start_backfill_if_idle(st: dict) -> None:
             start_new_session=True,
         )
     st["last_backfill_ts"] = time.time()
+
+
+def start_complete_gaps_if_idle(st: dict) -> None:
+    """Re-sync feed fields + resolve brand/category + rescore (no invention)."""
+    if pgrep("complete_catalog_gaps.py"):
+        return
+    if not PY_APP.is_file():
+        return
+    last = float(st.get("last_gaps_ts") or 0)
+    if last and time.time() - last < GAPS_COOLDOWN_S:
+        return
+    env_file = ROOT / ".env.runtime"
+    env = os.environ.copy()
+    if env_file.exists():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            env.setdefault(k.strip(), v.strip())
+    log = Path("/tmp/complete-catalog-gaps.log")
+    print("START complete_catalog_gaps", flush=True)
+    with log.open("a", encoding="utf-8") as fh:
+        fh.write(f"\n--- auto gaps {time.strftime('%Y-%m-%d %H:%M:%S')} ---\n")
+        subprocess.Popen(
+            [
+                str(PY_APP),
+                "-u",
+                str(ROOT / "scripts" / "complete_catalog_gaps.py"),
+                "--all",
+            ],
+            cwd=str(ROOT),
+            stdout=fh,
+            stderr=subprocess.STDOUT,
+            env=env,
+            start_new_session=True,
+        )
+    st["last_gaps_ts"] = time.time()
 
 
 def maybe_rescore_and_rebuild(st: dict) -> None:
@@ -431,27 +469,32 @@ def maybe_ingest(st: dict) -> None:
         return
     total = total_feeds()
     last = int(st.get("last_ingest_feed_total") or 0)
-    # Prefer FLO if feed >> db gap; otherwise rotate grown merchants
+    # Prefer merchants with large live feeds that may still be under-ingested.
+    # n11/civil historically lag DB behind feed; always include when feed is large.
+    priority = []
+    for code in ("n11", "civil", "trendyol", "mediamarkt", "network", "flo", "teknosa"):
+        if feed_count(code) > 0:
+            priority.append(code)
+    if not priority:
+        return
+    # First pass / growth: ingest priority bundle; FLO alone if heavy and first.
     flo = feed_count("flo")
-    # Always try FLO once if feed large (ingest script is idempotent-ish)
-    if flo >= 10_000 and (total - last >= INGEST_AFTER_GROWTH or last == 0):
-        # ingest high-churn merchants first
-        grown = []
-        for code, _, _ in CRAWL_QUEUE:
-            if feed_count(code) > 0:
-                grown.append(code)
-        # FLO alone is heaviest — if FLO still likely incomplete in DB, prioritize it
-        merchants = "flo"
-        if last > 0 and total - last < 5000:
-            # incremental: non-flo bundle
-            merchants = ",".join(
-                c for c in grown if c != "flo" and feed_count(c) < SKIP_IF_AT_LEAST.get(c, 0) + 1
-            ) or "trendyol,mediamarkt,civil,network,n11"
-        try:
-            start_ingest(merchants)
-            st["last_ingest_feed_total"] = total
-        except Exception as exc:  # noqa: BLE001
-            print(f"INGEST_ERR: {exc} — continue", flush=True)
+    if last == 0 and flo >= 10_000:
+        merchants = "n11,civil,trendyol,mediamarkt,network,teknosa,flo"
+    elif total - last >= INGEST_AFTER_GROWTH or last == 0:
+        merchants = ",".join(priority[:6])
+    else:
+        # periodic catch-up for known under-ingested feeds
+        last_catchup = float(st.get("last_catchup_ingest_ts") or 0)
+        if time.time() - last_catchup < 3600:
+            return
+        merchants = "n11,civil,trendyol,mediamarkt,network"
+        st["last_catchup_ingest_ts"] = time.time()
+    try:
+        start_ingest(merchants)
+        st["last_ingest_feed_total"] = total
+    except Exception as exc:  # noqa: BLE001
+        print(f"INGEST_ERR: {exc} — continue", flush=True)
 
 
 def main() -> None:
@@ -486,6 +529,7 @@ def main() -> None:
             # periodic image backfill when crawl slots full or idle ingest
             if COMPLETE_ONLY or len(running_crawl_codes()) >= MAX_PARALLEL_CRAWLS or not ingest_running():
                 start_backfill_if_idle(st)
+            start_complete_gaps_if_idle(st)
             maybe_rescore_and_rebuild(st)
             # P2-LIVE: feed metrics + readiness snapshots (no uncontrolled promotion)
             if int(st.get("round") or 0) % 10 == 0:

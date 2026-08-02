@@ -105,7 +105,8 @@ async def resolve_missing_categories(conn: Any) -> dict[str, int]:
         """
         SELECT id, display_name,
                COALESCE(full_description, short_description, '') AS description,
-               attributes, category_id
+               attributes, category_id,
+               COALESCE(source_url, '') AS source_url
         FROM products
         WHERE status = 'ACTIVE' AND category_id IS NULL
         ORDER BY id
@@ -126,6 +127,7 @@ async def resolve_missing_categories(conn: Any) -> dict[str, int]:
             attributes=attrs,
             categories=cats,
             synonym_index=synonym_index,
+            source_url=str(r["source_url"] or ""),
         )
         if cres.resolved_category_id is not None:
             await conn.execute(

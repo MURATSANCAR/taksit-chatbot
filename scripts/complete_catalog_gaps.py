@@ -209,7 +209,8 @@ async def resolve_all(conn) -> dict[str, int]:
         """
         SELECT id, display_name,
                COALESCE(full_description, short_description, '') AS description,
-               attributes, brand_id, category_id, manufacturer_name
+               attributes, brand_id, category_id, manufacturer_name,
+               COALESCE(source_url, '') AS source_url
         FROM products WHERE status='ACTIVE'
         ORDER BY id
         """
@@ -253,6 +254,7 @@ async def resolve_all(conn) -> dict[str, int]:
                 attributes=attrs,
                 categories=cats,
                 synonym_index=synonym_index,
+                source_url=str(r["source_url"] or ""),
             )
             if cres.resolved_category_id is not None:
                 await conn.execute(

@@ -404,9 +404,10 @@ async def search_session_events(session_id: str, request: Request) -> StreamingR
     """Server-Sent Events stream for search progress."""
 
     orch = await _ensure_session(request, session_id)
+    resume_after = (request.headers.get("Last-Event-ID") or "").strip() or None
 
     async def event_generator() -> AsyncIterator[str]:
-        last_id: Optional[str] = None
+        last_id: Optional[str] = resume_after
         idle_rounds = 0
         while idle_rounds < 100:
             if await request.is_disconnected():
