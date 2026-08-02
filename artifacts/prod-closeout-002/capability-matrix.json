@@ -31,10 +31,10 @@
       "gate": "PASS"
     },
     "MULTI_TURN_ADD": {
-      "attempted": 1,
-      "passed": 1,
+      "attempted": 2,
+      "passed": 2,
       "minimum_required": 2,
-      "gate": "FAIL"
+      "gate": "PASS"
     },
     "MULTI_TURN_REMOVE": {
       "attempted": 1,
@@ -91,8 +91,8 @@
     "CONDITIONAL_EXCLUSION": true,
     "RANKING_PRIORITIES": true,
     "CONVERSATION_STATE": true,
-    "MULTI_ITEM_BUNDLE": false,
+    "MULTI_ITEM_BUNDLE": true,
     "PLANNER_FALLBACK": true
   },
-  "measured_at": "2026-08-02T19:59:23.346209+00:00"
+  "measured_at": "2026-08-02T20:35:48.581115+00:00"
 }

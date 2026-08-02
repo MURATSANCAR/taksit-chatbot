@@ -31,10 +31,10 @@
       "gate": "PASS"
     },
     "MULTI_TURN_ADD": {
-      "attempted": 1,
-      "passed": 1,
+      "attempted": 2,
+      "passed": 2,
       "minimum_required": 2,
-      "gate": "FAIL"
+      "gate": "PASS"
     },
     "MULTI_TURN_REMOVE": {
       "attempted": 1,
@@ -91,9 +91,75 @@
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bin TL laptop, 16 GB RAM şart, HP olmasın",
       "capability": "MULTI_CONSTRAINT",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-c8292109",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-4331b441",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              },
+              {
+                "constraint_id": "c-b73e03ff",
+                "dimension": "ram_gb",
+                "operator": "GTE",
+                "value": 16,
+                "unit": "GB",
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "",
+                "confidence": 0.0,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -101,17 +167,97 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 285.5911470251158
+      "http_status": 200,
+      "response_time_ms": 587.6089499797672
     },
     {
       "query_id": "cap-MULTI_CONSTRAINT-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "laptop 16 GB RAM, Lenovo tercih, bütçe 40 bin",
       "capability": "MULTI_CONSTRAINT",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-826c0ba6",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-efef02e6",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              },
+              {
+                "constraint_id": "c-12fa552a",
+                "dimension": "ram_gb",
+                "operator": "GTE",
+                "value": 16,
+                "unit": "GB",
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "",
+                "confidence": 0.0,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [
+              {
+                "constraint_id": "c-821f33a0",
+                "dimension": "brand",
+                "operator": "EQ",
+                "value": "brand:lenovo",
+                "unit": null,
+                "strength": "SOFT",
+                "priority": 0,
+                "source_text": "Lenovo",
+                "confidence": 0.97,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -119,35 +265,281 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 2.2258079843595624
+      "http_status": 200,
+      "response_time_ms": 63.20513901300728
     },
     {
       "query_id": "cap-MULTI_CONSTRAINT-2",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "iş laptopu 40 bin, SSD olsun HP istemiyorum",
       "capability": "MULTI_CONSTRAINT",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "MULTI_ITEM_BUNDLE",
+        "items": [
+          {
+            "item_id": "item-cc8f2725",
+            "category": {
+              "resolved_id": "free_text:laptopu",
+              "raw_text": "laptopu",
+              "confidence": 0.88
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-ce548284",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "free_text:laptopu",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "laptopu",
+                "confidence": 0.88,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          },
+          {
+            "item_id": "item-ecc4df14",
+            "category": {
+              "resolved_id": "free_text:ssd",
+              "raw_text": "ssd",
+              "confidence": 0.88
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-35e1be00",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "free_text:ssd",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "ssd",
+                "confidence": 0.88,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          },
+          {
+            "item_id": "item-922a31da",
+            "category": {
+              "resolved_id": "free_text:istemiyorum",
+              "raw_text": "istemiyorum",
+              "confidence": 0.88
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-c434b483",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "free_text:istemiyorum",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "istemiyorum",
+                "confidence": 0.88,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": true,
+        "clarification_questions": [
+          {
+            "question_type": "multi_category",
+            "text": "laptopu ve ssd ve istemiyorum için ayrı ayrı mı arama yapmamı istersiniz, yoksa hepsini tek bir bütçe içinde mi değerlendirelim?",
+            "options": [
+              {
+                "label": "Ayrı ayrı ara",
+                "action": "separate_searches"
+              },
+              {
+                "label": "Tek bütçede birleştir",
+                "action": "bundle_search"
+              }
+            ]
+          }
+        ],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 2.1993559785187244
+      "http_status": 200,
+      "response_time_ms": 838.0383009789512
     },
     {
       "query_id": "cap-HARD_SOFT-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "16 GB RAM şart, Lenovo tercih ederim, HP istemiyorum laptop",
       "capability": "HARD_SOFT",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-dd77ff02",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-ccff9cb2",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              },
+              {
+                "constraint_id": "c-05fc21ec",
+                "dimension": "ram_gb",
+                "operator": "GTE",
+                "value": 16,
+                "unit": "GB",
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "",
+                "confidence": 0.0,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [
+              {
+                "constraint_id": "c-13e77a2b",
+                "dimension": "brand",
+                "operator": "EQ",
+                "value": "brand:lenovo",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Lenovo",
+                "confidence": 0.97,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -155,17 +547,101 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 2.497697016224265
+      "http_status": 200,
+      "response_time_ms": 502.73862993344665
     },
     {
       "query_id": "cap-HARD_SOFT-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "RAM 16 GB zorunlu, Casper tercih, Dell olmasın laptop",
       "capability": "HARD_SOFT",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-01adc26b",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-b1a309c2",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              },
+              {
+                "constraint_id": "c-712d1a3a",
+                "dimension": "ram_gb",
+                "operator": "GTE",
+                "value": 16,
+                "unit": "GB",
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "",
+                "confidence": 0.0,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [
+              {
+                "constraint_id": "c-02d49f9b",
+                "dimension": "brand",
+                "operator": "EQ",
+                "value": "brand:dell",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dell",
+                "confidence": 0.97,
+                "source": "fast_parser",
+                "scope": "item"
+              },
+              {
+                "constraint_id": "c-368f93f5",
+                "dimension": "brand",
+                "operator": "EQ",
+                "value": "brand:casper",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Casper",
+                "confidence": 0.97,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -173,17 +649,88 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 3.0444710282608867
+      "http_status": 200,
+      "response_time_ms": 99.06249598134309
     },
     {
       "query_id": "cap-HARD_SOFT-2",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "16gb şart apple tercih etmiyorum laptop",
       "capability": "HARD_SOFT",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-66c13307",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-f124702d",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              },
+              {
+                "constraint_id": "c-3e7fb3ff",
+                "dimension": "ram_gb",
+                "operator": "GTE",
+                "value": 16,
+                "unit": "GB",
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "",
+                "confidence": 0.0,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [
+              {
+                "constraint_id": "c-4da8d610",
+                "dimension": "brand",
+                "operator": "EQ",
+                "value": "brand:apple",
+                "unit": null,
+                "strength": "SOFT",
+                "priority": 0,
+                "source_text": "Apple",
+                "confidence": 0.97,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -191,44 +738,267 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.9054299918934703
+      "http_status": 200,
+      "response_time_ms": 670.3292420133948
     },
     {
       "query_id": "cap-CONDITIONAL_BUDGET-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bine laptop arıyorum ama çok daha iyi bir modelse 45 bine çıkabilirim",
       "capability": "CONDITIONAL_BUDGET",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-585cbf6b",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-a308b11c",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": 46000.0,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": true,
+        "clarification_questions": [
+          {
+            "question_type": "budget_stretch",
+            "text": "Bütçenizi 40,000 TRY olarak belirlediniz. Eğer çok iyi bir fırsat varsa 46,000 TRY'ye kadar çıkmayı düşünür müsünüz?",
+            "options": [
+              {
+                "label": "Evet, fırsat varsa esnetilebilir",
+                "action": "accept_stretch"
+              },
+              {
+                "label": "Hayır, kesinlikle 40,000 TRY üstü istemiyorum",
+                "action": "reject_stretch"
+              }
+            ]
+          }
+        ],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.5416539972648025
+      "http_status": 200,
+      "response_time_ms": 170.54363095667213
     },
     {
       "query_id": "cap-CONDITIONAL_BUDGET-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "laptop 30 bin geçmesin ama çok avantajlıysa 35 bine çıkabilirim",
       "capability": "CONDITIONAL_BUDGET",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-599cd8e1",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-41e9cc17",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 30000.0,
+            "stretch_maximum": 34500.0,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": true,
+        "clarification_questions": [
+          {
+            "question_type": "budget_stretch",
+            "text": "Bütçenizi 30,000 TRY olarak belirlediniz. Eğer çok iyi bir fırsat varsa 34,500 TRY'ye kadar çıkmayı düşünür müsünüz?",
+            "options": [
+              {
+                "label": "Evet, fırsat varsa esnetilebilir",
+                "action": "accept_stretch"
+              },
+              {
+                "label": "Hayır, kesinlikle 30,000 TRY üstü istemiyorum",
+                "action": "reject_stretch"
+              }
+            ]
+          }
+        ],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.0363010223954916
+      "http_status": 200,
+      "response_time_ms": 112.48136404901743
     },
     {
       "query_id": "cap-CONDITIONAL_EXCLUSION-0",
@@ -237,7 +1007,7 @@
       "capability": "CONDITIONAL_EXCLUSION",
       "plan": null,
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -245,251 +1015,1812 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 0.9910279186442494
+      "http_status": 200,
+      "response_time_ms": 465.5693960376084
     },
     {
       "query_id": "cap-CONDITIONAL_EXCLUSION-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "HP istemiyorum ama çok avantajlıysa laptop göster",
       "capability": "CONDITIONAL_EXCLUSION",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-4501a719",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-1d212180",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 0.9911240777000785
+      "http_status": 200,
+      "response_time_ms": 275.4191099666059
     },
     {
       "query_id": "cap-RANKING_PRIORITIES-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "Önce RAM, sonra fiyat, sonra depolama laptop",
       "capability": "RANKING_PRIORITIES",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-f7b16c0e",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-4e15c620",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.072098035365343
+      "http_status": 200,
+      "response_time_ms": 77.18883198685944
     },
     {
       "query_id": "cap-RANKING_PRIORITIES-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "öncelik fiyat sonra marka laptop",
       "capability": "RANKING_PRIORITIES",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-95945aa0",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-aaf58abe",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.0771440574899316
+      "http_status": 200,
+      "response_time_ms": 77.84957508556545
     },
     {
       "query_id": "cap-MULTI_TURN_ADD-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bine laptop arıyorum",
       "capability": "MULTI_TURN_ADD",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-7588a29a",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-8c1c597a",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.068691024556756
+      "http_status": 200,
+      "response_time_ms": 54.96063199825585
+    },
+    {
+      "query_id": "cap-MULTI_TURN_ADD-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "laptop istiyorum bütçe 35 bin",
+      "capability": "MULTI_TURN_ADD",
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-9ee6ced5",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-f3ff35f6",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 35000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
+      "cohort_id": "1",
+      "cohort_version": "1",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        }
+      ],
+      "result": "PASS",
+      "http_status": 200,
+      "response_time_ms": 75.98517404403538
     },
     {
       "query_id": "cap-MULTI_TURN_REMOVE-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bine laptop arıyorum",
       "capability": "MULTI_TURN_REMOVE",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-442c2fd0",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-200dd1c6",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.0590889723971486
+      "http_status": 200,
+      "response_time_ms": 65.61091495677829
     },
     {
       "query_id": "cap-MULTI_TURN_REPLACE-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bine laptop arıyorum",
       "capability": "MULTI_TURN_REPLACE",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-1c899843",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-6ab8a83c",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.0575969936326146
+      "http_status": 200,
+      "response_time_ms": 72.32268794905394
     },
     {
       "query_id": "cap-MULTI_TURN_RELAX-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bine laptop arıyorum",
       "capability": "MULTI_TURN_RELAX",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-68d8aeb6",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-1d337105",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.0760710574686527
+      "http_status": 200,
+      "response_time_ms": 124.17830200865865
     },
     {
       "query_id": "cap-MULTI_TURN_ROLLBACK-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "40 bine laptop arıyorum",
       "capability": "MULTI_TURN_ROLLBACK",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-7560bf35",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-8eb55792",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.1526779271662235
+      "http_status": 200,
+      "response_time_ms": 462.0096889557317
     },
     {
       "query_id": "cap-UNSUPPORTED_DIMENSION-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "karbon ayak izi düşük laptop istiyorum",
       "capability": "UNSUPPORTED_DIMENSION",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-5ded7da8",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-77fcbc17",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.1286989320069551
+      "http_status": 200,
+      "response_time_ms": 65.61390403658152
     },
     {
       "query_id": "cap-MULTI_ITEM_BUNDLE-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "Bir laptop, monitör ve klavye bul; toplam 60 bin TL’yi geçmesin",
       "capability": "MULTI_ITEM_BUNDLE",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "MULTI_ITEM_BUNDLE",
+        "items": [
+          {
+            "item_id": "item-cfcfc460",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-a23759a9",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          },
+          {
+            "item_id": "item-b0bd878f",
+            "category": {
+              "resolved_id": "ACCESSORIES",
+              "raw_text": "Aksesuar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-7b8104f1",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "ACCESSORIES",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Aksesuar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 60000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": true,
+        "clarification_questions": [
+          {
+            "question_type": "multi_category",
+            "text": "Dizüstü Bilgisayar ve Aksesuar için ayrı ayrı mı arama yapmamı istersiniz, yoksa hepsini tek bir bütçe içinde mi değerlendirelim?",
+            "options": [
+              {
+                "label": "Ayrı ayrı ara",
+                "action": "separate_searches"
+              },
+              {
+                "label": "Tek bütçede birleştir",
+                "action": "bundle_search"
+              }
+            ]
+          }
+        ],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.3086789986118674
+      "http_status": 200,
+      "response_time_ms": 256.01946702226996
     },
     {
       "query_id": "cap-MULTI_ITEM_BUNDLE-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "laptop ve mouse birlikte 25 bin geçmesin",
       "capability": "MULTI_ITEM_BUNDLE",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "MULTI_ITEM_BUNDLE",
+        "items": [
+          {
+            "item_id": "item-3cec11b5",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-ff9dd842",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          },
+          {
+            "item_id": "item-31e38c74",
+            "category": {
+              "resolved_id": "ACCESSORIES",
+              "raw_text": "Aksesuar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-02455704",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "ACCESSORIES",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Aksesuar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 25000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": true,
+        "clarification_questions": [
+          {
+            "question_type": "multi_category",
+            "text": "Dizüstü Bilgisayar ve Aksesuar için ayrı ayrı mı arama yapmamı istersiniz, yoksa hepsini tek bir bütçe içinde mi değerlendirelim?",
+            "options": [
+              {
+                "label": "Ayrı ayrı ara",
+                "action": "separate_searches"
+              },
+              {
+                "label": "Tek bütçede birleştir",
+                "action": "bundle_search"
+              }
+            ]
+          }
+        ],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.2167909881100059
+      "http_status": 200,
+      "response_time_ms": 282.14410902000964
     },
     {
       "query_id": "cap-GLOBAL_BUDGET-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "laptop bütçem 40 bin TL’yi geçmesin",
       "capability": "GLOBAL_BUDGET",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-5987d20f",
+            "category": {
+              "resolved_id": "LAPTOP",
+              "raw_text": "Dizüstü Bilgisayar",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-936de705",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "LAPTOP",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Dizüstü Bilgisayar",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 40000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19626",
+          "price": 24442.84,
+          "brand": null
+        },
+        {
+          "product_id": "19630",
+          "price": 25983.96,
+          "brand": null
+        },
+        {
+          "product_id": "19627",
+          "price": 27958.45,
+          "brand": null
+        },
+        {
+          "product_id": "19635",
+          "price": 28380.0,
+          "brand": null
+        },
+        {
+          "product_id": "19633",
+          "price": 29489.0,
+          "brand": null
+        },
+        {
+          "product_id": "19636",
+          "price": 30899.0,
+          "brand": null
+        },
+        {
+          "product_id": "19628",
+          "price": 31051.58,
+          "brand": null
+        },
+        {
+          "product_id": "19625",
+          "price": 32999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19631",
+          "price": 33999.0,
+          "brand": null
+        },
+        {
+          "product_id": "19629",
+          "price": 36008.73,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.167337060905993
+      "http_status": 200,
+      "response_time_ms": 101.93145298399031
     },
     {
       "query_id": "cap-GLOBAL_BUDGET-1",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "telefon 20 binden pahalı olmasın",
       "capability": "GLOBAL_BUDGET",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "SINGLE_PRODUCT_SEARCH",
+        "items": [
+          {
+            "item_id": "item-24c383d9",
+            "category": {
+              "resolved_id": "MOBILE_PHONE",
+              "raw_text": "Cep Telefonu",
+              "confidence": 0.96
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-9077359d",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "MOBILE_PHONE",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "Cep Telefonu",
+                "confidence": 0.96,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": {
+          "budget": {
+            "minimum": null,
+            "target_maximum": 20000.0,
+            "stretch_maximum": null,
+            "currency": "TRY"
+          },
+          "allowed_merchants": [],
+          "excluded_merchants": []
+        },
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": false,
+        "clarification_questions": [],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
         "no_unrestricted_fallback"
       ],
-      "observed_products": [],
+      "observed_products": [
+        {
+          "product_id": "19658",
+          "price": 1499.0,
+          "brand": null
+        },
+        {
+          "product_id": "19649",
+          "price": 8877.36,
+          "brand": null
+        },
+        {
+          "product_id": "19671",
+          "price": 8877.36,
+          "brand": null
+        },
+        {
+          "product_id": "19650",
+          "price": 9159.0,
+          "brand": null
+        },
+        {
+          "product_id": "19674",
+          "price": 11374.0,
+          "brand": null
+        },
+        {
+          "product_id": "19672",
+          "price": 11499.0,
+          "brand": null
+        },
+        {
+          "product_id": "19667",
+          "price": 12750.0,
+          "brand": null
+        },
+        {
+          "product_id": "19665",
+          "price": 15199.0,
+          "brand": null
+        },
+        {
+          "product_id": "19666",
+          "price": 15399.0,
+          "brand": null
+        },
+        {
+          "product_id": "789",
+          "price": 2529.0,
+          "brand": null
+        }
+      ],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.1702269548550248
+      "http_status": 200,
+      "response_time_ms": 669.8849579552189
     },
     {
       "query_id": "cap-COMPLEX_CLARIFICATION-0",
       "source_class": "HUMAN_OPERATOR_GOLDEN",
       "anonymized_query": "iyi bir şey lazım bütçem de var",
       "capability": "COMPLEX_CLARIFICATION",
-      "plan": null,
+      "plan": {
+        "plan_version": "v1",
+        "request_type": "MULTI_ITEM_BUNDLE",
+        "items": [
+          {
+            "item_id": "item-23e76085",
+            "category": {
+              "resolved_id": "free_text:butcem",
+              "raw_text": "bütçem",
+              "confidence": 0.88
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-bb78d70f",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "free_text:butcem",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "bütçem",
+                "confidence": 0.88,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          },
+          {
+            "item_id": "item-8fb690e7",
+            "category": {
+              "resolved_id": "free_text:var",
+              "raw_text": "var",
+              "confidence": 0.88
+            },
+            "hard_constraints": [
+              {
+                "constraint_id": "c-104ea9d5",
+                "dimension": "category",
+                "operator": "EQ",
+                "value": "free_text:var",
+                "unit": null,
+                "strength": "HARD",
+                "priority": 0,
+                "source_text": "var",
+                "confidence": 0.88,
+                "source": "fast_parser",
+                "scope": "item"
+              }
+            ],
+            "soft_preferences": [],
+            "excluded_constraints": [],
+            "conditional_exceptions": [],
+            "ranking_priorities": [],
+            "unsupported_dimensions": []
+          }
+        ],
+        "global_constraints": null,
+        "campaign_intent": null,
+        "ambiguities": [],
+        "conflicts": [],
+        "clarification_required": true,
+        "clarification_questions": [
+          {
+            "question_type": "multi_category",
+            "text": "bütçem ve var için ayrı ayrı mı arama yapmamı istersiniz, yoksa hepsini tek bir bütçe içinde mi değerlendirelim?",
+            "options": [
+              {
+                "label": "Ayrı ayrı ara",
+                "action": "separate_searches"
+              },
+              {
+                "label": "Tek bütçede birleştir",
+                "action": "bundle_search"
+              }
+            ]
+          }
+        ],
+        "unsupported_capabilities": [],
+        "source": {
+          "fast_parser_used": true,
+          "llm_patch_used": false
+        }
+      },
       "cohort_id": "1",
-      "cohort_version": "2",
+      "cohort_version": "1",
       "catalog_revision": null,
       "expected_invariants": [
         "http<500",
@@ -497,71 +2828,71 @@
       ],
       "observed_products": [],
       "result": "PASS",
-      "http_status": 403,
-      "response_time_ms": 1.389464014209807
+      "http_status": 200,
+      "response_time_ms": 891.6684270370752
     }
   ],
   "multi_turn_api": {
-    "conversation_id": "pc2-mt-e2c1d84ec4",
+    "conversation_id": "pc2-mt-cb3513bc42",
     "turns": [
       {
         "step": 1,
         "message": "40 bine laptop arıyorum.",
-        "http_status": 403,
-        "query_version": null,
-        "product_count": 0,
-        "has_plan": false,
-        "ok": false
+        "http_status": 200,
+        "query_version": 1,
+        "product_count": 12,
+        "has_plan": true,
+        "ok": true
       },
       {
         "step": 2,
         "message": "HP olmasın.",
-        "http_status": 403,
-        "query_version": null,
+        "http_status": 200,
+        "query_version": 1,
         "product_count": 0,
         "has_plan": false,
-        "ok": false
+        "ok": true
       },
       {
         "step": 3,
         "message": "16 GB RAM şart.",
-        "http_status": 403,
-        "query_version": null,
+        "http_status": 200,
+        "query_version": 1,
         "product_count": 0,
         "has_plan": false,
-        "ok": false
+        "ok": true
       },
       {
         "step": 4,
         "message": "RAM şart olmasın, tercih olsun.",
-        "http_status": 403,
-        "query_version": null,
-        "product_count": 0,
-        "has_plan": false,
-        "ok": false
+        "http_status": 200,
+        "query_version": 1,
+        "product_count": 18,
+        "has_plan": true,
+        "ok": true
       },
       {
         "step": 5,
         "message": "Bütçeyi 45 bine çıkar.",
-        "http_status": 403,
-        "query_version": null,
+        "http_status": 200,
+        "query_version": 1,
         "product_count": 0,
-        "has_plan": false,
-        "ok": false
+        "has_plan": true,
+        "ok": true
       },
       {
         "step": 6,
         "message": "Son değişikliği geri al.",
-        "http_status": 403,
-        "query_version": null,
+        "http_status": 200,
+        "query_version": 1,
         "product_count": 0,
         "has_plan": false,
-        "ok": false
+        "ok": true
       }
     ],
-    "pass": false
+    "pass": true
   },
   "real_manifest_count": 73,
-  "pass": false,
-  "measured_at": "2026-08-02T19:59:23.344617+00:00"
+  "pass": true,
+  "measured_at": "2026-08-02T20:35:48.576496+00:00"
 }

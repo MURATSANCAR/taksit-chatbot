@@ -1,1 +1,36 @@
 LLM patch rejected: Plan validation failed: Forbidden key detected: 'product_id'
+PROD CLOSEOUT 002
+
+Real-data complex query:
+- Queries: 73 real / 3 synthetic
+- Capabilities: {"MULTI_CONSTRAINT": {"attempted": 3, "passed": 3, "minimum_required": 3, "gate": "PASS"}, "HARD_SOFT": {"attempted": 3, "passed": 3, "minimum_required": 3, "gate": "PASS"}, "CONDITIONAL_BUDGET": {"attempted": 2, "passed": 2, "minimum_required": 2, "gate": "PASS"}, "CONDITIONAL_EXCLUSION": {"attempted": 2, "passed": 2, "minimum_required": 2, "gate": "PASS"}, "RANKING_PRIORITIES": {"attempted": 2, "passed": 2, "minimum_required": 2, "gate": "PASS"}, "MULTI_TURN_ADD": {"attempted": 2, "passed": 2, "minimum_required": 2, "gate": "PASS"}, "MULTI_TURN_REMOVE": {"attempted": 1, "passed": 1, "minimum_required": 1, "gate": "PASS"}, "MULTI_TURN_REPLACE": {"attempted": 1, "passed": 1, "minimum_required": 1, "gate": "PASS"}, "MULTI_TURN_RELAX": {"attempted": 1, "passed": 1, "minimum_required": 1, "gate": "PASS"}, "MULTI_TURN_ROLLBACK": {"attempted": 1, "passed": 1, "minimum_required": 1, "gate": "PASS"}, "UNSUPPORTED_DIMENSION": {"attempted": 1, "passed": 1, "minimum_required": 1, "gate": "PASS"}, "MULTI_ITEM_BUNDLE": {"attempted": 2, "passed": 2, "minimum_required": 2, "gate": "PASS"}, "GLOBAL_BUDGET": {"attempted": 2, "passed": 2, "minimum_required": 2, "gate": "PASS"}, "COMPLEX_CLARIFICATION": {"attempted": 1, "passed": 1, "minimum_required": 1, "gate": "PASS"}}
+- Failures: none
+
+Conversation state: PASS
+Bundle: OVER_BUDGET (PASS)
+Playwright: PASS
+Frontend integrity: PASS
+Performance: PASS
+Security: PASS
+
+Catalog:
+- Search-ready before: 1054
+- Search-ready after: 1054
+- Merchants before: 2
+- Merchants after: 2
+- Selected scopes: [{'merchant_id': 40, 'display_name': 'Evofone', 'score': 0.8416846153846151, 'meets_minimums': False}, {'merchant_id': 20, 'display_name': 'Trendyol', 'score': 0.7488485501489572, 'meets_minimums': False}, {'merchant_id': 11, 'display_name': 'Teknosa', 'score': 0.695724832214765, 'meets_minimums': False}, {'merchant_id': 8, 'display_name': 'MediaMarkt', 'score': 0.6259043049327353, 'meets_minimums': False}]
+
+Finance:
+- Finance-ready before: 0
+- Finance-ready after: 0
+- Campaign E2E: NOT_RUN
+- Grounding: FINANCE_SCOPE_NOT_READY
+- Campaign Gate: CLOSED
+
+Technical decision: PROD_PRODUCT_TECHNICALLY_READY_CAMPAIGN_DATA_BLOCKED
+Public decision: PUBLIC_NOT_READY
+
+Remaining blockers:
+1. Finance-ready scope not created (source-backed uplift insufficient for READY merchant)
+2. Human shadow / HUMAN_VERIFIED golden / external UAT incomplete
+3. Public traffic remains NOT_STARTED

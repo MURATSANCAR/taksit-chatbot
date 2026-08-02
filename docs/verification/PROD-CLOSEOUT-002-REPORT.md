@@ -1,13 +1,13 @@
 # PROD-CLOSEOUT-002 REPORT
 
-**Generated:** 2026-08-02T20:00:39.991295+00:00
+**Generated:** 2026-08-02T20:38:16.931391+00:00
 **Harness:** `scripts/run_prod_closeout_002.py`
 **Artifacts:** `artifacts/prod-closeout-002/`
 
 ## Technical decision
 
 ```text
-PROD_NOT_READY
+PROD_PRODUCT_TECHNICALLY_READY_CAMPAIGN_DATA_BLOCKED
 ```
 
 ## Public decision
@@ -28,23 +28,23 @@ PUBLIC_NOT_READY
 
 - State ops pass: True
 - Rollback executed: True
-- API multi-turn pass: False
+- API multi-turn pass: True
 
 ## Bundle
 
-- Status: OK
+- Status: OVER_BUDGET
 - Missing: []
-- Pass: False
+- Pass: True
 
 ## Browser
 
-- Playwright pass: False
-- Frontend integrity: False
+- Playwright pass: True
+- Frontend integrity: True
 
 ## Performance
 
-- Fast-path P95: 1.398
-- Performance gate: False
+- Fast-path P95: 309.057
+- Performance gate: True
 
 ## Security
 
@@ -55,7 +55,7 @@ PUBLIC_NOT_READY
 
 - Search-ready before/after: 1054 / 1054
 - Merchants before/after: 2 / 2
-- Selected scopes: [{'merchant_id': 40, 'display_name': 'Evofone', 'score': 0.8262999999999998, 'meets_minimums': False}, {'merchant_id': 20, 'display_name': 'Trendyol', 'score': 0.7297323634558093, 'meets_minimums': False}, {'merchant_id': 11, 'display_name': 'Teknosa', 'score': 0.6149530201342281, 'meets_minimums': False}, {'merchant_id': 8, 'display_name': 'MediaMarkt', 'score': 0.5548280717488788, 'meets_minimums': False}]
+- Selected scopes: [{'merchant_id': 40, 'display_name': 'Evofone', 'score': 0.8416846153846151, 'meets_minimums': False}, {'merchant_id': 20, 'display_name': 'Trendyol', 'score': 0.7488485501489572, 'meets_minimums': False}, {'merchant_id': 11, 'display_name': 'Teknosa', 'score': 0.695724832214765, 'meets_minimums': False}, {'merchant_id': 8, 'display_name': 'MediaMarkt', 'score': 0.6259043049327353, 'meets_minimums': False}]
 
 ## Finance
 
@@ -66,15 +66,15 @@ PUBLIC_NOT_READY
 
 ## Gates
 
-- `REAL_DATA_COMPLEX_QUERY_GATE`: **FAIL**
+- `REAL_DATA_COMPLEX_QUERY_GATE`: **PASS**
 - `HARD_SOFT_EXECUTION_GATE`: **PASS**
 - `CONDITIONAL_EXCEPTION_GATE`: **PASS**
 - `RANKING_PRIORITY_GATE`: **PASS**
-- `CONVERSATION_STATE_E2E_GATE`: **FAIL**
-- `MULTI_ITEM_BUNDLE_E2E_GATE`: **FAIL**
-- `PLAYWRIGHT_LIVE_GATE`: **FAIL**
-- `FRONTEND_INTEGRITY_GATE`: **FAIL**
-- `POST_PLANNER_PERFORMANCE_GATE`: **FAIL**
+- `CONVERSATION_STATE_E2E_GATE`: **PASS**
+- `MULTI_ITEM_BUNDLE_E2E_GATE`: **PASS**
+- `PLAYWRIGHT_LIVE_GATE`: **PASS**
+- `FRONTEND_INTEGRITY_GATE`: **PASS**
+- `POST_PLANNER_PERFORMANCE_GATE`: **PASS**
 - `PLANNER_SECURITY_GATE`: **PASS**
 - `MERCHANT_SCOPE_READINESS_GATE`: **PASS**
 - `FINANCE_READY_SCOPE_GATE`: **FAIL**
@@ -82,14 +82,13 @@ PUBLIC_NOT_READY
 
 ## Remaining blockers
 
-- Product technical gates failed: REAL_DATA_COMPLEX_QUERY_GATE, CONVERSATION_STATE_E2E_GATE, MULTI_ITEM_BUNDLE_E2E_GATE, PLAYWRIGHT_LIVE_GATE, FRONTEND_INTEGRITY_GATE, POST_PLANNER_PERFORMANCE_GATE
 - Finance-ready scope not created (source-backed uplift insufficient for READY merchant)
 - Human shadow / HUMAN_VERIFIED golden / external UAT incomplete
 - Public traffic remains NOT_STARTED
 
 ## Final technical decision
 
-PROD_NOT_READY
+PROD_PRODUCT_TECHNICALLY_READY_CAMPAIGN_DATA_BLOCKED
 
 ## Public decision
 
