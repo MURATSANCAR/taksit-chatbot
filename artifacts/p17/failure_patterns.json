@@ -1,0 +1,204 @@
+{
+  "by_primary_cause": {
+    "MODEL_OVER_EXTRACT": {
+      "count": 26,
+      "patterns": [
+        "CORRECTION_X_NOT_Y",
+        "NEG_SIMPLE"
+      ],
+      "example_ids": [
+        "case-hard-neg-11-dev-011",
+        "case-hard-neg-13-dev-013",
+        "case-hard-neg-19-dev-019",
+        "case-hard-neg-27-dev-027",
+        "case-hard-neg-29-dev-029",
+        "case-hard-neg-37-dev-037",
+        "case-hard-neg-43-dev-043",
+        "case-hard-neg-55-dev-055"
+      ]
+    },
+    "MODEL_POS_MISS": {
+      "count": 44,
+      "patterns": [
+        "CORRECTION_X_NOT_Y",
+        "NEG_SIMPLE"
+      ],
+      "example_ids": [
+        "case-hard-neg-25-dev-025",
+        "case-hard-neg-31-dev-031",
+        "case-hard-neg-33-dev-033",
+        "case-hard-neg-39-dev-039",
+        "case-hard-corr-15-dev-015",
+        "case-hard-corr-29-dev-029",
+        "case-hard-alias-02-dev-002",
+        "case-hard-alias-05-dev-005"
+      ]
+    },
+    "MODEL_CONFLICT": {
+      "count": 2,
+      "patterns": [
+        "CORRECTION_X_NOT_Y",
+        "NEG_SIMPLE"
+      ],
+      "example_ids": [
+        "case-hard-neg-35-dev-035",
+        "case-acc-exc-010-dev-010"
+      ]
+    },
+    "MODEL_CORR_MISS": {
+      "count": 5,
+      "patterns": [
+        "CORRECTION_X_NOT_Y"
+      ],
+      "example_ids": [
+        "case-hard-corr-03-dev-003",
+        "case-hard-corr-06-dev-006",
+        "case-hard-corr-12-dev-012",
+        "case-hard-corr-21-dev-021",
+        "case-hard-corr-24-dev-024"
+      ]
+    },
+    "MODEL_EMPTY": {
+      "count": 36,
+      "patterns": [
+        "CORRECTION_RETRACTION"
+      ],
+      "example_ids": [
+        "case-hard-alias-04-val-004",
+        "case-hard-alias-08-val-008",
+        "case-hard-alias-09-dev-009",
+        "case-hard-alias-11-dev-011",
+        "case-hard-alias-17-dev-017",
+        "case-hard-alias-19-dev-019",
+        "case-hard-alias-23-dev-023",
+        "case-hard-alias-24-val-024"
+      ]
+    },
+    "MODEL_NEG_MISS": {
+      "count": 3,
+      "patterns": [
+        "NEG_SIMPLE"
+      ],
+      "example_ids": [
+        "case-acc-exc-004-dev-004",
+        "case-acc-exc-006-dev-006",
+        "case-acc-exc-022-dev-022"
+      ]
+    }
+  },
+  "cause_counts": {
+    "MODEL_OVER_EXTRACT": 26,
+    "MODEL_POS_MISS": 44,
+    "MODEL_CONFLICT": 2,
+    "MODEL_CORR_MISS": 5,
+    "MODEL_EMPTY": 36,
+    "MODEL_NEG_MISS": 3
+  },
+  "linguistic_pattern_counts": {
+    "CORRECTION_X_NOT_Y": 23,
+    "NEG_SIMPLE": 14,
+    "OTHER": 140,
+    "CORRECTION_RETRACTION": 1,
+    "SLANG": 1
+  },
+  "linguistic_pattern_examples": {
+    "CORRECTION_X_NOT_Y": [
+      {
+        "utterance_id": "case-hard-neg-11-dev-011",
+        "utterance": "robot süpürge değil dikey süpürge olsun"
+      },
+      {
+        "utterance_id": "case-hard-neg-13-dev-013",
+        "utterance": "smart tv değil normal tv"
+      },
+      {
+        "utterance_id": "case-hard-neg-19-dev-019",
+        "utterance": "gopro değil dslr arıyorum"
+      },
+      {
+        "utterance_id": "case-hard-neg-25-dev-025",
+        "utterance": "dslr değil aksiyon kamerası"
+      },
+      {
+        "utterance_id": "case-hard-neg-27-dev-027",
+        "utterance": "hoparlör değil kulaklık"
+      }
+    ],
+    "NEG_SIMPLE": [
+      {
+        "utterance_id": "case-hard-neg-29-dev-029",
+        "utterance": "smart tv istemiyorum sadece görüntü kalitesi"
+      },
+      {
+        "utterance_id": "case-acc-mis-009-dev-009",
+        "utterance": "cebimde para yok telefon istemem"
+      },
+      {
+        "utterance_id": "case-acc-exc-004-dev-004",
+        "utterance": "konsol istemiyorum sadece bilgisayar oyunu için laptop"
+      },
+      {
+        "utterance_id": "case-acc-exc-006-dev-006",
+        "utterance": "beyaz eşya istemiyorum sadece mobilya"
+      },
+      {
+        "utterance_id": "case-acc-exc-008-dev-008",
+        "utterance": "saat istemiyorum bileklik yeter"
+      }
+    ],
+    "OTHER": [
+      {
+        "utterance_id": "case-hard-corr-03-dev-003",
+        "utterance": "üzgünüm önce laptop dedim ama masaüstü lazım"
+      },
+      {
+        "utterance_id": "case-hard-corr-12-dev-012",
+        "utterance": "hayır ipad dedim iphone demedim"
+      },
+      {
+        "utterance_id": "case-hard-corr-24-dev-024",
+        "utterance": "hayır oyun konsolu dedim tv kastediyordum"
+      },
+      {
+        "utterance_id": "case-hard-corr-31-dev-031",
+        "utterance": "özür dilerim uçak bileti dedim ama tv arıyorum"
+      },
+      {
+        "utterance_id": "case-hard-corr-33-dev-033",
+        "utterance": "özür dilerim hoparlör istedim aslında amaç kulaklık"
+      }
+    ],
+    "CORRECTION_RETRACTION": [
+      {
+        "utterance_id": "case-hard-pc-15-dev-015",
+        "utterance": "işyerine masaüstü bilgisayar"
+      }
+    ],
+    "SLANG": [
+      {
+        "utterance_id": "case-hard-pc-27-dev-027",
+        "utterance": "ergonomik dizüstü tavsiye"
+      }
+    ]
+  },
+  "failing_pattern_counts": {
+    "CORRECTION_X_NOT_Y": 20,
+    "NEG_SIMPLE": 11,
+    "OTHER": 84,
+    "CORRECTION_RETRACTION": 1
+  },
+  "v4_target_example_counts": {
+    "NEG_SIMPLE": 187,
+    "CORRECTION_X_NOT_Y": 341,
+    "CORRECTION_RETRACTION": 39,
+    "OTHER": 1431
+  },
+  "v4_target_notes": "Targets derived from failing residual pattern distribution with minimum floors for known hard patterns; not a single-pattern inflate.",
+  "decision_hint": {
+    "model_weighted": 116,
+    "runtime_weighted": 0,
+    "matcher_weighted": 0,
+    "quant": "not_decidable_until_same_checkpoint_matrix",
+    "next_step": "targeted_v4_sft"
+  }
+}

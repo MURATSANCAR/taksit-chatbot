@@ -1,0 +1,44 @@
+{
+  "experiment_id": "P17-V3-RESIDUAL-001",
+  "cases": 179,
+  "failing": 116,
+  "metrics": {
+    "case_count": 179,
+    "pos_recall": 0.47878787878787876,
+    "pos_precision": 0.626984126984127,
+    "neg_recall": 0.45454545454545453,
+    "neg_precision": 0.1388888888888889,
+    "corr_recall": 0.0,
+    "corr_precision": 0.0,
+    "false_positive_rate": 0.48148148148148145,
+    "false_negative_rate": 0.5227272727272727,
+    "schema_validity": 1.0,
+    "forbidden_count": 0,
+    "conflict_count": 2,
+    "over_extraction_rate": 0.3854748603351955,
+    "empty_extraction_accuracy": 0.7586206896551724,
+    "latency_p50_ms": 25465.86399001535,
+    "latency_p95_ms": 34744.122612301726
+  },
+  "decision_hint": {
+    "model_weighted": 116,
+    "runtime_weighted": 0,
+    "matcher_weighted": 0,
+    "quant": "not_decidable_until_same_checkpoint_matrix",
+    "next_step": "targeted_v4_sft"
+  },
+  "v4_target_example_counts": {
+    "NEG_SIMPLE": 187,
+    "CORRECTION_X_NOT_Y": 341,
+    "CORRECTION_RETRACTION": 39,
+    "OTHER": 1431
+  },
+  "artifacts": {
+    "experiment_meta": "/data/nanobaseai/taksitlio-chatbot/artifacts/p17/v3/experiment_meta.json",
+    "residual_raw": "/data/nanobaseai/taksitlio-chatbot/artifacts/p17/v3/residual_raw.jsonl",
+    "residual_review": "/data/nanobaseai/taksitlio-chatbot/artifacts/p17/v3/residual_review.csv",
+    "metrics": "/data/nanobaseai/taksitlio-chatbot/artifacts/p17/v3/metrics.json",
+    "failure_patterns": "/data/nanobaseai/taksitlio-chatbot/artifacts/p17/v3/failure_patterns.json"
+  },
+  "campaign_gate": "CLOSED"
+}

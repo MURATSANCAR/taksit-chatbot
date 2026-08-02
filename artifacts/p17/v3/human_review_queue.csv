@@ -1,0 +1,9 @@
+utterance_id,utterance,primary_cause,secondary_causes,auto_cause_confidence,human_review_reason,gold_positive,pred_positive,gold_negative,pred_negative,review_notes,reviewer_override_cause
+case-hard-neg-35-dev-035,normal bisiklet değil e-bike,MODEL_CONFLICT,MODEL_OVER_EXTRACT,low,mandatory:MODEL_CONFLICT,bisiklet,bisiklet,,bisiklet,,
+case-hard-corr-21-dev-021,"hayır tv değil ekranlı bir cihaz kastettim, laptop olabilir",MODEL_CORR_MISS,MODEL_NEG_MISS|MODEL_OVER_EXTRACT,low,multi_secondary,laptop,laptop,televizyon,tv,,
+case-hard-alias-15-dev-015,apple watch,,,high,success_random_10pct,akıllı saat,akıllı saat,,,,
+case-hard-pc-19-dev-019,stüdyo işi için masaüstü,,,high,success_random_10pct,masaüstü,masaüstü,,,,
+case-hard-typo-21-dev-021,kulak lık bakıyorum,,,high,success_random_10pct,kulaklık,kulaklık,,,,
+case-acc-nm-021-dev-021,kim bu genç,,,high,success_random_10pct,,,,,,
+case-acc-nm-035-dev-035,egzersiz için ne önerirsin,,,high,success_random_10pct,,,,,,
+case-acc-exc-010-dev-010,bisiklet istemiyorum e-bike da olur,MODEL_CONFLICT,MODEL_OVER_EXTRACT,low,mandatory:MODEL_CONFLICT,bisiklet,bisiklet,,bisiklet,,
