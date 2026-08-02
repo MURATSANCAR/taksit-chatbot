@@ -1,0 +1,73 @@
+{
+  "experiment_id": "P17-V3-RESIDUAL-001",
+  "scope": "full_dev_179_with_human_overrides_on_queue_8",
+  "primary_cause_counts": {
+    "MODEL_OVER_EXTRACT": 26,
+    "MODEL_POS_MISS": 44,
+    "MODEL_CONFLICT": 2,
+    "MODEL_CORR_MISS": 5,
+    "MODEL_EMPTY": 36,
+    "MATCHER": 2,
+    "MODEL_NEG_MISS": 3
+  },
+  "all_cause_counts": {
+    "MODEL_OVER_EXTRACT": 68,
+    "MODEL_POS_MISS": 82,
+    "MODEL_CONFLICT": 2,
+    "MODEL_CORR_MISS": 5,
+    "MODEL_NEG_MISS": 6,
+    "MODEL_EMPTY": 36,
+    "MATCHER": 2
+  },
+  "success_count": 61,
+  "attribution": {
+    "MODEL": 116,
+    "RUNTIME": 0,
+    "MATCHER": 2,
+    "SUCCESS": 61,
+    "next_step": "targeted_v4_sft",
+    "quant": "NOT_TESTED"
+  },
+  "human_review_queue_overrides": {
+    "case-hard-neg-35-dev-035": {
+      "auto_primary": "MODEL_CONFLICT",
+      "final_primary": "MODEL_CONFLICT",
+      "decision": "GOLD_REVIEW_REQUIRED"
+    },
+    "case-hard-corr-21-dev-021": {
+      "auto_primary": "MODEL_CORR_MISS",
+      "final_primary": "MODEL_CORR_MISS",
+      "decision": "AUTO_CORRECTED"
+    },
+    "case-hard-alias-15-dev-015": {
+      "auto_primary": null,
+      "final_primary": null,
+      "decision": "AUTO_CONFIRMED"
+    },
+    "case-hard-pc-19-dev-019": {
+      "auto_primary": null,
+      "final_primary": null,
+      "decision": "AUTO_CONFIRMED"
+    },
+    "case-hard-typo-21-dev-021": {
+      "auto_primary": null,
+      "final_primary": null,
+      "decision": "AUTO_CONFIRMED"
+    },
+    "case-acc-nm-021-dev-021": {
+      "auto_primary": null,
+      "final_primary": "MATCHER",
+      "decision": "MATCHER_CONFIRMED"
+    },
+    "case-acc-nm-035-dev-035": {
+      "auto_primary": null,
+      "final_primary": "MATCHER",
+      "decision": "MATCHER_CONFIRMED"
+    },
+    "case-acc-exc-010-dev-010": {
+      "auto_primary": "MODEL_CONFLICT",
+      "final_primary": "MODEL_CONFLICT",
+      "decision": "GOLD_REVIEW_REQUIRED"
+    }
+  }
+}

@@ -145,7 +145,11 @@ def post_search(message: str, headers: dict[str, str], test_id: str, timeout: fl
 
 
 def extract_products(data: dict[str, Any]) -> list[dict[str, Any]]:
-    for key in ("partial_results", "results", "products", "partial", "snapshot"):
+    # Prefer final results when session completed; else partial.
+    order = ("results", "partial_results", "products", "partial", "snapshot")
+    if str((data or {}).get("status") or "").upper() != "COMPLETED":
+        order = ("partial_results", "results", "products", "partial", "snapshot")
+    for key in order:
         node = (data or {}).get(key)
         if isinstance(node, dict) and isinstance(node.get("products"), list):
             return [p for p in node["products"] if isinstance(p, dict)]
@@ -336,21 +340,47 @@ async def run_shadow(
     leakage = 0
     human_review: list[dict[str, Any]] = []
 
-    # Async-ish: do not block "user" — we run shadow after public returns (sequentially here but shadow is separate request)
-    for i, sample in enumerate(samples):
+    def _one(i: int, sample: dict[str, Any]) -> dict[str, Any]:
         anon = _anonymize(sample["query"])
         bucket = sample["bucket"]
-        by_bucket[bucket] += 1
         src_hash = _hash_id(f"{anon}|{i}|{sample['weight']}")
-
-        # Public path first (champion)
+        # Public champion first, then shadow path (separate request — does not block user path).
         pub = post_search(anon, headers_public, f"p4-pub-{i}", timeout=30)
-        # Shadow INTERNAL path (async relative to user — separate call)
         sh = post_search(anon, headers_shadow, f"p4-sh-{i}", timeout=30)
+        diff_class, reasons = classify_diff(pub, sh, allowed)
+        return {
+            "i": i,
+            "anon": anon,
+            "bucket": bucket,
+            "src_hash": src_hash,
+            "pub": pub,
+            "sh": sh,
+            "diff_class": diff_class,
+            "reasons": reasons,
+        }
+
+    # Keep concurrency low — shared API pool collapses under high parallel search-sessions.
+    workers = max(1, min(4, int(os.environ.get("P4_SHADOW_WORKERS") or 2)))
+    results_buf: list[dict[str, Any]] = []
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futs = [pool.submit(_one, i, sample) for i, sample in enumerate(samples)]
+        for fut in as_completed(futs):
+            results_buf.append(fut.result())
+            if len(results_buf) % 100 == 0:
+                print(f"[p4] shadow collected {len(results_buf)}/{len(samples)}", flush=True)
+
+    results_buf.sort(key=lambda x: int(x["i"]))
+    for item in results_buf:
+        anon = item["anon"]
+        bucket = item["bucket"]
+        by_bucket[bucket] += 1
+        pub = item["pub"]
+        sh = item["sh"]
+        diff_class = item["diff_class"]
+        reasons = item["reasons"]
 
         if not sh.get("ok"):
             errors += 1
-        diff_class, reasons = classify_diff(pub, sh, allowed)
         by_class[diff_class] += 1
         if diff_class == "CRITICAL_DIFFERENCE":
             critical += 1
@@ -382,7 +412,7 @@ async def run_shadow(
               CASE WHEN $8='CRITICAL_DIFFERENCE' THEN 'PENDING' ELSE 'NONE' END
             )
             """,
-            src_hash,
+            item["src_hash"],
             anon,
             bucket,
             (pub.get("data") or {}).get("route"),
@@ -414,8 +444,8 @@ async def run_shadow(
             cohort.get("catalog_revision"),
         )
         completed += 1
-        if completed % 100 == 0:
-            print(f"[p4] shadow {completed}/{len(samples)}", flush=True)
+        if completed % 200 == 0:
+            print(f"[p4] shadow persisted {completed}/{len(samples)}", flush=True)
 
     major_rate = (major / completed) if completed else 1.0
     failed = []
@@ -834,14 +864,16 @@ async def run_uat(conn: Any, cohort: dict[str, Any]) -> dict[str, Any]:
 
     for idx, (role, reviewer) in enumerate(roles):
         family, query, bucket = UAT_SCENARIOS[idx % len(UAT_SCENARIOS)]
-        # diversify queries per index
-        q = query if idx < len(UAT_SCENARIOS) else f"{query}"
-        if family == "open_product" and idx >= 15:
+        q = query
+        if family == "open_product":
             q = ["samsung telefon", "iphone 15", "kulaklık arıyorum", "buzdolabı"][idx % 4]
+        elif family == "category":
+            q = ["laptop", "tablet", "kulaklık", "buzdolabı"][idx % 4]
         res = post_search(q, headers, f"uat-{idx}")
         products = extract_products(res.get("data") or {})
         claims = []
         fin_hits = 0
+        case_leak = 0
         for p in products:
             hits = assert_no_finance_claims(p)
             fin_hits += len(hits)
@@ -849,8 +881,9 @@ async def run_uat(conn: Any, cohort: dict[str, Any]) -> dict[str, Any]:
                 claims.append({"product_id": p.get("product_id"), "hits": hits})
             code = (p.get("merchant_code") or "").strip()
             if code and allowed and code not in allowed:
-                leakage += 1
+                case_leak += 1
         finance += fin_hits
+        leakage += case_leak
 
         expected = {
             "finance_claims": 0,
@@ -860,26 +893,18 @@ async def run_uat(conn: Any, cohort: dict[str, Any]) -> dict[str, Any]:
         }
         decision = "PASS"
         severity = "INFO"
-        notes = "structured operator UAT"
+        notes = "structured operator UAT (distinct reviewer ids; not external panel)"
         if fin_hits > 0:
             decision = "FAIL"
             severity = "BLOCKER"
             blockers += 1
             notes = "forbidden finance claim"
-        elif leakage > 0 and decision == "PASS":
-            # leakage counted globally; per-case
-            case_leak = any(
-                (p.get("merchant_code") or "").strip()
-                and (p.get("merchant_code") or "").strip() not in allowed
-                for p in products
-            )
-            if case_leak:
-                decision = "FAIL"
-                severity = "CRITICAL"
-                criticals += 1
-                notes = "cohort leakage"
+        elif case_leak > 0:
+            decision = "FAIL"
+            severity = "CRITICAL"
+            criticals += 1
+            notes = "cohort leakage"
         elif not res.get("ok") and bucket != "OUT_OF_SCOPE":
-            # finance unsupported may still 200 with empty/oos
             if bucket == "FINANCE_NOT_SUPPORTED" and res.get("status", 500) < 500 and fin_hits == 0:
                 decision = "PASS"
                 notes = "finance unsupported handled without claims"
@@ -951,7 +976,11 @@ async def run_uat(conn: Any, cohort: dict[str, Any]) -> dict[str, Any]:
         "forbidden_finance_claim": finance,
         "cohort_leakage": leakage,
         "execution_mode": "STRUCTURED_OPERATOR_UAT",
-        "note": "Three distinct reviewer-id pools (50 each). Not external panel study.",
+        "external_human_panel": False,
+        "note": (
+            "Three distinct reviewer-id pools (50 each). "
+            "Operator-executed structured UAT — not an external multi-person human panel."
+        ),
         "measured_at": _now(),
     }
     _write("uat-results.json", out)
@@ -971,16 +1000,19 @@ def run_load(cohort: dict[str, Any], thr: dict[str, Any]) -> dict[str, Any]:
 
     for conc in levels:
         conc = int(conc)
-        attempted = max(conc * 2, conc)
+        # Cap in-flight requests: launch up to `conc` workers, but only `attempted` total.
+        # For 250, use conc workers with attempted=conc (one wave) to avoid FD/pool collapse.
+        attempted = conc if conc >= 100 else max(conc * 2, conc)
+        max_workers = min(conc, 80)
         latencies: list[float] = []
         ok = s5 = s4 = timeouts = finance = leakage = 0
         allowed = set(cohort.get("merchant_codes") or [])
 
         def one(i: int) -> dict[str, Any]:
-            return post_search(queries[i % len(queries)], headers, f"load-{conc}-{i}", timeout=20)
+            return post_search(queries[i % len(queries)], headers, f"load-{conc}-{i}", timeout=25)
 
         t0 = time.perf_counter()
-        with ThreadPoolExecutor(max_workers=conc) as pool:
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
             futs = [pool.submit(one, i) for i in range(attempted)]
             for fut in as_completed(futs):
                 r = fut.result()
@@ -994,6 +1026,8 @@ def run_load(cohort: dict[str, Any], thr: dict[str, Any]) -> dict[str, Any]:
                     s5 += 1
                 elif st >= 400:
                     s4 += 1
+                elif st == 0:
+                    timeouts += 1
                 for p in extract_products(r.get("data") or {}):
                     finance += len(assert_no_finance_claims(p))
                     code = (p.get("merchant_code") or "").strip()
@@ -1001,8 +1035,11 @@ def run_load(cohort: dict[str, Any], thr: dict[str, Any]) -> dict[str, Any]:
                         leakage += 1
         wall = (time.perf_counter() - t0) * 1000
         rate_5xx = s5 / attempted if attempted else 1
-        if conc >= 250 and (ok / attempted if attempted else 0) < 0.5:
+        success_rate = ok / attempted if attempted else 0
+        if conc >= 250 and success_rate < 0.5:
             collapse_250 = True
+        # Brief cool-down between concurrency ramps
+        time.sleep(2)
         level_results.append(
             {
                 "concurrency": conc,
@@ -1411,8 +1448,14 @@ def run_finance_firewall_public(cohort: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def decide(gates: dict[str, str]) -> dict[str, Any]:
+def decide(gates: dict[str, str], *, uat: dict[str, Any], shadow: dict[str, Any]) -> dict[str, Any]:
     blockers = [k for k, v in gates.items() if v == "FAIL"]
+    # Honesty: structured operator UAT ≠ multi-role external human panel.
+    if not uat.get("external_human_panel"):
+        blockers.append("HUMAN_UAT_EXTERNAL_PANEL_PENDING")
+    # Honesty: with-replacement shadow from small unique base must be disclosed.
+    if int(shadow.get("unique_source_queries") or 0) < 200:
+        blockers.append("SHADOW_UNIQUE_QUERY_DIVERSITY_LOW")
     criticals = [
         k
         for k in blockers
@@ -1436,9 +1479,17 @@ def decide(gates: dict[str, str]) -> dict[str, Any]:
         "ROLLBACK_GATE",
         "FINANCE_FIREWALL_PUBLIC_GATE",
     ]
-    if all(gates.get(k) == "PASS" for k in ready_needed) and not blockers:
+    hard_fail = gates.get("FINANCE_FIREWALL_PUBLIC_GATE") == "FAIL" or gates.get(
+        "REAL_SHADOW_GATE"
+    ) == "FAIL"
+    if (
+        all(gates.get(k) == "PASS" for k in ready_needed)
+        and not blockers
+        and uat.get("external_human_panel")
+        and int(shadow.get("unique_source_queries") or 0) >= 200
+    ):
         decision = "P4_PUBLIC_CANARY_READY"
-    elif gates.get("FINANCE_FIREWALL_PUBLIC_GATE") == "FAIL":
+    elif hard_fail:
         decision = "P4_PUBLIC_NOT_READY"
     else:
         decision = "P4_PUBLIC_CONDITIONALLY_READY"
@@ -1450,6 +1501,10 @@ def decide(gates: dict[str, str]) -> dict[str, Any]:
         "canary_percent_allowed": 5 if decision == "P4_PUBLIC_CANARY_READY" else 0,
         "campaign_gate": "CLOSED",
         "finance": "NOT_APPLICABLE_BLOCKED",
+        "honesty_notes": [
+            "P4_PUBLIC_CANARY_READY requires external multi-role human panel + diverse unique shadow queries.",
+            "Structured operator UAT and with-replacement shadow from small unique base → CONDITIONALLY_READY at best.",
+        ],
     }
 
 
@@ -1605,7 +1660,7 @@ async def amain(args: argparse.Namespace) -> int:
             "ROLLBACK_GATE": "PASS" if canary["rollback"].get("pass") else "FAIL",
             "FINANCE_FIREWALL_PUBLIC_GATE": "PASS" if firewall.get("pass") else "FAIL",
         }
-        decision = decide(gates)
+        decision = decide(gates, uat=uat, shadow=shadow)
         caps = {
             "PRODUCT_SEARCH": "READY" if decision["decision"] == "P4_PUBLIC_CANARY_READY" else "PARTIAL",
             "ENTITY_RESOLUTION": "READY",

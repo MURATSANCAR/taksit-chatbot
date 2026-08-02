@@ -1,0 +1,101 @@
+{
+  "experiment_id": "P17-V4-DATASET-BUILD-001",
+  "source_experiment": "P17-V3-RESIDUAL-001",
+  "decision": "TARGETED_V4_SFT",
+  "target_total": 1200,
+  "rationale": [
+    "Primary attribution remains MODEL-weighted after human review.",
+    "corr_recall=0.00 requires oversized correction family despite low primary CORR_MISS count.",
+    "neg_precision=0.14 + conflict/e-bike gold issues require heavy negation/hard-neg + conflict-free gold.",
+    "POS_MISS+EMPTY dominate primary causes → direct/implicit positive family.",
+    "OVER_EXTRACT frequent → suppression family.",
+    "Two GOLD_REVIEW_REQUIRED bike/e-bike rows excluded from SFT until gold approved.",
+    "Two MATCHER rows excluded from SFT (hybrid pollution on empty OOS)."
+  ],
+  "families": [
+    {
+      "family": "CORRECTION",
+      "target_count": 360,
+      "reason": "corr_recall=0.00; auto often misses corrections[] even when pos/neg roughly right (see corr-21).",
+      "patterns": {
+        "CORRECTION_X_NOT_Y": 120,
+        "CORRECTION_RETRACTION": 80,
+        "CORRECTION_PREVIOUS_TURN": 50,
+        "NEGATION_OF_NEGATION": 40,
+        "CORRECTION_MULTI_ENTITY": 40,
+        "BUDGET_PLUS_CORRECTION": 30
+      }
+    },
+    {
+      "family": "NEGATION_HARD_NEGATIVE",
+      "target_count": 300,
+      "reason": "neg_recall=0.45, neg_precision=0.14; conflicts on bisiklet/e-bike; need conflict-free neg gold.",
+      "patterns": {
+        "NEG_SIMPLE": 120,
+        "MULTI_POS_SINGLE_NEG": 60,
+        "CORRECTION_X_NOT_Y": 50,
+        "SOFT_PREFERENCE_NOT_NEGATIVE": 40,
+        "COMPARISON_NOT_NEGATIVE": 30
+      }
+    },
+    {
+      "family": "POSITIVE_MISS_EMPTY",
+      "target_count": 240,
+      "reason": "MODEL_POS_MISS=44 and MODEL_EMPTY=36 dominate primary causes.",
+      "patterns": {
+        "DIRECT_POSITIVE": 80,
+        "COLLOQUIAL_POSITIVE": 50,
+        "IMPLICIT_PURCHASE_INTENT": 50,
+        "MULTI_POSITIVE": 30,
+        "POSITIVE_WITH_BUDGET": 30
+      }
+    },
+    {
+      "family": "OVER_EXTRACTION_SUPPRESSION",
+      "target_count": 180,
+      "reason": "over_extraction_rate≈0.39; model invents extras / duplicates into pos+neg.",
+      "patterns": {
+        "DIRECT_POSITIVE": 60,
+        "NEG_SIMPLE": 40,
+        "SOFT_PREFERENCE_NOT_NEGATIVE": 40,
+        "AMBIGUOUS_EXPECT_EMPTY": 40
+      }
+    },
+    {
+      "family": "CONFLICT_PREVENTION",
+      "target_count": 60,
+      "reason": "conflict_count=2 plus e-bike cases where model puts same concept in pos and neg.",
+      "patterns": {
+        "CORRECTION_X_NOT_Y": 30,
+        "NEG_SIMPLE": 30
+      }
+    },
+    {
+      "family": "AMBIGUOUS_EXPECT_EMPTY",
+      "target_count": 60,
+      "reason": "Keep true-empty OOS/clarification cases; teach empty constraints without hybrid pollution (train labels only).",
+      "patterns": {
+        "AMBIGUOUS_EXPECT_EMPTY": 60
+      }
+    }
+  ],
+  "excluded_from_sft": {
+    "matcher_rows": [
+      "case-acc-nm-021-dev-021",
+      "case-acc-nm-035-dev-035"
+    ],
+    "runtime_rows": [],
+    "gold_review_required_rows": [
+      "case-hard-neg-35-dev-035",
+      "case-acc-exc-010-dev-010"
+    ]
+  },
+  "split_leakage_rules": {
+    "dev_hr100_blind_utterances": "forbidden_in_train",
+    "derived_from_eval_pattern": "allowed_if_not_near_copy",
+    "human_reviewed_train_rows": "allowed_if_split_train"
+  },
+  "campaign_gate": "CLOSED",
+  "v4_training": "NOT_STARTED",
+  "quant_attribution": "NOT_TESTED"
+}

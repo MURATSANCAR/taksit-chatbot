@@ -1,0 +1,26 @@
+{
+  "experiment_id": "P17-V3-RESIDUAL-001",
+  "reviewed": "8/8",
+  "review_decision_counts": {
+    "GOLD_REVIEW_REQUIRED": 2,
+    "AUTO_CORRECTED": 1,
+    "AUTO_CONFIRMED": 3,
+    "MATCHER_CONFIRMED": 2
+  },
+  "cause_changed_count": 5,
+  "gold_review_required": 2,
+  "matcher_confirmed": 2,
+  "quant_assigned": false,
+  "campaign_gate": "CLOSED",
+  "v4_training": "NOT_STARTED",
+  "primary_attribution_after_review": {
+    "MODEL": 116,
+    "RUNTIME": 0,
+    "MATCHER": 2,
+    "SUCCESS": 61,
+    "next_step": "targeted_v4_sft",
+    "quant": "NOT_TESTED"
+  },
+  "v4_decision": "TARGETED_V4_SFT",
+  "v4_dataset_build": "READY"
+}

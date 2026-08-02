@@ -1,0 +1,19 @@
+{
+  "experiment_id": "P17-V3-RESIDUAL-001",
+  "failing_primary_pattern_counts": {
+    "CORRECTION_X_NOT_Y": 20,
+    "NEG_SIMPLE": 11,
+    "OTHER": 84,
+    "CORRECTION_RETRACTION": 1,
+    "AMBIGUOUS_EXPECT_EMPTY": 2
+  },
+  "failing_all_pattern_counts": {
+    "CORRECTION_X_NOT_Y": 21,
+    "NEG_SIMPLE": 12,
+    "OTHER": 84,
+    "CORRECTION_RETRACTION": 1,
+    "AMBIGUOUS_EXPECT_EMPTY": 2,
+    "SOFT_PREFERENCE_NOT_NEGATIVE": 1
+  },
+  "notes": "Patterns for failing rows only; human-reviewed rows use reviewer primary_pattern."
+}
