@@ -203,66 +203,70 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
             headers={"Retry-After": str(pol.retry_after_seconds)},
         )
 
-    access = await enforce_search_access(request)
-    orch = _orchestrator(request)
-    container = container_from(request)
-    cohort_id = access.cohort_id or (container.extras.get("dynamic_readiness_config") or {}).get(
-        "cohort_id"
-    )
-    cohort_version = access.cohort_version or (
-        container.extras.get("dynamic_readiness_config") or {}
-    ).get("cohort_version")
-    catalog_rev = container.extras.get("catalog_revision")
-    trace = TraceRecorder(
-        trace_id=str(uuid.uuid4()),
-        cohort_id=int(cohort_id) if cohort_id is not None else None,
-        cohort_version=int(cohort_version) if cohort_version is not None else None,
-        catalog_revision=str(catalog_rev) if catalog_rev else None,
-    )
-    with trace.span("search.http"):
-        with trace.span(
             "search.authorization",
-            is_internal=access.is_internal,
-            access_reason=access.reason,
-        ):
-            pass
-        with trace.span(
-            "search.cohort.resolve",
-            cohort_id=trace.cohort_id,
-            cohort_version=trace.cohort_version,
-        ):
-            pass
-        # Greeting / off-topic: skip catalog hydrate (can take seconds under load).
-        if not is_off_domain_for_assist(payload.message):
-            await _maybe_refresh_catalog(
-                request,
-                orch,
-                payload.message,
-                trace=trace,
-                prefer_search_ready=bool(access.is_internal),
-            )
-        result = orch.start(
-            conversation_id=payload.conversation_id,
-            message=payload.message,
-            client_query_id=payload.client_query_id,
-            user_id=payload.user_id,
-            organization_id=payload.organization_id,
-            trace=trace,
+    try:
+        access = await enforce_search_access(request)
+        orch = _orchestrator(request)
+        container = container_from(request)
+        cohort_id = access.cohort_id or (
+            container.extras.get("dynamic_readiness_config") or {}
+        ).get("cohort_id")
+        cohort_version = access.cohort_version or (
+            container.extras.get("dynamic_readiness_config") or {}
+        ).get("cohort_version")
+        catalog_rev = container.extras.get("catalog_revision")
+        trace = TraceRecorder(
+            trace_id=str(uuid.uuid4()),
+            cohort_id=int(cohort_id) if cohort_id is not None else None,
+            cohort_version=int(cohort_version) if cohort_version is not None else None,
+            catalog_revision=str(catalog_rev) if catalog_rev else None,
         )
-    # Normalize events_url to this API prefix
-    sid = result["search_session_id"]
-    result["events_url"] = f"/v1/search-sessions/{sid}/events"
-    result["trace_id"] = trace.trace_id
-    # Diagnostics for INTERNAL harness only (no raw user text).
-    include_trace = access.is_internal and (
-        request.headers.get("X-Taksitlio-Include-Trace", "1").strip() != "0"
-    )
-    if include_trace:
-        result["trace"] = trace.to_dict()
-    if result.get("route") != "OUT_OF_SCOPE":
-        _schedule_understanding(request, result)
-        _schedule_persist(request, sid)
-    return result
+        with trace.span("search.http"):
+            with trace.span(
+                "search.authorization",
+                is_internal=access.is_internal,
+                access_reason=access.reason,
+            ):
+                pass
+            with trace.span(
+                "search.cohort.resolve",
+                cohort_id=trace.cohort_id,
+                cohort_version=trace.cohort_version,
+            ):
+                pass
+            # Greeting / off-topic: skip catalog hydrate (can take seconds under load).
+            if not is_off_domain_for_assist(payload.message):
+                await _maybe_refresh_catalog(
+                    request,
+                    orch,
+                    payload.message,
+                    trace=trace,
+                    prefer_search_ready=bool(access.is_internal),
+                )
+            result = orch.start(
+                conversation_id=payload.conversation_id,
+                message=payload.message,
+                client_query_id=payload.client_query_id,
+                user_id=payload.user_id,
+                organization_id=payload.organization_id,
+                trace=trace,
+            )
+        # Normalize events_url to this API prefix
+        sid = result["search_session_id"]
+        result["events_url"] = f"/v1/search-sessions/{sid}/events"
+        result["trace_id"] = trace.trace_id
+        # Diagnostics for INTERNAL harness only (no raw user text).
+        include_trace = access.is_internal and (
+            request.headers.get("X-Taksitlio-Include-Trace", "1").strip() != "0"
+        )
+        if include_trace:
+            result["trace"] = trace.to_dict()
+        if result.get("route") != "OUT_OF_SCOPE":
+            _schedule_understanding(request, result)
+            _schedule_persist(request, sid)
+        return result
+    finally:
+        ticket.release()
 
 
 @router.post("/search-sessions/{session_id}/clarifications")

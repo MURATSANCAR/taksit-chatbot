@@ -1,0 +1,20 @@
+{
+  "canonical_language": "tr",
+  "canonical_concept_examples": [
+    "telefon",
+    "laptop",
+    "tablet",
+    "e-bike",
+    "kulaklık"
+  ],
+  "alias_normalization_policy": "Aliases are noun phrases only (no full clauses / embedded negation). semantic_constraints.concept uses Turkish canonical noun; aliases may appear in utterance surface.",
+  "preferences_policy": "preferences mirror positive concepts only; category_hint:* forbidden in sanitized gold",
+  "semantic_constraints_policy": "positive=EXPLICIT wanted concepts; negative=EXPLICIT_NEGATION rejected; corrections=USER_CORRECTION replacement concept; positive∩negative must be empty",
+  "category_hint_policy": "REMOVED from sanitized train. Prompt forbids category IDs/fixture keys; category_hint:MOBILE_PHONE-style prefs are out of contract for this dataset.",
+  "correction_contract": {
+    "utterance": "X değil Y istiyorum",
+    "positive": "Y",
+    "negative": "X",
+    "corrections": "Y + USER_CORRECTION"
+  }
+}

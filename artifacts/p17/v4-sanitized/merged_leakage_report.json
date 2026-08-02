@@ -1,0 +1,11 @@
+{
+  "method": {
+    "normalize": "NFKC+casefold",
+    "jaccard": 0.72
+  },
+  "eval_source_rows": 0,
+  "draft_rows": 0,
+  "exact_eval_leakage": 0,
+  "near_eval_leakage": 0,
+  "upsample_rows": 0
+}

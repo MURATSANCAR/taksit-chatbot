@@ -1,0 +1,28 @@
+{
+  "experiment_id": "P17-V4-DATASET-SANITIZE-001",
+  "clean_base_rows": 437,
+  "clean_delta_rows": 1200,
+  "final_train_rows": 1637,
+  "family_pass": true,
+  "pattern_pass": true,
+  "blockers": [],
+  "decision": "V4_SANITIZED_DATASET_READY_FOR_SFT",
+  "campaign_gate": "CLOSED",
+  "v4_training": "NOT_STARTED",
+  "quant_attribution": "NOT_TESTED",
+  "metrics": {
+    "schema_fail": 0,
+    "draft": 0,
+    "eval_src": 0,
+    "exact_eval": 0,
+    "near_eval": 0,
+    "corr_dir_err": 0,
+    "corr_empty": 0,
+    "conflict": 0,
+    "forbidden": 0,
+    "artificial": 0,
+    "singleton_pairs": 0,
+    "invalid_pairs": 0,
+    "norm_dups": 0
+  }
+}

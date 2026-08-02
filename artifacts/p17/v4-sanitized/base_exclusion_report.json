@@ -1,0 +1,14 @@
+{
+  "input_rows": 2500,
+  "kept_rows": 437,
+  "exclusions": {
+    "corr_unrepairable": 1,
+    "draft": 688
+  },
+  "repaired_correction_rows": 424,
+  "dropped_correction_rows": 1,
+  "removed_draft": 688,
+  "removed_eval_source": 0,
+  "removed_near_eval_from_base": 166,
+  "removed_normalized_dups_from_base": 1208
+}

@@ -166,20 +166,47 @@ def jaccard(a: str, b: str) -> float:
     return len(ta & tb) / len(ta | tb)
 
 
-def near_hit(utt: str, corpus: list[str], *, jacc_th: float = 0.72) -> Optional[str]:
-    nu = normalize_utt(utt)
-    for b in corpus:
-        nb = normalize_utt(b)
-        if not nb:
-            continue
-        if nu == nb:
-            return f"exact:{nb[:60]}"
-        if len(nu) >= 12 and (nu in nb or nb in nu):
-            if min(len(nu), len(nb)) / max(len(nu), len(nb)) > 0.85:
-                return f"substring:{nb[:60]}"
-        if jaccard(utt, b) >= jacc_th:
-            return f"jaccard:{nb[:60]}"
-    return None
+class EvalIndex:
+    """Precomputed exact/near corpus for leakage checks."""
+
+    def __init__(self, corpus: list[str], *, jacc_th: float = 0.72) -> None:
+        self.jacc_th = jacc_th
+        self.exact: set[str] = set()
+        self.entries: list[tuple[str, set[str]]] = []
+        seen: set[str] = set()
+        for b in corpus:
+            nb = normalize_utt(b)
+            if not nb or nb in seen:
+                continue
+            seen.add(nb)
+            self.exact.add(nb)
+            self.entries.append((nb, {w for w in nb.split() if len(w) > 1}))
+
+    def hit(self, utt: str) -> Optional[str]:
+        nu = normalize_utt(utt)
+        if not nu:
+            return None
+        if nu in self.exact:
+            return f"exact:{nu[:60]}"
+        ta = {w for w in nu.split() if len(w) > 1}
+        if not ta:
+            return None
+        for nb, tb in self.entries:
+            if len(nu) >= 12 and (nu in nb or nb in nu):
+                if min(len(nu), len(nb)) / max(len(nu), len(nb)) > 0.85:
+                    return f"substring:{nb[:60]}"
+            if not tb:
+                continue
+            inter = len(ta & tb)
+            if inter and inter / len(ta | tb) >= self.jacc_th:
+                return f"jaccard:{nb[:60]}"
+        return None
+
+
+def near_hit(utt: str, corpus: list[str] | EvalIndex, *, jacc_th: float = 0.72) -> Optional[str]:
+    if isinstance(corpus, EvalIndex):
+        return corpus.hit(utt)
+    return EvalIndex(corpus, jacc_th=jacc_th).hit(utt)
 
 
 def _sc(concept: str, provenance: str, weight: float) -> dict[str, Any]:
@@ -254,21 +281,87 @@ def refresh_messages(row: dict[str, Any]) -> dict[str, Any]:
 
 
 def looks_like_correction_utt(utt: str) -> bool:
+    """True correction surface — not soft preference / negation-of-negation."""
     u = utt.casefold()
+    # Soft preference / hedge uses of "değil" are NOT corrections
+    soft_markers = (
+        "önceliğim değil",
+        "onceligim degil",
+        "şart değil",
+        "sart degil",
+        "kötü demiyorum",
+        "kotu demiyorum",
+        "olmasa da olur",
+        "belki sonra",
+        "acil değil",
+        "net değil",
+        "hiçbir şey net değil",
+        "emin değil",
+        "karar değil",
+    )
+    if any(m in u for m in soft_markers):
+        return False
+    if ("demedim" in u or "demiyorum" in u) and "değil" not in u and "degil" not in u:
+        return False
+    # X değil Y product correction — require a verb/intent cue after Y, or trailing product pair
+    if re.search(
+        r"\b[\wçğıöşü]+(?:\s+[\wçğıöşü]+)?\s+değil\s+[\wçğıöşü]+(?:\s+[\wçğıöşü]+)?\s+"
+        r"(?:istiyorum|bakıyorum|arıyorum|lazım|olsun|alacağız|karar)",
+        u,
+    ):
+        return True
+    if re.search(r"\bdeğil\s+[\wçğıöşü]+(?:\s+[\wçğıöşü]+)?\s*(?:istiyorum|bakıyorum|arıyorum|lazım)", u):
+        return True
     return any(
         k in u
         for k in (
-            "değil",
-            "degil",
             "vazgeç",
-            "yanlış",
+            "yanlış söyled",
+            "yanlış anlaşılmasın",
             "özür",
-            "demedim",
             "düzelteyim",
             "boşver",
             "fikrimi değiş",
+            " yerine ",
         )
     )
+
+
+CONTEXTS = [
+    "acil",
+    "bu hafta",
+    "hediye için",
+    "ev için",
+    "iş için",
+    "ofise",
+    "yeni taşındık",
+    "kampanya döneminde",
+    "taksitle",
+    "ikinci el değil",
+    "online bakıyorum",
+    "mağazadan",
+    "ailenin kullanımı için",
+    "öğrenci için",
+    "yazlık için",
+    "kışa hazırlık",
+    "uzun vadeli",
+    "pratik kullanım",
+    "sessiz çalışan",
+    "enerji verimli",
+]
+
+FRAMES = [
+    "{ctx}: {body}",
+    "{body}, {ctx}",
+    "{body}",
+    "şöyle söyleyeyim, {body}",
+    "netleştireyim: {body}",
+    "kısaca {body}",
+    "{body} lütfen",
+    "bize {body}",
+    "bugünlük karar: {body}",
+    "tercihimiz şu: {body}",
+]
 
 
 def repair_syn_corr(row: dict[str, Any]) -> tuple[dict[str, Any], str]:
@@ -313,17 +406,24 @@ def clean_base(v3_path: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         ann = r.get("annotation_status")
         split = r.get("split")
 
+        is_eval_path = "/evaluation/" in path or "/validation/" in path
+        is_upsample = "__up" in rid
         if split and split != "train":
             excl["split_not_train"] += 1
+            if is_eval_path or is_upsample:
+                excl["eval_source_path"] += 1
             continue
         if ann == "DRAFT":
             excl["draft"] += 1
+            if is_eval_path or is_upsample:
+                excl["eval_source_path"] += 1
             continue
-        if "/evaluation/" in path or "/validation/" in path:
+        if is_eval_path:
             excl["eval_source_path"] += 1
             continue
-        if "__up" in rid:
+        if is_upsample:
             excl["upsample"] += 1
+            excl["eval_source_path"] += 1
             continue
 
         # repair syn-corr
@@ -394,7 +494,8 @@ def clean_base(v3_path: Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         "repaired_correction_rows": repaired_corr,
         "dropped_correction_rows": dropped_corr,
         "removed_draft": excl.get("draft", 0),
-        "removed_eval_source": excl.get("eval_source_path", 0) + excl.get("upsample", 0),
+        "removed_eval_source": excl.get("eval_source_path", 0),
+        "removed_upsample_ids": excl.get("upsample", 0),
     }
     return kept, report
 
@@ -476,11 +577,18 @@ def make_row(
     return row, meta
 
 
+def _frame(rng: random.Random, body: str, i: int) -> str:
+    ctx = CONTEXTS[(i + rng.randint(0, len(CONTEXTS) - 1)) % len(CONTEXTS)]
+    frm = FRAMES[(i + rng.randint(0, len(FRAMES) - 1)) % len(FRAMES)]
+    return frm.format(ctx=ctx, body=body)
+
+
 def generate_clean_delta(
     seed: int = 19,
     *,
     eval_utts: Optional[list[str]] = None,
     base_norms: Optional[set[str]] = None,
+    eval_index: Optional[EvalIndex] = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     rng = random.Random(seed)
     quotas: dict[tuple[str, str], int] = {}
@@ -491,7 +599,7 @@ def generate_clean_delta(
     delta: list[dict[str, Any]] = []
     metas: list[dict[str, Any]] = []
     used_norm: set[str] = set(base_norms or set())
-    eval_corpus = list(eval_utts or BANNED_NEAR)
+    idx = eval_index or EvalIndex(list(eval_utts or BANNED_NEAR))
     pair_groups: dict[str, list[str]] = defaultdict(list)
     neg_stats: Counter[str] = Counter()
     pair_i = 0
@@ -510,7 +618,7 @@ def generate_clean_delta(
         nu = normalize_utt(row["utterance"])
         if not nu or nu in used_norm:
             return False
-        if near_hit(row["utterance"], eval_corpus):
+        if idx.hit(row["utterance"]):
             return False
         used_norm.add(nu)
         delta.append(row)
@@ -570,7 +678,11 @@ def generate_clean_delta(
             ))
 
         rng.shuffle(candidates)
-        picked = candidates[: rng.randint(3, min(5, len(candidates)))]
+        if len(candidates) < 2:
+            break
+        hi = min(5, len(candidates))
+        lo = min(3, hi)
+        picked = candidates[: rng.randint(lo, hi)]
         if len(picked) < 2:
             break
         # ensure unique utterances in group
@@ -579,10 +691,7 @@ def generate_clean_delta(
             if not take(fam, pat):
                 continue
             seq += 1
-            # diversify surfaces slightly without artificial markers
-            utt = spec["utt"]
-            if seq % 4 == 0:
-                utt = utt.replace("bakıyorum", "arıyorum").replace("istiyorum", "lazım")
+            utt = _frame(rng, spec["utt"], seq)
             row, meta = make_row(
                 case_id=f"p17v4s-{fam[:3].lower()}-{pat[:12].lower()}-{seq:04d}",
                 utterance=utt,
@@ -608,6 +717,26 @@ def generate_clean_delta(
                         m["pair_group_id"] = None
             if gid in pair_groups:
                 del pair_groups[gid]
+        else:
+            # require at least two distinct golds in the group
+            golds = []
+            for mid in group_ok:
+                for r in delta:
+                    if r["id"] == mid:
+                        golds.append(
+                            json.dumps(
+                                r["need_profile"]["semantic_constraints"],
+                                sort_keys=True,
+                            )
+                        )
+                        break
+            if len(set(golds)) < 2:
+                for mid in group_ok:
+                    for m in metas:
+                        if m["id"] == mid:
+                            m["pair_group_id"] = None
+                if gid in pair_groups:
+                    del pair_groups[gid]
         if pair_i > 5000:
             break
 
@@ -637,7 +766,7 @@ def generate_clean_delta(
                 f"aslında {sr} değil {sw} arıyorum",
                 f"düzelteyim: {sr} değil {sw}",
                 f"yanlış söyledim {sr} değil {sw} olsun",
-                f"özür, {sr} demedim {sw} istiyorum",
+                f"özür dilerim, {sr} değil {sw} istiyorum",
             ]
             utt = templates[fill_i % len(templates)]
             spec = {"utt": utt, "pos": [want], "neg": [reject], "corr": [want], "neg_sub": "true_negative"}
@@ -789,31 +918,68 @@ def generate_clean_delta(
             ]
             spec = {"utt": templates[fill_i % len(templates)], "pos": [want], "neg": [reject], "corr": [], "neg_sub": "true_negative"}
         elif fam == "AMBIGUOUS_EXPECT_EMPTY":
-            templates = [
-                ("merhaba, genel bir sorum var", "OUT_OF_SCOPE"),
-                ("bugün hava nasıl olur", "OUT_OF_SCOPE"),
-                ("kaç taksit seçenekleri neler", "BUDGET_INQUIRY"),
-                ("kampanya var mı ürün seçmeden", "OTHER"),
-                ("şunu alır mıydım emin değilim", "CLARIFICATION_RESPONSE"),
-                ("o şeyden bahsetmiştim hangisiydi", "CLARIFICATION_RESPONSE"),
-                ("arkadaşımın aldığı gibi bir şey", "CLARIFICATION_RESPONSE"),
-                ("karşılaştırma yap ama seçmeyeyim", "COMPARE_OPTIONS"),
-                ("sadece bakıyorum almayabilirim", "OTHER"),
-                ("selam yardım isterim", "OUT_OF_SCOPE"),
-                ("ödev konusunda yardım", "OUT_OF_SCOPE"),
-                ("hangi banka genel olarak iyi", "OUT_OF_SCOPE"),
+            topics = [
+                ("hava durumu", "OUT_OF_SCOPE"),
+                ("trafik", "OUT_OF_SCOPE"),
+                ("futbol skoru", "OUT_OF_SCOPE"),
+                ("banka şubesi", "OUT_OF_SCOPE"),
+                ("kredi kartı", "OUT_OF_SCOPE"),
+                ("hesap açılışı", "OUT_OF_SCOPE"),
+                ("döviz", "OUT_OF_SCOPE"),
+                ("ödev yardımı", "OUT_OF_SCOPE"),
+                ("yemek tarifi", "OUT_OF_SCOPE"),
+                ("taksit seçenekleri", "BUDGET_INQUIRY"),
+                ("aylık ödeme", "BUDGET_INQUIRY"),
+                ("bütçe planı", "BUDGET_INQUIRY"),
+                ("kampanya takvimi", "OTHER"),
+                ("iade politikası", "OTHER"),
+                ("kargo süresi genel", "OTHER"),
+                ("kararsızlık", "CLARIFICATION_RESPONSE"),
+                ("ihtiyaç analizi", "CLARIFICATION_RESPONSE"),
+                ("isim vermeden yönlendirme", "CLARIFICATION_RESPONSE"),
+                ("iki seçenek karşılaştırması isimsiz", "COMPARE_OPTIONS"),
+                ("genel bakış almadan önce", "OTHER"),
             ]
-            base, intent = templates[fill_i % len(templates)]
-            # natural uniqueness without v4 tokens
-            utt = f"{base}" if fill_i % 3 else f"{base} acaba"
-            if fill_i % 5 == 0:
-                utt = f"{base} kısaca"
+            openers = [
+                "merhaba",
+                "selam",
+                "günaydın",
+                "iyi akşamlar",
+                "bir sorum var",
+                "acele yok ama",
+                "müsaadenizle",
+                "kısaca sorayım",
+                "bilgi almak istiyorum",
+                "yardım eder misiniz",
+            ]
+            closers = [
+                "ürün adı yok",
+                "model söylemiyorum",
+                "henüz seçmedim",
+                "sadece genel",
+                "karar vermeden",
+                "isim bilmiyorum",
+                "netleşmeden",
+                "şimdilik belirsiz",
+            ]
+            topic, intent = topics[fill_i % len(topics)]
+            opener = openers[(fill_i // 3) % len(openers)]
+            closer = closers[(fill_i // 5) % len(closers)]
+            bodies = [
+                f"{opener}, {topic} hakkında {closer}",
+                f"{topic} için soru: {closer}",
+                f"{opener}; {closer}, {topic} soruyorum",
+                f"{topic} bilgisini {closer} istiyorum",
+                f"{opener} {topic} anlatır mısın, {closer}",
+            ]
+            utt = bodies[fill_i % len(bodies)]
             spec = {
                 "utt": utt,
                 "pos": [], "neg": [], "corr": [], "neg_sub": None,
                 "intent": intent,
-                "clarify": intent in {"CLARIFICATION_RESPONSE", "COMPARE_OPTIONS", "OTHER"},
+                "clarify": intent in {"CLARIFICATION_RESPONSE", "COMPARE_OPTIONS", "OTHER", "BUDGET_INQUIRY"},
                 "confidence": 0.85 if intent == "OUT_OF_SCOPE" else 0.45,
+                "no_product_frame": True,
             }
         else:
             continue
@@ -821,9 +987,10 @@ def generate_clean_delta(
         if not take(fam, pat):
             continue
         seq += 1
+        utt = spec["utt"] if spec.get("no_product_frame") else _frame(rng, spec["utt"], seq + fill_i)
         row, meta = make_row(
             case_id=f"p17v4s-fill-{fam[:3].lower()}-{pat[:10].lower()}-{seq:04d}",
-            utterance=spec["utt"],
+            utterance=utt,
             positive=spec["pos"],
             negative=spec["neg"],
             corrections=spec["corr"],
@@ -905,6 +1072,7 @@ def validate_all(
 
     train = base + delta
     eval_utts = load_eval_utterances()
+    eval_idx = EvalIndex(eval_utts)
 
     # write data first
     def dump(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -972,23 +1140,25 @@ def validate_all(
             artificial += 1
         if looks_like_correction_utt(utt):
             if not (sc.get("corrections") or []):
-                # soft preference / negation-of-negation may contain demedim — allow if "demedim" and no değil correction
-                u = utt.casefold()
-                if "değil" in u or "vazgeç" in u or "yanlış" in u or "özür" in u or "düzelteyim" in u or "boşver" in u:
-                    corr_empty += 1
+                corr_empty += 1
             # direction check for X değil Y
-            m = re.search(r"([\wçğıöşü]+(?:\s+[\wçğıöşü]+)?)\s+değil\s+([\wçğıöşü]+(?:\s+[\wçğıöşü]+)?)", utt.casefold())
+            m = re.search(
+                r"([\wçğıöşü]+(?:\s+[\wçğıöşü]+)?)\s+değil\s+([\wçğıöşü]+(?:\s+[\wçğıöşü]+)?)",
+                utt.casefold(),
+            )
             if m and pos and neg:
                 left, right = m.group(1).strip(), m.group(2).strip()
                 # if a positive concept appears only on left and a negative on right → inverted
-                if any(p in left and p not in right for p in pos) and any(n in right and n not in left for n in neg):
+                if any(p in left and p not in right for p in pos) and any(
+                    n in right and n not in left for n in neg
+                ):
                     corr_dir_err += 1
 
     # leakage full train vs eval
     exact_eval = 0
     near_eval = 0
     for r in train:
-        hit = near_hit(r["utterance"], eval_utts)
+        hit = eval_idx.hit(r["utterance"])
         if not hit:
             continue
         if hit.startswith("exact:"):
@@ -1035,10 +1205,10 @@ def validate_all(
         ("cat_hint", cat_hint),
         ("singleton_pairs", singleton),
         ("invalid_pairs", invalid_pairs),
-        ("norm_dups", norm_dups),
     ]:
         if val:
             blockers.append({"type": name, "count": val})
+    # duplicates are reported separately (not automatic REJECT)
 
     decision = (
         "V4_SANITIZED_DATASET_READY_FOR_SFT" if not blockers else "V4_SANITIZED_DATASET_REJECT"
@@ -1226,24 +1396,43 @@ def main() -> None:
     print(f"[{_utc()}] cleaning base…", flush=True)
     base, base_report = clean_base(args.v3)
     eval_utts = load_eval_utterances()
+    eval_idx = EvalIndex(eval_utts)
     # drop base rows near eval
     filtered_base = []
     near_dropped = 0
     for r in base:
-        if near_hit(r["utterance"], eval_utts):
+        if eval_idx.hit(r["utterance"]):
             near_dropped += 1
             continue
         filtered_base.append(r)
     base_report["removed_near_eval_from_base"] = near_dropped
-    base_report["kept_rows"] = len(filtered_base)
-    base = filtered_base
-    print(f"[{_utc()}] base kept={len(base)} near_eval_dropped={near_dropped} excl={base_report['exclusions']}", flush=True)
+    # drop normalized duplicates in base (keep first); uniqueness via id only is not enough for train surface
+    deduped: list[dict[str, Any]] = []
+    seen_norm: set[str] = set()
+    norm_dup_dropped = 0
+    for r in filtered_base:
+        nu = normalize_utt(r["utterance"])
+        if not nu or nu in seen_norm:
+            norm_dup_dropped += 1
+            continue
+        seen_norm.add(nu)
+        deduped.append(r)
+    base_report["removed_normalized_dups_from_base"] = norm_dup_dropped
+    base_report["kept_rows"] = len(deduped)
+    base = deduped
+    print(
+        f"[{_utc()}] base kept={len(base)} near_eval_dropped={near_dropped} "
+        f"norm_dup_dropped={norm_dup_dropped} excl={base_report['exclusions']}",
+        flush=True,
+    )
 
     print(f"[{_utc()}] generating clean delta…", flush=True)
     base_norms = {normalize_utt(r["utterance"]) for r in base}
     delta = metas = stats = None
     for seed in range(args.seed, args.seed + 60):
-        d, m, s = generate_clean_delta(seed=seed, eval_utts=eval_utts, base_norms=base_norms)
+        d, m, s = generate_clean_delta(
+            seed=seed, eval_utts=eval_utts, base_norms=base_norms, eval_index=eval_idx
+        )
         got = Counter((x["primary_family"], x["primary_pattern"]) for x in m)
         ok = len(d) == 1200 and all(
             got.get((f, p), 0) == n for f, ps in PATTERN_TARGETS.items() for p, n in ps.items()

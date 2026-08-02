@@ -1,0 +1,12 @@
+{
+  "minimal_pair_group_count": 148,
+  "minimal_pair_row_count": 504,
+  "singleton_pair_group_count": 0,
+  "invalid_pair_group_count": 0,
+  "size_histogram": {
+    "5": 26,
+    "3": 58,
+    "4": 36,
+    "2": 28
+  }
+}

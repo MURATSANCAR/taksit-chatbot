@@ -1,0 +1,10 @@
+{
+  "schema_fail": 0,
+  "correction_direction_errors": 0,
+  "correction_rows_with_empty_corrections": 0,
+  "positive_negative_conflicts": 0,
+  "forbidden": 0,
+  "artificial_markers": 0,
+  "category_hint_violations": 0,
+  "prompt_contract_note": "category_hint removed; concepts are Turkish surface nouns"
+}
