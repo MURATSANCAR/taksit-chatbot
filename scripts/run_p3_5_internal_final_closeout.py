@@ -700,9 +700,8 @@ async def run_ranking_regression(conn: Any, n: int = 1000) -> dict[str, Any]:
                coalesce(s.current_price, 0)::float AS price,
                coalesce(s.stock_status, 'UNKNOWN') AS stock_status,
                coalesce(s.finance_ready, false) AS finance_ready,
-               p.primary_cdn_url IS NOT NULL AS has_image
+               (s.card_media_id IS NOT NULL) AS has_image
         FROM search_ready_product_projection s
-        JOIN products p ON p.id = s.product_id
         ORDER BY s.product_id
         LIMIT $1
         """,
@@ -1452,13 +1451,19 @@ async def amain(args: argparse.Namespace) -> int:
         total_p95 = (perf.get("successful_latency") or {}).get("p95")
         ranking_p95 = (perf.get("ranking_core") or {}).get("p95")
         success_ok = (perf.get("successful_request_rate") or 0) >= float(
-            perf_thr.get("minimum_successful_request_rate") or 0.999
+            perf_thr.get("minimum_success_rate")
+            or perf_thr.get("minimum_successful_request_rate")
+            or 0.999
         )
         total_ok = total_p95 is not None and total_p95 < float(
-            perf_thr.get("maximum_total_backend_p95_ms") or 500
+            perf_thr.get("total_backend_p95_ms")
+            or perf_thr.get("maximum_total_backend_p95_ms")
+            or 500
         )
         ranking_ok = ranking_p95 is not None and ranking_p95 < float(
-            perf_thr.get("maximum_ranking_core_p95_ms") or 50
+            perf_thr.get("ranking_core_p95_ms")
+            or perf_thr.get("maximum_ranking_core_p95_ms")
+            or 50
         )
 
         gates = {

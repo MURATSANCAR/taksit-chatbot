@@ -448,7 +448,6 @@ async def _pool_rows_from_search_ready(
     try:
         async with pg_pool.acquire() as conn:
             if terms:
-                # OR of ILIKE patterns — bounded terms; projection already integrity-gated.
                 clauses = " OR ".join(
                     f"p.display_name ILIKE ${i + 2}" for i in range(len(terms))
                 )
@@ -457,12 +456,14 @@ async def _pool_rows_from_search_ready(
                     f"""
                     SELECT s.product_id, s.offer_id, s.merchant_id, s.category_id,
                            s.current_price, s.currency, s.stock_status, s.finance_ready,
-                           p.display_name, p.primary_cdn_url,
+                           p.display_name,
+                           ma.cdn_url AS primary_cdn_url,
                            m.display_name AS merchant_display_name,
                            m.merchant_code
                     FROM search_ready_product_projection s
                     JOIN products p ON p.id = s.product_id
                     JOIN merchants m ON m.id = s.merchant_id
+                    LEFT JOIN media_assets ma ON ma.id = s.card_media_id
                     WHERE ({clauses})
                     ORDER BY s.current_price ASC NULLS LAST
                     LIMIT $1
@@ -474,12 +475,14 @@ async def _pool_rows_from_search_ready(
                     """
                     SELECT s.product_id, s.offer_id, s.merchant_id, s.category_id,
                            s.current_price, s.currency, s.stock_status, s.finance_ready,
-                           p.display_name, p.primary_cdn_url,
+                           p.display_name,
+                           ma.cdn_url AS primary_cdn_url,
                            m.display_name AS merchant_display_name,
                            m.merchant_code
                     FROM search_ready_product_projection s
                     JOIN products p ON p.id = s.product_id
                     JOIN merchants m ON m.id = s.merchant_id
+                    LEFT JOIN media_assets ma ON ma.id = s.card_media_id
                     ORDER BY s.updated_at DESC NULLS LAST
                     LIMIT $1
                     """,
