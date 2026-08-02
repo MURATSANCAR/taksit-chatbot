@@ -6,6 +6,7 @@ never from hardcoded demo electronics lists.
 
 from __future__ import annotations
 
+import asyncio
 import time
 from typing import Any, Optional, Protocol, Sequence
 
@@ -26,6 +27,10 @@ _POOL_TTL_S = 90.0
 _hints_cache: dict[str, Any] = {"ts": 0.0, "categories": None, "merchants": None}
 _pool_cache: dict[str, tuple[float, list[dict[str, Any]]]] = {}
 _POOL_CACHE_MAX = 128
+# Single-flight: coalesce concurrent cache-miss hydrates for the same revision+key.
+_inflight_pools: dict[str, asyncio.Future[list[dict[str, Any]]]] = {}
+_inflight_hints: Optional[asyncio.Future[tuple[list[Category], list[EntityCandidate]]]] = None
+_apply_lock = asyncio.Lock()
 # Verbs/filler stripped from term-cache key so near-duplicate asks share a pool.
 _CACHE_STOPWORDS = frozenset(
     {
@@ -54,16 +59,25 @@ _CACHE_STOPWORDS = frozenset(
 )
 
 
-def _pool_cache_key(utterance: str, limit: int, terms: Sequence[str] = ()) -> str:
-    """Key by search terms (not full utterance) so near-duplicates share pools."""
+def _pool_cache_key(
+    utterance: str,
+    limit: int,
+    terms: Sequence[str] = (),
+    *,
+    catalog_revision: str = "",
+    prefer_search_ready: bool = False,
+) -> str:
+    """Key by revision + search terms so near-duplicates share pools safely."""
 
     cleaned = [
         " ".join(str(t).casefold().split())
         for t in terms
         if t and str(t).strip() and str(t).casefold() not in _CACHE_STOPWORDS
     ]
+    rev = (catalog_revision or "unknown").strip() or "unknown"
+    prefix = f"{'sr' if prefer_search_ready else 'full'}|{rev}|{limit}|"
     if cleaned:
-        return f"{limit}|terms:" + "|".join(sorted(set(cleaned)))
+        return prefix + "terms:" + "|".join(sorted(set(cleaned)))
     from taksitlio.semantic_matching.turkish_normalize import turkish_lower
 
     tokens = [
@@ -71,7 +85,15 @@ def _pool_cache_key(utterance: str, limit: int, terms: Sequence[str] = ()) -> st
         for tok in (turkish_lower(utterance or "") or "").split()
         if tok and tok not in _CACHE_STOPWORDS and len(tok) >= 2
     ]
-    return f"{limit}|utt:" + " ".join(tokens)[:160]
+    return prefix + "utt:" + " ".join(tokens)[:160]
+
+
+def cache_stats() -> dict[str, Any]:
+    return {
+        "pool_cache_entries": len(_pool_cache),
+        "inflight_pools": len(_inflight_pools),
+        "hints_age_s": max(0.0, time.monotonic() - float(_hints_cache.get("ts") or 0.0)),
+    }
 
 
 class CategoryListSource(Protocol):
@@ -306,31 +328,28 @@ def apply_catalog_hints(
         orch.category_clarify_options = []
 
 
-async def refresh_orchestrator_from_catalog(
-    orch: SearchOrchestrator,
+async def _load_hints(
     *,
-    catalog: ProductCatalogRepository,
-    merchants: Optional[MerchantDirectory] = None,
-    finance_index: Optional[FinanceOptionIndex] = None,
-    institutions: Optional[InstitutionLabelResolver] = None,
-    logos: Optional[LogoResolver] = None,
-    categories: Optional[CategoryListSource] = None,
-    utterance: str = "",
-    limit: int = 80,
-    prefer_search_ready: bool = False,
-    pg_pool: Any = None,
-) -> int:
-    """Load product pool + entity hints from production catalog sources."""
-
+    categories: Optional[CategoryListSource],
+    merchants: Optional[MerchantDirectory],
+) -> tuple[list[Category], list[EntityCandidate]]:
+    global _inflight_hints
     now = time.monotonic()
-    category_rows: list[Category] = []
-    merchant_cands: list[EntityCandidate] = []
+    if (
+        (now - float(_hints_cache["ts"])) < _HINTS_TTL_S
+        and _hints_cache["categories"] is not None
+    ):
+        return list(_hints_cache["categories"]), list(_hints_cache["merchants"] or [])
 
-    hints_fresh = (now - float(_hints_cache["ts"])) < _HINTS_TTL_S
-    if hints_fresh and _hints_cache["categories"] is not None:
-        category_rows = list(_hints_cache["categories"])
-        merchant_cands = list(_hints_cache["merchants"] or [])
-    else:
+    if _inflight_hints is not None and not _inflight_hints.done():
+        return await _inflight_hints
+
+    loop = asyncio.get_running_loop()
+    fut: asyncio.Future[tuple[list[Category], list[EntityCandidate]]] = loop.create_future()
+    _inflight_hints = fut
+    try:
+        category_rows: list[Category] = []
+        merchant_cands: list[EntityCandidate] = []
         if categories is not None:
             category_rows = list(await categories.list_active())
         if merchants is not None:
@@ -344,18 +363,108 @@ async def refresh_orchestrator_from_catalog(
                         entity_type="merchant",
                     )
                 )
-        _hints_cache["ts"] = now
+        _hints_cache["ts"] = time.monotonic()
         _hints_cache["categories"] = category_rows
         _hints_cache["merchants"] = merchant_cands
         _hints_cache["alias_index"] = None
+        fut.set_result((category_rows, merchant_cands))
+        return category_rows, merchant_cands
+    except Exception as exc:  # noqa: BLE001
+        if not fut.done():
+            fut.set_exception(exc)
+        raise
+    finally:
+        if _inflight_hints is fut:
+            _inflight_hints = None
 
-    # Build terms first so near-duplicate utterances share the same pool cache.
+
+async def _hydrate_pool_rows(
+    *,
+    catalog: ProductCatalogRepository,
+    merchants: Optional[MerchantDirectory],
+    finance_index: Optional[FinanceOptionIndex],
+    institutions: Optional[InstitutionLabelResolver],
+    logos: Optional[LogoResolver],
+    utterance: str,
+    limit: int,
+    prefer_search_ready: bool,
+    pg_pool: Any,
+    search_terms: Sequence[str],
+    category_entities: Sequence[Any],
+    alias_index: Any,
+) -> list[dict[str, Any]]:
+    pool_rows: list[dict[str, Any]] = []
+    if prefer_search_ready:
+        if pg_pool is not None:
+            pool_rows = await _pool_rows_from_search_ready(
+                pg_pool,
+                name_terms=search_terms,
+                limit=limit,
+            )
+            if not pool_rows:
+                pool_rows = await _pool_rows_from_search_ready(
+                    pg_pool,
+                    name_terms=[],
+                    limit=limit,
+                )
+        if logos is not None:
+            for row in pool_rows:
+                if not row.get("merchant_logo_cdn_url"):
+                    row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
+        return pool_rows
+
+    cands = await load_search_candidates_from_catalog(
+        catalog,
+        utterance=utterance,
+        limit=limit,
+        merchants=merchants,
+        finance_index=finance_index,
+        institutions=institutions,
+        category_candidates=category_entities,
+        alias_index=alias_index,
+        name_terms=search_terms,
+    )
+    if cands:
+        pool_rows = [candidate_to_pool_dict(c) for c in cands]
+        if logos is not None:
+            for row in pool_rows:
+                if not row.get("merchant_logo_cdn_url"):
+                    row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
+    return pool_rows
+
+
+async def refresh_orchestrator_from_catalog(
+    orch: SearchOrchestrator,
+    *,
+    catalog: ProductCatalogRepository,
+    merchants: Optional[MerchantDirectory] = None,
+    finance_index: Optional[FinanceOptionIndex] = None,
+    institutions: Optional[InstitutionLabelResolver] = None,
+    logos: Optional[LogoResolver] = None,
+    categories: Optional[CategoryListSource] = None,
+    utterance: str = "",
+    limit: int = 80,
+    prefer_search_ready: bool = False,
+    pg_pool: Any = None,
+    catalog_revision: str = "",
+) -> int:
+    """Load product pool + entity hints from production catalog sources.
+
+    Concurrent cache-misses for the same revision-keyed pool coalesce via
+    single-flight. Shared orchestrator apply is locked to avoid torn pools.
+    """
+
+    now = time.monotonic()
+    category_rows, merchant_cands = await _load_hints(
+        categories=categories, merchants=merchants
+    )
+
     from taksitlio.query_understanding.alias_index import build_alias_index
     from taksitlio.progressive_results.category_match import utterance_name_terms
 
     category_entities = tuple(category_to_entity(c) for c in category_rows)
     alias_index = _hints_cache.get("alias_index")
-    if (not hints_fresh) or alias_index is None:
+    if alias_index is None:
         alias_index = build_alias_index(
             categories=category_entities, merchants=merchant_cands
         )
@@ -365,86 +474,77 @@ async def refresh_orchestrator_from_catalog(
         category_candidates=category_entities or orch.catalog.categories,
         alias_index=alias_index,
     )
-    pool_key = _pool_cache_key(utterance, limit, search_terms)
-    if prefer_search_ready:
-        pool_key = "sr|" + pool_key
+    pool_key = _pool_cache_key(
+        utterance,
+        limit,
+        search_terms,
+        catalog_revision=catalog_revision
+        or str(getattr(orch, "catalog_revision", "") or ""),
+        prefer_search_ready=prefer_search_ready,
+    )
     cached = _pool_cache.get(pool_key)
     if cached and (now - cached[0]) < _POOL_TTL_S:
-        orch.product_pool = [dict(r) for r in cached[1]]
-        if logos is not None:
-            orch.logo_resolver = logos  # type: ignore[attr-defined]
+        pool_rows = [dict(r) for r in cached[1]]
     else:
-        pool_rows: list[dict[str, Any]] = []
-        if prefer_search_ready:
-            if pg_pool is not None:
-                pool_rows = await _pool_rows_from_search_ready(
-                    pg_pool,
-                    name_terms=search_terms,
-                    limit=limit,
-                )
-                if not pool_rows:
-                    # Cohort-safe fallback only — never unrestricted catalog.
-                    pool_rows = await _pool_rows_from_search_ready(
-                        pg_pool,
-                        name_terms=[],
-                        limit=limit,
-                    )
-            # If pool missing, keep empty rather than leaking non-cohort catalog rows.
-            if logos is not None:
-                orch.logo_resolver = logos  # type: ignore[attr-defined]
-                for row in pool_rows:
-                    if not row.get("merchant_logo_cdn_url"):
-                        row["merchant_logo_cdn_url"] = logos.merchant(
-                            row.get("merchant_id")
-                        )
+        inflight = _inflight_pools.get(pool_key)
+        if inflight is not None and not inflight.done():
+            pool_rows = [dict(r) for r in await inflight]
         else:
-            cands = await load_search_candidates_from_catalog(
-                catalog,
-                utterance=utterance,
-                limit=limit,
-                merchants=merchants,
-                finance_index=finance_index,
-                institutions=institutions,
-                category_candidates=category_entities or orch.catalog.categories,
-                alias_index=alias_index,
-                name_terms=search_terms,
-            )
-            if logos is not None:
-                orch.logo_resolver = logos  # type: ignore[attr-defined]
-            if cands:
-                pool_rows = [candidate_to_pool_dict(c) for c in cands]
-                if logos is not None:
-                    for row in pool_rows:
-                        if not row.get("merchant_logo_cdn_url"):
-                            row["merchant_logo_cdn_url"] = logos.merchant(
-                                row.get("merchant_id")
-                            )
-            else:
-                pool_rows = []
+            loop = asyncio.get_running_loop()
+            fut: asyncio.Future[list[dict[str, Any]]] = loop.create_future()
+            _inflight_pools[pool_key] = fut
+            try:
+                loaded = await _hydrate_pool_rows(
+                    catalog=catalog,
+                    merchants=merchants,
+                    finance_index=finance_index,
+                    institutions=institutions,
+                    logos=logos,
+                    utterance=utterance,
+                    limit=limit,
+                    prefer_search_ready=prefer_search_ready,
+                    pg_pool=pg_pool,
+                    search_terms=search_terms,
+                    category_entities=category_entities or orch.catalog.categories,
+                    alias_index=alias_index,
+                )
+                _pool_cache[pool_key] = (
+                    time.monotonic(),
+                    [dict(r) for r in loaded],
+                )
+                if len(_pool_cache) > _POOL_CACHE_MAX:
+                    for k, _ in sorted(_pool_cache.items(), key=lambda kv: kv[1][0])[
+                        : len(_pool_cache) - _POOL_CACHE_MAX
+                    ]:
+                        _pool_cache.pop(k, None)
+                fut.set_result(loaded)
+                pool_rows = [dict(r) for r in loaded]
+            except Exception as exc:  # noqa: BLE001
+                if not fut.done():
+                    fut.set_exception(exc)
+                raise
+            finally:
+                _inflight_pools.pop(pool_key, None)
 
-        orch.product_pool = pool_rows
-        _pool_cache[pool_key] = (now, [dict(r) for r in orch.product_pool])
-        if len(_pool_cache) > _POOL_CACHE_MAX:
-            for k, _ in sorted(_pool_cache.items(), key=lambda kv: kv[1][0])[
-                : len(_pool_cache) - _POOL_CACHE_MAX
-            ]:
-                _pool_cache.pop(k, None)
+    if logos is not None:
+        orch.logo_resolver = logos  # type: ignore[attr-defined]
 
-    brand_cands = brands_from_pool(orch.product_pool)
+    brand_cands = brands_from_pool(pool_rows)
     inst_cands = institutions_from_labels(institutions)
-
     existing_codes = {str(c.category_code) for c in category_rows}
-    feed_cats = categories_from_pool(orch.product_pool, existing_codes=existing_codes)
+    feed_cats = categories_from_pool(pool_rows, existing_codes=existing_codes)
     merged_categories = list(category_rows) + feed_cats
 
-    apply_catalog_hints(
-        orch,
-        categories=merged_categories,
-        merchants=merchant_cands,
-        brands=brand_cands,
-        institutions=inst_cands,
-    )
-    return len(orch.product_pool)
+    async with _apply_lock:
+        orch.product_pool = pool_rows
+        apply_catalog_hints(
+            orch,
+            categories=merged_categories,
+            merchants=merchant_cands,
+            brands=brand_cands,
+            institutions=inst_cands,
+        )
+    return len(pool_rows)
 
 
 async def _pool_rows_from_search_ready(

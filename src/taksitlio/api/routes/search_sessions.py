@@ -13,6 +13,7 @@ from pydantic import BaseModel, Field
 from taksitlio.api.deps import container_from
 from taksitlio.llm_routing.worker import schedule_llm_job
 from taksitlio.search_sessions import SearchOrchestrator, build_empty_orchestrator
+from taksitlio.search_sessions.admission import current_policy, try_admit
 from taksitlio.search_sessions.catalog_pool import refresh_orchestrator_from_catalog
 from taksitlio.search_sessions.hydrate import ensure_session_loaded
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
@@ -71,6 +72,7 @@ async def _maybe_refresh_catalog(
             pg_pool=container.extras.get("pool")
             or container.extras.get("pg_pool")
             or container.extras.get("db_pool"),
+            catalog_revision=str(container.extras.get("catalog_revision") or ""),
         )
 
     try:
@@ -186,6 +188,20 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
     from taksitlio.api.internal_access import enforce_search_access
     from taksitlio.applicability_readiness.tracing import TraceRecorder
     from taksitlio.semantic_matching.query_intent import is_off_domain_for_assist
+
+    ticket = try_admit()
+    if ticket is None:
+        pol = current_policy()
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "error": "search_busy",
+                "message": "Sistem yoğun. Lütfen kısa süre sonra tekrar deneyin.",
+                "retry_after_seconds": pol.retry_after_seconds,
+                "degraded_mode": pol.degraded_mode,
+            },
+            headers={"Retry-After": str(pol.retry_after_seconds)},
+        )
 
     access = await enforce_search_access(request)
     orch = _orchestrator(request)
