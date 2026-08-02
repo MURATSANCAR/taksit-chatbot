@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "sessions": 100,
+  "mixed_revision_response": 0,
+  "wrong_cohort_revision": 0,
+  "concurrent_revision_change": "NOT_VERIFIED"
+}

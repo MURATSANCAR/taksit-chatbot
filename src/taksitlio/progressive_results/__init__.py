@@ -244,6 +244,18 @@ def build_partial_snapshot(
         ranked_pairs = sorted(scored, key=lambda x: x[1], reverse=True)[:limit]
         label = snapshot_label_for_constraints(constraints)
 
+    from taksitlio.search_sessions.finance_firewall import (
+        apply_finance_firewall,
+        finance_display_allowed,
+    )
+
+    # FINANCE_DISPLAY BLOCKED by default until capability READY for active cohort.
+    flags = (constraints or {}).get("capability_flags") or {"finance_display": "BLOCKED"}
+    ranked_products = [p for p, _ in ranked_pairs]
+    if not finance_display_allowed(flags):
+        ranked_products = apply_finance_firewall(ranked_products, flags=flags)
+        ranked_pairs = list(zip(ranked_products, [s for _, s in ranked_pairs]))
+
     out = [
         PartialProduct(
             product_id=str(p.get("product_id")),
@@ -255,7 +267,9 @@ def build_partial_snapshot(
             merchant_logo_cdn_url=p.get("merchant_logo_cdn_url"),
             merchant_code=str(p["merchant_code"]) if p.get("merchant_code") else None,
             stock_status=str(p["stock_status"]) if p.get("stock_status") else None,
-            best_finance_summary=p.get("best_finance"),
+            best_finance_summary=(
+                p.get("best_finance") if finance_display_allowed(flags) else None
+            ),
         )
         for p, score in ranked_pairs
     ]

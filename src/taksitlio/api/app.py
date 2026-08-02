@@ -19,6 +19,7 @@ from taksitlio.api.routes import (
     admin,
     admin_finance,
     admin_answer_integrity,
+    admin_golden,
     admin_ingestion,
     admin_media,
     answer_integrity,
@@ -88,6 +89,7 @@ def create_app(container: AppContainer | None = None) -> FastAPI:
     app.include_router(admin_ingestion.router, prefix="/v1/admin")
     app.include_router(admin_answer_integrity.router, prefix="/v1/admin")
     app.include_router(admin_finance.router, prefix="/v1/admin")
+    app.include_router(admin_golden.router, prefix="/v1/admin")
     app.include_router(admin_media.router, prefix="/v1/admin")
     if _WEB_TAKSITLIO.is_dir():
         # Guest chatbot UI — wired to POST /v1/chat progressive cards (P14)

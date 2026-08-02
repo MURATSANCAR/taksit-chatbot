@@ -1,0 +1,8 @@
+{
+  "status": "NOT_VERIFIED",
+  "pass": false,
+  "note": "Controlled fault-injection layer not executed on production INTERNAL",
+  "wrong_financial_fallback": 0,
+  "unhandled_crash": 0,
+  "cohort_leakage": 0
+}

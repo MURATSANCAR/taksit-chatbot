@@ -1,0 +1,11 @@
+{
+  "status": "PARTIAL",
+  "pass": false,
+  "top1_3_10": "PASS",
+  "cheapest_accuracy": 1.0,
+  "lowest_monthly_accuracy": null,
+  "lowest_total_accuracy": null,
+  "finance_ready_products": 0,
+  "note": "Cannot PASS without finance modes on finance-capable cohort",
+  "adaptive_ranking_enabled": "SHADOW"
+}

@@ -372,29 +372,56 @@ async def call_raw(
 
 
 def freeze_meta(args: argparse.Namespace, out_dir: Path) -> dict[str, Any]:
+    """Freeze serving knobs for baseline. max_tokens MUST stay 512 for this experiment."""
+    if int(args.max_tokens) != 512:
+        raise SystemExit(
+            f"P17-V3-RESIDUAL-001 freezes max_tokens=512 (got {args.max_tokens}). "
+            "Use a separate experiment_id for 96–128 runtime trials."
+        )
     meta = {
         "experiment_id": EXPERIMENT_ID,
+        "started_at": _utc_now(),
         "created_at": _utc_now(),
         "campaign_gate": "CLOSED",
         "quality_claim": False,
+        "quant_assignable": False,
         "dataset": str(args.dataset),
+        "dataset_id": Path(args.dataset).name,
+        "dataset_row_count_expected": 179,
         "split": "dev",
         "checkpoint_adapter": args.adapter,
+        "adapter_path": args.adapter,
         "base_model": args.base_model,
         "base_gguf": args.base_gguf,
+        "base_gguf_path": args.base_gguf,
         "lora_gguf": args.lora_gguf,
         "quant_tier": args.quant_tier,
+        "prompt_id": PROMPT_VERSION,
         "prompt_version": PROMPT_VERSION,
+        "schema_id": SCHEMA_VERSION,
         "schema_version": SCHEMA_VERSION,
         "system_prompt_fingerprint": "remote._DEFAULT_SYSTEM_PROMPT",
         "server_flags": args.server_flags,
+        "llama_server_flags": args.server_flags,
         "threads": args.threads,
-        "max_tokens": args.max_tokens,
+        "max_tokens": 512,
+        "max_tokens_policy": (
+            "FROZEN at 512 for baseline attribution. "
+            "96–128 belongs to a separate runtime-gate experiment_id."
+        ),
         "temperature": args.temperature,
         "timeout_ms": args.timeout_ms,
+        "warmup_count": 3,
         "eval_port": args.port,
+        "server_port": args.port,
         "eval_base_url": args.base_url,
         "model_alias": args.model,
+        "server_alias": args.model,
+        "runner_command": (
+            "PYTHONPATH=src .venv/bin/python -u evaluation/p17_v3_residual_export.py"
+        ),
+        "pid": os.getpid(),
+        "previous_failed_start": "var/run missing (ops note only; not an experiment result)",
         "note": "P17.1 residual — QUANT not assignable; no Campaign change",
     }
     out_dir.mkdir(parents=True, exist_ok=True)

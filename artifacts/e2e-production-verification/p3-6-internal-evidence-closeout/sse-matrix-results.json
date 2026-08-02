@@ -1,0 +1,99 @@
+{
+  "status": "PARTIAL",
+  "pass": false,
+  "scenarios": [
+    {
+      "name": "fast_path_event_order",
+      "pass": true,
+      "missing": [],
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "FAST_PARSE_COMPLETED",
+        "ENTITY_RESOLUTION_STARTED",
+        "BRAND_CANDIDATES_RESOLVED",
+        "ENTITY_RESOLUTION_COMPLETED",
+        "GAP_ANALYSIS_COMPLETED",
+        "PRODUCT_POOL_SEARCH_STARTED",
+        "PARTIAL_RESULTS_READY",
+        "FINANCE_SEARCH_STARTED",
+        "RANKING_STARTED",
+        "FINAL_RESULTS_READY",
+        "SEARCH_COMPLETED"
+      ]
+    },
+    {
+      "name": "clarification_or_oos_event_order",
+      "pass": true,
+      "route": "OUT_OF_SCOPE",
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "SEARCH_FAILED"
+      ]
+    },
+    {
+      "name": "no_result_event_order",
+      "pass": true,
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "SEARCH_FAILED"
+      ]
+    },
+    {
+      "name": "failed_search_event_order",
+      "pass": true,
+      "note": "Observed via OOS/greeting path"
+    },
+    {
+      "name": "query_supersede",
+      "pass": true,
+      "query_version_b": 2,
+      "stale_result_application": 0
+    },
+    {
+      "name": "last_event_id_reconnect",
+      "pass": true,
+      "last_event_id": "9d223492-405a-4d45-85fe-14f5c1c603b1",
+      "new_events": 12
+    },
+    {
+      "name": "client_reconnect",
+      "pass": true,
+      "reconnect_new_events": 0
+    },
+    {
+      "name": "cohort_pinning",
+      "pass": true
+    },
+    {
+      "name": "revision_pinning_events",
+      "pass": true,
+      "note": "Trace cohort pin checked; concurrent revision-change stress separate"
+    },
+    {
+      "name": "llm_event_order",
+      "pass": false,
+      "status": "NOT_VERIFIED",
+      "note": "Dedicated cell not fully exercised"
+    },
+    {
+      "name": "slow_client",
+      "pass": false,
+      "status": "NOT_VERIFIED",
+      "note": "Dedicated cell not fully exercised"
+    },
+    {
+      "name": "duplicate_terminal_stress",
+      "pass": false,
+      "status": "NOT_VERIFIED",
+      "note": "Dedicated cell not fully exercised"
+    }
+  ],
+  "failures": [],
+  "missing_required_event": 0,
+  "duplicate_terminal_event": 0,
+  "old_query_version_event_applied": 0,
+  "note": "FULL PASS requires zero NOT_VERIFIED cells"
+}

@@ -77,6 +77,7 @@ class SearchOrchestrator:
     circuit_open: bool = False
     logo_resolver: Any = None
     traces: dict[str, Any] = field(default_factory=dict)
+    session_pins: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def _constraints_with_category_tokens(
         self, parse: Any, *, utterance: str = ""

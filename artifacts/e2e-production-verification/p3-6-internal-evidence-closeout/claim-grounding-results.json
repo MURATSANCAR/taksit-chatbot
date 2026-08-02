@@ -1,0 +1,13 @@
+{
+  "status": "PARTIAL",
+  "pass": false,
+  "api_side_ok": true,
+  "browser_side": "NOT_VERIFIED",
+  "checked_cards": 150,
+  "unsupported_claim": 0,
+  "invented_bank": 0,
+  "invented_amount": 0,
+  "finance_claim_when_capability_blocked": 0,
+  "cohort_merchant_leakage": 0,
+  "note": "API-only → CLAIM_GROUNDING_GATE=PARTIAL even when api_side_ok"
+}

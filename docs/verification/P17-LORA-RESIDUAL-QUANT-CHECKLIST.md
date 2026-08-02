@@ -433,18 +433,57 @@ Cause counts alone are not enough. Tag patterns such as:
 
 v4 data follows this **distribution** with controlled mix — not only the single worst pattern inflated.
 
-## A.5 P17.1 done criteria
+## A.5 Baseline freeze (this experiment)
+
+- `max_tokens=512` is **frozen** for `P17-V3-RESIDUAL-001`
+- Do **not** change tokens / prompt / quant mid-run — this measures current v3 baseline
+- `96–128` token / constrained-decode trials = **separate** `experiment_id` under runtime gate (§5)
+- First `var/run` miss = **ops note only**, not an experiment result
+
+## A.6 Human review gate (before v4 data plan)
+
+Auto-cause is a draft. These rows **must** enter `human_review_queue.csv` before v4 targets are trusted:
+
+- All `RUNTIME_*`
+- All `MODEL_FORBIDDEN_FIELD`
+- All `MODEL_HALLUCINATED_ENTITY`
+- All `MODEL_CONFLICT`
+- All `MATCHER`
+- Rows with multiple `secondary_causes`
+- Low auto-cause confidence
+- Random **10%** of apparent successes (`primary_cause=null`)
+
+Post-process: `evaluation/p17_v3_residual_postprocess.py` → `artifacts/p17/v3/human_review_queue.csv`
+
+## A.7 End-of-run check order
+
+1. `success + failed + skipped = 179` (and `processed = 179`)
+2. `residual_raw.jsonl` row count
+3. Every row has `raw_response` key (empty only if timeout)
+4. Every failing row has `primary_cause`
+5. No `QUANT` in primary/secondary
+6. Metrics recomputable from rows / review CSV
+7. Pattern counts consistent with cause distribution
+8. MODEL / RUNTIME / MATCHER decision summary
+9. Per-pattern v4 target example counts present
+
+Validation artifact: `artifacts/p17/v3/p17_1_validation.json`
+
+## A.8 P17.1 done criteria
 
 - [ ] Every dev row has **raw** output
 - [ ] Every failing row has `primary_cause`
 - [ ] `secondary_causes` recorded where applicable
 - [ ] MODEL / MATCHER / RUNTIME split done
-- [ ] `QUANT` not assigned without §3 evidence
+- [ ] `QUANT` not assigned
+- [ ] Human review queue generated; mandatory buckets covered
 - [ ] Top failure pattern list produced
 - [ ] Target v4 example counts per pattern set
+- [ ] End-of-run checks 1–9 pass (or waivers documented)
 - [ ] HR100 / blind / dev rows not mixed into train
 - [ ] Campaign Gate unchanged
+- [ ] `max_tokens` still 512 for this experiment_id
 
 ---
 
-**Start now:** produce v3 **dev** residual export, code primary/secondary causes, derive v4 data plan from that distribution.
+**Status:** `P17-V3-RESIDUAL-001` RUNNING → then postprocess → human review → attribution → only then v4 SFT.

@@ -1,0 +1,19 @@
+{
+  "policy_version": 2,
+  "thresholds": {
+    "finance_capability": "NOT_APPLICABLE",
+    "forbid_auto_approve": true,
+    "require_dual_control": true,
+    "finance_coverage_rule": "NOT_APPLICABLE_WHEN_COHORT_HAS_NO_FINANCE_SOURCE",
+    "minimum_finance_cases": 0,
+    "minimum_no_result_cases": 2,
+    "minimum_typo_alias_cases": 5,
+    "minimum_llm_required_cases": 2,
+    "minimum_clarification_cases": 3,
+    "minimum_demand_weighted_coverage": 0.2,
+    "minimum_negation_correction_cases": 5,
+    "minimum_active_category_scope_coverage": 0.1,
+    "minimum_active_merchant_scope_coverage": 1.0
+  },
+  "unchanged": true
+}

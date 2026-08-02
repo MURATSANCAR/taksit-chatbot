@@ -1,0 +1,141 @@
+{
+  "status": "PARTIAL",
+  "pass": false,
+  "scenarios": [
+    {
+      "name": "internal_access_success",
+      "pass": true
+    },
+    {
+      "name": "unauthorized_internal_denied",
+      "pass": true
+    },
+    {
+      "name": "fast_path_search",
+      "pass": true
+    },
+    {
+      "name": "merchant_typo",
+      "pass": true
+    },
+    {
+      "name": "negation",
+      "pass": true
+    },
+    {
+      "name": "correction",
+      "pass": true
+    },
+    {
+      "name": "clarification",
+      "pass": true
+    },
+    {
+      "name": "cheapest_product",
+      "pass": true
+    },
+    {
+      "name": "product_details",
+      "pass": true,
+      "note": "Session created; detail lazy-load endpoint smoke only"
+    },
+    {
+      "name": "no_result",
+      "pass": true
+    },
+    {
+      "name": "broken_media_fallback",
+      "pass": true,
+      "note": "No crash on cards; dedicated broken-URL inject NOT_VERIFIED"
+    },
+    {
+      "name": "llm_partial",
+      "pass": true
+    },
+    {
+      "name": "query_supersede",
+      "pass": true
+    },
+    {
+      "name": "sse_reconnect",
+      "pass": true
+    },
+    {
+      "name": "cohort_external_merchant_query",
+      "pass": true,
+      "leakage_observed": 0
+    },
+    {
+      "name": "scope_downgrade",
+      "pass": false,
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "name": "scope_restore",
+      "pass": false,
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "name": "product_plus_finance",
+      "pass": false,
+      "status": "NOT_APPLICABLE",
+      "note": "Finance capability BLOCKED/N/A for active cohort"
+    },
+    {
+      "name": "lowest_monthly",
+      "pass": false,
+      "status": "NOT_APPLICABLE",
+      "note": "Finance capability BLOCKED/N/A for active cohort"
+    },
+    {
+      "name": "lowest_total",
+      "pass": false,
+      "status": "NOT_APPLICABLE",
+      "note": "Finance capability BLOCKED/N/A for active cohort"
+    },
+    {
+      "name": "payment_plan_details",
+      "pass": false,
+      "status": "NOT_APPLICABLE",
+      "note": "Finance capability BLOCKED/N/A for active cohort"
+    }
+  ],
+  "browser": {
+    "status": "PARTIAL",
+    "viewports": [
+      {
+        "width": 360,
+        "height": 800,
+        "screenshot": "viewport-360x800.png",
+        "ok": true
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "screenshot": "viewport-390x844.png",
+        "ok": true
+      },
+      {
+        "width": 430,
+        "height": 932,
+        "screenshot": "viewport-430x932.png",
+        "ok": true
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "screenshot": "viewport-768x1024.png",
+        "ok": true
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "screenshot": "viewport-1440x900.png",
+        "ok": true
+      }
+    ],
+    "note": "Portal screenshots captured; card-vs-API integrity still API-side"
+  },
+  "finance_scenarios": "NOT_APPLICABLE",
+  "note": "HTTP INTERNAL API real calls; no mocks"
+}

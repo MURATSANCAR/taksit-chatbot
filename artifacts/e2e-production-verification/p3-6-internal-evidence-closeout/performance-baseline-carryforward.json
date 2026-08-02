@@ -1,0 +1,10 @@
+{
+  "from_p3_5": {
+    "total_backend_p95_ms": 366.6,
+    "ranking_core_p95_ms": 1.56,
+    "success_rate": 1.0,
+    "attempted": 1000
+  },
+  "spot_check_ok": true,
+  "gate": "PASS"
+}

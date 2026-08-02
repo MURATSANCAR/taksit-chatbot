@@ -1,0 +1,45 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "approved": 0,
+  "candidates_review_required": 44,
+  "auto_approved": 0,
+  "demand_weighted_coverage": 0.0,
+  "bucket_approved": {},
+  "bucket_candidates": {
+    "llm_required": 3,
+    "clarification": 7,
+    "typo_alias": 2,
+    "product_search": 27,
+    "no_result": 3,
+    "negation_correction": 2
+  },
+  "not_applicable_buckets": [
+    "finance"
+  ],
+  "failed_rules": [
+    "demand_weighted_coverage",
+    "minimum_typo_alias_cases",
+    "minimum_negation_correction_cases",
+    "minimum_clarification_cases",
+    "minimum_no_result_cases",
+    "minimum_llm_required_cases"
+  ],
+  "policy_version": 2,
+  "policy_thresholds": {
+    "finance_capability": "NOT_APPLICABLE",
+    "forbid_auto_approve": true,
+    "require_dual_control": true,
+    "finance_coverage_rule": "NOT_APPLICABLE_WHEN_COHORT_HAS_NO_FINANCE_SOURCE",
+    "minimum_finance_cases": 0,
+    "minimum_no_result_cases": 2,
+    "minimum_typo_alias_cases": 5,
+    "minimum_llm_required_cases": 2,
+    "minimum_clarification_cases": 3,
+    "minimum_demand_weighted_coverage": 0.2,
+    "minimum_negation_correction_cases": 5,
+    "minimum_active_category_scope_coverage": 0.1,
+    "minimum_active_merchant_scope_coverage": 1.0
+  },
+  "note": "APPROVED requires human dual-control; candidates alone ≠ coverage PASS"
+}

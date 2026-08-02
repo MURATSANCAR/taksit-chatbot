@@ -225,8 +225,14 @@ def _include_tokens_for(cat: Mapping[str, Any] | str) -> tuple[str, ...]:
     if family_inc and (not tokens or all(len(t) <= 3 for t in tokens)):
         return family_inc
     if tokens:
+        # Keep utterance-specific tokens but union with family includes when known.
+        # Otherwise a single synonym like "laptop" excludes "dizüstü bilgisayar" titles.
+        if family_inc:
+            return tuple(dict.fromkeys([*tokens, *family_inc]))
         return tokens
     if name:
+        if family_inc:
+            return tuple(dict.fromkeys([name, *family_inc]))
         return (name,)
     return ()
 

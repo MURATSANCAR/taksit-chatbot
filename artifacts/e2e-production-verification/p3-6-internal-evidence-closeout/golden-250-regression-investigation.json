@@ -1,0 +1,32 @@
+{
+  "db_total_cases": 44,
+  "by_lifecycle": {
+    "REVIEW_REQUIRED": 44
+  },
+  "sets": [
+    {
+      "id": 1,
+      "set_code": "core_production_retrieval",
+      "set_kind": "CORE_GOLDEN",
+      "status": "ACTIVE"
+    },
+    {
+      "id": 2,
+      "set_code": "rolling_production_queries",
+      "set_kind": "ROLLING_GOLDEN",
+      "status": "ACTIVE"
+    }
+  ],
+  "auto_ops_golden_jobs": 0,
+  "investigation": {
+    "p3_2_script": "scripts/run_p3_2_readiness_unblock.py hardcodes candidates:250",
+    "p3_3_script": "scripts/run_p3_3_applicability_readiness.py hardcodes review_required:250",
+    "p3_5_script": "scripts/run_p3_5_internal_final_closeout.py queries continuous_golden_cases (real count)",
+    "conclusion": "No evidence of 250 persisted REVIEW_REQUIRED rows being deleted. Earlier reports used aspirational placeholders; table has always been empty or never seeded. Not a silent DROP of approved human work — candidate pipeline was never materialized into continuous_golden_cases.",
+    "blocker": false,
+    "severity": "CRITICAL",
+    "issue_code": "GOLDEN_CANDIDATE_PIPELINE_NEVER_MATERIALIZED"
+  },
+  "data_loss_blocker": false,
+  "evaluated_at": "2026-08-02T11:19:46.102875+00:00"
+}
