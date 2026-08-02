@@ -203,7 +203,6 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
             headers={"Retry-After": str(pol.retry_after_seconds)},
         )
 
-            "search.authorization",
     try:
         access = await enforce_search_access(request)
         orch = _orchestrator(request)
