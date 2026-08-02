@@ -1,6 +1,6 @@
 # P17-V4-DATASET-SANITIZE-001 Report
 
-**Created:** `2026-08-02T18:17:45Z`  
+**Created:** `2026-08-02T18:18:10Z`  
 **Decision:** `V4_SANITIZED_DATASET_READY_FOR_SFT`  
 **Campaign Gate:** CLOSED · **V4 training:** NOT STARTED · **Quant:** NOT TESTED
 
@@ -12,7 +12,9 @@
 | Clean delta | 1200 / 1200 |
 | Final train | 1637 |
 | Removed DRAFT | 688 |
-| Removed eval-source (+upsample) | 688 |
+| Removed eval-source | 688 |
+| Removed near-eval (base) | 166 |
+| Removed norm-dups (base) | 1208 |
 | Repaired corrections | 424 |
 | Dropped corrections | 1 |
 | Family/Pattern | PASS |
