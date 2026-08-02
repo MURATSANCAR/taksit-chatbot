@@ -1,0 +1,11 @@
+{
+  "before_p3_4": {
+    "total_backend_p95_ms": 560.0,
+    "ranking_p95_ms": 2.33
+  },
+  "after_p3_5": {
+    "total_backend_p95_ms": 366.558,
+    "ranking_p95_ms": 1.561
+  },
+  "attempted": 1000
+}

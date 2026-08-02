@@ -1,0 +1,5 @@
+{
+  "status": "NOT_VERIFIED",
+  "pass": false,
+  "note": "Live READY→DEGRADED mutation deferred (would perturb INTERNAL cohort); state machine unit-covered elsewhere"
+}

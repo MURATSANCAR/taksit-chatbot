@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "checked_cards": 168,
+  "unsupported_claim": 0,
+  "invented_bank": 0,
+  "invented_amount": 0,
+  "invented_term": 0,
+  "wrong_best_label": 0,
+  "samples": [
+    {
+      "product_id": "19649",
+      "price": 8877.36,
+      "has_image": true
+    },
+    {
+      "product_id": "19671",
+      "price": 8877.36,
+      "has_image": true
+    },
+    {
+      "product_id": "19650",
+      "price": 9159.0,
+      "has_image": true
+    },
+    {
+      "product_id": "789",
+      "price": 2529.0,
+      "has_image": true
+    },
+    {
+      "product_id": "740",
+      "price": 2899.0,
+      "has_image": true
+    },
+    {
+      "product_id": "19642",
+      "price": 47999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "19644",
+      "price": 49049.0,
+      "has_image": true
+    },
+    {
+      "product_id": "19648",
+      "price": 63999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "19656",
+      "price": 63999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "19662",
+      "price": 78484.3,
+      "has_image": true
+    },
+    {
+      "product_id": "71",
+      "price": 25999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "72",
+      "price": 26999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "73",
+      "price": 54999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "76",
+      "price": 24999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "77",
+      "price": 23999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "6500",
+      "price": 1899.0,
+      "has_image": true
+    },
+    {
+      "product_id": "6619",
+      "price": 1899.0,
+      "has_image": true
+    },
+    {
+      "product_id": "2807",
+      "price": 7999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "3354",
+      "price": 14999.0,
+      "has_image": true
+    },
+    {
+      "product_id": "3357",
+      "price": 1189.0,
+      "has_image": true
+    }
+  ],
+  "note": "API-side product identity/price checks; full browser claim matrix PARTIAL"
+}

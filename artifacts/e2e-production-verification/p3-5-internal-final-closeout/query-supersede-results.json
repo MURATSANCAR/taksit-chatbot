@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "name": "query_supersede",
+  "query_version_a": 1,
+  "query_version_b": 2,
+  "stale_result_application": 0,
+  "last_event_id_before_supersede": "75e87ace-065f-4418-a869-a32f919be549"
+}

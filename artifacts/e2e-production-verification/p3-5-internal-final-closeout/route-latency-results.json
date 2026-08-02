@@ -1,0 +1,64 @@
+{
+  "routes": {
+    "FAST": {
+      "attempted": 800,
+      "successful": 800,
+      "error_count": 0,
+      "n": 800,
+      "p50": 48.017,
+      "p90": 301.305,
+      "p95": 384.418,
+      "p99": 526.183,
+      "max": 1611.503,
+      "mean": 121.652,
+      "candidate_count": "NOT_VERIFIED"
+    },
+    "OUT_OF_SCOPE": {
+      "attempted": 200,
+      "successful": 200,
+      "error_count": 0,
+      "n": 200,
+      "p50": 1.655,
+      "p90": 1.868,
+      "p95": 2.05,
+      "p99": 2.427,
+      "max": 2.661,
+      "mean": 1.64,
+      "candidate_count": "NOT_VERIFIED"
+    }
+  },
+  "policy": {
+    "candidate_buckets": {
+      "large": [
+        201,
+        1000
+      ],
+      "small": [
+        0,
+        50
+      ],
+      "medium": [
+        51,
+        200
+      ],
+      "very_large": [
+        1001,
+        1000000
+      ]
+    },
+    "llm_partial_p95_ms": 4000,
+    "ranking_core_p95_ms": 50,
+    "maximum_timeout_rate": 0.0,
+    "minimum_success_rate": 0.999,
+    "total_backend_p95_ms": 500,
+    "maximum_http_5xx_rate": 0.001,
+    "minimum_attempt_count": 1000,
+    "minimum_success_count": 1000,
+    "maximum_critical_timeout": 0,
+    "diagnostic_minimum_requests": 100,
+    "maximum_unknown_error_count": 0,
+    "ranking_reason_codes_p95_ms": 25,
+    "maximum_query_count_per_request": 40,
+    "diagnostic_required_success_rate": 1.0
+  }
+}

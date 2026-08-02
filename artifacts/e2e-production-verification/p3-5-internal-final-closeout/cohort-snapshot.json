@@ -1,0 +1,36 @@
+{
+  "cohort_id": 1,
+  "cohort_version": 1,
+  "status": "INTERNAL",
+  "search_ready_product_count": 1054,
+  "merchant_count": 2,
+  "category_scope_count": 326,
+  "projection_leakage_count": 0,
+  "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+  "flags": {
+    "learning_auto_promotion_enabled": {
+      "status": "DISABLED",
+      "config": {
+        "require_gate": true
+      }
+    },
+    "adaptive_ranking_enabled": {
+      "status": "SHADOW",
+      "config": {
+        "topk": 50
+      }
+    },
+    "dynamic_readiness_enabled": {
+      "status": "INTERNAL",
+      "config": {
+        "traffic": "internal_only",
+        "cohort_id": 1,
+        "cohort_code": "internal_ready_merchants",
+        "cohort_version": 1,
+        "write_snapshots": true,
+        "apply_activation_gate": false,
+        "require_merchant_count": false
+      }
+    }
+  }
+}

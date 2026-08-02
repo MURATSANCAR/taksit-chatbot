@@ -1,0 +1,7 @@
+{
+  "status": "NOT_VERIFIED",
+  "pass": false,
+  "note": "Playwright not installed on nanobase runtime; suite scaffold at tests/e2e/playwright/",
+  "scenarios_required": 21,
+  "scenarios_run": 0
+}

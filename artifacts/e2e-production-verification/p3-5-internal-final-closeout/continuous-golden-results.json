@@ -1,0 +1,10 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "note": "No APPROVED active-cohort golden set to execute continuous suite",
+  "critical_golden_failure": 0,
+  "false_auto_resolution": 0,
+  "negative_resurrection": 0,
+  "wrong_bank": 0,
+  "wrong_payment": 0
+}

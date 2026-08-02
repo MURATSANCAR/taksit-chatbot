@@ -1,0 +1,9 @@
+{
+  "status": "PARTIAL",
+  "note": "catalog.refresh uses search_ready projection path for INTERNAL; full SQL budget not instrumented per request",
+  "optimizations": [
+    "prefer_search_ready INTERNAL hydrate",
+    "shallow pool cache copy",
+    "async session persist off critical path"
+  ]
+}

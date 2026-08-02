@@ -1,0 +1,26 @@
+{
+  "status": "NOT_VERIFIED",
+  "pass": false,
+  "cells": {
+    "redis_unavailable": "NOT_VERIFIED",
+    "redis_slow": "NOT_VERIFIED",
+    "llm_unavailable": "NOT_VERIFIED",
+    "llm_timeout": "NOT_VERIFIED",
+    "sse_disconnect": "PARTIAL",
+    "sse_slow_client": "NOT_VERIFIED",
+    "ranking_challenger_exception": "NOT_VERIFIED",
+    "finance_projection_unavailable": "NOT_VERIFIED",
+    "payment_plan_unavailable": "NOT_VERIFIED",
+    "media_url_failure": "NOT_VERIFIED",
+    "db_replica_lag": "NOT_VERIFIED",
+    "cohort_revision_change": "NOT_VERIFIED",
+    "readiness_downgrade": "NOT_VERIFIED"
+  },
+  "wrong_financial_fallback": 0,
+  "unhandled_crash": 0,
+  "cohort_leakage": 0,
+  "mixed_revision": 0,
+  "stale_llm_result": 0,
+  "false_progress_event": 0,
+  "note": "Controlled chaos injection not executed on production INTERNAL this sprint"
+}

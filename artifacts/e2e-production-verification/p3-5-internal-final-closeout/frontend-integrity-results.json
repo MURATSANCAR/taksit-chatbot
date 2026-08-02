@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "checked_cards": 18,
+  "wrong_product": 0,
+  "wrong_image": 0,
+  "wrong_bank_logo": 0,
+  "wrong_monthly_payment": 0,
+  "wrong_total_repayment": 0,
+  "wrong_campaign": 0,
+  "note": "API-side integrity only; Playwright viewport screenshots NOT_VERIFIED",
+  "viewport_matrix": "NOT_VERIFIED"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "mode": "SHADOW",
+  "adaptive_ranking_enabled": "SHADOW",
+  "comparisons": 1000,
+  "top1_agreement": 1.0,
+  "top3_agreement": 1.0,
+  "top10_agreement": 1.0,
+  "cheapest_accuracy": 1.0,
+  "lowest_monthly_accuracy": null,
+  "lowest_total_accuracy": null,
+  "finance_items": 0,
+  "required_top10_recall": 1.0,
+  "negative_leakage": 0,
+  "wrong_best_label": 0,
+  "safety_floor_failures": 0,
+  "products_sampled": 1000
+}

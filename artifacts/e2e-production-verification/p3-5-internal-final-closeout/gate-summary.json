@@ -1,0 +1,58 @@
+{
+  "gates": {
+    "BACKEND_CRITICAL_PATH_GATE": "PASS",
+    "TOTAL_BACKEND_PERFORMANCE_GATE": "PASS",
+    "RANKING_PERFORMANCE_GATE": "PASS",
+    "REQUEST_SUCCESS_RATE_GATE": "PASS",
+    "RANKING_REGRESSION_GATE": "PASS",
+    "COHORT_GOLDEN_COVERAGE_GATE": "FAIL",
+    "CONTINUOUS_GOLDEN_GATE": "FAIL",
+    "PLAYWRIGHT_INTERNAL_GATE": "NOT_VERIFIED",
+    "FRONTEND_DATA_INTEGRITY_GATE": "PARTIAL",
+    "LIVE_SSE_MATRIX_GATE": "PARTIAL",
+    "LLM_PARTIAL_GATE": "PARTIAL",
+    "QUERY_SUPERSEDE_GATE": "PASS",
+    "REVISION_PINNING_GATE": "PASS",
+    "SCOPE_DOWNGRADE_GATE": "NOT_VERIFIED",
+    "SCOPE_RESTORE_GATE": "NOT_VERIFIED",
+    "CLAIM_GROUNDING_GATE": "PASS",
+    "INTERNAL_CHAOS_GATE": "NOT_VERIFIED"
+  },
+  "decision": {
+    "decision": "P3_5_INTERNAL_CONDITIONALLY_READY",
+    "blockers": [
+      "COHORT_GOLDEN_COVERAGE_GATE",
+      "CONTINUOUS_GOLDEN_GATE"
+    ],
+    "criticals": [
+      "COHORT_GOLDEN_COVERAGE_GATE"
+    ],
+    "failed_or_unverified": [
+      "COHORT_GOLDEN_COVERAGE_GATE",
+      "CONTINUOUS_GOLDEN_GATE",
+      "PLAYWRIGHT_INTERNAL_GATE",
+      "FRONTEND_DATA_INTEGRITY_GATE",
+      "LIVE_SSE_MATRIX_GATE",
+      "LLM_PARTIAL_GATE",
+      "SCOPE_DOWNGRADE_GATE",
+      "SCOPE_RESTORE_GATE",
+      "INTERNAL_CHAOS_GATE"
+    ],
+    "captured_at": "2026-08-02T11:04:20.633679+00:00"
+  },
+  "zero_tolerance": {
+    "auto_approved_golden": 0,
+    "cohort_leakage": 0,
+    "silent_failure_exclusion": 0,
+    "mixed_revision": 0,
+    "duplicate_terminal_sse": 0
+  },
+  "performance": {
+    "attempted": 1000,
+    "successful": 1000,
+    "failed": 0,
+    "success_rate": 1.0,
+    "total_p95": 366.558,
+    "ranking_p95": 1.561
+  }
+}

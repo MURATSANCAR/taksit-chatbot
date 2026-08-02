@@ -1,0 +1,5 @@
+{
+  "status": "NOT_VERIFIED",
+  "pass": false,
+  "note": "Live DEGRADED→SHADOW_VALIDATION→READY not exercised on production INTERNAL"
+}

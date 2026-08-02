@@ -1,0 +1,9 @@
+{
+  "approved": 0,
+  "review_required": 0,
+  "rejected": 0,
+  "needs_revision": 0,
+  "auto_approved": 0,
+  "dual_control_required": true,
+  "pass": false
+}

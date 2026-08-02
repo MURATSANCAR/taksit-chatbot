@@ -1,0 +1,6 @@
+{
+  "status": "PARTIAL",
+  "request_scoped_hints_cache": true,
+  "pool_cache_ttl": true,
+  "revision_keyed": "PARTIAL"
+}
