@@ -1,0 +1,98 @@
+{
+  "by_capability": {
+    "MULTI_CONSTRAINT": {
+      "attempted": 3,
+      "passed": 3,
+      "minimum_required": 3,
+      "gate": "PASS"
+    },
+    "HARD_SOFT": {
+      "attempted": 3,
+      "passed": 3,
+      "minimum_required": 3,
+      "gate": "PASS"
+    },
+    "CONDITIONAL_BUDGET": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "CONDITIONAL_EXCLUSION": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "RANKING_PRIORITIES": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_ADD": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 2,
+      "gate": "FAIL"
+    },
+    "MULTI_TURN_REMOVE": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_REPLACE": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_RELAX": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_ROLLBACK": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "UNSUPPORTED_DIMENSION": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_ITEM_BUNDLE": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "GLOBAL_BUDGET": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "COMPLEX_CLARIFICATION": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    }
+  },
+  "in_process": {
+    "HARD_SOFT": true,
+    "CONDITIONAL_BUDGET": true,
+    "CONDITIONAL_EXCLUSION": true,
+    "RANKING_PRIORITIES": true,
+    "CONVERSATION_STATE": true,
+    "MULTI_ITEM_BUNDLE": false,
+    "PLANNER_FALLBACK": true
+  },
+  "measured_at": "2026-08-02T19:59:23.346209+00:00"
+}

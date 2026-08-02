@@ -1,0 +1,161 @@
+{
+  "routes": {
+    "FAST_SINGLE_PRODUCT": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 1.319,
+      "P95": 1.398,
+      "P99": 1.398,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    },
+    "COMPLEX_SINGLE_PRODUCT": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 1.348,
+      "P95": 1.437,
+      "P99": 1.437,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    },
+    "MULTI_TURN": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 1.996,
+      "P95": 2.669,
+      "P99": 2.669,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    },
+    "MULTI_ITEM_BUNDLE": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 2.064,
+      "P95": 2.19,
+      "P99": 2.19,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    },
+    "CLARIFICATION": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 2.103,
+      "P95": 2.161,
+      "P99": 2.161,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    },
+    "NO_RESULT": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 0.899,
+      "P95": 1.733,
+      "P99": 1.733,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    },
+    "CAMPAIGN_SEARCH": {
+      "attempted": 8,
+      "successful": 0,
+      "P50": 0.888,
+      "P95": 0.893,
+      "P99": 0.893,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0
+    }
+  },
+  "profiles": [
+    {
+      "mode": "sustained",
+      "rps": 5.0,
+      "attempted": 100,
+      "successful": 0,
+      "success_rate": 0.0,
+      "P50": 2.582,
+      "P95": 4.725,
+      "P99": 7.155,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0,
+      "wall_s": 19.805
+    },
+    {
+      "mode": "sustained",
+      "rps": 10.0,
+      "attempted": 200,
+      "successful": 0,
+      "success_rate": 0.0,
+      "P50": 2.575,
+      "P95": 11.672,
+      "P99": 13.874,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0,
+      "wall_s": 19.905
+    },
+    {
+      "mode": "sustained",
+      "rps": 25.0,
+      "attempted": 375,
+      "successful": 0,
+      "success_rate": 0.0,
+      "P50": 2.636,
+      "P95": 10.409,
+      "P99": 13.239,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0,
+      "wall_s": 14.966
+    },
+    {
+      "mode": "sustained",
+      "rps": 50.0,
+      "attempted": 600,
+      "successful": 0,
+      "success_rate": 0.0,
+      "P50": 2.56,
+      "P95": 12.011,
+      "P99": 14.096,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0,
+      "wall_s": 11.988
+    },
+    {
+      "mode": "burst",
+      "rps": 100.0,
+      "attempted": 500,
+      "successful": 0,
+      "success_rate": 0.0,
+      "P50": 2.428,
+      "P95": 3.763,
+      "P99": 6.61,
+      "5xx": 0,
+      "timeout": 0,
+      "429": 0,
+      "wall_s": 4.996
+    }
+  ],
+  "slo": {
+    "success_rate_min": 0.95,
+    "http_5xx_max_rate": 0.01,
+    "timeout_max_rate": 0.05,
+    "fast_path_p95_ms_max": 2500,
+    "complex_p95_ms_max": 8000,
+    "bundle_p95_ms_max": 10000
+  },
+  "fast_path_regression": {
+    "P95": 1.398,
+    "limit": 2500,
+    "pass": true
+  },
+  "pass": false,
+  "measured_at": "2026-08-02T20:00:35.608263+00:00"
+}

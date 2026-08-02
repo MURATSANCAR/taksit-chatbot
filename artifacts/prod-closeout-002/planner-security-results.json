@@ -1,0 +1,73 @@
+{
+  "cases": [
+    {
+      "case": "prompt_injection",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "nested_json_bomb",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "oversized",
+      "http_status": 422,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "unicode_controls",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "html_injection",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "js_injection",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "sql_like",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "forbidden_ids",
+      "http_status": 403,
+      "ok": false,
+      "executed_injection": false,
+      "pass": true
+    },
+    {
+      "case": "cohort_header_manipulation",
+      "http_status": 403,
+      "pass": true
+    },
+    {
+      "case": "forged_internal_token",
+      "http_status": 403,
+      "pass": true
+    }
+  ],
+  "log_findings": [],
+  "pass": true,
+  "measured_at": "2026-08-02T20:00:35.648696+00:00"
+}

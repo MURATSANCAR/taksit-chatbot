@@ -1,0 +1,519 @@
+{
+  "merchants": {
+    "Trendyol": {
+      "merchant_id": 20,
+      "stats": {
+        "active_offers": 1007,
+        "branded_catted": 312,
+        "search_finance_candidate": 312,
+        "null_brand": 361,
+        "null_cat": 422,
+        "null_brand_with_mfg": 0,
+        "null_cat_with_source": 0
+      },
+      "null_samples": [
+        {
+          "dn": "cervus Batik Desenli Dikişsiz Esnek ve Toparlayıcı Push-Up Spor Tayt - Fiyatı, Y",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 20
+        },
+        {
+          "dn": "6 butik altı üstü butik Çiçek Desen Gömlek Etek İkili Takım - Fiyatı, Yorumları",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 15
+        },
+        {
+          "dn": "MatBeyaZ Mdf Duvar Rafı Tv Ünitesi Rafı 140cm Boy 35cm En 20cm Derinlik Siyah Ca",
+          "mfg": "MatBeyaZ",
+          "src_cat": "",
+          "brand_id": 674,
+          "category_id": null
+        },
+        {
+          "dn": "Modafeminen Kısa kol hafif balon kol detayı mini elbise SİYAH 582995 - Fiyatı, Y",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 15
+        },
+        {
+          "dn": "Divonette Kız Erkek Çocuk Düz Kısa Kollu Tişört - Çocuk Giyim - Fiyatı, Yorumlar",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 21
+        },
+        {
+          "dn": "Anlas Irc 2.00-17 Iç Lastik [50/100-17",
+          "mfg": "Anlas",
+          "src_cat": "",
+          "brand_id": 676,
+          "category_id": null
+        },
+        {
+          "dn": "GÜLERSHOES Garantili Sivri Burun Arkası Açık Arkadan Bağlamalı Gümüş Saten Desen",
+          "mfg": "GÜLERSHOES",
+          "src_cat": "",
+          "brand_id": 677,
+          "category_id": null
+        },
+        {
+          "dn": "Caramell İncibaby % 100 Pamuk Little Fly 10",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 21
+        }
+      ],
+      "top_cats": [
+        {
+          "display_name": "Giyim",
+          "n": 115
+        },
+        {
+          "display_name": "Bebek & Çocuk",
+          "n": 32
+        },
+        {
+          "display_name": "Ayakkabı",
+          "n": 25
+        },
+        {
+          "display_name": "Mobilya",
+          "n": 23
+        },
+        {
+          "display_name": "Aksesuar",
+          "n": 18
+        },
+        {
+          "display_name": "Cep Telefonu",
+          "n": 16
+        },
+        {
+          "display_name": "Spor & Outdoor",
+          "n": 15
+        },
+        {
+          "display_name": "Çanta",
+          "n": 14
+        }
+      ],
+      "finance_null_brand_samples": [
+        {
+          "dn": "cervus Batik Desenli Dikişsiz Esnek ve Toparlayıcı Push-Up Spor Tayt - Fiyatı, Yorumları",
+          "mfg": ""
+        },
+        {
+          "dn": "6 butik altı üstü butik Çiçek Desen Gömlek Etek İkili Takım - Fiyatı, Yorumları",
+          "mfg": ""
+        },
+        {
+          "dn": "Modafeminen Kısa kol hafif balon kol detayı mini elbise SİYAH 582995 - Fiyatı, Yorumları",
+          "mfg": ""
+        },
+        {
+          "dn": "Divonette Kız Erkek Çocuk Düz Kısa Kollu Tişört - Çocuk Giyim - Fiyatı, Yorumları",
+          "mfg": ""
+        },
+        {
+          "dn": "Caramell İncibaby % 100 Pamuk Little Fly 10",
+          "mfg": ""
+        },
+        {
+          "dn": "PABALAS 4",
+          "mfg": ""
+        },
+        {
+          "dn": "VAYBE 3",
+          "mfg": ""
+        },
+        {
+          "dn": "MocGrande Erkek Büyük Beden Likralı Basic V Yaka Tişört 11170 Beyaz - Fiyatı, Yorumları",
+          "mfg": ""
+        },
+        {
+          "dn": "Omaş Household Product Tekerlekli Dikdörtgen 4 Katlı Raf Ünitesi Beyaz Banyo Mutfak Düzenleyici Orga",
+          "mfg": ""
+        },
+        {
+          "dn": "SUİT AYDIN CMPS Unisex Bağcıklı Ortopedik Spor Sneaker Ayakkabı - Fiyatı, Yorumları",
+          "mfg": ""
+        }
+      ]
+    },
+    "Evofone": {
+      "merchant_id": 40,
+      "stats": {
+        "active_offers": 130,
+        "branded_catted": 65,
+        "search_finance_candidate": 65,
+        "null_brand": 0,
+        "null_cat": 65,
+        "null_brand_with_mfg": 0,
+        "null_cat_with_source": 0
+      },
+      "null_samples": [
+        {
+          "dn": "Petkit Max Pro 2 Manyetik Toz Geçirmez Perde",
+          "mfg": "PETKIT",
+          "src_cat": "",
+          "brand_id": 52,
+          "category_id": null
+        },
+        {
+          "dn": "CMF Buds Pro 2 (2025) Gri",
+          "mfg": "CMF by Nothing",
+          "src_cat": "",
+          "brand_id": 51,
+          "category_id": null
+        },
+        {
+          "dn": "Petkit Eversweet 5 Mini Su Pınarı",
+          "mfg": "PETKIT",
+          "src_cat": "",
+          "brand_id": 52,
+          "category_id": null
+        },
+        {
+          "dn": "Nothing Ear (3) Beyaz",
+          "mfg": "NOTHING (R)",
+          "src_cat": "",
+          "brand_id": 53,
+          "category_id": null
+        },
+        {
+          "dn": "Petkit Nano Mama Kasesi",
+          "mfg": "PETKIT",
+          "src_cat": "",
+          "brand_id": 52,
+          "category_id": null
+        },
+        {
+          "dn": "Petkit Kedi Tuvaleti Elekli Rampa",
+          "mfg": "PETKIT",
+          "src_cat": "",
+          "brand_id": 52,
+          "category_id": null
+        },
+        {
+          "dn": "Petkit Pura Air Akıllı Koku Giderici Sprey",
+          "mfg": "PETKIT",
+          "src_cat": "",
+          "brand_id": 52,
+          "category_id": null
+        },
+        {
+          "dn": "Petkit Pura Air Akıllı Sprey Yedek Likit",
+          "mfg": "PETKIT",
+          "src_cat": "",
+          "brand_id": 52,
+          "category_id": null
+        }
+      ],
+      "top_cats": [
+        {
+          "display_name": "Aksesuar",
+          "n": 35
+        },
+        {
+          "display_name": "Cep Telefonu",
+          "n": 12
+        },
+        {
+          "display_name": "Bebek & Çocuk",
+          "n": 5
+        },
+        {
+          "display_name": "Ayakkabı",
+          "n": 4
+        },
+        {
+          "display_name": "Tablet",
+          "n": 3
+        },
+        {
+          "display_name": "Çanta",
+          "n": 2
+        },
+        {
+          "display_name": "TV & Ses",
+          "n": 1
+        },
+        {
+          "display_name": "Dizüstü Bilgisayar",
+          "n": 1
+        }
+      ],
+      "finance_null_brand_samples": []
+    },
+    "MediaMarkt": {
+      "merchant_id": 8,
+      "stats": {
+        "active_offers": 892,
+        "branded_catted": 0,
+        "search_finance_candidate": 0,
+        "null_brand": 892,
+        "null_cat": 193,
+        "null_brand_with_mfg": 0,
+        "null_cat_with_source": 0
+      },
+      "null_samples": [
+        {
+          "dn": "CANON RF 16mm f/2.8 STM Lens Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "REMINGTON CI5860 Botanik Serisi Konik Bukle Maşa Metalik Yeşil Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 11
+        },
+        {
+          "dn": "LEXMARK No 26 10N0026E Kartuş Mürekkep baskı Cyan-Magenta-Sarı Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "BRENNENSTUHL Connect Zigbee Gateway Serisi Akıllı Ev Otomasyonu Çevirme Modemi B",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "WMF 7115006242 Mini Yapışmaz 18 cm Tava Inox Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "ARZUM OK0010 Okka Minio Pro Otomatik Türk Kahve Makinesi Krom Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 19
+        },
+        {
+          "dn": "PANTUM BP5100DW 1200 x 1200 DPI A4 Wi-Fi Lazer Yazıcı Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "CANON Zoemini 2 Mini Fotoğraf Yazıcısı Fiyat & Özellik",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        }
+      ],
+      "top_cats": [],
+      "finance_null_brand_samples": [
+        {
+          "dn": "DYSON V15 Detect Absolute Şarjlı Dikey Süpürge Fiyat & Özellik",
+          "mfg": ""
+        },
+        {
+          "dn": "LENOVO Ideapad Slim 3/ Intel core i5-13420H/ 8 GB Ram/ 512 GB SSD/ 15.3\" WUXGA/ W11/ Laptop 83K100UF",
+          "mfg": ""
+        },
+        {
+          "dn": "LENOVO IdeaPad Slim 3/ AMD Ryzen 5 7520U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00JKTX Fiya",
+          "mfg": ""
+        },
+        {
+          "dn": "LENOVO Yoga Slim 7 Aura Edition/Intel Core Ultra 5 226V/16GB RAM/512 GB SSD/14\" OLED/W11/83JX00BATR ",
+          "mfg": ""
+        },
+        {
+          "dn": "APPLE MDE54TU/A Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 16GB Ram/ 1TB SSD/ ",
+          "mfg": ""
+        },
+        {
+          "dn": "APPLE MDE14TU/A Macbook Pro/ Apple M5 işlemci/ (10 ÇekirdekCPU-10 çekirdek GPU)/ 16GB Ram/ 1TB SSD/ ",
+          "mfg": ""
+        },
+        {
+          "dn": "ASUS Vivobook 15 X1504VA-BQ5383W/Intel® Core™ 5 120U İşlemci/8 GB RAM/512 GB SSD/15.6\"/W11 Laptop Ma",
+          "mfg": ""
+        },
+        {
+          "dn": "LENOVO IdeaPad Slim 3/ Ryzen 3 7320U/ 8GB Ram/ 512GB SSD/ 15.6\" FHD/ W11/ Laptop 82XQ00NATX Fiyat & ",
+          "mfg": ""
+        },
+        {
+          "dn": "CASPER S100.1362-DF00A-G-F/Core i7-13620H/32 GB RAM/1 TB SSD/16\"/W11 Laptop Fiyat & Özellik",
+          "mfg": ""
+        },
+        {
+          "dn": "LENOVO LOQ/AMD Ryzen 7 7735HS/16 GB RAM/1 TB SSD/RTX 4050 Ekran Kartı/15.6\" FHD 144Hz /W11/Gaming La",
+          "mfg": ""
+        }
+      ]
+    },
+    "Teknosa": {
+      "merchant_id": 11,
+      "stats": {
+        "active_offers": 7450,
+        "branded_catted": 0,
+        "search_finance_candidate": 0,
+        "null_brand": 7450,
+        "null_cat": 807,
+        "null_brand_with_mfg": 0,
+        "null_cat_with_source": 0
+      },
+      "null_samples": [
+        {
+          "dn": "CASPER VIA A40 256GB 8GB RAM AKILLI TELEFON GECE MAVİSİ",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 1
+        },
+        {
+          "dn": "Reeder S23 Pro Max 256 Gb Beyaz Akıllı Telefon",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 1
+        },
+        {
+          "dn": "Orac E200 2000W Elektrikli Testere Ve 1 Litre Profesyonel Zincir Yağı",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "Cellular Line Music Sound Maxi 2 Bluetooth Kablosuz Mavi Kulaklık",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "Zeiron APX80 Ryzen 5 3600 16 GB RAM 240 GB SSD 1 TB HDD FreeDOS Gaming Masaüstü ",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        },
+        {
+          "dn": "Philips Fc 9323 Powerpro Compact Uyumlu Muadil Elektrikli Süpürge Hortum Seti Ve",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 19
+        },
+        {
+          "dn": "Anker 511 Nano Pro 30w Usb-C Şarj Cihazı",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": 24
+        },
+        {
+          "dn": "Pokemon Legends  Arceus Switch Oyun",
+          "mfg": "",
+          "src_cat": "",
+          "brand_id": null,
+          "category_id": null
+        }
+      ],
+      "top_cats": [],
+      "finance_null_brand_samples": [
+        {
+          "dn": "Samsung 65S85F 65",
+          "mfg": ""
+        },
+        {
+          "dn": "Apple iPhone 17 Pro Max 256GB Kozmik Turuncu Akıllı Telefon",
+          "mfg": ""
+        },
+        {
+          "dn": "Roborock Saros 20 Akıllı Robot Süpürge Siyah",
+          "mfg": ""
+        },
+        {
+          "dn": "Xiaomi Elektrikli Scooter 4 Ultra",
+          "mfg": ""
+        },
+        {
+          "dn": "Apple iPhone 17 Pro Max 256GB Abis Akıllı Telefon",
+          "mfg": ""
+        },
+        {
+          "dn": "Apple iPhone 17 Pro Max 256GB Gümüş Akıllı Telefon",
+          "mfg": ""
+        },
+        {
+          "dn": "Thomson 40FA2S13 FHD 40",
+          "mfg": ""
+        },
+        {
+          "dn": "Samsung 65Q7F5 65",
+          "mfg": ""
+        },
+        {
+          "dn": "Apple iPhone 17 Pro 256GB Kozmik Turuncu Akıllı Telefon",
+          "mfg": ""
+        },
+        {
+          "dn": "Ninja Prestige Dualbrew Filtre ve Kapsül Kahve Makinesi",
+          "mfg": ""
+        }
+      ]
+    }
+  },
+  "search_ready_attr_samples": [
+    {
+      "id": 1,
+      "dn": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-15.3inc-W11",
+      "attrs": "{\"brand\": \"Lenovo\", \"ram_gb_raw\": 8}"
+    },
+    {
+      "id": 3,
+      "dn": "Lenovo Ideapad Slim 3 13.Nesil Core i5 13420H-8Gb-512Gb Ssd-16inc-W11",
+      "attrs": "{\"brand\": \"Lenovo\", \"ram_gb_raw\": 8}"
+    },
+    {
+      "id": 4,
+      "dn": "Casper Nirvana S100 13.Nesil Core i5 13420H-16Gb-500Gb Ssd-16inc-W11",
+      "attrs": "{\"brand\": \"Casper\", \"ram_gb_raw\": 16}"
+    },
+    {
+      "id": 5,
+      "dn": "Lenovo LOQ 13.Nesil Core i7 13650HX-RTX5060 8Gb-16Gb-512Gb Ssd-17.3inc-W11",
+      "attrs": "{\"brand\": \"Lenovo\", \"ram_gb_raw\": 8}"
+    },
+    {
+      "id": 6,
+      "dn": "MacBook Neo MHFF4TU/A A18 Pro 8Gb-256Gb Ssd-Liquid Retina ekran-13inc-Indigo",
+      "attrs": "{\"brand\": \"Apple\", \"ram_gb_raw\": 8}"
+    }
+  ],
+  "search_ready_with_attrs": 1053,
+  "latest_readiness": [
+    {
+      "merchant_id": 5,
+      "status": "READY"
+    },
+    {
+      "merchant_id": 18,
+      "status": "READY"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "policy_code": "prod_closeout_002_evaluation_v1",
+  "version": 1,
+  "status": "ACTIVE",
+  "source_classes": {
+    "REAL_SESSION": {"priority": 1},
+    "REAL_CORRECTION": {"priority": 2},
+    "HUMAN_OPERATOR_GOLDEN": {"priority": 3},
+    "SYNTHETIC_TECHNICAL": {"priority": 4, "separate_report_class": true}
+  },
+  "capability_minimums": {
+    "MULTI_CONSTRAINT": 3,
+    "HARD_SOFT": 3,
+    "CONDITIONAL_BUDGET": 2,
+    "CONDITIONAL_EXCLUSION": 2,
+    "RANKING_PRIORITIES": 2,
+    "MULTI_TURN_ADD": 2,
+    "MULTI_TURN_REMOVE": 1,
+    "MULTI_TURN_REPLACE": 1,
+    "MULTI_TURN_RELAX": 1,
+    "MULTI_TURN_ROLLBACK": 1,
+    "UNSUPPORTED_DIMENSION": 1,
+    "MULTI_ITEM_BUNDLE": 2,
+    "GLOBAL_BUDGET": 2,
+    "COMPLEX_CLARIFICATION": 1
+  },
+  "performance_slo": {
+    "success_rate_min": 0.95,
+    "http_5xx_max_rate": 0.01,
+    "timeout_max_rate": 0.05,
+    "fast_path_p95_ms_max": 2500,
+    "complex_p95_ms_max": 8000,
+    "bundle_p95_ms_max": 10000
+  },
+  "open_loop_profiles": [
+    {"mode": "sustained", "requests_per_second": 5, "test_duration_s": 20, "warmup_duration_s": 3},
+    {"mode": "sustained", "requests_per_second": 10, "test_duration_s": 20, "warmup_duration_s": 3},
+    {"mode": "sustained", "requests_per_second": 25, "test_duration_s": 15, "warmup_duration_s": 3},
+    {"mode": "sustained", "requests_per_second": 50, "test_duration_s": 12, "warmup_duration_s": 2},
+    {"mode": "burst", "requests_per_second": 100, "test_duration_s": 5, "warmup_duration_s": 1}
+  ],
+  "routes": [
+    "FAST_SINGLE_PRODUCT",
+    "COMPLEX_SINGLE_PRODUCT",
+    "MULTI_TURN",
+    "MULTI_ITEM_BUNDLE",
+    "CLARIFICATION",
+    "NO_RESULT",
+    "CAMPAIGN_SEARCH"
+  ]
+}

@@ -77,6 +77,7 @@ class SearchProductCandidate:
     sponsor_weight: float = 0.0
     brand_name: Optional[str] = None
     category_name: Optional[str] = None
+    attributes: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)

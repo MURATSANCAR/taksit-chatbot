@@ -35,6 +35,7 @@ class ResolvedEntityRef:
     match_type: Optional[str] = None
     confidence: float = 0.0
     required: bool = False
+    polarity: str = "positive"  # positive | negative
 
 
 @dataclass
@@ -67,6 +68,7 @@ class FastParseResult:
                 "match_type": e.match_type,
                 "confidence": e.confidence,
                 "required": e.required,
+                "polarity": e.polarity,
             }
 
         budget = self.budget
@@ -747,14 +749,38 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
     negative_categories = _dedupe(negative_categories)
 
     brands: list[ResolvedEntityRef] = []
+    _PREF_MARKERS = ("tercih", "tercihen", "olursa iyi")
+    lower_msg = lower
+
+    def _brand_polarity(display: str) -> tuple[bool, str]:
+        """Return (required, polarity) from local negation / preference cues."""
+        d = fold_alias(display)
+        for raw in (display, d):
+            if not raw:
+                continue
+            idx = lower_msg.find(str(raw).casefold())
+            if idx < 0:
+                token = _nv_cached(raw) or ""
+                idx = normalized.find(token) if token else -1
+            if idx < 0:
+                continue
+            window = lower_msg[max(0, idx - 28) : idx + len(str(raw)) + 32]
+            if any(m in window for m in _NEGATION_MARKERS):
+                return False, "negative"
+            if any(m in window for m in _PREF_MARKERS):
+                return False, "positive"
+        return True, "positive"
+
     for cand in index.lookup_brands(text):
+        required, polarity = _brand_polarity(cand.display_name)
         brands.append(
             ResolvedEntityRef(
                 resolved_id=cand.entity_id,
                 display_name=cand.display_name,
                 match_type="NORMALIZED_EXACT",
                 confidence=0.97,
-                required=True,
+                required=required,
+                polarity=polarity,
             )
         )
     if not brands:
@@ -762,13 +788,15 @@ def fast_parse(text: str, *, catalog: Optional[CatalogHints] = None) -> FastPars
             for name in (cand.display_name, cand.canonical_name, *cand.aliases):
                 n = _nv_cached(name)
                 if n and n in normalized:
+                    required, polarity = _brand_polarity(cand.display_name)
                     brands.append(
                         ResolvedEntityRef(
                             resolved_id=cand.entity_id,
                             display_name=cand.display_name,
                             match_type="NORMALIZED_EXACT",
                             confidence=0.97,
-                            required=True,
+                            required=required,
+                            polarity=polarity,
                         )
                     )
                     break

@@ -1,0 +1,662 @@
+{
+  "golden_cols": [
+    "id",
+    "set_id",
+    "expected",
+    "anonymized",
+    "created_at",
+    "expected_entities",
+    "expected_constraints",
+    "expected_invariants",
+    "reviewed_at",
+    "demand_weight",
+    "cohort_id",
+    "cohort_version",
+    "row_version",
+    "claimed_at",
+    "prepared_at",
+    "prepare_duration_ms",
+    "review_duration_ms",
+    "provenance_class",
+    "review_decision",
+    "review_notes",
+    "human_participant_id",
+    "review_session_id",
+    "prepared_by_human_id",
+    "case_id",
+    "query_text",
+    "source_query_id",
+    "review_status",
+    "prepared_by",
+    "reviewed_by",
+    "source_signal",
+    "bucket",
+    "catalog_revision",
+    "prepared_session_id",
+    "lifecycle_status",
+    "claimed_by",
+    "reviewed_by_human_id",
+    "expected_route",
+    "prepare_notes"
+  ],
+  "golden_query_col": "query_text",
+  "golden_sample": [
+    {
+      "id": 425,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "xyzzy-3b48797c"
+    },
+    {
+      "id": 424,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "karmaşık şekilde laptop istiyorum ama macbook değil öner bütçem yaklaşık"
+    },
+    {
+      "id": 423,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "laptop istiyorum ama macbook değil istiyorum samsung değil"
+    },
+    {
+      "id": 422,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "laptop istiyorum ama macbook değil ama apple olmasın"
+    },
+    {
+      "id": 421,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "laptob istiyorum ama macbook değil"
+    },
+    {
+      "id": 420,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "xyzzy-0aef6742"
+    },
+    {
+      "id": 419,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "karmaşık şekilde telefon ama apple olmasın öner bütçem yaklaşık"
+    },
+    {
+      "id": 418,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "telefon ama apple olmasın istiyorum samsung değil"
+    },
+    {
+      "id": 417,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "telefon ama apple olmasın ama apple olmasın"
+    },
+    {
+      "id": 416,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "telefon ama apple olmasın lutfen"
+    },
+    {
+      "id": 415,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "xyzzy-f3c63cdc"
+    },
+    {
+      "id": 414,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "karmaşık şekilde samsumg galaxy telefon öner bütçem yaklaşık"
+    },
+    {
+      "id": 413,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "merhaba samsumg galaxy telefon"
+    },
+    {
+      "id": 412,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "samsumg galaxy telefon istiyorum samsung değil"
+    },
+    {
+      "id": 411,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "samsumg galaxy telefon ama apple olmasın"
+    },
+    {
+      "id": 410,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "samsumg galaxy telefon lutfen"
+    },
+    {
+      "id": 409,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "xyzzy-7c420774"
+    },
+    {
+      "id": 408,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "karmaşık şekilde vatann bilgisayar laptop öner bütçem yaklaşık"
+    },
+    {
+      "id": 407,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "merhaba vatann bilgisayar laptop"
+    },
+    {
+      "id": 406,
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "q": "vatann bilgisayar laptop istiyorum samsung değil"
+    }
+  ],
+  "sqv_cols": [
+    "id",
+    "search_session_id",
+    "version_number",
+    "requires_llm",
+    "created_at",
+    "state_snapshot",
+    "confidence",
+    "raw_user_text",
+    "normalized_text"
+  ],
+  "sqv_query_col": "raw_user_text",
+  "sqv_sample": [
+    {
+      "id": "feead081-c4a0-4351-9997-edea60a8777b",
+      "q": "spor ayakkabı arıyorum"
+    },
+    {
+      "id": "fe8d0799-db63-4ab9-adde-683bd126845c",
+      "q": "spor ayakkabı arıyorum"
+    },
+    {
+      "id": "fbec8843-5be2-4e1e-820c-e9c01ecbfa53",
+      "q": "buzdolabı bakıyorum"
+    },
+    {
+      "id": "faae4dbd-b678-4af8-9aeb-c65173b50ab1",
+      "q": "iphone 15 arıyorum"
+    },
+    {
+      "id": "fa26319d-a2d9-4b11-8256-493c60971e40",
+      "q": "taksitli telefon öner"
+    },
+    {
+      "id": "f8e17ccc-ef62-4daa-bd4d-d78c09fd2b90",
+      "q": "kampanyalı laptop bakıyorum"
+    },
+    {
+      "id": "f87f6e7b-b7e5-49b6-851a-aad9eff47921",
+      "q": "iphone 15 arıyorum"
+    },
+    {
+      "id": "f684da1b-31ec-45f0-bfca-51b7aa56c8a0",
+      "q": "Buzdolabı bakıyorum, 25–30 bin"
+    },
+    {
+      "id": "f40cfa63-685d-488a-95cc-426c1dd23cfc",
+      "q": "kampanyalı laptop bakıyorum"
+    },
+    {
+      "id": "f3ebf408-7323-48cb-b6be-303f87619bac",
+      "q": "spor ayakkabı arıyorum"
+    },
+    {
+      "id": "f3877213-a0d4-4ac6-85b9-a3f82e4613c6",
+      "q": "laptop"
+    },
+    {
+      "id": "f1536701-7f93-417d-bf71-d3cae74f4824",
+      "q": "spor ayakkabı arıyorum"
+    },
+    {
+      "id": "f09a3543-67eb-4e13-9b86-33b76d182db8",
+      "q": "Cep telefonu alacağız, bütçemiz 40 bin TL civarı"
+    },
+    {
+      "id": "ee6eb2dc-aba0-417d-aaa8-05f0e67a558e",
+      "q": "hava nasıl"
+    },
+    {
+      "id": "ee0f61f3-19d2-4d3f-84e9-e706b0916fe4",
+      "q": "MacBook Pro"
+    },
+    {
+      "id": "ec57c715-f0a0-4b17-b24a-e0bca44c6985",
+      "q": "spor ayakkabı arıyorum"
+    },
+    {
+      "id": "eac6ba26-35fe-4466-95d1-a9c352bf1265",
+      "q": "merhaba, bütçem 20 bin telefon bakıyorum"
+    },
+    {
+      "id": "ea5f2db0-b3fc-405b-94c5-1b9e752c8c28",
+      "q": "kulaklık arıyorum"
+    },
+    {
+      "id": "e9604cbc-4c04-4d83-b7ea-c85698b97237",
+      "q": "merhaba iphone arıyorum"
+    },
+    {
+      "id": "e8cf6a3d-8b30-45c5-a0d2-a8ac76256bd2",
+      "q": "iphone 15 arıyorum"
+    },
+    {
+      "id": "e8551d43-3fe2-4c49-a8ca-796dc32197b1",
+      "q": "MacBook Pro"
+    },
+    {
+      "id": "e6a8fc5b-a0ab-4e40-9d84-4dfd4901d4b9",
+      "q": "bana ayakkabı lazım 5000 lira aşmasın"
+    },
+    {
+      "id": "e5c24f72-bb66-459a-8ab6-2a7005f5732a",
+      "q": "buzdolabı bakıyorum"
+    },
+    {
+      "id": "e42f506d-cb03-411a-9493-43c48097b71d",
+      "q": "selam telefon lazım"
+    },
+    {
+      "id": "e3ab1ffc-6f68-4744-87a2-a8f70178127a",
+      "q": "MacBook Pro"
+    },
+    {
+      "id": "e2aabc89-23bc-4c49-b9b3-b6a088289f74",
+      "q": "kulaklık arıyorum"
+    },
+    {
+      "id": "dd46e050-b5ac-483d-9f9b-d3c70b96b35c",
+      "q": "Cep telefonu alacağız, bütçemiz 40 bin TL civarı"
+    },
+    {
+      "id": "dc399566-c73b-4090-99fa-f7dac5b58a43",
+      "q": "merhaba iphone arıyorum"
+    },
+    {
+      "id": "db1b69c2-049d-40a3-b352-eb9ebd1b7e53",
+      "q": "spor ayakkabı arıyorum"
+    },
+    {
+      "id": "da4cd0f6-3662-4d32-98bf-1a85671aa709",
+      "q": "merhaba iphone arıyorum"
+    }
+  ],
+  "shadow_cols": [
+    "id",
+    "shadow_id",
+    "cohort_id",
+    "cohort_version",
+    "provenance_ok",
+    "created_at",
+    "tenant_scope",
+    "session_id_hash",
+    "bucket",
+    "policy_revision",
+    "source_table",
+    "catalog_revision",
+    "source_request_hash",
+    "anonymized_query",
+    "normalized_query_hash",
+    "normalized_query"
+  ],
+  "shadow_sample": [
+    {
+      "id": 1,
+      "shadow_id": "2afdbfa3-e6d3-4d60-ab50-2baf47f11847",
+      "source_request_hash": "609b9346fccfc8d66859a0060b5e1f11",
+      "anonymized_query": "iphone 15 arıyorum",
+      "normalized_query_hash": "99d283e426bbb0b29eafb08793bd4ae148a6e95708b1df38926d2237f095f6ec",
+      "normalized_query": "iphone 15 arıyorum",
+      "tenant_scope": "default",
+      "session_id_hash": "f5e11eeae4aced3e23f5d8b1",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.540345+00:00"
+    },
+    {
+      "id": 2,
+      "shadow_id": "9ac2f79e-4b03-4b9d-aa7c-f662b9ed6ec6",
+      "source_request_hash": "9eee96cc22114ff8c13133b0868ab956",
+      "anonymized_query": "samsung telefon",
+      "normalized_query_hash": "1afa81591dc9928c7d25443b5482f2c0a96e0552a1cb3a483b05ce88dfd65951",
+      "normalized_query": "samsung telefon",
+      "tenant_scope": "default",
+      "session_id_hash": "446590ddf8967c52f6917599",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.544637+00:00"
+    },
+    {
+      "id": 3,
+      "shadow_id": "a685b193-7387-4136-bf29-ed01a0a79ad6",
+      "source_request_hash": "2e084b4fc65954ac31b9add7b8394839",
+      "anonymized_query": "spor ayakkabı arıyorum",
+      "normalized_query_hash": "4162f73717d9e2170fe1812157fe17c016e43f115bfc933cfe580d67a4ddec01",
+      "normalized_query": "spor ayakkabı arıyorum",
+      "tenant_scope": "default",
+      "session_id_hash": "714de4647273449fe1378b6a",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.546615+00:00"
+    },
+    {
+      "id": 4,
+      "shadow_id": "1d0fe55e-cd96-45ff-bfe0-51a7f65abcc0",
+      "source_request_hash": "6cbc7d758046db7ad923377017dd73e6",
+      "anonymized_query": "merhaba iphone arıyorum",
+      "normalized_query_hash": "81ea87e529b5f7b557f350ba9d911bf2014a4897d9044c91dcf67badc2e29dc6",
+      "normalized_query": "merhaba iphone arıyorum",
+      "tenant_scope": "default",
+      "session_id_hash": "317840e158e3a1f346337d1b",
+      "bucket": "CLARIFICATION",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.548175+00:00"
+    },
+    {
+      "id": 5,
+      "shadow_id": "becebe74-f874-43d8-8ac3-24dbf7318d7e",
+      "source_request_hash": "8c2414117f14aaa3d570869eba571751",
+      "anonymized_query": "macbook pro",
+      "normalized_query_hash": "27119b85d0a5c58a318119d125117a12a66694c409a28d57966f6d725535f557",
+      "normalized_query": "macbook pro",
+      "tenant_scope": "default",
+      "session_id_hash": "cc6cdaeac7c07d11a14435d4",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.549563+00:00"
+    },
+    {
+      "id": 6,
+      "shadow_id": "78700435-1990-43c2-b90b-f322b5ee1544",
+      "source_request_hash": "fc1d9d032d88d51b184739feb968d48c",
+      "anonymized_query": "kampanyalı laptop bakıyorum",
+      "normalized_query_hash": "0bd2978931b3fec9f7d9ebacc467efcbcab14438d975ead5cd9657dc02b9e9f2",
+      "normalized_query": "kampanyalı laptop bakıyorum",
+      "tenant_scope": "default",
+      "session_id_hash": "4149fe5d0d85bdd1a5f4d8e1",
+      "bucket": "FINANCE_NOT_SUPPORTED",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.551140+00:00"
+    },
+    {
+      "id": 7,
+      "shadow_id": "e4ab171e-89ee-45e2-a60a-8bc41e318800",
+      "source_request_hash": "950179b6992de2af8ac3b453e6e40b09",
+      "anonymized_query": "buzdolabı bakıyorum, 25–30 bin",
+      "normalized_query_hash": "07e1796eb1e00abb69bb444d54cb8fa9c1e5e0f68044665f55eb313d83cb9116",
+      "normalized_query": "buzdolabı bakıyorum 25 30 bin",
+      "tenant_scope": "default",
+      "session_id_hash": "0abaa5419498888d4f4035db",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.552108+00:00"
+    },
+    {
+      "id": 8,
+      "shadow_id": "03960351-5801-4ea4-a361-b623e7846ab7",
+      "source_request_hash": "5a1335c9694a7b7b6e96e0c83a814b33",
+      "anonymized_query": "iphone 15",
+      "normalized_query_hash": "72954355f77c68b8a94b2b2f7994a2c6d34f0bcaea1cfa5d76169f9ca842dcac",
+      "normalized_query": "iphone 15",
+      "tenant_scope": "default",
+      "session_id_hash": "00b012587980f24536b0510e",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.552856+00:00"
+    },
+    {
+      "id": 9,
+      "shadow_id": "153b3a34-eae5-442a-8608-3934a26ab01f",
+      "source_request_hash": "9e961e4b2a4ad1a4dbeab49344c08be6",
+      "anonymized_query": "cep telefonu alacağız, bütçemiz 40 bin tl civarı",
+      "normalized_query_hash": "fed1d2f7385efeede9bceeb8a092fce98f83edc32bc241d937c37802d5bc58bd",
+      "normalized_query": "cep telefonu alacağız bütçemiz 40 bin tl civarı",
+      "tenant_scope": "default",
+      "session_id_hash": "a12926dc28fd1ec3def54d8d",
+      "bucket": "LLM_REQUIRED",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.553651+00:00"
+    },
+    {
+      "id": 10,
+      "shadow_id": "a65d647a-091c-43d3-9e22-f0fbf7e38ae9",
+      "source_request_hash": "17968e5d94656397838f61f21da749a6",
+      "anonymized_query": "kulaklık arıyorum bütçem 3000",
+      "normalized_query_hash": "4e385259e4372bb0ebceb7111655bbcb1706d962ac1eda6e029a12d31625f90f",
+      "normalized_query": "kulaklık arıyorum bütçem 3000",
+      "tenant_scope": "default",
+      "session_id_hash": "75ecfae438eea53f5fe9a309",
+      "bucket": "PRODUCT_SEARCH",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "policy_revision": "shadow_diversity_v1",
+      "source_table": "search_query_versions",
+      "provenance_ok": true,
+      "created_at": "2026-08-02 18:36:40.554464+00:00"
+    }
+  ],
+  "sr_cols": [
+    "product_id",
+    "offer_id",
+    "merchant_id",
+    "category_id",
+    "brand_id",
+    "card_media_id",
+    "current_price",
+    "checkout_url_present",
+    "finance_ready",
+    "updated_at",
+    "readiness_policy_version",
+    "readiness_status",
+    "media_quality_policy_version",
+    "catalog_revision",
+    "currency",
+    "stock_status"
+  ],
+  "product_cols": [
+    "id",
+    "canonical_product_id",
+    "merchant_id",
+    "brand_id",
+    "source_updated_at",
+    "first_seen_at",
+    "last_seen_at",
+    "last_verified_at",
+    "attributes",
+    "metadata",
+    "created_at",
+    "updated_at",
+    "category_id",
+    "full_description",
+    "manufacturer_name",
+    "condition",
+    "warranty_summary",
+    "status",
+    "data_quality_status",
+    "source_url",
+    "source_reference",
+    "external_product_id",
+    "merchant_sku",
+    "gtin",
+    "ean",
+    "mpn",
+    "content_hash",
+    "model_number",
+    "display_name",
+    "normalized_name",
+    "short_description"
+  ],
+  "offer_cols": [
+    "id",
+    "product_id",
+    "merchant_id",
+    "location_id",
+    "current_price",
+    "list_price",
+    "shipping_cost",
+    "valid_from",
+    "valid_until",
+    "last_verified_at",
+    "created_at",
+    "updated_at",
+    "content_hash",
+    "currency",
+    "stock_status",
+    "source_reference",
+    "seller_name",
+    "checkout_url",
+    "freshness_status"
+  ],
+  "finance_merchants": [
+    {
+      "merchant_id": 8,
+      "display_name": "MediaMarkt",
+      "status": "PARTIAL",
+      "category_coverage": 0.7836322869955157,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 1.0,
+      "active_products": 892
+    },
+    {
+      "merchant_id": 11,
+      "display_name": "Teknosa",
+      "status": "PARTIAL",
+      "category_coverage": 0.8916778523489933,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "card_media_coverage": 0.9997315436241611,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.9209395973154363,
+      "active_products": 7450
+    },
+    {
+      "merchant_id": 20,
+      "display_name": "Trendyol",
+      "status": "PARTIAL",
+      "category_coverage": 0.5809334657398213,
+      "brand_coverage": 0.6415094339622641,
+      "attribute_coverage": 0.6415094339622641,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.9990069513406157,
+      "active_products": 1007
+    },
+    {
+      "merchant_id": 40,
+      "display_name": "Evofone",
+      "status": "PARTIAL",
+      "category_coverage": 0.5,
+      "brand_coverage": 1.0,
+      "attribute_coverage": 1.0,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 1.0,
+      "active_products": 130
+    }
+  ],
+  "finance_merchant_stats": [
+    {
+      "merchant_id": 8,
+      "name": "MediaMarkt",
+      "with_brand_and_category": 0,
+      "eligible_finance": 892,
+      "attr_nonempty": 0
+    },
+    {
+      "merchant_id": 11,
+      "name": "Teknosa",
+      "with_brand_and_category": 0,
+      "eligible_finance": 27444,
+      "attr_nonempty": 0
+    },
+    {
+      "merchant_id": 20,
+      "name": "Trendyol",
+      "with_brand_and_category": 312,
+      "eligible_finance": 1006,
+      "attr_nonempty": 646
+    },
+    {
+      "merchant_id": 40,
+      "name": "Evofone",
+      "with_brand_and_category": 65,
+      "eligible_finance": 130,
+      "attr_nonempty": 130
+    }
+  ],
+  "search_ready_title_16gb_hint": 183,
+  "name_expr_used": "COALESCE(p.display_name,'')",
+  "cohort": {
+    "version": 2,
+    "status": "PUBLIC_CANARY",
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED",
+    "search_ready_product_count": 1054,
+    "finance_ready_product_count": 0,
+    "merchant_count": 2
+  }
+}

@@ -105,6 +105,7 @@ async def product_to_search_candidate(
         offer_id=str(offer.id),
         price_snapshot_id=f"offer:{offer.id}",
         stock_snapshot_id=f"offer:{offer.id}:stock",
+        attributes=attrs,
     )
     rows = finance_rows
     if rows is None and finance_index is not None:

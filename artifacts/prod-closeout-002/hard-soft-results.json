@@ -1,0 +1,61 @@
+{
+  "input_products": 1054,
+  "filtered": 440,
+  "under_ram_violations": 0,
+  "missing_ram_passed": 0,
+  "hp_violations": 0,
+  "non_lenovo_kept_when_hard_ok": 431,
+  "soft_not_promoted_to_hard": true,
+  "pass": true,
+  "sample": [
+    {
+      "product_id": "4",
+      "brand": "Casper",
+      "ram_gb": 16,
+      "price": 34999.0
+    },
+    {
+      "product_id": "8",
+      "brand": "Dell",
+      "ram_gb": 16,
+      "price": 37999.0
+    },
+    {
+      "product_id": "11",
+      "brand": "Dell",
+      "ram_gb": 16,
+      "price": 31999.0
+    },
+    {
+      "product_id": "15",
+      "brand": "Dell",
+      "ram_gb": 16,
+      "price": 31999.0
+    },
+    {
+      "product_id": "20",
+      "brand": "Casper",
+      "ram_gb": 16,
+      "price": 34999.0
+    },
+    {
+      "product_id": "21",
+      "brand": "Dell",
+      "ram_gb": 16,
+      "price": 37999.0
+    },
+    {
+      "product_id": "24",
+      "brand": "Lenovo",
+      "ram_gb": 16,
+      "price": 49999.0
+    },
+    {
+      "product_id": "26",
+      "brand": "Asus",
+      "ram_gb": 16,
+      "price": 39699.0
+    }
+  ],
+  "measured_at": "2026-08-02T19:55:35.216553+00:00"
+}

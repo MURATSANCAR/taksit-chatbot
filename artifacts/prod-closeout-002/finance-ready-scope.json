@@ -1,0 +1,23 @@
+{
+  "recompute_status": "OK",
+  "ready_finance_merchants": [],
+  "rebuild": {
+    "status": "NOT_RUN"
+  },
+  "cohort": {
+    "status": "NOT_CREATED",
+    "reason": "no_finance_merchant_READY"
+  },
+  "before": {
+    "search_ready": 1054,
+    "finance_ready": 0,
+    "merchants": 2,
+    "cohort_version": 2
+  },
+  "after": {
+    "search_ready": 1054,
+    "finance_ready": 0,
+    "merchants": 2
+  },
+  "measured_at": "2026-08-02T19:59:23.011221+00:00"
+}

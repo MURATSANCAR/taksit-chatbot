@@ -1,0 +1,27 @@
+{
+  "gates": {
+    "REAL_DATA_COMPLEX_QUERY_GATE": "FAIL",
+    "HARD_SOFT_EXECUTION_GATE": "PASS",
+    "CONDITIONAL_EXCEPTION_GATE": "PASS",
+    "RANKING_PRIORITY_GATE": "PASS",
+    "CONVERSATION_STATE_E2E_GATE": "FAIL",
+    "MULTI_ITEM_BUNDLE_E2E_GATE": "FAIL",
+    "PLAYWRIGHT_LIVE_GATE": "FAIL",
+    "FRONTEND_INTEGRITY_GATE": "FAIL",
+    "POST_PLANNER_PERFORMANCE_GATE": "FAIL",
+    "PLANNER_SECURITY_GATE": "PASS",
+    "MERCHANT_SCOPE_READINESS_GATE": "PASS",
+    "FINANCE_READY_SCOPE_GATE": "FAIL",
+    "FINANCE_GROUNDING_GATE": "BLOCKED"
+  },
+  "technical_decision": "PROD_NOT_READY",
+  "public_decision": "PUBLIC_NOT_READY",
+  "campaign_gate": "CLOSED",
+  "blockers": [
+    "Product technical gates failed: REAL_DATA_COMPLEX_QUERY_GATE, CONVERSATION_STATE_E2E_GATE, MULTI_ITEM_BUNDLE_E2E_GATE, PLAYWRIGHT_LIVE_GATE, FRONTEND_INTEGRITY_GATE, POST_PLANNER_PERFORMANCE_GATE",
+    "Finance-ready scope not created (source-backed uplift insufficient for READY merchant)",
+    "Human shadow / HUMAN_VERIFIED golden / external UAT incomplete",
+    "Public traffic remains NOT_STARTED"
+  ],
+  "measured_at": "2026-08-02T20:00:39.991085+00:00"
+}

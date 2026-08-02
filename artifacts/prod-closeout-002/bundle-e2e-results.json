@@ -1,0 +1,32 @@
+{
+  "status": "OK",
+  "result": {
+    "items": {
+      "keyboard": {
+        "product_id": "331",
+        "display_name": "",
+        "price": 12499.0
+      },
+      "laptop": {
+        "product_id": "19626",
+        "display_name": "",
+        "price": 24442.84
+      },
+      "monitor": {
+        "product_id": "325",
+        "display_name": "",
+        "price": 24999.0
+      }
+    },
+    "total_price": 61940.84,
+    "budget_remaining": -1940.84,
+    "reason_codes": [
+      "OVER_BUDGET_CHEAPEST"
+    ],
+    "finance_bundle": "NOT_SUPPORTED"
+  },
+  "budget_ok": false,
+  "missing_items": [],
+  "pass": false,
+  "measured_at": "2026-08-02T19:55:35.257075+00:00"
+}

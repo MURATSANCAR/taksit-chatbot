@@ -1,0 +1,9 @@
+{
+  "status": "FINANCE_SCOPE_NOT_READY",
+  "campaign_e2e": "NOT_RUN",
+  "firewall_pass": true,
+  "forbidden_claims_observed": 0,
+  "pass": true,
+  "campaign_gate": "CLOSED",
+  "measured_at": "2026-08-02T20:00:39.990866+00:00"
+}

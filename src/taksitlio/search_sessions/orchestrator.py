@@ -523,12 +523,11 @@ class SearchOrchestrator:
 
         pool = list(self.product_pool)
         try:
-            filtered = filter_products_by_plan(
+            # Always honor plan hard filters / exclusions. Empty is a valid
+            # no-result when the catalog cannot satisfy HARD constraints.
+            pool = filter_products_by_plan(
                 pool, plan, exception_thresholds=dict(self.exception_thresholds)
             )
-            # Fail-open: never empty a non-empty pool solely due to plan attr gaps.
-            if filtered or not pool:
-                pool = filtered
         except Exception:  # noqa: BLE001
             pool = list(self.product_pool)
 

@@ -115,6 +115,7 @@ def candidate_to_pool_dict(cand: Any) -> dict[str, Any]:
     brand = getattr(cand, "brand_name", None)
     if not brand and getattr(cand, "brand_model", None):
         brand = str(cand.brand_model).split("/")[0].strip() or None
+    attrs = dict(getattr(cand, "attributes", None) or {})
     return {
         "product_id": cand.product_id,
         "display_name": cand.display_name,
@@ -138,6 +139,11 @@ def candidate_to_pool_dict(cand: Any) -> dict[str, Any]:
         "best_term_months": getattr(cand, "best_term_months", None)
         or (finance.get("term_months") if isinstance(finance, dict) else None),
         "best_finance": finance,
+        "attributes": attrs,
+        # Flatten common hard-filter dimensions for plan executor.
+        "ram_gb_raw": attrs.get("ram_gb_raw"),
+        "ram_gb": attrs.get("ram_gb") or attrs.get("ram_gb_raw"),
+        "storage_gb": attrs.get("storage_gb"),
     }
 
 

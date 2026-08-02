@@ -1,0 +1,308 @@
+{
+  "candidates_scored": 40,
+  "unsupported_feature_observations": 41,
+  "sample": [
+    {
+      "product_id": "1",
+      "score": 600.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 29999.0,
+          "weight": 2.0,
+          "score_contribution": 59998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "3",
+      "score": 540.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 26999.0,
+          "weight": 2.0,
+          "score_contribution": 53998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "4",
+      "score": 700.46,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 16,
+          "weight": 3.0,
+          "score_contribution": 48.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 34999.0,
+          "weight": 2.0,
+          "score_contribution": 69998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "5",
+      "score": 1500.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 74999.0,
+          "weight": 2.0,
+          "score_contribution": 149998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "6",
+      "score": 850.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 42499.0,
+          "weight": 2.0,
+          "score_contribution": 84998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "8",
+      "score": 760.46,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 16,
+          "weight": 3.0,
+          "score_contribution": 48.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 37999.0,
+          "weight": 2.0,
+          "score_contribution": 75998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "9",
+      "score": 1200.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 59999.0,
+          "weight": 2.0,
+          "score_contribution": 119998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "10",
+      "score": 520.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 25999.0,
+          "weight": 2.0,
+          "score_contribution": 51998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "11",
+      "score": 640.46,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 16,
+          "weight": 3.0,
+          "score_contribution": 48.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 31999.0,
+          "weight": 2.0,
+          "score_contribution": 63998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    },
+    {
+      "product_id": "12",
+      "score": 540.22,
+      "features": [
+        {
+          "dimension": "ram",
+          "feature_availability": true,
+          "normalized_value": 8,
+          "weight": 3.0,
+          "score_contribution": 24.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "price",
+          "feature_availability": true,
+          "normalized_value": 26999.0,
+          "weight": 2.0,
+          "score_contribution": 53998.0,
+          "reason_code": "SOURCE_BACKED"
+        },
+        {
+          "dimension": "storage",
+          "feature_availability": false,
+          "normalized_value": null,
+          "weight": 0,
+          "score_contribution": 0.0,
+          "reason_code": "UNSUPPORTED_BY_CATALOG"
+        }
+      ]
+    }
+  ],
+  "pass": true,
+  "measured_at": "2026-08-02T19:55:35.236152+00:00"
+}

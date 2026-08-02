@@ -130,7 +130,10 @@ def test_supersede_after_completed_keeps_session_and_ranks_shortest() -> None:
     products = (follow.get("results") or {}).get("products") or []
     assert products
     assert follow["results"]["label"] == "En kısa vade"
-    assert products[0]["product_id"] == "p-phone-6"
+    # Plan budget hard-filter keeps only offers <= 40_000 (p-phone-12).
+    # p-phone-6/9 are over target and must not resurface.
+    assert all(float(p.get("price") or 0) <= 40000 for p in products)
+    assert products[0]["product_id"] == "p-phone-12"
     terms = [
         (p.get("best_finance_summary") or {}).get("term_months") for p in products
     ]

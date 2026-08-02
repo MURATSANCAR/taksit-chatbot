@@ -1,0 +1,567 @@
+{
+  "by_capability": {
+    "MULTI_CONSTRAINT": {
+      "attempted": 3,
+      "passed": 3,
+      "minimum_required": 3,
+      "gate": "PASS"
+    },
+    "HARD_SOFT": {
+      "attempted": 3,
+      "passed": 3,
+      "minimum_required": 3,
+      "gate": "PASS"
+    },
+    "CONDITIONAL_BUDGET": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "CONDITIONAL_EXCLUSION": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "RANKING_PRIORITIES": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_ADD": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 2,
+      "gate": "FAIL"
+    },
+    "MULTI_TURN_REMOVE": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_REPLACE": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_RELAX": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_TURN_ROLLBACK": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "UNSUPPORTED_DIMENSION": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    },
+    "MULTI_ITEM_BUNDLE": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "GLOBAL_BUDGET": {
+      "attempted": 2,
+      "passed": 2,
+      "minimum_required": 2,
+      "gate": "PASS"
+    },
+    "COMPLEX_CLARIFICATION": {
+      "attempted": 1,
+      "passed": 1,
+      "minimum_required": 1,
+      "gate": "PASS"
+    }
+  },
+  "records": [
+    {
+      "query_id": "cap-MULTI_CONSTRAINT-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bin TL laptop, 16 GB RAM şart, HP olmasın",
+      "capability": "MULTI_CONSTRAINT",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 285.5911470251158
+    },
+    {
+      "query_id": "cap-MULTI_CONSTRAINT-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "laptop 16 GB RAM, Lenovo tercih, bütçe 40 bin",
+      "capability": "MULTI_CONSTRAINT",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 2.2258079843595624
+    },
+    {
+      "query_id": "cap-MULTI_CONSTRAINT-2",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "iş laptopu 40 bin, SSD olsun HP istemiyorum",
+      "capability": "MULTI_CONSTRAINT",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 2.1993559785187244
+    },
+    {
+      "query_id": "cap-HARD_SOFT-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "16 GB RAM şart, Lenovo tercih ederim, HP istemiyorum laptop",
+      "capability": "HARD_SOFT",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 2.497697016224265
+    },
+    {
+      "query_id": "cap-HARD_SOFT-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "RAM 16 GB zorunlu, Casper tercih, Dell olmasın laptop",
+      "capability": "HARD_SOFT",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 3.0444710282608867
+    },
+    {
+      "query_id": "cap-HARD_SOFT-2",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "16gb şart apple tercih etmiyorum laptop",
+      "capability": "HARD_SOFT",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.9054299918934703
+    },
+    {
+      "query_id": "cap-CONDITIONAL_BUDGET-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bine laptop arıyorum ama çok daha iyi bir modelse 45 bine çıkabilirim",
+      "capability": "CONDITIONAL_BUDGET",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.5416539972648025
+    },
+    {
+      "query_id": "cap-CONDITIONAL_BUDGET-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "laptop 30 bin geçmesin ama çok avantajlıysa 35 bine çıkabilirim",
+      "capability": "CONDITIONAL_BUDGET",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.0363010223954916
+    },
+    {
+      "query_id": "cap-CONDITIONAL_EXCLUSION-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "Samsung istemiyorum ama çok avantajlıysa göster telefon",
+      "capability": "CONDITIONAL_EXCLUSION",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 0.9910279186442494
+    },
+    {
+      "query_id": "cap-CONDITIONAL_EXCLUSION-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "HP istemiyorum ama çok avantajlıysa laptop göster",
+      "capability": "CONDITIONAL_EXCLUSION",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 0.9911240777000785
+    },
+    {
+      "query_id": "cap-RANKING_PRIORITIES-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "Önce RAM, sonra fiyat, sonra depolama laptop",
+      "capability": "RANKING_PRIORITIES",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.072098035365343
+    },
+    {
+      "query_id": "cap-RANKING_PRIORITIES-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "öncelik fiyat sonra marka laptop",
+      "capability": "RANKING_PRIORITIES",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.0771440574899316
+    },
+    {
+      "query_id": "cap-MULTI_TURN_ADD-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bine laptop arıyorum",
+      "capability": "MULTI_TURN_ADD",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.068691024556756
+    },
+    {
+      "query_id": "cap-MULTI_TURN_REMOVE-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bine laptop arıyorum",
+      "capability": "MULTI_TURN_REMOVE",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.0590889723971486
+    },
+    {
+      "query_id": "cap-MULTI_TURN_REPLACE-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bine laptop arıyorum",
+      "capability": "MULTI_TURN_REPLACE",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.0575969936326146
+    },
+    {
+      "query_id": "cap-MULTI_TURN_RELAX-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bine laptop arıyorum",
+      "capability": "MULTI_TURN_RELAX",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.0760710574686527
+    },
+    {
+      "query_id": "cap-MULTI_TURN_ROLLBACK-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "40 bine laptop arıyorum",
+      "capability": "MULTI_TURN_ROLLBACK",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.1526779271662235
+    },
+    {
+      "query_id": "cap-UNSUPPORTED_DIMENSION-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "karbon ayak izi düşük laptop istiyorum",
+      "capability": "UNSUPPORTED_DIMENSION",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.1286989320069551
+    },
+    {
+      "query_id": "cap-MULTI_ITEM_BUNDLE-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "Bir laptop, monitör ve klavye bul; toplam 60 bin TL’yi geçmesin",
+      "capability": "MULTI_ITEM_BUNDLE",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.3086789986118674
+    },
+    {
+      "query_id": "cap-MULTI_ITEM_BUNDLE-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "laptop ve mouse birlikte 25 bin geçmesin",
+      "capability": "MULTI_ITEM_BUNDLE",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.2167909881100059
+    },
+    {
+      "query_id": "cap-GLOBAL_BUDGET-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "laptop bütçem 40 bin TL’yi geçmesin",
+      "capability": "GLOBAL_BUDGET",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.167337060905993
+    },
+    {
+      "query_id": "cap-GLOBAL_BUDGET-1",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "telefon 20 binden pahalı olmasın",
+      "capability": "GLOBAL_BUDGET",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.1702269548550248
+    },
+    {
+      "query_id": "cap-COMPLEX_CLARIFICATION-0",
+      "source_class": "HUMAN_OPERATOR_GOLDEN",
+      "anonymized_query": "iyi bir şey lazım bütçem de var",
+      "capability": "COMPLEX_CLARIFICATION",
+      "plan": null,
+      "cohort_id": "1",
+      "cohort_version": "2",
+      "catalog_revision": null,
+      "expected_invariants": [
+        "http<500",
+        "no_unrestricted_fallback"
+      ],
+      "observed_products": [],
+      "result": "PASS",
+      "http_status": 403,
+      "response_time_ms": 1.389464014209807
+    }
+  ],
+  "multi_turn_api": {
+    "conversation_id": "pc2-mt-e2c1d84ec4",
+    "turns": [
+      {
+        "step": 1,
+        "message": "40 bine laptop arıyorum.",
+        "http_status": 403,
+        "query_version": null,
+        "product_count": 0,
+        "has_plan": false,
+        "ok": false
+      },
+      {
+        "step": 2,
+        "message": "HP olmasın.",
+        "http_status": 403,
+        "query_version": null,
+        "product_count": 0,
+        "has_plan": false,
+        "ok": false
+      },
+      {
+        "step": 3,
+        "message": "16 GB RAM şart.",
+        "http_status": 403,
+        "query_version": null,
+        "product_count": 0,
+        "has_plan": false,
+        "ok": false
+      },
+      {
+        "step": 4,
+        "message": "RAM şart olmasın, tercih olsun.",
+        "http_status": 403,
+        "query_version": null,
+        "product_count": 0,
+        "has_plan": false,
+        "ok": false
+      },
+      {
+        "step": 5,
+        "message": "Bütçeyi 45 bine çıkar.",
+        "http_status": 403,
+        "query_version": null,
+        "product_count": 0,
+        "has_plan": false,
+        "ok": false
+      },
+      {
+        "step": 6,
+        "message": "Son değişikliği geri al.",
+        "http_status": 403,
+        "query_version": null,
+        "product_count": 0,
+        "has_plan": false,
+        "ok": false
+      }
+    ],
+    "pass": false
+  },
+  "real_manifest_count": 73,
+  "pass": false,
+  "measured_at": "2026-08-02T19:59:23.344617+00:00"
+}

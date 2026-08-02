@@ -141,8 +141,9 @@ def _build_items(parse_dict: dict[str, Any]) -> list[PlanItem]:
         for neg in neg_cats:
             if not isinstance(neg, dict):
                 continue
+            # EQ + exclude bucket: product matching value is dropped.
             excluded.append(_make_constraint(
-                "category", ConstraintOperator.NEQ,
+                "category", ConstraintOperator.EQ,
                 neg.get("resolved_id") or neg.get("display_name", ""),
                 ConstraintStrength.HARD,
                 source_text=neg.get("display_name", ""),
@@ -152,13 +153,23 @@ def _build_items(parse_dict: dict[str, Any]) -> list[PlanItem]:
         for brand in brands:
             if not isinstance(brand, dict):
                 continue
+            polarity = str(brand.get("polarity") or "positive").lower()
+            display = brand.get("display_name", "")
+            value = brand.get("resolved_id") or display
+            if polarity in {"negative", "excluded", "exclude"}:
+                excluded.append(_make_constraint(
+                    "brand", ConstraintOperator.EQ, value,
+                    ConstraintStrength.HARD,
+                    source_text=display,
+                    confidence=float(brand.get("confidence", 0.0)),
+                ))
+                continue
             is_req = brand.get("required", False)
             strength = ConstraintStrength.HARD if is_req else ConstraintStrength.SOFT
             c = _make_constraint(
-                "brand", ConstraintOperator.EQ,
-                brand.get("resolved_id") or brand.get("display_name", ""),
+                "brand", ConstraintOperator.EQ, value,
                 strength,
-                source_text=brand.get("display_name", ""),
+                source_text=display,
                 confidence=float(brand.get("confidence", 0.0)),
             )
             (hard if strength == ConstraintStrength.HARD else soft).append(c)
@@ -166,7 +177,13 @@ def _build_items(parse_dict: dict[str, Any]) -> list[PlanItem]:
         for attr in attributes:
             if not isinstance(attr, dict):
                 continue
-            dim = attr.get("dimension") or attr.get("name") or attr.get("key", "")
+            dim = (
+                attr.get("dimension")
+                or attr.get("attribute_id")
+                or attr.get("name")
+                or attr.get("key")
+                or ""
+            )
             val = attr.get("value")
             is_req = attr.get("required", False)
             strength = ConstraintStrength.HARD if is_req else ConstraintStrength.SOFT

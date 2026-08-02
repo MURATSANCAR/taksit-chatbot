@@ -1,0 +1,57 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "op": "INIT",
+      "query_version": 0,
+      "before_state": {
+        "budget": 40000
+      },
+      "after_state": {
+        "budget": 40000
+      },
+      "active_constraints": [
+        "c-ram-1",
+        "c-hp-1"
+      ]
+    },
+    {
+      "step": 2,
+      "op": "ADD",
+      "query_version": 1,
+      "active_constraints": [
+        "c-ram-1",
+        "c-hp-1",
+        "c-lenovo-1"
+      ]
+    },
+    {
+      "step": 3,
+      "op": "RELAX",
+      "query_version": 2,
+      "ram_hard_remaining": 0,
+      "ram_soft": 1
+    },
+    {
+      "step": 4,
+      "op": "REMOVE",
+      "query_version": 3,
+      "removed_constraints": [
+        "c-hp-1"
+      ]
+    },
+    {
+      "step": 5,
+      "op": "ROLLBACK",
+      "query_version": 4,
+      "rollback_target": "REMOVE",
+      "hp_exclusion_restored": true
+    }
+  ],
+  "relaxed_constraint_not_hard": true,
+  "rollback_executed": true,
+  "rollback_restored_exclusion": true,
+  "stale_version_blocked": true,
+  "pass": true,
+  "measured_at": "2026-08-02T19:55:35.238842+00:00"
+}
