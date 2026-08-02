@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "core_total": 0,
+  "core_pass": 0,
+  "core_fail": 0,
+  "cohort_total": 22,
+  "cohort_pass": 22,
+  "cohort_fail": 0,
+  "metrics": {
+    "route_accuracy_ok": 15,
+    "route_accuracy_n": 22,
+    "entity_precision_ok": 0,
+    "entity_precision_n": 0,
+    "positive_constraint_recall_ok": 19,
+    "positive_constraint_recall_n": 19,
+    "negative_constraint_recall_ok": 3,
+    "negative_constraint_recall_n": 3,
+    "correction_recall_ok": 3,
+    "correction_recall_n": 3,
+    "clarification_accuracy_ok": 0,
+    "clarification_accuracy_n": 0,
+    "no_result_accuracy_ok": 0,
+    "no_result_accuracy_n": 0,
+    "false_auto_resolution": 0,
+    "cohort_leakage": 0,
+    "forbidden_finance_claim": 0,
+    "negative_resurrection": 0,
+    "critical_failure": 0
+  },
+  "source_type": "HTTP_TEST_RESULT",
+  "measured_at": "2026-08-02T12:21:32.315577+00:00"
+}

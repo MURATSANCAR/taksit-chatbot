@@ -4,10 +4,10 @@
   "old_cohort_mutated": 0,
   "manual_code_change_required": 0,
   "versions": {
-    "lifecycle": 7,
-    "degraded": 8,
-    "restored": 9
+    "lifecycle": 13,
+    "degraded": 14,
+    "restored": 15
   },
   "source_type": "DATABASE_QUERY",
-  "measured_at": "2026-08-02T11:43:51.824733+00:00"
+  "measured_at": "2026-08-02T12:22:18.967795+00:00"
 }

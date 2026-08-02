@@ -9,10 +9,10 @@
   "projection_leakage_count": 0,
   "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
   "merchant_codes": [
-    "m-hepsiburada",
-    "m-vatan"
+    "m-vatan",
+    "m-hepsiburada"
   ],
   "source_query_hash": "64298493c710282eed0aaba1",
   "source_type": "DATABASE_QUERY",
-  "measured_at": "2026-08-02T11:43:12.221229+00:00"
+  "measured_at": "2026-08-02T12:21:32.967067+00:00"
 }

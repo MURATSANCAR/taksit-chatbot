@@ -1070,57 +1070,64 @@ async def amain(args: argparse.Namespace) -> int:
 
         gate_sum = (harness.get("gate_summary") or {}).get("gates") or {}
         decision_obj = (harness.get("gate_summary") or {}).get("decision") or {}
+        caps = {}
+        cap_path = (
+            ROOT
+            / "artifacts"
+            / "e2e-production-verification"
+            / "p3-7-product-search-internal-go"
+            / "capability-matrix.json"
+        )
+        if cap_path.is_file():
+            caps = json.loads(cap_path.read_text(encoding="utf-8"))
+
+        ready_gates = [
+            "EVIDENCE_PROVENANCE_GATE",
+            "GOLDEN_CANDIDATE_PIPELINE_GATE",
+            "COHORT_GOLDEN_COVERAGE_GATE",
+            "CONTINUOUS_GOLDEN_GATE",
+            "PLAYWRIGHT_PRODUCT_SEARCH_GATE",
+            "BROWSER_DATA_INTEGRITY_GATE",
+            "FINANCE_CAPABILITY_FIREWALL_GATE",
+            "LIVE_SSE_MATRIX_GATE",
+            "TEMP_COHORT_LIFECYCLE_GATE",
+            "SCOPE_DOWNGRADE_GATE",
+            "SCOPE_RESTORE_GATE",
+            "INTERNAL_CHAOS_GATE",
+            "LLM_PARTIAL_BROWSER_GATE",
+            "CATEGORY_TOKEN_REGRESSION_GATE",
+            "UNRESTRICTED_FALLBACK_REGRESSION_GATE",
+        ]
+        ready_caps = (
+            caps.get("PRODUCT_SEARCH") == "READY"
+            and caps.get("ENTITY_RESOLUTION") == "READY"
+            and caps.get("CLARIFICATION") == "READY"
+            and caps.get("RANKING_PRICE") == "READY"
+            and caps.get("LLM_PARTIAL") == "READY"
+            and caps.get("BROWSER_UI") == "READY"
+            and caps.get("SSE") == "READY"
+            and caps.get("REVISION_CONSISTENCY") == "READY"
+            and caps.get("RESILIENCE") == "READY"
+            and caps.get("RANKING_FINANCE") == "NOT_APPLICABLE"
+            and caps.get("FINANCE_DISPLAY") == "BLOCKED"
+        )
+        all_gates_pass = all(gate_sum.get(k) == "PASS" for k in ready_gates) if gate_sum else False
         if (
             coverage.get("pass")
             and continuous.get("pass")
             and dual.get("auto_approved_violations", 0) == 0
-            and harness.get("pass")
-            and decision_obj.get("decision") == "P3_7_PRODUCT_SEARCH_INTERNAL_READY"
+            and preparer != reviewer
+            and all_gates_pass
+            and ready_caps
         ):
             decision = "P3_7_PRODUCT_SEARCH_INTERNAL_READY"
-        elif coverage.get("pass") and continuous.get("pass") and harness.get("pass"):
-            # Harness may still say CONDITIONAL if its internal coverage snapshot raced;
-            # prefer READY when our closeout coverage+continuous+harness exit ok and PRODUCT_SEARCH ready
-            caps = {}
-            cap_path = (
-                ROOT
-                / "artifacts"
-                / "e2e-production-verification"
-                / "p3-7-product-search-internal-go"
-                / "capability-matrix.json"
-            )
-            if cap_path.is_file():
-                caps = json.loads(cap_path.read_text(encoding="utf-8"))
-            if (
-                caps.get("PRODUCT_SEARCH") == "READY"
-                and gate_sum.get("COHORT_GOLDEN_COVERAGE_GATE") == "PASS"
-                and gate_sum.get("CONTINUOUS_GOLDEN_GATE") == "PASS"
-            ):
-                decision = "P3_7_PRODUCT_SEARCH_INTERNAL_READY"
-            else:
-                # Closeout proved coverage; if harness still fails golden due to stale logic, still CONDITIONAL
-                # But if our coverage PASS and harness technical gates PASS, elevate PRODUCT_SEARCH
-                tech_ok = all(
-                    gate_sum.get(k) == "PASS"
-                    for k in (
-                        "EVIDENCE_PROVENANCE_GATE",
-                        "PLAYWRIGHT_PRODUCT_SEARCH_GATE",
-                        "BROWSER_DATA_INTEGRITY_GATE",
-                        "FINANCE_CAPABILITY_FIREWALL_GATE",
-                        "LIVE_SSE_MATRIX_GATE",
-                        "INTERNAL_CHAOS_GATE",
-                        "LLM_PARTIAL_BROWSER_GATE",
-                    )
-                    if k in gate_sum
-                )
-                if tech_ok and gate_sum.get("COHORT_GOLDEN_COVERAGE_GATE") == "PASS":
-                    decision = "P3_7_PRODUCT_SEARCH_INTERNAL_READY"
-                else:
-                    decision = "P3_7_INTERNAL_CONDITIONALLY_READY"
-        elif any(x in blockers for x in ("AUTO_APPROVED",)):
+        elif dual.get("auto_approved_violations", 0) > 0:
             decision = "P3_7_INTERNAL_NOT_READY"
         else:
             decision = "P3_7_INTERNAL_CONDITIONALLY_READY"
+            for k in ready_gates:
+                if gate_sum and gate_sum.get(k) == "FAIL" and k not in blockers:
+                    blockers.append(k)
 
         summary = {
             "decision": decision,
@@ -1166,7 +1173,7 @@ def main() -> None:
     p.add_argument("--database-url", default=os.environ.get("DATABASE_URL"))
     p.add_argument("--preparer", default=os.environ.get("TAKSITLIO_GOLDEN_PREPARER"))
     p.add_argument("--reviewer", default=os.environ.get("TAKSITLIO_GOLDEN_REVIEWER"))
-    p.add_argument("--llm", type=int, default=50)
+    p.add_argument("--llm", type=int, default=100)
     args = p.parse_args()
     raise SystemExit(asyncio.run(amain(args)))
 

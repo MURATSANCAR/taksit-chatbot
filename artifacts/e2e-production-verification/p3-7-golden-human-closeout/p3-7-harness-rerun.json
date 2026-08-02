@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "returncode": 0,
+  "stdout_tail": "[p3.7] start 2026-08-02T12:21:32.900440+00:00\n[p3.7] apply V034\n[p3.7] candidate pipeline\n[p3.7] golden coverage\n[p3.7] continuous golden\n[p3.7] SSE matrix\n[p3.7] Playwright browser\n[p3.7] browser integrity + finance firewall\n[p3.7] temp cohort lifecycle\n[p3.7] chaos\n[p3.7] LLM partial browser\n[p3.7] unit regressions\n[p3.7] decision=P3_7_PRODUCT_SEARCH_INTERNAL_READY\n",
+  "stderr_tail": "",
+  "gate_summary": {
+    "gates": {
+      "EVIDENCE_PROVENANCE_GATE": "PASS",
+      "GOLDEN_CANDIDATE_PIPELINE_GATE": "PASS",
+      "COHORT_GOLDEN_COVERAGE_GATE": "PASS",
+      "CONTINUOUS_GOLDEN_GATE": "PASS",
+      "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "PASS",
+      "BROWSER_DATA_INTEGRITY_GATE": "PASS",
+      "FINANCE_CAPABILITY_FIREWALL_GATE": "PASS",
+      "LIVE_SSE_MATRIX_GATE": "PASS",
+      "TEMP_COHORT_LIFECYCLE_GATE": "PASS",
+      "SCOPE_DOWNGRADE_GATE": "PASS",
+      "SCOPE_RESTORE_GATE": "PASS",
+      "INTERNAL_CHAOS_GATE": "PASS",
+      "LLM_PARTIAL_BROWSER_GATE": "PASS",
+      "CATEGORY_TOKEN_REGRESSION_GATE": "PASS",
+      "UNRESTRICTED_FALLBACK_REGRESSION_GATE": "PASS"
+    },
+    "decision": {
+      "decision": "P3_7_PRODUCT_SEARCH_INTERNAL_READY",
+      "blockers": [],
+      "criticals": [],
+      "public_cutover": false,
+      "campaign_gate": "CLOSED",
+      "finance_capability": "NOT_APPLICABLE"
+    },
+    "zero_tolerance": {
+      "hardcoded_verification_count": 0,
+      "auto_approved_golden": 0,
+      "untraceable_report_metric": 0,
+      "unauthorized_internal_access": 0,
+      "cohort_leakage": 0,
+      "forbidden_finance_claim": 0
+    },
+    "measured_at": "2026-08-02T12:22:49.204107+00:00"
+  }
+}

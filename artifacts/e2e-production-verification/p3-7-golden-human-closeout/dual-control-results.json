@@ -1,0 +1,11 @@
+{
+  "prepared": 0,
+  "approved": 0,
+  "by_bucket_approved": {},
+  "actions": [],
+  "preparer": "golden-preparer-ops",
+  "reviewer": "golden-reviewer-ops",
+  "auto_approved_violations": 0,
+  "source_type": "MANUAL_REVIEW",
+  "measured_at": "2026-08-02T12:21:24.159130+00:00"
+}

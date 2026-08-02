@@ -4,64 +4,64 @@
   "temp_cohort_code": "internal_scope_lifecycle_test",
   "temp_cohort_id": 2,
   "versions": {
-    "lifecycle": 7,
-    "degraded": 8,
-    "restored": 9
+    "lifecycle": 13,
+    "degraded": 14,
+    "restored": 15
   },
   "audit": [
     {
-      "version": 7,
+      "version": 13,
       "status": "SHADOW",
       "reason": "lifecycle:SHADOW",
-      "at": "2026-08-02T11:43:51.799414+00:00"
+      "at": "2026-08-02T12:22:18.947147+00:00"
     },
     {
-      "version": 7,
+      "version": 13,
       "status": "INTERNAL",
       "reason": "lifecycle:INTERNAL",
-      "at": "2026-08-02T11:43:51.801936+00:00"
+      "at": "2026-08-02T12:22:18.948825+00:00"
     },
     {
-      "version": 7,
+      "version": 13,
       "status": "DEGRADED",
       "reason": "lifecycle:DEGRADED",
-      "at": "2026-08-02T11:43:51.803895+00:00"
+      "at": "2026-08-02T12:22:18.950888+00:00"
     },
     {
-      "version": 7,
+      "version": 13,
       "status": "SHADOW_VALIDATION",
       "reason": "lifecycle:SHADOW_VALIDATION",
-      "at": "2026-08-02T11:43:51.805691+00:00"
+      "at": "2026-08-02T12:22:18.952948+00:00"
     },
     {
-      "version": 7,
+      "version": 13,
       "status": "INTERNAL",
       "reason": "lifecycle:INTERNAL",
-      "at": "2026-08-02T11:43:51.807465+00:00"
+      "at": "2026-08-02T12:22:18.954942+00:00"
     },
     {
-      "version": 7,
+      "version": 13,
       "status": "ARCHIVED",
       "reason": "lifecycle:ARCHIVED",
-      "at": "2026-08-02T11:43:51.809294+00:00"
+      "at": "2026-08-02T12:22:18.956905+00:00"
     },
     {
-      "version": 8,
+      "version": 14,
       "status": "DEGRADED",
       "reason": "scope_downgrade",
-      "at": "2026-08-02T11:43:51.813572+00:00"
+      "at": "2026-08-02T12:22:18.960700+00:00"
     },
     {
-      "version": 8,
+      "version": 14,
       "status": "SHADOW_VALIDATION",
       "reason": "pre_restore",
-      "at": "2026-08-02T11:43:51.819820+00:00"
+      "at": "2026-08-02T12:22:18.964957+00:00"
     },
     {
-      "version": 9,
+      "version": 15,
       "status": "INTERNAL",
       "reason": "scope_restore",
-      "at": "2026-08-02T11:43:51.821725+00:00"
+      "at": "2026-08-02T12:22:18.966508+00:00"
     }
   ],
   "live_cohort_status": "INTERNAL",
@@ -73,5 +73,5 @@
   "manual_code_change_required": 0,
   "source_type": "DATABASE_QUERY",
   "source_table_or_endpoint": "search_release_cohort_versions+lifecycle_events",
-  "measured_at": "2026-08-02T11:43:51.822684+00:00"
+  "measured_at": "2026-08-02T12:22:18.967035+00:00"
 }

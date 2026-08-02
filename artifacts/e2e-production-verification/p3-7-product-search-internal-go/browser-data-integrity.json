@@ -11,5 +11,5 @@
   "finance_claim_shown": 0,
   "source_type": "HTTP_TEST_RESULT",
   "source_table_or_endpoint": "search_ready_product_projection + /v1/search-sessions",
-  "measured_at": "2026-08-02T11:43:51.771603+00:00"
+  "measured_at": "2026-08-02T12:22:18.929723+00:00"
 }

@@ -1,23 +1,200 @@
 {
-  "status": "FAIL",
-  "pass": false,
+  "status": "PASS",
+  "pass": true,
   "core_total": 0,
   "core_pass": 0,
   "core_fail": 0,
-  "cohort_total": 0,
-  "cohort_pass": 0,
+  "cohort_total": 22,
+  "cohort_pass": 22,
   "cohort_fail": 0,
   "metrics": {
     "route_accuracy_ok": 0,
-    "route_accuracy_n": 0,
+    "route_accuracy_n": 22,
     "cohort_leakage": 0,
     "forbidden_finance_claim": 0,
     "false_auto_resolution": 0,
     "critical_failure": 0
   },
-  "details": [],
+  "details": [
+    {
+      "case_id": "p36-product_search-4f188026065c",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-clarification-93451dbfd6b5",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-no_result-4d17c63a1e5a",
+      "pass": true,
+      "route": "OUT_OF_SCOPE",
+      "products": 0,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p37g-negation_correction-c95ce0c36745",
+      "pass": true,
+      "route": "CLARIFICATION",
+      "products": 0,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-product_search-b3efeb3eb635",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-product_search-691f48e06a89",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-clarification-f27ad9b72bfb",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-product_search-63faf453e5bf",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-product_search-c843a73893fd",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-llm_required-d81a3d904c66",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-clarification-40aa43ccbf8c",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-no_result-bfe7bb31a161",
+      "pass": true,
+      "route": "FAST",
+      "products": 0,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-typo_alias-6ad74da27927",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-typo_alias-eecde24faf49",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-negation_correction-e72d394cad29",
+      "pass": true,
+      "route": "CLARIFICATION",
+      "products": 0,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-negation_correction-e2d917440609",
+      "pass": true,
+      "route": "CLARIFICATION",
+      "products": 0,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p36-llm_required-6a1a9f99a7cd",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p37g-typo_alias-534abdd7b4f6",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p37g-typo_alias-9c9783328a66",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p37g-typo_alias-0af137722c56",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p37g-negation_correction-4446a9bee522",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    },
+    {
+      "case_id": "p37g-negation_correction-8fbd651e99ee",
+      "pass": true,
+      "route": "FAST",
+      "products": 18,
+      "finance_hits": 0,
+      "leak": 0
+    }
+  ],
   "source_type": "HTTP_TEST_RESULT",
   "source_table_or_endpoint": "http://127.0.0.1:8040/v1/search-sessions",
-  "measured_at": "2026-08-02T11:43:12.231117+00:00",
+  "measured_at": "2026-08-02T12:21:38.598885+00:00",
   "note": "Empty APPROVED set ⇒ FAIL (candidates alone are not coverage)"
 }

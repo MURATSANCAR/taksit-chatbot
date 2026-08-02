@@ -2,8 +2,8 @@
   "gates": {
     "EVIDENCE_PROVENANCE_GATE": "PASS",
     "GOLDEN_CANDIDATE_PIPELINE_GATE": "PASS",
-    "COHORT_GOLDEN_COVERAGE_GATE": "FAIL",
-    "CONTINUOUS_GOLDEN_GATE": "FAIL",
+    "COHORT_GOLDEN_COVERAGE_GATE": "PASS",
+    "CONTINUOUS_GOLDEN_GATE": "PASS",
     "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "PASS",
     "BROWSER_DATA_INTEGRITY_GATE": "PASS",
     "FINANCE_CAPABILITY_FIREWALL_GATE": "PASS",
@@ -17,15 +17,9 @@
     "UNRESTRICTED_FALLBACK_REGRESSION_GATE": "PASS"
   },
   "decision": {
-    "decision": "P3_7_INTERNAL_CONDITIONALLY_READY",
-    "blockers": [
-      "COHORT_GOLDEN_COVERAGE_GATE",
-      "CONTINUOUS_GOLDEN_GATE"
-    ],
-    "criticals": [
-      "COHORT_GOLDEN_COVERAGE_GATE",
-      "CONTINUOUS_GOLDEN_GATE"
-    ],
+    "decision": "P3_7_PRODUCT_SEARCH_INTERNAL_READY",
+    "blockers": [],
+    "criticals": [],
     "public_cutover": false,
     "campaign_gate": "CLOSED",
     "finance_capability": "NOT_APPLICABLE"
@@ -38,5 +32,5 @@
     "cohort_leakage": 0,
     "forbidden_finance_claim": 0
   },
-  "measured_at": "2026-08-02T11:44:20.252473+00:00"
+  "measured_at": "2026-08-02T12:22:49.204107+00:00"
 }

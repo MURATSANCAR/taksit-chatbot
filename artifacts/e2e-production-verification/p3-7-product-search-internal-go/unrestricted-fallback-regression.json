@@ -6,12 +6,12 @@
       "test": "tests/unit/search_sessions/test_unrestricted_fallback_regression.py",
       "returncode": 0,
       "pass": true,
-      "stdout": "..                                                                       [100%]\n2 passed in 0.42s\n",
+      "stdout": "..                                                                       [100%]\n2 passed in 0.37s\n",
       "stderr": ""
     }
   ],
   "non_cohort_product_returned": 0,
   "foreign_merchant_finance_returned": 0,
   "source_type": "HTTP_TEST_RESULT",
-  "measured_at": "2026-08-02T11:44:20.246658+00:00"
+  "measured_at": "2026-08-02T12:22:49.199785+00:00"
 }

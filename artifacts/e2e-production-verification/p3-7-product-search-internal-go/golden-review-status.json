@@ -1,12 +1,12 @@
 {
-  "approved": 0,
-  "review_required": 44,
+  "approved": 22,
+  "review_required": 32,
   "rejected": 0,
   "needs_revision": 0,
-  "dual_control_ok": 0,
+  "dual_control_ok": 22,
   "auto_approved": 0,
   "review_ui": "/v1/admin/golden/review",
-  "pass": false,
+  "pass": true,
   "source_type": "DATABASE_QUERY",
-  "measured_at": "2026-08-02T11:43:12.229064+00:00"
+  "measured_at": "2026-08-02T12:21:32.976849+00:00"
 }

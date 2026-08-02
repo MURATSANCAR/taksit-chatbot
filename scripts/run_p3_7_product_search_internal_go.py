@@ -290,14 +290,19 @@ async def candidate_pipeline(conn: Any, cohort: dict[str, Any]) -> dict[str, Any
             exp = json.loads(exp)
         bucket = r.get("bucket") or exp.get("bucket") or r.get("source_signal") or "unknown"
         by_bucket[str(bucket)] += 1
-        required = [
-            r["case_id"],
-            r["query_text"],
-            r["lifecycle_status"],
-            r.get("prepared_by"),
-        ]
+        # Identity fields required for every candidate; prepared_by only after prepare/approve
+        required = [r["case_id"], r["query_text"], r["lifecycle_status"]]
         if any(x is None or x == "" for x in required):
             missing_fields += 1
+            continue
+        st = str(r["lifecycle_status"])
+        if st == "APPROVED":
+            if not (
+                r.get("prepared_by")
+                and r.get("reviewed_by")
+                and r.get("prepared_by") != r.get("reviewed_by")
+            ):
+                missing_fields += 1
     return {
         "candidates_total": len(rows),
         "by_lifecycle": dict(by_status),

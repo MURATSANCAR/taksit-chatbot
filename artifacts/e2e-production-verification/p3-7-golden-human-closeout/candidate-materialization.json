@@ -1,0 +1,13 @@
+{
+  "inserted": 0,
+  "details": [],
+  "skipped_duplicates": 10,
+  "need_by_bucket": {
+    "typo_alias": 3,
+    "negation_correction": 3
+  },
+  "auto_approved": 0,
+  "source_type": "DATABASE_QUERY",
+  "measured_at": "2026-08-02T12:21:24.149353+00:00",
+  "note": "Candidates REVIEW_REQUIRED only; expected empty until PREPARER"
+}

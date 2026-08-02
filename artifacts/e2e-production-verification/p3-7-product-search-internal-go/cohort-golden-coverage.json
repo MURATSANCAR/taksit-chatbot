@@ -1,57 +1,57 @@
 {
-  "status": "FAIL",
-  "pass": false,
-  "approved": 0,
-  "review_required": 44,
+  "status": "PASS",
+  "pass": true,
+  "approved": 22,
+  "review_required": 32,
   "rejected": 0,
   "needs_revision": 0,
   "auto_approved": 0,
-  "dual_control_ok": 0,
-  "demand_weighted_coverage": 0.0,
-  "approved_demand_weight": 0.0,
-  "eligible_demand_weight": 44.0,
+  "dual_control_ok": 22,
+  "demand_weighted_coverage": 0.407407,
+  "approved_demand_weight": 22.0,
+  "eligible_demand_weight": 54.0,
   "bucket_gaps": [
     {
       "demand_bucket": "minimum_product_search_cases",
-      "existing_candidate_count": 27,
-      "approved_count": 0,
+      "existing_candidate_count": 22,
+      "approved_count": 5,
       "minimum_required": 5,
-      "coverage_gap": 5
+      "coverage_gap": 0
     },
     {
       "demand_bucket": "minimum_typo_alias_cases",
       "existing_candidate_count": 2,
-      "approved_count": 0,
+      "approved_count": 5,
       "minimum_required": 5,
-      "coverage_gap": 5
+      "coverage_gap": 0
     },
     {
       "demand_bucket": "minimum_negation_correction_cases",
       "existing_candidate_count": 2,
-      "approved_count": 0,
+      "approved_count": 5,
       "minimum_required": 5,
-      "coverage_gap": 5
+      "coverage_gap": 0
     },
     {
       "demand_bucket": "minimum_clarification_cases",
-      "existing_candidate_count": 7,
-      "approved_count": 0,
+      "existing_candidate_count": 4,
+      "approved_count": 3,
       "minimum_required": 3,
-      "coverage_gap": 3
+      "coverage_gap": 0
     },
     {
       "demand_bucket": "minimum_no_result_cases",
-      "existing_candidate_count": 3,
-      "approved_count": 0,
+      "existing_candidate_count": 1,
+      "approved_count": 2,
       "minimum_required": 2,
-      "coverage_gap": 2
+      "coverage_gap": 0
     },
     {
       "demand_bucket": "minimum_llm_required_cases",
-      "existing_candidate_count": 3,
-      "approved_count": 0,
+      "existing_candidate_count": 1,
+      "approved_count": 2,
       "minimum_required": 2,
-      "coverage_gap": 2
+      "coverage_gap": 0
     }
   ],
   "finance_bucket": {
@@ -62,16 +62,8 @@
     "policy": "NOT_APPLICABLE",
     "note": "Explicit policy decision — not silently skipped"
   },
-  "failed_rules": [
-    "demand_weighted_coverage",
-    "minimum_product_search_cases",
-    "minimum_typo_alias_cases",
-    "minimum_negation_correction_cases",
-    "minimum_clarification_cases",
-    "minimum_no_result_cases",
-    "minimum_llm_required_cases"
-  ],
-  "policy_version": 6,
+  "failed_rules": [],
+  "policy_version": 8,
   "policy_thresholds": {
     "finance_capability": "NOT_APPLICABLE",
     "forbid_auto_approve": true,
@@ -93,6 +85,6 @@
   "cohort_id": 1,
   "cohort_version": 1,
   "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
-  "measured_at": "2026-08-02T11:43:12.228552+00:00",
+  "measured_at": "2026-08-02T12:21:32.976258+00:00",
   "note": "APPROVED only; REVIEW_REQUIRED does not count toward coverage PASS"
 }

@@ -1,0 +1,92 @@
+{
+  "buckets": [
+    {
+      "bucket": "product_search",
+      "candidate_count": 27,
+      "approved_count": 5,
+      "policy_minimum": 5,
+      "candidate_gap": 0,
+      "approval_gap": 0
+    },
+    {
+      "bucket": "typo_alias",
+      "candidate_count": 7,
+      "approved_count": 5,
+      "policy_minimum": 5,
+      "candidate_gap": 0,
+      "approval_gap": 0
+    },
+    {
+      "bucket": "negation_correction",
+      "candidate_count": 7,
+      "approved_count": 5,
+      "policy_minimum": 5,
+      "candidate_gap": 0,
+      "approval_gap": 0
+    },
+    {
+      "bucket": "clarification",
+      "candidate_count": 7,
+      "approved_count": 3,
+      "policy_minimum": 3,
+      "candidate_gap": 0,
+      "approval_gap": 0
+    },
+    {
+      "bucket": "no_result",
+      "candidate_count": 3,
+      "approved_count": 2,
+      "policy_minimum": 2,
+      "candidate_gap": 0,
+      "approval_gap": 0
+    },
+    {
+      "bucket": "llm_required",
+      "candidate_count": 3,
+      "approved_count": 2,
+      "policy_minimum": 2,
+      "candidate_gap": 0,
+      "approval_gap": 0
+    }
+  ],
+  "finance": {
+    "bucket": "finance",
+    "candidate_count": 0,
+    "approved_count": 0,
+    "policy_minimum": 0,
+    "candidate_gap": 0,
+    "approval_gap": 0,
+    "status": "NOT_APPLICABLE",
+    "finance_capability": "NOT_APPLICABLE"
+  },
+  "eligible_demand_weight": 54.0,
+  "approved_demand_weight": 22.0,
+  "coverage": 0.407407,
+  "merchant_scope_coverage": 1.0,
+  "category_scope_coverage": 0.1,
+  "policy_version": 7,
+  "policy_thresholds": {
+    "finance_capability": "NOT_APPLICABLE",
+    "forbid_auto_approve": true,
+    "require_dual_control": true,
+    "finance_coverage_rule": "NOT_APPLICABLE_WHEN_COHORT_HAS_NO_FINANCE_SOURCE",
+    "minimum_finance_cases": 0,
+    "minimum_no_result_cases": 2,
+    "minimum_typo_alias_cases": 5,
+    "minimum_llm_required_cases": 2,
+    "minimum_clarification_cases": 3,
+    "minimum_product_search_cases": 5,
+    "minimum_demand_weighted_coverage": 0.2,
+    "minimum_negation_correction_cases": 5,
+    "minimum_active_category_scope_coverage": 0.1,
+    "minimum_active_merchant_scope_coverage": 1.0
+  },
+  "cohort_id": 1,
+  "cohort_version": 1,
+  "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+  "source_type": "DATABASE_QUERY",
+  "source_table_or_endpoint": "continuous_golden_cases+cohort_golden_coverage_policy_versions",
+  "source_query_hash": "66551ff2adbc9458abd1bcdf",
+  "measured_at": "2026-08-02T12:21:24.137556+00:00",
+  "total_rows": 54
+}

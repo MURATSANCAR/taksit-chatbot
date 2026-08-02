@@ -1,0 +1,287 @@
+{
+  "decision": "P3_7_PRODUCT_SEARCH_INTERNAL_READY",
+  "gap_before": {
+    "buckets": [
+      {
+        "bucket": "product_search",
+        "candidate_count": 27,
+        "approved_count": 5,
+        "policy_minimum": 5,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "typo_alias",
+        "candidate_count": 7,
+        "approved_count": 5,
+        "policy_minimum": 5,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "negation_correction",
+        "candidate_count": 7,
+        "approved_count": 5,
+        "policy_minimum": 5,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "clarification",
+        "candidate_count": 7,
+        "approved_count": 3,
+        "policy_minimum": 3,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "no_result",
+        "candidate_count": 3,
+        "approved_count": 2,
+        "policy_minimum": 2,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "llm_required",
+        "candidate_count": 3,
+        "approved_count": 2,
+        "policy_minimum": 2,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      }
+    ],
+    "finance": {
+      "bucket": "finance",
+      "candidate_count": 0,
+      "approved_count": 0,
+      "policy_minimum": 0,
+      "candidate_gap": 0,
+      "approval_gap": 0,
+      "status": "NOT_APPLICABLE",
+      "finance_capability": "NOT_APPLICABLE"
+    },
+    "eligible_demand_weight": 54.0,
+    "approved_demand_weight": 22.0,
+    "coverage": 0.407407,
+    "merchant_scope_coverage": 1.0,
+    "category_scope_coverage": 0.1,
+    "policy_version": 7,
+    "policy_thresholds": {
+      "finance_capability": "NOT_APPLICABLE",
+      "forbid_auto_approve": true,
+      "require_dual_control": true,
+      "finance_coverage_rule": "NOT_APPLICABLE_WHEN_COHORT_HAS_NO_FINANCE_SOURCE",
+      "minimum_finance_cases": 0,
+      "minimum_no_result_cases": 2,
+      "minimum_typo_alias_cases": 5,
+      "minimum_llm_required_cases": 2,
+      "minimum_clarification_cases": 3,
+      "minimum_product_search_cases": 5,
+      "minimum_demand_weighted_coverage": 0.2,
+      "minimum_negation_correction_cases": 5,
+      "minimum_active_category_scope_coverage": 0.1,
+      "minimum_active_merchant_scope_coverage": 1.0
+    },
+    "cohort_id": 1,
+    "cohort_version": 1,
+    "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+    "source_type": "DATABASE_QUERY",
+    "source_table_or_endpoint": "continuous_golden_cases+cohort_golden_coverage_policy_versions",
+    "source_query_hash": "66551ff2adbc9458abd1bcdf",
+    "measured_at": "2026-08-02T12:21:24.137556+00:00",
+    "total_rows": 54
+  },
+  "materialized": {
+    "inserted": 0,
+    "details": [],
+    "skipped_duplicates": 10,
+    "need_by_bucket": {
+      "typo_alias": 3,
+      "negation_correction": 3
+    },
+    "auto_approved": 0,
+    "source_type": "DATABASE_QUERY",
+    "measured_at": "2026-08-02T12:21:24.149353+00:00",
+    "note": "Candidates REVIEW_REQUIRED only; expected empty until PREPARER"
+  },
+  "dual_control": {
+    "prepared": 0,
+    "approved": 0,
+    "by_bucket_approved": {},
+    "actions": [],
+    "preparer": "golden-preparer-ops",
+    "reviewer": "golden-reviewer-ops",
+    "auto_approved_violations": 0,
+    "source_type": "MANUAL_REVIEW",
+    "measured_at": "2026-08-02T12:21:24.159130+00:00"
+  },
+  "coverage": {
+    "buckets": [
+      {
+        "bucket": "product_search",
+        "candidate_count": 27,
+        "approved_count": 5,
+        "policy_minimum": 5,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "typo_alias",
+        "candidate_count": 7,
+        "approved_count": 5,
+        "policy_minimum": 5,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "negation_correction",
+        "candidate_count": 7,
+        "approved_count": 5,
+        "policy_minimum": 5,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "clarification",
+        "candidate_count": 7,
+        "approved_count": 3,
+        "policy_minimum": 3,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "no_result",
+        "candidate_count": 3,
+        "approved_count": 2,
+        "policy_minimum": 2,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      },
+      {
+        "bucket": "llm_required",
+        "candidate_count": 3,
+        "approved_count": 2,
+        "policy_minimum": 2,
+        "candidate_gap": 0,
+        "approval_gap": 0
+      }
+    ],
+    "finance": {
+      "bucket": "finance",
+      "candidate_count": 0,
+      "approved_count": 0,
+      "policy_minimum": 0,
+      "candidate_gap": 0,
+      "approval_gap": 0,
+      "status": "NOT_APPLICABLE",
+      "finance_capability": "NOT_APPLICABLE"
+    },
+    "eligible_demand_weight": 54.0,
+    "approved_demand_weight": 22.0,
+    "coverage": 0.407407,
+    "merchant_scope_coverage": 1.0,
+    "category_scope_coverage": 0.1,
+    "policy_version": 7,
+    "policy_thresholds": {
+      "finance_capability": "NOT_APPLICABLE",
+      "forbid_auto_approve": true,
+      "require_dual_control": true,
+      "finance_coverage_rule": "NOT_APPLICABLE_WHEN_COHORT_HAS_NO_FINANCE_SOURCE",
+      "minimum_finance_cases": 0,
+      "minimum_no_result_cases": 2,
+      "minimum_typo_alias_cases": 5,
+      "minimum_llm_required_cases": 2,
+      "minimum_clarification_cases": 3,
+      "minimum_product_search_cases": 5,
+      "minimum_demand_weighted_coverage": 0.2,
+      "minimum_negation_correction_cases": 5,
+      "minimum_active_category_scope_coverage": 0.1,
+      "minimum_active_merchant_scope_coverage": 1.0
+    },
+    "cohort_id": 1,
+    "cohort_version": 1,
+    "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+    "source_type": "DATABASE_QUERY",
+    "source_table_or_endpoint": "continuous_golden_cases+cohort_golden_coverage_policy_versions",
+    "source_query_hash": "66551ff2adbc9458abd1bcdf",
+    "measured_at": "2026-08-02T12:21:24.162666+00:00",
+    "total_rows": 54,
+    "status": "PASS",
+    "pass": true,
+    "failed_rules": [],
+    "auto_approved": 0,
+    "finance_bucket": {
+      "bucket": "finance",
+      "candidate_count": 0,
+      "approved_count": 0,
+      "policy_minimum": 0,
+      "candidate_gap": 0,
+      "approval_gap": 0,
+      "status": "NOT_APPLICABLE",
+      "finance_capability": "NOT_APPLICABLE"
+    },
+    "note": "APPROVED only; finance NOT_APPLICABLE"
+  },
+  "continuous": {
+    "status": "PASS",
+    "pass": true,
+    "core_total": 0,
+    "core_pass": 0,
+    "core_fail": 0,
+    "cohort_total": 22,
+    "cohort_pass": 22,
+    "cohort_fail": 0,
+    "metrics": {
+      "route_accuracy_ok": 15,
+      "route_accuracy_n": 22,
+      "entity_precision_ok": 0,
+      "entity_precision_n": 0,
+      "positive_constraint_recall_ok": 19,
+      "positive_constraint_recall_n": 19,
+      "negative_constraint_recall_ok": 3,
+      "negative_constraint_recall_n": 3,
+      "correction_recall_ok": 3,
+      "correction_recall_n": 3,
+      "clarification_accuracy_ok": 0,
+      "clarification_accuracy_n": 0,
+      "no_result_accuracy_ok": 0,
+      "no_result_accuracy_n": 0,
+      "false_auto_resolution": 0,
+      "cohort_leakage": 0,
+      "forbidden_finance_claim": 0,
+      "negative_resurrection": 0,
+      "critical_failure": 0
+    },
+    "source_type": "HTTP_TEST_RESULT",
+    "measured_at": "2026-08-02T12:21:32.315577+00:00"
+  },
+  "harness": {
+    "status": "PASS",
+    "pass": true,
+    "decision": "P3_7_PRODUCT_SEARCH_INTERNAL_READY",
+    "gates": {
+      "EVIDENCE_PROVENANCE_GATE": "PASS",
+      "GOLDEN_CANDIDATE_PIPELINE_GATE": "PASS",
+      "COHORT_GOLDEN_COVERAGE_GATE": "PASS",
+      "CONTINUOUS_GOLDEN_GATE": "PASS",
+      "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "PASS",
+      "BROWSER_DATA_INTEGRITY_GATE": "PASS",
+      "FINANCE_CAPABILITY_FIREWALL_GATE": "PASS",
+      "LIVE_SSE_MATRIX_GATE": "PASS",
+      "TEMP_COHORT_LIFECYCLE_GATE": "PASS",
+      "SCOPE_DOWNGRADE_GATE": "PASS",
+      "SCOPE_RESTORE_GATE": "PASS",
+      "INTERNAL_CHAOS_GATE": "PASS",
+      "LLM_PARTIAL_BROWSER_GATE": "PASS",
+      "CATEGORY_TOKEN_REGRESSION_GATE": "PASS",
+      "UNRESTRICTED_FALLBACK_REGRESSION_GATE": "PASS"
+    }
+  },
+  "blockers": [],
+  "preparer": "golden-preparer-ops",
+  "reviewer": "golden-reviewer-ops",
+  "finance": "NOT_APPLICABLE",
+  "campaign_gate": "CLOSED",
+  "public_cutover": false
+}
