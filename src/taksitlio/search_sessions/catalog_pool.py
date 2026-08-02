@@ -375,19 +375,21 @@ async def refresh_orchestrator_from_catalog(
             orch.logo_resolver = logos  # type: ignore[attr-defined]
     else:
         pool_rows: list[dict[str, Any]] = []
-        if prefer_search_ready and pg_pool is not None:
-            pool_rows = await _pool_rows_from_search_ready(
-                pg_pool,
-                name_terms=search_terms,
-                limit=limit,
-            )
-            if not pool_rows:
-                # Cohort-safe fallback only — never unrestricted catalog (leakage + finance claims).
+        if prefer_search_ready:
+            if pg_pool is not None:
                 pool_rows = await _pool_rows_from_search_ready(
                     pg_pool,
-                    name_terms=[],
+                    name_terms=search_terms,
                     limit=limit,
                 )
+                if not pool_rows:
+                    # Cohort-safe fallback only — never unrestricted catalog.
+                    pool_rows = await _pool_rows_from_search_ready(
+                        pg_pool,
+                        name_terms=[],
+                        limit=limit,
+                    )
+            # If pool missing, keep empty rather than leaking non-cohort catalog rows.
             if logos is not None:
                 orch.logo_resolver = logos  # type: ignore[attr-defined]
                 for row in pool_rows:
@@ -395,7 +397,7 @@ async def refresh_orchestrator_from_catalog(
                         row["merchant_logo_cdn_url"] = logos.merchant(
                             row.get("merchant_id")
                         )
-        elif not pool_rows:
+        else:
             cands = await load_search_candidates_from_catalog(
                 catalog,
                 utterance=utterance,
@@ -419,11 +421,6 @@ async def refresh_orchestrator_from_catalog(
                             )
             else:
                 pool_rows = []
-        elif logos is not None:
-            orch.logo_resolver = logos  # type: ignore[attr-defined]
-            for row in pool_rows:
-                if not row.get("merchant_logo_cdn_url"):
-                    row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
 
         orch.product_pool = pool_rows
         _pool_cache[pool_key] = (now, [dict(r) for r in orch.product_pool])
@@ -463,8 +460,8 @@ async def _pool_rows_from_search_ready(
         async with pg_pool.acquire() as conn:
             if terms:
                 clauses = " OR ".join(
-                    f"(p.display_name ILIKE ${i + 2} OR coalesce(p.normalized_name,'') ILIKE ${i + 2} "
-                    f"OR coalesce(c.display_name,'') ILIKE ${i + 2} OR coalesce(c.category_code,'') ILIKE ${i + 2})"
+                    f"(p.display_name ILIKE ${i + 2} OR p.normalized_name ILIKE ${i + 2} "
+                    f"OR c.display_name ILIKE ${i + 2} OR c.category_code ILIKE ${i + 2})"
                     for i in range(len(terms))
                 )
                 params: list[Any] = [limit, *[f"%{t}%" for t in terms]]
@@ -475,7 +472,9 @@ async def _pool_rows_from_search_ready(
                            p.display_name,
                            ma.cdn_url AS primary_cdn_url,
                            m.display_name AS merchant_display_name,
-                           m.merchant_code
+                           m.merchant_code,
+                           c.category_code,
+                           c.display_name AS category_display_name
                     FROM search_ready_product_projection s
                     JOIN products p ON p.id = s.product_id
                     JOIN merchants m ON m.id = s.merchant_id
@@ -495,11 +494,14 @@ async def _pool_rows_from_search_ready(
                            p.display_name,
                            ma.cdn_url AS primary_cdn_url,
                            m.display_name AS merchant_display_name,
-                           m.merchant_code
+                           m.merchant_code,
+                           c.category_code,
+                           c.display_name AS category_display_name
                     FROM search_ready_product_projection s
                     JOIN products p ON p.id = s.product_id
                     JOIN merchants m ON m.id = s.merchant_id
                     LEFT JOIN media_assets ma ON ma.id = s.card_media_id
+                    LEFT JOIN categories c ON c.id = s.category_id
                     ORDER BY s.updated_at DESC NULLS LAST
                     LIMIT $1
                     """,
@@ -522,9 +524,10 @@ async def _pool_rows_from_search_ready(
                 "stock_status": str(r["stock_status"] or ""),
                 "thumbnail_cdn_url": r["primary_cdn_url"],
                 "category_id": str(r["category_id"]) if r["category_id"] is not None else None,
-                "best_finance": {"finance_ready": bool(r["finance_ready"])}
-                if r["finance_ready"]
-                else None,
+                "category_code": str(r["category_code"]) if r["category_code"] is not None else None,
+                "category": str(r["category_display_name"] or r["category_code"] or "") or None,
+                "product_type": str(r["category_code"]) if r["category_code"] is not None else None,
+                "best_finance": None,
             }
         )
     return out

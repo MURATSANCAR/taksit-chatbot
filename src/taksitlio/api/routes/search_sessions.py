@@ -68,7 +68,9 @@ async def _maybe_refresh_catalog(
             categories=container.extras.get("category_repo"),
             utterance=utterance,
             prefer_search_ready=prefer_search_ready,
-            pg_pool=container.extras.get("pool"),
+            pg_pool=container.extras.get("pool")
+            or container.extras.get("pg_pool")
+            or container.extras.get("db_pool"),
         )
 
     try:
