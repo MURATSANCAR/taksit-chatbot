@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "total": 150,
+  "roles": {
+    "END_USER": 50,
+    "CATALOG_EXPERT": 50,
+    "BUSINESS_OPS": 50
+  },
+  "pass_count": 150,
+  "fail_count": 0,
+  "blocker": 0,
+  "critical": 0,
+  "wrong_product": 0,
+  "wrong_price": 0,
+  "wrong_category": 0,
+  "forbidden_finance_claim": 0,
+  "cohort_leakage": 0,
+  "execution_mode": "STRUCTURED_OPERATOR_UAT",
+  "external_human_panel": false,
+  "note": "Three distinct reviewer-id pools (50 each). Operator-executed structured UAT — not an external multi-person human panel.",
+  "measured_at": "2026-08-02T13:34:05.922315+00:00"
+}

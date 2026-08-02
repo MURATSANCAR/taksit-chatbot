@@ -1,0 +1,13 @@
+{
+  "experiment_id": "P17-V4-DATASET-BUILD-001",
+  "source_experiment": "P17-V3-RESIDUAL-001",
+  "created_at": "2026-08-02T13:24:07Z",
+  "delta_rows": 1200,
+  "merged_train_rows": 3700,
+  "base_train": "/Users/msancar/Documents/GitHub/Fibabank_Chatbot/training/exports/need_profile_sft.v3.jsonl",
+  "review_status_policy": "CURSOR_GENERATED_VALIDATED",
+  "human_reviewed_label_used": false,
+  "decision": "V4_DATASET_BUILD_READY_FOR_SFT",
+  "campaign_gate": "CLOSED",
+  "v4_training": "NOT_STARTED"
+}

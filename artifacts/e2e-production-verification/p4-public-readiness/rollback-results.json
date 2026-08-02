@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "drill": "PUBLIC_CANARY→SHADOW→restore PUBLIC_CANARY package",
+  "champion_path": "INTERNAL v1 unchanged as safe fallback when canary rolls back",
+  "triggers": {
+    "wrong_price": 0,
+    "wrong_product": 0,
+    "cohort_leakage": 0,
+    "mixed_revision": 0,
+    "timeout_rate_gt": 0.01,
+    "http_5xx_rate_gt": 0.001,
+    "critical_difference_gt": 0,
+    "forbidden_finance_claim": 0
+  },
+  "trigger_eval": {
+    "wrong_product": 0,
+    "wrong_price": 0,
+    "forbidden_finance_claim": 0,
+    "cohort_leakage": 0,
+    "mixed_revision": 0,
+    "would_rollback": false
+  },
+  "measured_at": "2026-08-02T13:52:27.924792+00:00"
+}

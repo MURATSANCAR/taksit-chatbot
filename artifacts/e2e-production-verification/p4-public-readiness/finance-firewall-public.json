@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "cases": [
+    {
+      "query": "Bana taksitle telefon göster",
+      "http_status": 200,
+      "products": 18,
+      "finance_claims": 0,
+      "pass": true,
+      "expected": "capability unavailable / no finance claims"
+    },
+    {
+      "query": "Hangi banka daha ucuz?",
+      "http_status": 200,
+      "products": 0,
+      "finance_claims": 0,
+      "pass": true,
+      "expected": "capability unavailable / no finance claims"
+    },
+    {
+      "query": "En düşük aylık ödeme hangisi?",
+      "http_status": 200,
+      "products": 0,
+      "finance_claims": 0,
+      "pass": true,
+      "expected": "capability unavailable / no finance claims"
+    },
+    {
+      "query": "Faizsiz ürün göster",
+      "http_status": 200,
+      "products": 0,
+      "finance_claims": 0,
+      "pass": true,
+      "expected": "capability unavailable / no finance claims"
+    },
+    {
+      "query": "12 ay vadeli ürün bul",
+      "http_status": 200,
+      "products": 0,
+      "finance_claims": 0,
+      "pass": true,
+      "expected": "capability unavailable / no finance claims"
+    }
+  ],
+  "forbidden_finance_claim": 0,
+  "invented_bank": 0,
+  "invented_campaign": 0,
+  "invented_payment": 0,
+  "fallback_to_other_merchant_finance": 0,
+  "campaign_gate": "CLOSED",
+  "measured_at": "2026-08-02T13:36:26.079357+00:00"
+}

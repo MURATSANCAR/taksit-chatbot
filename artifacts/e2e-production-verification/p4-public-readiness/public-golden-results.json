@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "total": 250,
+  "pass_count": 250,
+  "fail": 0,
+  "forbidden_finance_claim": 0,
+  "cohort_leakage": 0,
+  "critical_failure": 0,
+  "measured_at": "2026-08-02T13:33:38.451705+00:00"
+}

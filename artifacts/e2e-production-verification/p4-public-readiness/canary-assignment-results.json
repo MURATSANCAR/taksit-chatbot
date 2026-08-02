@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "stage_percent": 5,
+  "sample": 200,
+  "canary_count": 12,
+  "canary_rate": 0.06,
+  "session_flip": 0,
+  "cross_tenant_leakage": 0,
+  "measured_at": "2026-08-02T13:52:27.921433+00:00"
+}

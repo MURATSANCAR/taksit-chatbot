@@ -1,0 +1,97 @@
+{
+  "detail": {
+    "CORRECTION/CORRECTION_X_NOT_Y": {
+      "target": 120,
+      "got": 120
+    },
+    "CORRECTION/CORRECTION_RETRACTION": {
+      "target": 80,
+      "got": 80
+    },
+    "CORRECTION/CORRECTION_PREVIOUS_TURN": {
+      "target": 50,
+      "got": 50
+    },
+    "CORRECTION/NEGATION_OF_NEGATION": {
+      "target": 40,
+      "got": 40
+    },
+    "CORRECTION/CORRECTION_MULTI_ENTITY": {
+      "target": 40,
+      "got": 40
+    },
+    "CORRECTION/BUDGET_PLUS_CORRECTION": {
+      "target": 30,
+      "got": 30
+    },
+    "NEGATION_HARD_NEGATIVE/NEG_SIMPLE": {
+      "target": 120,
+      "got": 120
+    },
+    "NEGATION_HARD_NEGATIVE/MULTI_POS_SINGLE_NEG": {
+      "target": 60,
+      "got": 60
+    },
+    "NEGATION_HARD_NEGATIVE/CORRECTION_X_NOT_Y": {
+      "target": 50,
+      "got": 50
+    },
+    "NEGATION_HARD_NEGATIVE/SOFT_PREFERENCE_NOT_NEGATIVE": {
+      "target": 40,
+      "got": 40
+    },
+    "NEGATION_HARD_NEGATIVE/COMPARISON_NOT_NEGATIVE": {
+      "target": 30,
+      "got": 30
+    },
+    "POSITIVE_MISS_EMPTY/DIRECT_POSITIVE": {
+      "target": 80,
+      "got": 80
+    },
+    "POSITIVE_MISS_EMPTY/COLLOQUIAL_POSITIVE": {
+      "target": 50,
+      "got": 50
+    },
+    "POSITIVE_MISS_EMPTY/IMPLICIT_PURCHASE_INTENT": {
+      "target": 50,
+      "got": 50
+    },
+    "POSITIVE_MISS_EMPTY/MULTI_POSITIVE": {
+      "target": 30,
+      "got": 30
+    },
+    "POSITIVE_MISS_EMPTY/POSITIVE_WITH_BUDGET": {
+      "target": 30,
+      "got": 30
+    },
+    "OVER_EXTRACTION_SUPPRESSION/DIRECT_POSITIVE": {
+      "target": 60,
+      "got": 60
+    },
+    "OVER_EXTRACTION_SUPPRESSION/NEG_SIMPLE": {
+      "target": 40,
+      "got": 40
+    },
+    "OVER_EXTRACTION_SUPPRESSION/SOFT_PREFERENCE_NOT_NEGATIVE": {
+      "target": 40,
+      "got": 40
+    },
+    "OVER_EXTRACTION_SUPPRESSION/AMBIGUOUS_EXPECT_EMPTY": {
+      "target": 40,
+      "got": 40
+    },
+    "CONFLICT_PREVENTION/CORRECTION_X_NOT_Y": {
+      "target": 30,
+      "got": 30
+    },
+    "CONFLICT_PREVENTION/NEG_SIMPLE": {
+      "target": 30,
+      "got": 30
+    },
+    "AMBIGUOUS_EXPECT_EMPTY/AMBIGUOUS_EXPECT_EMPTY": {
+      "target": 60,
+      "got": 60
+    }
+  },
+  "pass": true
+}

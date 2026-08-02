@@ -1,0 +1,4 @@
+{
+  "note": "Process-level CPU/RAM sampling not instrumented in this runner; report latency/error only",
+  "measured_at": "2026-08-02T13:36:22.469358+00:00"
+}

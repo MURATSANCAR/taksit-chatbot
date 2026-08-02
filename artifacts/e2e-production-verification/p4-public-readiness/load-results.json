@@ -1,0 +1,81 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "levels": [
+    {
+      "concurrency": 10,
+      "attempted": 20,
+      "successful": 20,
+      "http_4xx": 0,
+      "http_5xx": 0,
+      "timeout": 0,
+      "http_5xx_rate": 0.0,
+      "latency_ms": {
+        "p50": 2647.526,
+        "p95": 3229.883,
+        "p99": 3229.883,
+        "max": 3233.937
+      },
+      "wall_ms": 5452.797,
+      "forbidden_finance_claim": 0,
+      "cohort_leakage": 0
+    },
+    {
+      "concurrency": 50,
+      "attempted": 100,
+      "successful": 100,
+      "http_4xx": 0,
+      "http_5xx": 0,
+      "timeout": 0,
+      "http_5xx_rate": 0.0,
+      "latency_ms": {
+        "p50": 13369.326,
+        "p95": 14124.713,
+        "p99": 14390.048,
+        "max": 14404.546
+      },
+      "wall_ms": 27349.171,
+      "forbidden_finance_claim": 0,
+      "cohort_leakage": 0
+    },
+    {
+      "concurrency": 100,
+      "attempted": 100,
+      "successful": 100,
+      "http_4xx": 0,
+      "http_5xx": 0,
+      "timeout": 0,
+      "http_5xx_rate": 0.0,
+      "latency_ms": {
+        "p50": 12674.199,
+        "p95": 19055.735,
+        "p99": 19271.208,
+        "max": 19467.323
+      },
+      "wall_ms": 24442.291,
+      "forbidden_finance_claim": 0,
+      "cohort_leakage": 0
+    },
+    {
+      "concurrency": 250,
+      "attempted": 250,
+      "successful": 250,
+      "http_4xx": 0,
+      "http_5xx": 0,
+      "timeout": 0,
+      "http_5xx_rate": 0.0,
+      "latency_ms": {
+        "p50": 18905.3,
+        "p95": 22507.992,
+        "p99": 22866.268,
+        "max": 23213.44
+      },
+      "wall_ms": 71297.073,
+      "forbidden_finance_claim": 0,
+      "cohort_leakage": 0
+    }
+  ],
+  "failed_rules": [],
+  "collapse_at_250": false,
+  "measured_at": "2026-08-02T13:36:22.468451+00:00"
+}

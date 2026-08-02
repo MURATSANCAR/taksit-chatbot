@@ -1,0 +1,74 @@
+{
+  "canonical_entity_counts": {
+    "telefon": 302,
+    "laptop": 122,
+    "tablet": 115,
+    "akıllı saat": 107,
+    "kulaklık": 104,
+    "vantilatör": 104,
+    "monitör": 102,
+    "mikrodalga": 102,
+    "klima": 100,
+    "bisiklet": 100,
+    "çamaşır makinesi": 99,
+    "kahve makinesi": 98,
+    "kamera": 92,
+    "buzdolabı": 91,
+    "yazıcı": 91,
+    "e-bike": 89,
+    "süpürge": 11,
+    "mouse": 11,
+    "hoparlör": 10,
+    "matras": 10,
+    "masaüstü": 9,
+    "klavye": 9,
+    "oyun konsolu": 9,
+    "koltuk": 8,
+    "televizyon": 8,
+    "airfryer": 7
+  },
+  "top10": [
+    [
+      "telefon",
+      302
+    ],
+    [
+      "laptop",
+      122
+    ],
+    [
+      "tablet",
+      115
+    ],
+    [
+      "akıllı saat",
+      107
+    ],
+    [
+      "kulaklık",
+      104
+    ],
+    [
+      "vantilatör",
+      104
+    ],
+    [
+      "monitör",
+      102
+    ],
+    [
+      "mikrodalga",
+      102
+    ],
+    [
+      "klima",
+      100
+    ],
+    [
+      "bisiklet",
+      100
+    ]
+  ],
+  "out_of_ontology_count": 0,
+  "total_entity_mentions": 1910
+}

@@ -1,0 +1,58 @@
+{
+  "policy_version": 1,
+  "stages": [
+    {
+      "percent": 5,
+      "maximum_leakage": 0,
+      "maximum_5xx_rate": 0.001,
+      "maximum_timeout_rate": 0.005,
+      "minimum_request_count": 500,
+      "maximum_forbidden_claim": 0,
+      "minimum_observation_hours": 24,
+      "maximum_critical_difference": 0
+    },
+    {
+      "percent": 25,
+      "maximum_leakage": 0,
+      "maximum_5xx_rate": 0.001,
+      "maximum_timeout_rate": 0.005,
+      "minimum_request_count": 2000,
+      "maximum_forbidden_claim": 0,
+      "minimum_observation_hours": 48,
+      "maximum_critical_difference": 0
+    },
+    {
+      "percent": 50,
+      "maximum_leakage": 0,
+      "maximum_5xx_rate": 0.001,
+      "maximum_timeout_rate": 0.005,
+      "minimum_request_count": 5000,
+      "maximum_forbidden_claim": 0,
+      "minimum_observation_hours": 72,
+      "maximum_critical_difference": 0
+    },
+    {
+      "percent": 100,
+      "maximum_leakage": 0,
+      "maximum_5xx_rate": 0.001,
+      "maximum_timeout_rate": 0.005,
+      "minimum_request_count": 10000,
+      "maximum_forbidden_claim": 0,
+      "minimum_observation_hours": 96,
+      "maximum_critical_difference": 0
+    }
+  ],
+  "rollback_triggers": {
+    "wrong_price": 0,
+    "wrong_product": 0,
+    "cohort_leakage": 0,
+    "mixed_revision": 0,
+    "timeout_rate_gt": 0.01,
+    "http_5xx_rate_gt": 0.001,
+    "critical_difference_gt": 0,
+    "forbidden_finance_claim": 0
+  },
+  "campaign_gate": "CLOSED",
+  "finance_capability": "NOT_APPLICABLE",
+  "measured_at": "2026-08-02T13:52:27.745988+00:00"
+}

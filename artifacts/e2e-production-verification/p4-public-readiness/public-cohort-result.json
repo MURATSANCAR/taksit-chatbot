@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "cohort_code": "internal_ready_merchants",
+  "v1_version": 1,
+  "v1_status": "INTERNAL",
+  "v2_version": 2,
+  "v2_status": "PUBLIC_CANARY",
+  "flow": "DRAFT→SHADOW→PUBLIC_CANARY",
+  "old_version_mutated": 0,
+  "measured_at": "2026-08-02T13:52:27.744927+00:00"
+}

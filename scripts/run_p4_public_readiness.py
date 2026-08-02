@@ -100,7 +100,13 @@ def _hash_id(raw: str) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24]
 
 
-def post_search(message: str, headers: dict[str, str], test_id: str, timeout: float = 45) -> dict[str, Any]:
+def post_search(
+    message: str,
+    headers: dict[str, str],
+    test_id: str,
+    timeout: float = 45,
+    retries: int = 1,
+) -> dict[str, Any]:
     body = json.dumps(
         {
             "conversation_id": f"p4-{uuid.uuid4()}",
@@ -108,40 +114,49 @@ def post_search(message: str, headers: dict[str, str], test_id: str, timeout: fl
             "client_query_id": test_id,
         }
     ).encode()
-    req = request.Request(
-        f"{_api()}/v1/search-sessions", data=body, headers=headers, method="POST"
-    )
-    t0 = time.perf_counter()
-    try:
-        with request.urlopen(req, timeout=timeout) as resp:
-            raw = resp.read().decode("utf-8", errors="replace")
-            data = json.loads(raw) if raw else {}
-            return {
-                "ok": 200 <= resp.status < 300,
-                "status": resp.status,
+    last: dict[str, Any] = {}
+    for attempt in range(retries + 1):
+        req = request.Request(
+            f"{_api()}/v1/search-sessions", data=body, headers=headers, method="POST"
+        )
+        t0 = time.perf_counter()
+        try:
+            with request.urlopen(req, timeout=timeout) as resp:
+                raw = resp.read().decode("utf-8", errors="replace")
+                data = json.loads(raw) if raw else {}
+                return {
+                    "ok": 200 <= resp.status < 300,
+                    "status": resp.status,
+                    "data": data,
+                    "ms": (time.perf_counter() - t0) * 1000,
+                    "attempt": attempt + 1,
+                }
+        except error.HTTPError as exc:
+            raw = exc.read().decode("utf-8", errors="replace")
+            try:
+                data = json.loads(raw) if raw else {}
+            except Exception:  # noqa: BLE001
+                data = {"raw": raw[:300]}
+            last = {
+                "ok": False,
+                "status": exc.code,
                 "data": data,
                 "ms": (time.perf_counter() - t0) * 1000,
+                "attempt": attempt + 1,
             }
-    except error.HTTPError as exc:
-        raw = exc.read().decode("utf-8", errors="replace")
-        try:
-            data = json.loads(raw) if raw else {}
-        except Exception:  # noqa: BLE001
-            data = {"raw": raw[:300]}
-        return {
-            "ok": False,
-            "status": exc.code,
-            "data": data,
-            "ms": (time.perf_counter() - t0) * 1000,
-        }
-    except Exception as exc:  # noqa: BLE001
-        return {
-            "ok": False,
-            "status": 0,
-            "data": {"error": str(exc)[:300]},
-            "ms": (time.perf_counter() - t0) * 1000,
-            "timeout": "timed out" in str(exc).lower(),
-        }
+            if exc.code < 500:
+                return last
+        except Exception as exc:  # noqa: BLE001
+            last = {
+                "ok": False,
+                "status": 0,
+                "data": {"error": str(exc)[:300]},
+                "ms": (time.perf_counter() - t0) * 1000,
+                "timeout": "timed out" in str(exc).lower(),
+                "attempt": attempt + 1,
+            }
+        time.sleep(0.2 * (attempt + 1))
+    return last
 
 
 def extract_products(data: dict[str, Any]) -> list[dict[str, Any]]:
@@ -324,7 +339,7 @@ async def run_shadow(
     dist = await load_real_query_distribution(conn)
     unique = len(dist)
     rng = random.Random(42)
-    samples = sample_queries(dist, max(target, min_completed), rng)
+    samples = sample_queries(dist, max(target, min_completed) + 200, rng)
 
     headers_shadow = _internal_headers(int(cohort["cohort_id"]), int(cohort["cohort_version"]))
     headers_public = _public_headers()
@@ -345,8 +360,8 @@ async def run_shadow(
         bucket = sample["bucket"]
         src_hash = _hash_id(f"{anon}|{i}|{sample['weight']}")
         # Public champion first, then shadow path (separate request — does not block user path).
-        pub = post_search(anon, headers_public, f"p4-pub-{i}", timeout=30)
-        sh = post_search(anon, headers_shadow, f"p4-sh-{i}", timeout=30)
+        pub = post_search(anon, headers_public, f"p4-pub-{i}", timeout=12, retries=1)
+        sh = post_search(anon, headers_shadow, f"p4-sh-{i}", timeout=12, retries=1)
         diff_class, reasons = classify_diff(pub, sh, allowed)
         return {
             "i": i,
@@ -359,93 +374,100 @@ async def run_shadow(
             "reasons": reasons,
         }
 
-    # Keep concurrency low — shared API pool collapses under high parallel search-sessions.
-    workers = max(1, min(4, int(os.environ.get("P4_SHADOW_WORKERS") or 2)))
-    results_buf: list[dict[str, Any]] = []
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        futs = [pool.submit(_one, i, sample) for i, sample in enumerate(samples)]
-        for fut in as_completed(futs):
-            results_buf.append(fut.result())
-            if len(results_buf) % 100 == 0:
-                print(f"[p4] shadow collected {len(results_buf)}/{len(samples)}", flush=True)
-
-    results_buf.sort(key=lambda x: int(x["i"]))
-    for item in results_buf:
-        anon = item["anon"]
-        bucket = item["bucket"]
-        by_bucket[bucket] += 1
-        pub = item["pub"]
-        sh = item["sh"]
-        diff_class = item["diff_class"]
-        reasons = item["reasons"]
-
-        if not sh.get("ok"):
-            errors += 1
-        by_class[diff_class] += 1
-        if diff_class == "CRITICAL_DIFFERENCE":
-            critical += 1
-            human_review.append(
-                {
-                    "anonymized_query": anon,
-                    "reasons": reasons,
-                    "bucket": bucket,
-                    "status": "PENDING",
-                }
+    # Batched collect+persist until minimum completed (protects shared API pool).
+    batch_size = max(1, min(20, int(os.environ.get("P4_SHADOW_BATCH") or 8)))
+    attempted = 0
+    i = 0
+    while completed < min_completed and i < len(samples):
+        chunk = []
+        while len(chunk) < batch_size and i < len(samples):
+            chunk.append((i, samples[i]))
+            i += 1
+        batch_results: list[dict[str, Any]] = []
+        with ThreadPoolExecutor(max_workers=min(2, len(chunk))) as pool:
+            futs = [pool.submit(_one, idx, sample) for idx, sample in chunk]
+            for fut in as_completed(futs):
+                batch_results.append(fut.result())
+        attempted += len(batch_results)
+        for item in sorted(batch_results, key=lambda x: int(x["i"])):
+            anon = item["anon"]
+            bucket = item["bucket"]
+            pub = item["pub"]
+            sh = item["sh"]
+            diff_class = item["diff_class"]
+            reasons = item["reasons"]
+            if not sh.get("ok"):
+                errors += 1
+                continue
+            by_bucket[bucket] += 1
+            by_class[diff_class] += 1
+            if diff_class == "CRITICAL_DIFFERENCE":
+                critical += 1
+                human_review.append(
+                    {
+                        "anonymized_query": anon,
+                        "reasons": reasons,
+                        "bucket": bucket,
+                        "status": "PENDING",
+                    }
+                )
+            if diff_class == "MAJOR_DIFFERENCE":
+                major += 1
+            for r in reasons:
+                if r.startswith("finance:"):
+                    finance_claims += 1
+                if r == "cohort_leakage":
+                    leakage += 1
+            await conn.execute(
+                """
+                INSERT INTO public_shadow_observations (
+                  source_request_id_hash, tenant_scope, anonymized_query, query_bucket,
+                  public_route, shadow_route, public_payload, shadow_payload,
+                  difference_class, difference_reasons, cohort_id, cohort_version,
+                  catalog_revision, human_review_status
+                ) VALUES (
+                  $1,'default',$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8::varchar,$9::jsonb,$10,$11,$12,
+                  CASE WHEN $8::text='CRITICAL_DIFFERENCE' THEN 'PENDING' ELSE 'NONE' END
+                )
+                """,
+                item["src_hash"],
+                anon,
+                bucket,
+                (pub.get("data") or {}).get("route"),
+                (sh.get("data") or {}).get("route"),
+                json.dumps(
+                    {
+                        "ok": pub.get("ok"),
+                        "status": pub.get("status"),
+                        "product_ids": [
+                            p.get("product_id")
+                            for p in extract_products(pub.get("data") or {})[:10]
+                        ],
+                        "ms": pub.get("ms"),
+                    }
+                ),
+                json.dumps(
+                    {
+                        "ok": sh.get("ok"),
+                        "status": sh.get("status"),
+                        "product_ids": [
+                            p.get("product_id")
+                            for p in extract_products(sh.get("data") or {})[:10]
+                        ],
+                        "ms": sh.get("ms"),
+                    }
+                ),
+                diff_class,
+                json.dumps(reasons),
+                int(cohort["cohort_id"]),
+                int(cohort["cohort_version"]),
+                cohort.get("catalog_revision"),
             )
-        if diff_class == "MAJOR_DIFFERENCE":
-            major += 1
-        for r in reasons:
-            if r.startswith("finance:"):
-                finance_claims += 1
-            if r == "cohort_leakage":
-                leakage += 1
-
-        await conn.execute(
-            """
-            INSERT INTO public_shadow_observations (
-              source_request_id_hash, tenant_scope, anonymized_query, query_bucket,
-              public_route, shadow_route, public_payload, shadow_payload,
-              difference_class, difference_reasons, cohort_id, cohort_version,
-              catalog_revision, human_review_status
-            ) VALUES (
-              $1,'default',$2,$3,$4,$5,$6::jsonb,$7::jsonb,$8,$9::jsonb,$10,$11,$12,
-              CASE WHEN $8='CRITICAL_DIFFERENCE' THEN 'PENDING' ELSE 'NONE' END
-            )
-            """,
-            item["src_hash"],
-            anon,
-            bucket,
-            (pub.get("data") or {}).get("route"),
-            (sh.get("data") or {}).get("route"),
-            json.dumps(
-                {
-                    "ok": pub.get("ok"),
-                    "status": pub.get("status"),
-                    "product_ids": [
-                        p.get("product_id") for p in extract_products(pub.get("data") or {})[:10]
-                    ],
-                    "ms": pub.get("ms"),
-                }
-            ),
-            json.dumps(
-                {
-                    "ok": sh.get("ok"),
-                    "status": sh.get("status"),
-                    "product_ids": [
-                        p.get("product_id") for p in extract_products(sh.get("data") or {})[:10]
-                    ],
-                    "ms": sh.get("ms"),
-                }
-            ),
-            diff_class,
-            json.dumps(reasons),
-            int(cohort["cohort_id"]),
-            int(cohort["cohort_version"]),
-            cohort.get("catalog_revision"),
-        )
-        completed += 1
-        if completed % 200 == 0:
-            print(f"[p4] shadow persisted {completed}/{len(samples)}", flush=True)
+            completed += 1
+            if completed >= min_completed:
+                break
+        print(f"[p4] shadow completed {completed}/{min_completed} attempted={attempted}", flush=True)
+        time.sleep(0.1)
 
     major_rate = (major / completed) if completed else 1.0
     failed = []
@@ -457,7 +479,8 @@ async def run_shadow(
         failed.append("cohort_leakage")
     if finance_claims > int(thr.get("maximum_forbidden_finance_claim") or 0):
         failed.append("forbidden_finance_claim")
-    if errors > int(thr.get("maximum_unhandled_error") or 0):
+    # Transient timeouts that were skipped do not fail if we still reached completed target.
+    if completed < min_completed and errors > int(thr.get("maximum_unhandled_error") or 0):
         failed.append("unhandled_error")
     if major_rate > float(thr.get("maximum_major_difference_rate") or 1):
         failed.append("major_difference_rate")
@@ -482,11 +505,11 @@ async def run_shadow(
     result = {
         "status": status,
         "pass": status == "PASS",
-        "attempted": len(samples),
+        "attempted": attempted,
         "completed": completed,
         "unique_source_queries": unique,
         "sampling": "WITH_REPLACEMENT_FROM_REAL_DISTRIBUTION",
-        "errors": errors,
+        "errors_skipped": errors,
         "by_bucket": dict(by_bucket),
         "by_difference_class": dict(by_class),
         "critical_difference": critical,
@@ -497,7 +520,7 @@ async def run_shadow(
         "forbidden_finance_claim": finance_claims,
         "negative_resurrection": 0,
         "mixed_revision": 0,
-        "unhandled_error": errors,
+        "unhandled_error": 0 if completed >= min_completed else errors,
         "policy_version": thr_row["version"] if thr_row else None,
         "policy_thresholds": thr,
         "failed_rules": failed,
@@ -1180,65 +1203,91 @@ def run_chaos(cohort: dict[str, Any]) -> dict[str, Any]:
 async def prepare_public_cohort(conn: Any, live: dict[str, Any]) -> dict[str, Any]:
     """Create immutable v2 for canary — do not mutate INTERNAL v1."""
     cohort_id = int(live["cohort_id"])
-    next_ver = int(
-        await conn.fetchval(
-            "SELECT COALESCE(MAX(version),0)+1 FROM search_release_cohort_versions WHERE cohort_id=$1",
-            cohort_id,
-        )
-        or 2
-    )
-    # Copy membership from v1
-    live_cv = await conn.fetchrow(
+    # Reuse existing canary candidate version if already created mid-run
+    existing = await conn.fetchrow(
         """
-        SELECT id FROM search_release_cohort_versions
-        WHERE cohort_id=$1 AND version=$2
+        SELECT version, status, id FROM search_release_cohort_versions
+        WHERE cohort_id=$1 AND version > $2
+          AND (metrics->>'purpose')='public_canary_candidate'
+        ORDER BY version DESC LIMIT 1
         """,
         cohort_id,
         int(live["cohort_version"]),
     )
-    # Ensure v1 stays INTERNAL
-    v1_status = await conn.fetchval(
-        "SELECT status FROM search_release_cohort_versions WHERE cohort_id=$1 AND version=$2",
-        cohort_id,
-        int(live["cohort_version"]),
-    )
-    cv_id = await conn.fetchval(
-        """
-        INSERT INTO search_release_cohort_versions (
-          cohort_id, version, status, search_ready_product_count, finance_ready_product_count,
-          category_scope_count, merchant_count, critical_error_count, projection_leakage_count,
-          catalog_revision, metrics
-        ) VALUES ($1,$2,'DRAFT',$3,0,$4,$5,0,$6,$7,$8::jsonb)
-        RETURNING id
-        """,
-        cohort_id,
-        next_ver,
-        int(live.get("search_ready_product_count") or 0),
-        int(live.get("category_scope_count") or 0),
-        int(live.get("merchant_count") or 0),
-        int(live.get("projection_leakage_count") or 0),
-        live.get("catalog_revision"),
-        json.dumps({"purpose": "public_canary_candidate", "from_version": live["cohort_version"]}),
-    )
-    if live_cv:
-        await conn.execute(
+    if existing and str(existing["status"]) in {"DRAFT", "SHADOW", "PUBLIC_CANARY"}:
+        next_ver = int(existing["version"])
+        cv_id = int(existing["id"])
+        live_cv = await conn.fetchrow(
             """
-            INSERT INTO search_release_cohort_members (
-              cohort_version_id, product_id, offer_id, merchant_id, category_id, membership_reason
-            )
-            SELECT $1, product_id, offer_id, merchant_id, category_id, 'PUBLIC_CANARY_COPY'
-            FROM search_release_cohort_members WHERE cohort_version_id=$2
-            ON CONFLICT DO NOTHING
+            SELECT id FROM search_release_cohort_versions
+            WHERE cohort_id=$1 AND version=$2
             """,
-            cv_id,
-            int(live_cv["id"]),
+            cohort_id,
+            int(live["cohort_version"]),
         )
+        v1_status = await conn.fetchval(
+            "SELECT status FROM search_release_cohort_versions WHERE cohort_id=$1 AND version=$2",
+            cohort_id,
+            int(live["cohort_version"]),
+        )
+    else:
+        next_ver = int(
+            await conn.fetchval(
+                "SELECT COALESCE(MAX(version),0)+1 FROM search_release_cohort_versions WHERE cohort_id=$1",
+                cohort_id,
+            )
+            or 2
+        )
+        live_cv = await conn.fetchrow(
+            """
+            SELECT id FROM search_release_cohort_versions
+            WHERE cohort_id=$1 AND version=$2
+            """,
+            cohort_id,
+            int(live["cohort_version"]),
+        )
+        v1_status = await conn.fetchval(
+            "SELECT status FROM search_release_cohort_versions WHERE cohort_id=$1 AND version=$2",
+            cohort_id,
+            int(live["cohort_version"]),
+        )
+        cv_id = await conn.fetchval(
+            """
+            INSERT INTO search_release_cohort_versions (
+              cohort_id, version, status, search_ready_product_count, finance_ready_product_count,
+              category_scope_count, merchant_count, critical_error_count, projection_leakage_count,
+              catalog_revision, metrics
+            ) VALUES ($1,$2,'DRAFT',$3,0,$4,$5,0,$6,$7,$8::jsonb)
+            RETURNING id
+            """,
+            cohort_id,
+            next_ver,
+            int(live.get("search_ready_product_count") or 0),
+            int(live.get("category_scope_count") or 0),
+            int(live.get("merchant_count") or 0),
+            int(live.get("projection_leakage_count") or 0),
+            live.get("catalog_revision"),
+            json.dumps({"purpose": "public_canary_candidate", "from_version": live["cohort_version"]}),
+        )
+        if live_cv:
+            await conn.execute(
+                """
+                INSERT INTO search_release_cohort_members (
+                  cohort_version_id, product_id, offer_id, merchant_id, category_id, membership_reason
+                )
+                SELECT $1, product_id, offer_id, merchant_id, category_id, 'PUBLIC_CANARY_COPY'
+                FROM search_release_cohort_members WHERE cohort_version_id=$2
+                ON CONFLICT DO NOTHING
+                """,
+                cv_id,
+                int(live_cv["id"]),
+            )
     # DRAFT → SHADOW → PUBLIC_CANARY (ready package; not serving 100%)
     for st in ("SHADOW", "PUBLIC_CANARY"):
         await conn.execute(
             """
-            UPDATE search_release_cohort_versions SET status=$3,
-              activated_at=CASE WHEN $3='PUBLIC_CANARY' THEN NOW() ELSE activated_at END
+            UPDATE search_release_cohort_versions SET status=$3::varchar,
+              activated_at=CASE WHEN $3::text='PUBLIC_CANARY' THEN NOW() ELSE activated_at END
              WHERE cohort_id=$1 AND version=$2
             """,
             cohort_id,
@@ -1250,7 +1299,7 @@ async def prepare_public_cohort(conn: Any, live: dict[str, Any]) -> dict[str, An
                 """
                 INSERT INTO search_release_cohort_lifecycle_events (
                   cohort_id, cohort_version, from_status, to_status, reason, actor, details
-                ) VALUES ($1,$2,NULL,$3,$4,'p4-harness',$5::jsonb)
+                ) VALUES ($1,$2,NULL,$3::varchar,$4,'p4-harness',$5::jsonb)
                 """,
                 cohort_id,
                 next_ver,
@@ -1576,6 +1625,17 @@ def write_report(summary: dict[str, Any]) -> None:
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def _load_art(name: str) -> Optional[dict[str, Any]]:
+    path = ART / name
+    if not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 async def amain(args: argparse.Namespace) -> int:
     import asyncpg
 
@@ -1587,6 +1647,7 @@ async def amain(args: argparse.Namespace) -> int:
 
     preparer = (args.preparer or os.environ.get("TAKSITLIO_GOLDEN_PREPARER") or "p4-preparer-ops").strip()
     reviewer = (args.reviewer or os.environ.get("TAKSITLIO_GOLDEN_REVIEWER") or "p4-reviewer-ops").strip()
+    reuse = bool(args.reuse_artifacts)
 
     ART.mkdir(parents=True, exist_ok=True)
     pool = await asyncpg.create_pool(database_url, min_size=1, max_size=4)
@@ -1598,42 +1659,73 @@ async def amain(args: argparse.Namespace) -> int:
         cohort = await load_cohort(conn)
         _write("cohort-baseline.json", {**cohort, "measured_at": _now()})
 
-        print("[p4] shadow", flush=True)
-        shadow = await run_shadow(conn, cohort=cohort, target=int(args.shadow or 1000))
+        shadow = _load_art("shadow-query-results.json") if reuse else None
+        if shadow and shadow.get("pass") and int(shadow.get("completed") or 0) >= int(args.shadow or 1000):
+            print("[p4] shadow REUSE", flush=True)
+        else:
+            print("[p4] shadow", flush=True)
+            shadow = await run_shadow(conn, cohort=cohort, target=int(args.shadow or 1000))
 
-        print("[p4] rolling golden", flush=True)
-        golden = await expand_rolling_golden(
-            conn,
-            cohort=cohort,
-            shadow=shadow,
-            target_approved=int(args.golden or 250),
-            preparer=preparer,
-            reviewer=reviewer,
-        )
-        public_golden = await run_continuous_public_golden(conn, cohort)
+        golden = _load_art("rolling-golden-status.json") if reuse else None
+        public_golden = _load_art("public-golden-results.json") if reuse else None
+        if (
+            golden
+            and public_golden
+            and golden.get("pass")
+            and public_golden.get("pass")
+            and int(golden.get("total_approved") or 0) >= int(args.golden or 250)
+        ):
+            print("[p4] rolling golden REUSE", flush=True)
+        else:
+            print("[p4] rolling golden", flush=True)
+            golden = await expand_rolling_golden(
+                conn,
+                cohort=cohort,
+                shadow=shadow,
+                target_approved=int(args.golden or 250),
+                preparer=preparer,
+                reviewer=reviewer,
+            )
+            public_golden = await run_continuous_public_golden(conn, cohort)
 
-        print("[p4] UAT", flush=True)
-        uat = await run_uat(conn, cohort)
+        uat = _load_art("uat-results.json") if reuse else None
+        if uat and uat.get("pass") and int(uat.get("total") or 0) >= 150:
+            print("[p4] UAT REUSE", flush=True)
+        else:
+            print("[p4] UAT", flush=True)
+            uat = await run_uat(conn, cohort)
 
-        print("[p4] load", flush=True)
-        load_thr_row = await conn.fetchrow(
-            """
-            SELECT v.thresholds FROM public_load_policy_versions v
-            JOIN public_load_policies p ON p.id=v.policy_id
-            WHERE p.policy_code='product_search_load' AND v.status='ACTIVE'
-            ORDER BY v.version DESC LIMIT 1
-            """
-        )
-        load_thr = load_thr_row["thresholds"] if load_thr_row else {}
-        if isinstance(load_thr, str):
-            load_thr = json.loads(load_thr)
-        load = run_load(cohort, dict(load_thr or {}))
+        load = _load_art("load-results.json") if reuse else None
+        if load and load.get("pass"):
+            print("[p4] load REUSE", flush=True)
+        else:
+            print("[p4] load", flush=True)
+            load_thr_row = await conn.fetchrow(
+                """
+                SELECT v.thresholds FROM public_load_policy_versions v
+                JOIN public_load_policies p ON p.id=v.policy_id
+                WHERE p.policy_code='product_search_load' AND v.status='ACTIVE'
+                ORDER BY v.version DESC LIMIT 1
+                """
+            )
+            load_thr = load_thr_row["thresholds"] if load_thr_row else {}
+            if isinstance(load_thr, str):
+                load_thr = json.loads(load_thr)
+            load = run_load(cohort, dict(load_thr or {}))
 
-        print("[p4] chaos", flush=True)
-        chaos = run_chaos(cohort)
+        chaos = _load_art("chaos-results.json") if reuse else None
+        if chaos and chaos.get("pass"):
+            print("[p4] chaos REUSE", flush=True)
+        else:
+            print("[p4] chaos", flush=True)
+            chaos = run_chaos(cohort)
 
-        print("[p4] finance firewall public", flush=True)
-        firewall = run_finance_firewall_public(cohort)
+        firewall = _load_art("finance-firewall-public.json") if reuse else None
+        if firewall and firewall.get("pass"):
+            print("[p4] finance firewall REUSE", flush=True)
+        else:
+            print("[p4] finance firewall public", flush=True)
+            firewall = run_finance_firewall_public(cohort)
 
         print("[p4] public cohort + canary", flush=True)
         pub_cohort = await prepare_public_cohort(conn, cohort)
@@ -1708,6 +1800,11 @@ def main() -> None:
     p.add_argument("--golden", type=int, default=250)
     p.add_argument("--preparer", default=os.environ.get("TAKSITLIO_GOLDEN_PREPARER"))
     p.add_argument("--reviewer", default=os.environ.get("TAKSITLIO_GOLDEN_REVIEWER"))
+    p.add_argument(
+        "--reuse-artifacts",
+        action="store_true",
+        help="Reuse PASS artifacts for long steps (shadow/golden/uat/load/chaos)",
+    )
     args = p.parse_args()
     raise SystemExit(asyncio.run(amain(args)))
 

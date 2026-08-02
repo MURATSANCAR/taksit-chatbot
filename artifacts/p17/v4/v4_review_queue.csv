@@ -1,0 +1,9 @@
+id,utterance,reason,family,pattern,blocker
+p17v4-negation_hard_negative-soft_preference_not_negative-0000,"yazici önceliğim değil, ekran monitör da olur · v4-neg0-1",soft_preference_interpretation_uncertainty,NEGATION_HARD_NEGATIVE,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-negation_hard_negative-soft_preference_not_negative-0011,"tlfn olmasa da olur, dizustu bilgisayar daha iyi · v4-neg11-12",soft_preference_interpretation_uncertainty,NEGATION_HARD_NEGATIVE,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-negation_hard_negative-soft_preference_not_negative-0022,apple watch istiyorum; kulaklık ikinci planda · v4-neg22-23,soft_preference_interpretation_uncertainty,NEGATION_HARD_NEGATIVE,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-negation_hard_negative-soft_preference_not_negative-0033,mobil kötü demiyorum ama dslr tercih ederim · v4-neg33-34,soft_preference_interpretation_uncertainty,NEGATION_HARD_NEGATIVE,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-over_extraction_suppression-soft_preference_not_negative-0000,no frost odaklıyım camasir makinesi belki sonra · v4-ove0-1,soft_preference_interpretation_uncertainty,OVER_EXTRACTION_SUPPRESSION,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-over_extraction_suppression-soft_preference_not_negative-0011,önce lazer yazıcı; monitor ikinci tercih olabilir · v4-ove11-12,soft_preference_interpretation_uncertainty,OVER_EXTRACTION_SUPPRESSION,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-over_extraction_suppression-soft_preference_not_negative-0022,"telefon istiyorum, laptop şart değil · v4-ove22-23",soft_preference_interpretation_uncertainty,OVER_EXTRACTION_SUPPRESSION,SOFT_PREFERENCE_NOT_NEGATIVE,False
+p17v4-over_extraction_suppression-soft_preference_not_negative-0033,bluetooth kulaklık odaklıyım apple watch belki sonra · v4-ove33-34,soft_preference_interpretation_uncertainty,OVER_EXTRACTION_SUPPRESSION,SOFT_PREFERENCE_NOT_NEGATIVE,False

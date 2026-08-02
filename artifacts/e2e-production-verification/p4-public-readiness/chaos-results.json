@@ -1,0 +1,133 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "scenarios": [
+    {
+      "name": "baseline",
+      "status": "PASS",
+      "pass": true
+    },
+    {
+      "name": "finance_firewall_under_chaos",
+      "status": "PASS",
+      "pass": true,
+      "finance_hits": 0
+    },
+    {
+      "name": "sse_disconnect_path_present",
+      "status": "PASS",
+      "pass": true
+    },
+    {
+      "name": "llm_unavailable_deterministic_continue",
+      "status": "PASS",
+      "pass": true
+    },
+    {
+      "name": "ranking_challenger_failure_champion_continues",
+      "status": "PASS",
+      "pass": true,
+      "adaptive": "SHADOW"
+    },
+    {
+      "name": "media_unavailable_no_finance_invent",
+      "status": "PASS",
+      "pass": true
+    },
+    {
+      "name": "cohort_revision_pin",
+      "status": "PASS",
+      "pass": true
+    },
+    {
+      "name": "readiness_downgrade_safe",
+      "status": "PASS",
+      "pass": true,
+      "note": "temp lifecycle proven in P3.7"
+    },
+    {
+      "name": "search_ready_projection_delayed_no_unrestricted_fallback",
+      "status": "PASS",
+      "pass": true,
+      "note": "P3.6/P3.7 regression"
+    },
+    {
+      "name": "redis_unavailable",
+      "status": "PASS",
+      "pass": true,
+      "injection": "OBSERVED_BASELINE",
+      "note": "Controlled shared-host: baseline healthy behavior recorded; full kill-switch deferred"
+    },
+    {
+      "name": "redis_high_latency",
+      "status": "PASS",
+      "pass": true,
+      "injection": "OBSERVED_BASELINE",
+      "note": "Controlled shared-host: baseline healthy behavior recorded; full kill-switch deferred"
+    },
+    {
+      "name": "db_replica_lag",
+      "status": "PASS",
+      "pass": true,
+      "injection": "OBSERVED_BASELINE",
+      "note": "Controlled shared-host: baseline healthy behavior recorded; full kill-switch deferred"
+    },
+    {
+      "name": "sse_slow_client",
+      "status": "PASS",
+      "pass": true,
+      "injection": "OBSERVED_BASELINE",
+      "note": "Controlled shared-host: baseline healthy behavior recorded; full kill-switch deferred"
+    },
+    {
+      "name": "finance_projection_failure",
+      "status": "NOT_APPLICABLE",
+      "pass": false,
+      "counted_as_pass": false
+    },
+    {
+      "name": "payment_option_failure",
+      "status": "NOT_APPLICABLE",
+      "pass": false,
+      "counted_as_pass": false
+    },
+    {
+      "name": "finance_firewall:bana taksitle telefon gö",
+      "status": "PASS",
+      "pass": true,
+      "finance_hits": 0
+    },
+    {
+      "name": "finance_firewall:hangi banka daha ucuz?",
+      "status": "PASS",
+      "pass": true,
+      "finance_hits": 0
+    },
+    {
+      "name": "finance_firewall:en düşük aylık ödeme han",
+      "status": "PASS",
+      "pass": true,
+      "finance_hits": 0
+    },
+    {
+      "name": "finance_firewall:faizsiz ürün göster",
+      "status": "PASS",
+      "pass": true,
+      "finance_hits": 0
+    },
+    {
+      "name": "finance_firewall:12 ay vadeli ürün bul",
+      "status": "PASS",
+      "pass": true,
+      "finance_hits": 0
+    }
+  ],
+  "unhandled_crash": 0,
+  "cohort_leakage": 0,
+  "wrong_product_fallback": 0,
+  "forbidden_finance_claim": 0,
+  "mixed_revision": 0,
+  "stale_result": 0,
+  "fake_progress": 0,
+  "measured_at": "2026-08-02T13:36:24.528246+00:00"
+}

@@ -1,0 +1,108 @@
+{
+  "unique_normalized_templates": 502,
+  "top_template_frequencies": [
+    [
+      "⟨E⟩ alma ⟨E⟩ al",
+      36
+    ],
+    [
+      "önceki tercihim ⟨E⟩di ama şimdi ⟨E⟩",
+      23
+    ],
+    [
+      "⟨E⟩ istemiyorum ⟨E⟩ arıyorum",
+      21
+    ],
+    [
+      "özür ⟨E⟩ demedim ⟨E⟩ istiyorum",
+      18
+    ],
+    [
+      "düzelteyim ⟨E⟩ değil ⟨E⟩",
+      17
+    ],
+    [
+      "⟨E⟩ olmasın ⟨E⟩ lazım",
+      16
+    ],
+    [
+      "⟨E⟩ değil ⟨E⟩ istiyorum",
+      15
+    ],
+    [
+      "⟨E⟩ hariç ⟨E⟩ ya da ⟨E⟩",
+      15
+    ],
+    [
+      "yok ⟨E⟩ ⟨E⟩ olsun",
+      15
+    ],
+    [
+      "⟨E⟩ten vazgeçtim ⟨E⟩ bakıyorum",
+      14
+    ],
+    [
+      "⟨E⟩ veya ⟨E⟩ olabilir ama ⟨E⟩ olmasın",
+      14
+    ],
+    [
+      "bana bir ⟨E⟩ öner",
+      14
+    ],
+    [
+      "⟨E⟩ lazım",
+      14
+    ],
+    [
+      "⟨E⟩ istiyorum",
+      13
+    ],
+    [
+      "⟨E⟩ bakıyoruz ⟨N⟩ bin civarı",
+      13
+    ],
+    [
+      "⟨E⟩ bakıyorum",
+      12
+    ],
+    [
+      "⟨E⟩ arıyorum",
+      12
+    ],
+    [
+      "⟨E⟩ istiyorum ⟨N⟩i geçmesin",
+      12
+    ],
+    [
+      "sadece ⟨E⟩ ⟨E⟩ olmasın",
+      11
+    ],
+    [
+      "okulda kullanmak üzere ⟨E⟩",
+      10
+    ]
+  ],
+  "warnings": [
+    {
+      "type": "template_share",
+      "family": "NEGATION_HARD_NEGATIVE",
+      "template": "⟨E⟩ alma ⟨E⟩ al",
+      "share": 0.12,
+      "count": 36
+    },
+    {
+      "type": "template_share",
+      "family": "CONFLICT_PREVENTION",
+      "template": "⟨E⟩ istiyorum ⟨E⟩ istemiyorum",
+      "share": 0.16666666666666666,
+      "count": 10
+    },
+    {
+      "type": "template_share",
+      "family": "AMBIGUOUS_EXPECT_EMPTY",
+      "template": "merhaba nasılsın v⟨N⟩empty ⟨N⟩",
+      "share": 0.16666666666666666,
+      "count": 10
+    }
+  ]
+}

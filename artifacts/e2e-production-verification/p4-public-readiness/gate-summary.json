@@ -1,0 +1,31 @@
+{
+  "gates": {
+    "REAL_SHADOW_GATE": "PASS",
+    "SHADOW_DIFFERENCE_GATE": "PASS",
+    "PUBLIC_GOLDEN_GATE": "PASS",
+    "HUMAN_UAT_GATE": "PASS",
+    "LOAD_GATE": "PASS",
+    "CHAOS_GATE": "PASS",
+    "PUBLIC_COHORT_GATE": "PASS",
+    "CANARY_CONFIGURATION_GATE": "PASS",
+    "ROLLBACK_GATE": "PASS",
+    "FINANCE_FIREWALL_PUBLIC_GATE": "PASS"
+  },
+  "decision": {
+    "decision": "P4_PUBLIC_CONDITIONALLY_READY",
+    "blockers": [
+      "HUMAN_UAT_EXTERNAL_PANEL_PENDING",
+      "SHADOW_UNIQUE_QUERY_DIVERSITY_LOW"
+    ],
+    "criticals": [],
+    "public_100_cutover": false,
+    "canary_percent_allowed": 0,
+    "campaign_gate": "CLOSED",
+    "finance": "NOT_APPLICABLE_BLOCKED",
+    "honesty_notes": [
+      "P4_PUBLIC_CANARY_READY requires external multi-role human panel + diverse unique shadow queries.",
+      "Structured operator UAT and with-replacement shadow from small unique base → CONDITIONALLY_READY at best."
+    ]
+  },
+  "measured_at": "2026-08-02T13:52:27.925447+00:00"
+}

@@ -1,0 +1,40 @@
+{
+  "experiment_id": "P17-V4-DATASET-BUILD-001",
+  "delta_row_count": 1200,
+  "family_pass": true,
+  "pattern_pass": true,
+  "schema_fail": 0,
+  "conflict": 0,
+  "forbidden": 0,
+  "exact_dup": 0,
+  "near_eval": 0,
+  "unresolved_blockers": 0,
+  "blockers": [],
+  "warnings": [
+    {
+      "type": "template_share",
+      "family": "NEGATION_HARD_NEGATIVE",
+      "template": "⟨E⟩ alma ⟨E⟩ al",
+      "share": 0.12,
+      "count": 36
+    },
+    {
+      "type": "template_share",
+      "family": "CONFLICT_PREVENTION",
+      "template": "⟨E⟩ istiyorum ⟨E⟩ istemiyorum",
+      "share": 0.16666666666666666,
+      "count": 10
+    },
+    {
+      "type": "template_share",
+      "family": "AMBIGUOUS_EXPECT_EMPTY",
+      "template": "merhaba nasılsın v⟨N⟩empty ⟨N⟩",
+      "share": 0.16666666666666666,
+      "count": 10
+    }
+  ],
+  "decision": "V4_DATASET_BUILD_READY_FOR_SFT",
+  "campaign_gate": "CLOSED",
+  "v4_training": "NOT_STARTED",
+  "quant_attribution": "NOT_TESTED"
+}

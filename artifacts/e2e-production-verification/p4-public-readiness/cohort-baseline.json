@@ -1,0 +1,16 @@
+{
+  "cohort_id": 1,
+  "cohort_code": "internal_ready_merchants",
+  "cohort_version": 1,
+  "status": "INTERNAL",
+  "search_ready_product_count": 1054,
+  "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+  "merchant_count": 2,
+  "category_scope_count": 326,
+  "projection_leakage_count": 0,
+  "merchant_codes": [
+    "m-vatan",
+    "m-hepsiburada"
+  ],
+  "measured_at": "2026-08-02T13:52:27.736940+00:00"
+}

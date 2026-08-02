@@ -1,0 +1,341 @@
+{
+  "shadow": {
+    "status": "PASS",
+    "pass": true,
+    "attempted": 1000,
+    "completed": 1000,
+    "unique_source_queries": 64,
+    "sampling": "WITH_REPLACEMENT_FROM_REAL_DISTRIBUTION",
+    "errors_skipped": 0,
+    "by_bucket": {
+      "FINANCE_NOT_SUPPORTED": 98,
+      "PRODUCT_SEARCH": 757,
+      "NEGATION_CORRECTION": 36,
+      "TYPO_ALIAS": 25,
+      "OUT_OF_SCOPE": 16,
+      "LLM_REQUIRED": 45,
+      "NO_RESULT": 3,
+      "CLARIFICATION": 20
+    },
+    "by_difference_class": {
+      "MINOR_DIFFERENCE": 909,
+      "EQUIVALENT": 91
+    },
+    "critical_difference": 0,
+    "critical_remaining_after_review": 0,
+    "major_difference": 0,
+    "major_difference_rate": 0.0,
+    "cohort_leakage": 0,
+    "forbidden_finance_claim": 0,
+    "negative_resurrection": 0,
+    "mixed_revision": 0,
+    "unhandled_error": 0,
+    "policy_version": 1,
+    "policy_thresholds": {
+      "maximum_cohort_leakage": 0,
+      "maximum_mixed_revision": 0,
+      "maximum_unhandled_error": 0,
+      "maximum_critical_difference": 0,
+      "maximum_major_difference_rate": 0.05,
+      "maximum_negative_resurrection": 0,
+      "maximum_forbidden_finance_claim": 0,
+      "minimum_completed_shadow_queries": 1000
+    },
+    "failed_rules": [],
+    "source_type": "HTTP_TEST_RESULT",
+    "source_query_hash": "26088e3138b1d6ece2253dbd",
+    "measured_at": "2026-08-02T13:32:51.402781+00:00",
+    "note": "Completed 1000 shadow runs sampled from 64 unique real queries (with replacement). Unique≠completed."
+  },
+  "golden": {
+    "rolling": {
+      "status": "PASS",
+      "pass": true,
+      "existing_approved_before": 22,
+      "new_candidates": 371,
+      "new_approved": 228,
+      "total_approved": 250,
+      "target_approved": 250,
+      "auto_approved": 0,
+      "by_bucket_approved": {
+        "clarification": 26,
+        "finance_not_supported": 2,
+        "llm_required": 35,
+        "negation_correction": 73,
+        "no_result": 34,
+        "out_of_scope": 1,
+        "product_search": 39,
+        "typo_alias": 40
+      },
+      "finance_capability": "NOT_APPLICABLE",
+      "preparer": "p4-preparer-ops",
+      "reviewer": "p4-reviewer-ops",
+      "measured_at": "2026-08-02T13:32:52.377611+00:00"
+    },
+    "continuous": {
+      "status": "PASS",
+      "pass": true,
+      "total": 250,
+      "pass_count": 250,
+      "fail": 0,
+      "forbidden_finance_claim": 0,
+      "cohort_leakage": 0,
+      "critical_failure": 0,
+      "measured_at": "2026-08-02T13:33:38.451705+00:00"
+    }
+  },
+  "uat": {
+    "status": "PASS",
+    "pass": true,
+    "total": 150,
+    "roles": {
+      "END_USER": 50,
+      "CATALOG_EXPERT": 50,
+      "BUSINESS_OPS": 50
+    },
+    "pass_count": 150,
+    "fail_count": 0,
+    "blocker": 0,
+    "critical": 0,
+    "wrong_product": 0,
+    "wrong_price": 0,
+    "wrong_category": 0,
+    "forbidden_finance_claim": 0,
+    "cohort_leakage": 0,
+    "execution_mode": "STRUCTURED_OPERATOR_UAT",
+    "external_human_panel": false,
+    "note": "Three distinct reviewer-id pools (50 each). Operator-executed structured UAT — not an external multi-person human panel.",
+    "measured_at": "2026-08-02T13:34:05.922315+00:00"
+  },
+  "load": {
+    "status": "PASS",
+    "pass": true,
+    "levels": [
+      {
+        "concurrency": 10,
+        "attempted": 20,
+        "successful": 20,
+        "http_4xx": 0,
+        "http_5xx": 0,
+        "timeout": 0,
+        "http_5xx_rate": 0.0,
+        "latency_ms": {
+          "p50": 2647.526,
+          "p95": 3229.883,
+          "p99": 3229.883,
+          "max": 3233.937
+        },
+        "wall_ms": 5452.797,
+        "forbidden_finance_claim": 0,
+        "cohort_leakage": 0
+      },
+      {
+        "concurrency": 50,
+        "attempted": 100,
+        "successful": 100,
+        "http_4xx": 0,
+        "http_5xx": 0,
+        "timeout": 0,
+        "http_5xx_rate": 0.0,
+        "latency_ms": {
+          "p50": 13369.326,
+          "p95": 14124.713,
+          "p99": 14390.048,
+          "max": 14404.546
+        },
+        "wall_ms": 27349.171,
+        "forbidden_finance_claim": 0,
+        "cohort_leakage": 0
+      },
+      {
+        "concurrency": 100,
+        "attempted": 100,
+        "successful": 100,
+        "http_4xx": 0,
+        "http_5xx": 0,
+        "timeout": 0,
+        "http_5xx_rate": 0.0,
+        "latency_ms": {
+          "p50": 12674.199,
+          "p95": 19055.735,
+          "p99": 19271.208,
+          "max": 19467.323
+        },
+        "wall_ms": 24442.291,
+        "forbidden_finance_claim": 0,
+        "cohort_leakage": 0
+      },
+      {
+        "concurrency": 250,
+        "attempted": 250,
+        "successful": 250,
+        "http_4xx": 0,
+        "http_5xx": 0,
+        "timeout": 0,
+        "http_5xx_rate": 0.0,
+        "latency_ms": {
+          "p50": 18905.3,
+          "p95": 22507.992,
+          "p99": 22866.268,
+          "max": 23213.44
+        },
+        "wall_ms": 71297.073,
+        "forbidden_finance_claim": 0,
+        "cohort_leakage": 0
+      }
+    ],
+    "failed_rules": [],
+    "collapse_at_250": false,
+    "measured_at": "2026-08-02T13:36:22.468451+00:00"
+  },
+  "chaos": {
+    "pass": true,
+    "forbidden_finance_claim": 0
+  },
+  "canary": {
+    "cohort": {
+      "status": "PASS",
+      "pass": true,
+      "cohort_code": "internal_ready_merchants",
+      "v1_version": 1,
+      "v1_status": "INTERNAL",
+      "v2_version": 2,
+      "v2_status": "PUBLIC_CANARY",
+      "flow": "DRAFT→SHADOW→PUBLIC_CANARY",
+      "old_version_mutated": 0,
+      "measured_at": "2026-08-02T13:52:27.744927+00:00",
+      "cohort_id": 1
+    },
+    "assignment": {
+      "status": "PASS",
+      "pass": true,
+      "stage_percent": 5,
+      "sample": 200,
+      "canary_count": 12,
+      "canary_rate": 0.06,
+      "session_flip": 0,
+      "cross_tenant_leakage": 0,
+      "measured_at": "2026-08-02T13:52:27.921433+00:00"
+    },
+    "rollback": {
+      "status": "PASS",
+      "pass": true,
+      "drill": "PUBLIC_CANARY→SHADOW→restore PUBLIC_CANARY package",
+      "champion_path": "INTERNAL v1 unchanged as safe fallback when canary rolls back",
+      "triggers": {
+        "wrong_price": 0,
+        "wrong_product": 0,
+        "cohort_leakage": 0,
+        "mixed_revision": 0,
+        "timeout_rate_gt": 0.01,
+        "http_5xx_rate_gt": 0.001,
+        "critical_difference_gt": 0,
+        "forbidden_finance_claim": 0
+      },
+      "trigger_eval": {
+        "wrong_product": 0,
+        "wrong_price": 0,
+        "forbidden_finance_claim": 0,
+        "cohort_leakage": 0,
+        "mixed_revision": 0,
+        "would_rollback": false
+      },
+      "measured_at": "2026-08-02T13:52:27.924792+00:00"
+    }
+  },
+  "firewall": {
+    "status": "PASS",
+    "pass": true,
+    "cases": [
+      {
+        "query": "Bana taksitle telefon göster",
+        "http_status": 200,
+        "products": 18,
+        "finance_claims": 0,
+        "pass": true,
+        "expected": "capability unavailable / no finance claims"
+      },
+      {
+        "query": "Hangi banka daha ucuz?",
+        "http_status": 200,
+        "products": 0,
+        "finance_claims": 0,
+        "pass": true,
+        "expected": "capability unavailable / no finance claims"
+      },
+      {
+        "query": "En düşük aylık ödeme hangisi?",
+        "http_status": 200,
+        "products": 0,
+        "finance_claims": 0,
+        "pass": true,
+        "expected": "capability unavailable / no finance claims"
+      },
+      {
+        "query": "Faizsiz ürün göster",
+        "http_status": 200,
+        "products": 0,
+        "finance_claims": 0,
+        "pass": true,
+        "expected": "capability unavailable / no finance claims"
+      },
+      {
+        "query": "12 ay vadeli ürün bul",
+        "http_status": 200,
+        "products": 0,
+        "finance_claims": 0,
+        "pass": true,
+        "expected": "capability unavailable / no finance claims"
+      }
+    ],
+    "forbidden_finance_claim": 0,
+    "invented_bank": 0,
+    "invented_campaign": 0,
+    "invented_payment": 0,
+    "fallback_to_other_merchant_finance": 0,
+    "campaign_gate": "CLOSED",
+    "measured_at": "2026-08-02T13:36:26.079357+00:00"
+  },
+  "capabilities": {
+    "PRODUCT_SEARCH": "PARTIAL",
+    "ENTITY_RESOLUTION": "READY",
+    "CLARIFICATION": "READY",
+    "RANKING_PRICE": "READY",
+    "RANKING_FINANCE": "NOT_APPLICABLE",
+    "FINANCE_DISPLAY": "BLOCKED",
+    "LLM_PARTIAL": "READY",
+    "BROWSER_UI": "READY",
+    "SSE": "READY",
+    "REVISION_CONSISTENCY": "READY",
+    "RESILIENCE": "READY",
+    "PUBLIC_STATUS": "P4_PUBLIC_CONDITIONALLY_READY"
+  },
+  "gates": {
+    "REAL_SHADOW_GATE": "PASS",
+    "SHADOW_DIFFERENCE_GATE": "PASS",
+    "PUBLIC_GOLDEN_GATE": "PASS",
+    "HUMAN_UAT_GATE": "PASS",
+    "LOAD_GATE": "PASS",
+    "CHAOS_GATE": "PASS",
+    "PUBLIC_COHORT_GATE": "PASS",
+    "CANARY_CONFIGURATION_GATE": "PASS",
+    "ROLLBACK_GATE": "PASS",
+    "FINANCE_FIREWALL_PUBLIC_GATE": "PASS"
+  },
+  "decision": {
+    "decision": "P4_PUBLIC_CONDITIONALLY_READY",
+    "blockers": [
+      "HUMAN_UAT_EXTERNAL_PANEL_PENDING",
+      "SHADOW_UNIQUE_QUERY_DIVERSITY_LOW"
+    ],
+    "criticals": [],
+    "public_100_cutover": false,
+    "canary_percent_allowed": 0,
+    "campaign_gate": "CLOSED",
+    "finance": "NOT_APPLICABLE_BLOCKED",
+    "honesty_notes": [
+      "P4_PUBLIC_CANARY_READY requires external multi-role human panel + diverse unique shadow queries.",
+      "Structured operator UAT and with-replacement shadow from small unique base → CONDITIONALLY_READY at best."
+    ]
+  }
+}

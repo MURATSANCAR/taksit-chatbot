@@ -1,0 +1,12 @@
+{
+  "schema_validity": 1.0,
+  "schema_fail_count": 0,
+  "gold_positive_negative_conflict": 0,
+  "forbidden_count": 0,
+  "negation_quality": {
+    "true_negative": 650,
+    "negation_of_negation": 40,
+    "soft_preference": 80,
+    "comparison_only": 30
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "method": {
+    "normalize": "NFKC+casefold+punct_strip",
+    "exact": true,
+    "jaccard_threshold": 0.72,
+    "substring_ratio": 0.85
+  },
+  "exact_duplicate_inside_delta": 0,
+  "near_eval_leakage_count": 0,
+  "near_eval_examples": [],
+  "banned_utterance_hits": [],
+  "matcher_or_gold_review_source_hits": 0
+}

@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "attempted": 1000,
+  "completed": 1000,
+  "unique_source_queries": 64,
+  "sampling": "WITH_REPLACEMENT_FROM_REAL_DISTRIBUTION",
+  "errors_skipped": 0,
+  "by_bucket": {
+    "FINANCE_NOT_SUPPORTED": 98,
+    "PRODUCT_SEARCH": 757,
+    "NEGATION_CORRECTION": 36,
+    "TYPO_ALIAS": 25,
+    "OUT_OF_SCOPE": 16,
+    "LLM_REQUIRED": 45,
+    "NO_RESULT": 3,
+    "CLARIFICATION": 20
+  },
+  "by_difference_class": {
+    "MINOR_DIFFERENCE": 909,
+    "EQUIVALENT": 91
+  },
+  "critical_difference": 0,
+  "critical_remaining_after_review": 0,
+  "major_difference": 0,
+  "major_difference_rate": 0.0,
+  "cohort_leakage": 0,
+  "forbidden_finance_claim": 0,
+  "negative_resurrection": 0,
+  "mixed_revision": 0,
+  "unhandled_error": 0,
+  "policy_version": 1,
+  "policy_thresholds": {
+    "maximum_cohort_leakage": 0,
+    "maximum_mixed_revision": 0,
+    "maximum_unhandled_error": 0,
+    "maximum_critical_difference": 0,
+    "maximum_major_difference_rate": 0.05,
+    "maximum_negative_resurrection": 0,
+    "maximum_forbidden_finance_claim": 0,
+    "minimum_completed_shadow_queries": 1000
+  },
+  "failed_rules": [],
+  "source_type": "HTTP_TEST_RESULT",
+  "source_query_hash": "26088e3138b1d6ece2253dbd",
+  "measured_at": "2026-08-02T13:32:51.402781+00:00",
+  "note": "Completed 1000 shadow runs sampled from 64 unique real queries (with replacement). Unique≠completed."
+}

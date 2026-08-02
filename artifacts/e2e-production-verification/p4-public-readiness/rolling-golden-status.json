@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "existing_approved_before": 22,
+  "new_candidates": 371,
+  "new_approved": 228,
+  "total_approved": 250,
+  "target_approved": 250,
+  "auto_approved": 0,
+  "by_bucket_approved": {
+    "clarification": 26,
+    "finance_not_supported": 2,
+    "llm_required": 35,
+    "negation_correction": 73,
+    "no_result": 34,
+    "out_of_scope": 1,
+    "product_search": 39,
+    "typo_alias": 40
+  },
+  "finance_capability": "NOT_APPLICABLE",
+  "preparer": "p4-preparer-ops",
+  "reviewer": "p4-reviewer-ops",
+  "measured_at": "2026-08-02T13:32:52.377611+00:00"
+}
