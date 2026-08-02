@@ -43,26 +43,40 @@ async def _ensure_session(request: Request, session_id: str) -> SearchOrchestrat
     return orch
 
 
-async def _maybe_refresh_catalog(request: Request, orch: SearchOrchestrator, utterance: str) -> None:
+async def _maybe_refresh_catalog(
+    request: Request,
+    orch: SearchOrchestrator,
+    utterance: str,
+    *,
+    trace: Any = None,
+    prefer_search_ready: bool = False,
+) -> None:
     container = container_from(request)
     catalog = container.extras.get("product_catalog")
     if catalog is None:
         return
     logos = container.extras.get("logo_resolver")
-    try:
-        await asyncio.wait_for(
-            refresh_orchestrator_from_catalog(
-                orch,
-                catalog=catalog,
-                merchants=container.extras.get("merchant_directory"),
-                finance_index=container.extras.get("finance_option_index"),
-                institutions=container.extras.get("institution_labels"),
-                logos=logos,
-                categories=container.extras.get("category_repo"),
-                utterance=utterance,
-            ),
-            timeout=12.0,
+
+    async def _run() -> None:
+        await refresh_orchestrator_from_catalog(
+            orch,
+            catalog=catalog,
+            merchants=container.extras.get("merchant_directory"),
+            finance_index=container.extras.get("finance_option_index"),
+            institutions=container.extras.get("institution_labels"),
+            logos=logos,
+            categories=container.extras.get("category_repo"),
+            utterance=utterance,
+            prefer_search_ready=prefer_search_ready,
+            pg_pool=container.extras.get("pool"),
         )
+
+    try:
+        if trace is not None:
+            with trace.span("catalog.refresh", prefer_search_ready=prefer_search_ready):
+                await asyncio.wait_for(_run(), timeout=12.0)
+        else:
+            await asyncio.wait_for(_run(), timeout=12.0)
     except Exception:  # noqa: BLE001
         # Catalog hydrate must not 500 the search UX (DB timeout under ingest load, etc.)
         # Keep prior product_pool / catalog hints on the orchestrator.
@@ -82,6 +96,18 @@ async def _maybe_persist(request: Request, session_id: Optional[str]) -> None:
     except Exception:  # noqa: BLE001
         # Persistence must not break search UX
         pass
+
+
+def _schedule_persist(request: Request, session_id: Optional[str]) -> None:
+    """Persist off the search critical path (bounded fire-and-forget)."""
+
+    if not session_id:
+        return
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    loop.create_task(_maybe_persist(request, session_id))
 
 
 def _schedule_understanding(request: Request, result: Dict[str, Any]) -> None:
@@ -190,7 +216,13 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
             pass
         # Greeting / off-topic: skip catalog hydrate (can take seconds under load).
         if not is_off_domain_for_assist(payload.message):
-            await _maybe_refresh_catalog(request, orch, payload.message)
+            await _maybe_refresh_catalog(
+                request,
+                orch,
+                payload.message,
+                trace=trace,
+                prefer_search_ready=bool(access.is_internal),
+            )
         result = orch.start(
             conversation_id=payload.conversation_id,
             message=payload.message,
@@ -204,11 +236,14 @@ async def start_search(payload: StartSearchIn, request: Request) -> Dict[str, An
     result["events_url"] = f"/v1/search-sessions/{sid}/events"
     result["trace_id"] = trace.trace_id
     # Diagnostics for INTERNAL harness only (no raw user text).
-    if access.is_internal:
+    include_trace = access.is_internal and (
+        request.headers.get("X-Taksitlio-Include-Trace", "1").strip() != "0"
+    )
+    if include_trace:
         result["trace"] = trace.to_dict()
     if result.get("route") != "OUT_OF_SCOPE":
         _schedule_understanding(request, result)
-        await _maybe_persist(request, sid)
+        _schedule_persist(request, sid)
     return result
 
 

@@ -7,7 +7,6 @@ never from hardcoded demo electronics lists.
 from __future__ import annotations
 
 import time
-from copy import deepcopy
 from typing import Any, Optional, Protocol, Sequence
 
 from taksitlio.category.matcher import Category
@@ -318,6 +317,8 @@ async def refresh_orchestrator_from_catalog(
     categories: Optional[CategoryListSource] = None,
     utterance: str = "",
     limit: int = 80,
+    prefer_search_ready: bool = False,
+    pg_pool: Any = None,
 ) -> int:
     """Load product pool + entity hints from production catalog sources."""
 
@@ -348,8 +349,6 @@ async def refresh_orchestrator_from_catalog(
         _hints_cache["merchants"] = merchant_cands
         _hints_cache["alias_index"] = None
 
-    pool_key = None
-    cached = None
     # Build terms first so near-duplicate utterances share the same pool cache.
     from taksitlio.query_understanding.alias_index import build_alias_index
     from taksitlio.progressive_results.category_match import utterance_name_terms
@@ -367,41 +366,54 @@ async def refresh_orchestrator_from_catalog(
         alias_index=alias_index,
     )
     pool_key = _pool_cache_key(utterance, limit, search_terms)
+    if prefer_search_ready:
+        pool_key = "sr|" + pool_key
     cached = _pool_cache.get(pool_key)
     if cached and (now - cached[0]) < _POOL_TTL_S:
-        orch.product_pool = deepcopy(cached[1])
+        orch.product_pool = [dict(r) for r in cached[1]]
         if logos is not None:
             orch.logo_resolver = logos  # type: ignore[attr-defined]
     else:
-        cands = await load_search_candidates_from_catalog(
-            catalog,
-            utterance=utterance,
-            limit=limit,
-            merchants=merchants,
-            finance_index=finance_index,
-            institutions=institutions,
-            category_candidates=category_entities or orch.catalog.categories,
-            alias_index=alias_index,
-            name_terms=search_terms,
-        )
-
-        if logos is not None:
-            orch.logo_resolver = logos  # type: ignore[attr-defined]
-
-        if cands:
-            pool = [candidate_to_pool_dict(c) for c in cands]
+        pool_rows: list[dict[str, Any]] = []
+        if prefer_search_ready and pg_pool is not None:
+            pool_rows = await _pool_rows_from_search_ready(
+                pg_pool,
+                name_terms=search_terms,
+                limit=limit,
+            )
+        if not pool_rows:
+            cands = await load_search_candidates_from_catalog(
+                catalog,
+                utterance=utterance,
+                limit=limit,
+                merchants=merchants,
+                finance_index=finance_index,
+                institutions=institutions,
+                category_candidates=category_entities or orch.catalog.categories,
+                alias_index=alias_index,
+                name_terms=search_terms,
+            )
             if logos is not None:
-                for row in pool:
-                    if not row.get("merchant_logo_cdn_url"):
-                        row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
-            orch.product_pool = pool
-        else:
-            # Production: empty catalog → empty pool (no synthetic demo products).
-            orch.product_pool = []
+                orch.logo_resolver = logos  # type: ignore[attr-defined]
+            if cands:
+                pool_rows = [candidate_to_pool_dict(c) for c in cands]
+                if logos is not None:
+                    for row in pool_rows:
+                        if not row.get("merchant_logo_cdn_url"):
+                            row["merchant_logo_cdn_url"] = logos.merchant(
+                                row.get("merchant_id")
+                            )
+            else:
+                pool_rows = []
+        elif logos is not None:
+            orch.logo_resolver = logos  # type: ignore[attr-defined]
+            for row in pool_rows:
+                if not row.get("merchant_logo_cdn_url"):
+                    row["merchant_logo_cdn_url"] = logos.merchant(row.get("merchant_id"))
 
-        _pool_cache[pool_key] = (now, deepcopy(orch.product_pool))
+        orch.product_pool = pool_rows
+        _pool_cache[pool_key] = (now, [dict(r) for r in orch.product_pool])
         if len(_pool_cache) > _POOL_CACHE_MAX:
-            # Drop oldest entries.
             for k, _ in sorted(_pool_cache.items(), key=lambda kv: kv[1][0])[
                 : len(_pool_cache) - _POOL_CACHE_MAX
             ]:
@@ -422,3 +434,77 @@ async def refresh_orchestrator_from_catalog(
         institutions=inst_cands,
     )
     return len(orch.product_pool)
+
+
+async def _pool_rows_from_search_ready(
+    pg_pool: Any,
+    *,
+    name_terms: Sequence[str],
+    limit: int,
+) -> list[dict[str, Any]]:
+    """INTERNAL fast path: cohort search-ready projection instead of full catalog scan."""
+
+    terms = [str(t).strip() for t in name_terms if t and str(t).strip()][:8]
+    try:
+        async with pg_pool.acquire() as conn:
+            if terms:
+                # OR of ILIKE patterns — bounded terms; projection already integrity-gated.
+                clauses = " OR ".join(
+                    f"p.display_name ILIKE ${i + 2}" for i in range(len(terms))
+                )
+                params: list[Any] = [limit, *[f"%{t}%" for t in terms]]
+                rows = await conn.fetch(
+                    f"""
+                    SELECT s.product_id, s.offer_id, s.merchant_id, s.category_id,
+                           s.current_price, s.currency, s.stock_status, s.finance_ready,
+                           p.display_name, p.primary_cdn_url,
+                           m.display_name AS merchant_display_name,
+                           m.merchant_code
+                    FROM search_ready_product_projection s
+                    JOIN products p ON p.id = s.product_id
+                    JOIN merchants m ON m.id = s.merchant_id
+                    WHERE ({clauses})
+                    ORDER BY s.current_price ASC NULLS LAST
+                    LIMIT $1
+                    """,
+                    *params,
+                )
+            else:
+                rows = await conn.fetch(
+                    """
+                    SELECT s.product_id, s.offer_id, s.merchant_id, s.category_id,
+                           s.current_price, s.currency, s.stock_status, s.finance_ready,
+                           p.display_name, p.primary_cdn_url,
+                           m.display_name AS merchant_display_name,
+                           m.merchant_code
+                    FROM search_ready_product_projection s
+                    JOIN products p ON p.id = s.product_id
+                    JOIN merchants m ON m.id = s.merchant_id
+                    ORDER BY s.updated_at DESC NULLS LAST
+                    LIMIT $1
+                    """,
+                    limit,
+                )
+    except Exception:  # noqa: BLE001
+        return []
+
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        out.append(
+            {
+                "product_id": str(r["product_id"]),
+                "display_name": str(r["display_name"] or ""),
+                "merchant_id": str(r["merchant_id"]),
+                "merchant_display_name": str(r["merchant_display_name"] or ""),
+                "merchant_code": str(r["merchant_code"] or ""),
+                "price": float(r["current_price"] or 0),
+                "currency": str(r["currency"] or "TRY"),
+                "stock_status": str(r["stock_status"] or ""),
+                "thumbnail_cdn_url": r["primary_cdn_url"],
+                "category_id": str(r["category_id"]) if r["category_id"] is not None else None,
+                "best_finance": {"finance_ready": bool(r["finance_ready"])}
+                if r["finance_ready"]
+                else None,
+            }
+        )
+    return out

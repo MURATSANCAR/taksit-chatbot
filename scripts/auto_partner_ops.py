@@ -68,6 +68,8 @@ SKIP_IF_AT_LEAST = {
 FAIL_COOLDOWN_S = 1800
 MAX_PARALLEL_CRAWLS = int(os.environ.get("AUTO_MAX_PARALLEL_CRAWLS", "4"))
 INGEST_AFTER_GROWTH = int(os.environ.get("AUTO_INGEST_MIN_NEW", "200"))
+# Avoid restarting image backfill every loop when remaining todos are dead URLs.
+BACKFILL_COOLDOWN_S = int(os.environ.get("AUTO_BACKFILL_COOLDOWN_S", "1800"))
 
 _stop = False
 
@@ -264,10 +266,13 @@ def start_ingest(merchants: str) -> None:
         )
 
 
-def start_backfill_if_idle() -> None:
+def start_backfill_if_idle(st: dict) -> None:
     if pgrep("backfill_product_images.py"):
         return
     if not PY_APP.is_file():
+        return
+    last = float(st.get("last_backfill_ts") or 0)
+    if last and time.time() - last < BACKFILL_COOLDOWN_S:
         return
     env_file = ROOT / ".env.runtime"
     env = os.environ.copy()
@@ -299,6 +304,7 @@ def start_backfill_if_idle() -> None:
             env=env,
             start_new_session=True,
         )
+    st["last_backfill_ts"] = time.time()
 
 
 def maybe_rescore_and_rebuild(st: dict) -> None:
@@ -470,7 +476,7 @@ def main() -> None:
                 print(f"TARGET REACHED {total_feeds()} — stop crawls, keep ingest/backfill once", flush=True)
                 if not ingest_running():
                     maybe_ingest(st)
-                start_backfill_if_idle()
+                start_backfill_if_idle(st)
                 save_state(st)
                 break
 
@@ -479,7 +485,7 @@ def main() -> None:
             maybe_ingest(st)
             # periodic image backfill when crawl slots full or idle ingest
             if COMPLETE_ONLY or len(running_crawl_codes()) >= MAX_PARALLEL_CRAWLS or not ingest_running():
-                start_backfill_if_idle()
+                start_backfill_if_idle(st)
             maybe_rescore_and_rebuild(st)
             # P2-LIVE: feed metrics + readiness snapshots (no uncontrolled promotion)
             if int(st.get("round") or 0) % 10 == 0:
