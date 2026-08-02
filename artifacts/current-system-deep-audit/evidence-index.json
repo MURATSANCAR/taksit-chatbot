@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-08-02T18:57:41.905677+00:00",
+  "read_only": true,
+  "sources": [
+    "production DB schema_migration_history + runtime tables (nanobase)",
+    "docs/verification/P3.7–P4.2 reports",
+    "artifacts/e2e-production-verification/p3-7*,p4*",
+    "src/ code inspection",
+    "systemctl/ss/curl /health"
+  ],
+  "not_executed_write_risk": [
+    "POST /v1/search-sessions live smoke (creates sessions)",
+    "feature flag updates",
+    "migration apply",
+    "golden approve",
+    "canary traffic enable",
+    "backfill/crawl"
+  ],
+  "files": [
+    "capability-matrix.json",
+    "catalog-coverage.json",
+    "complex-query-audit.json",
+    "conversation-state-audit.json",
+    "end-to-end-flow.json",
+    "feature-flags.json",
+    "finance-capability-audit.json",
+    "frontend-audit.json",
+    "golden-audit.json",
+    "hardcode-scan.json",
+    "load-resilience-audit.json",
+    "migration-status.json",
+    "playwright-audit.json",
+    "priority-gaps.json",
+    "product-retrieval-audit.json",
+    "production-backlog.json",
+    "query-capability-matrix.json",
+    "ranking-audit.json",
+    "repository-inventory.json",
+    "runtime-services.json",
+    "security-audit.json",
+    "shadow-uat-canary-audit.json",
+    "sse-audit.json"
+  ]
+}

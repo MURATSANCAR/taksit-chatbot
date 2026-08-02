@@ -1,0 +1,75 @@
+{
+  "complex_query_planner": {
+    "exists": false,
+    "level": "Hiç olmadığı / parçalı eşdeğerler mevcut",
+    "expected_schema_fields_found": false,
+    "search_evidence": "No hard_constraints/soft_preferences/conditional_exceptions/global_budget/request_type in src/",
+    "partial_equivalents": {
+      "hard_soft": "entity.required flag + budget soft penalty in _soft_relevance_score",
+      "clarification_plan": "query_clarification/policy.py IMPLEMENTED",
+      "gap_analysis": "gap_detector.py IMPLEMENTED",
+      "intent_decomposition": "NOT_IMPLEMENTED (PRODUCT_SEARCH | PRODUCT_WITH_FINANCE only)",
+      "multi_item_bundle": "NOT_IMPLEMENTED",
+      "conditional_exceptions": "NOT_IMPLEMENTED",
+      "ranking_priorities_list": "NOT_IMPLEMENTED (ranking_mode single enum only)"
+    }
+  },
+  "matrix": [
+    {
+      "capability": "Çok constraint",
+      "status": "PARTIAL",
+      "understanding": "WIRED",
+      "retrieval": "PARTIAL",
+      "ranking": "PRICE_STRONG",
+      "tests": "P3.7 golden subsets"
+    },
+    {
+      "capability": "Hard/soft ayrımı",
+      "status": "PARTIAL",
+      "understanding": "required flag only",
+      "retrieval": "hard filters for category/merchant/negation",
+      "ranking": "budget soft"
+    },
+    {
+      "capability": "Koşullu bütçe",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Koşullu negation",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Tercih sırası",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Çoklu niyet",
+      "status": "NOT_IMPLEMENTED",
+      "note": "usage_contexts list only"
+    },
+    {
+      "capability": "Çok ürün / bundle",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Global bütçe",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Subjektif özellik",
+      "status": "PARTIAL",
+      "route": "LLM_REQUIRED / clarification ABSTRACT_QUALITY_PREFERENCE"
+    },
+    {
+      "capability": "Uzun konuşma state",
+      "status": "PARTIAL",
+      "ops": "UPDATE/DELETE/REQUIRE/PREFER; no RELAX/ROLLBACK"
+    },
+    {
+      "capability": "Kampanya isteği",
+      "status": "CODE_ONLY_BLOCKED_BY_DATA",
+      "understanding": "terms/ranking_mode extracted",
+      "fulfillment": "finance_ready=0 on cohort"
+    }
+  ]
+}

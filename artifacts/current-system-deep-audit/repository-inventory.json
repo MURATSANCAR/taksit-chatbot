@@ -1,0 +1,51 @@
+{
+  "repository_root": "/Users/msancar/Documents/GitHub/Fibabank_Chatbot",
+  "project": "taksitlio-chatbot",
+  "backend": {
+    "framework": "FastAPI",
+    "language": "Python 3.9+/3.12 runtime",
+    "package_manager": "uv",
+    "entrypoint": "src/taksitlio/main.py → taksitlio.api.app:create_app"
+  },
+  "frontend": {
+    "framework": "vanilla HTML/JS static SPA",
+    "path": "web/taksitlio/",
+    "package_manager": "none (static)",
+    "entrypoint": "web/taksitlio/index.html"
+  },
+  "database": "PostgreSQL 16 + pgvector",
+  "cache": "Redis 7",
+  "queue": "StormCrawler / Apache Storm + Zookeeper (crawl); ingestion_scheduler lease-loop (not MQ)",
+  "llm_runtime": "OpenAI-compatible (llama.cpp / remote) via providers + llm_routing",
+  "embedding": "ProfileEmbedder / StrictOpenAICompatibleEmbedder + pgvector ANN",
+  "search_vector": "semantic_matching hybrid (vector+lexical) + search_ready SQL projection",
+  "background_jobs": [
+    "taksitlio-scheduler",
+    "scripts/run_auto_partner_ops.sh",
+    "StormCrawler topology"
+  ],
+  "deployment": "systemd taksitlio-api + uvicorn reverse proxy + Docker Compose for deps",
+  "config": [
+    ".env.example",
+    ".env.runtime (server)",
+    "src/taksitlio/config/settings.py"
+  ],
+  "top_level_dirs": [
+    "admin",
+    "artifacts",
+    "crawler",
+    "data",
+    "db",
+    "design",
+    "docker",
+    "docs",
+    "eval",
+    "evaluation",
+    "scripts",
+    "src",
+    "tests",
+    "training",
+    "vendor",
+    "web"
+  ]
+}

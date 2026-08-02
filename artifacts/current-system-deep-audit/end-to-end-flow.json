@@ -1,0 +1,93 @@
+{
+  "primary_path": "ADR-011 SearchOrchestrator",
+  "legacy_path": "ADR-007 ChatOrchestrator POST /v1/chat",
+  "steps": [
+    {
+      "step": "Chat input",
+      "file": "web/taksitlio/js/search-session/ui.js",
+      "wired": true
+    },
+    {
+      "step": "HTTP endpoint",
+      "file": "src/taksitlio/api/routes/search_sessions.py",
+      "fn": "POST /v1/search-sessions",
+      "wired": true
+    },
+    {
+      "step": "session create + admission",
+      "file": "src/taksitlio/search_sessions/admission.py",
+      "wired": true
+    },
+    {
+      "step": "query normalize",
+      "file": "src/taksitlio/semantic_matching/turkish_normalize.py",
+      "wired": true
+    },
+    {
+      "step": "fast parser",
+      "file": "src/taksitlio/query_understanding/fast_parser.py",
+      "fn": "fast_parse",
+      "wired": true
+    },
+    {
+      "step": "LLM parser/planner",
+      "file": "src/taksitlio/llm_routing/worker.py",
+      "fn": "LlmUnderstandingWorker",
+      "wired": true,
+      "note": "only LOW confidence / requires_llm; not a complex planner"
+    },
+    {
+      "step": "entity resolution",
+      "file": "src/taksitlio/entity_resolution",
+      "wired": true
+    },
+    {
+      "step": "conversation state merge",
+      "file": "src/taksitlio/query_state/__init__.py",
+      "fn": "merge_parse_into_state",
+      "wired": true
+    },
+    {
+      "step": "clarification",
+      "file": "src/taksitlio/query_clarification/policy.py",
+      "wired": true
+    },
+    {
+      "step": "product retrieval",
+      "file": "src/taksitlio/search_sessions/catalog_pool.py",
+      "wired": true
+    },
+    {
+      "step": "constraint filtering",
+      "file": "src/taksitlio/progressive_results/__init__.py",
+      "wired": true
+    },
+    {
+      "step": "campaign/finance lookup",
+      "file": "src/taksitlio/campaign_catalog/postgres.py + product_query/finance_index.py",
+      "wired": true,
+      "active": false,
+      "reason": "FINANCE_DISPLAY BLOCKED; cohort finance_ready=0"
+    },
+    {
+      "step": "ranking",
+      "file": "src/taksitlio/product_query/ranking.py",
+      "wired": true
+    },
+    {
+      "step": "claim validation / firewall",
+      "file": "src/taksitlio/search_sessions/finance_firewall.py",
+      "wired": true
+    },
+    {
+      "step": "SSE events",
+      "file": "GET /v1/search-sessions/{id}/events",
+      "wired": true
+    },
+    {
+      "step": "frontend cards",
+      "file": "web/taksitlio/js/chat-cards.js",
+      "wired": true
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "measured_at": "2026-08-02T18:57:41.905677+00:00",
+  "history_table": "schema_migration_history",
+  "history_row_count": 33,
+  "history_max_recorded": "V033",
+  "migrations": [
+    {
+      "version": "V028",
+      "file_exists": true,
+      "filename": "V028__recovery_p1_verification_and_payment_idempotency.sql",
+      "in_schema_migration_history": true,
+      "applied_effective": true,
+      "application_method": "schema_migration_history",
+      "tables_or_objects": [
+        "payment idempotency / verification"
+      ],
+      "active_code_uses": true,
+      "has_real_data": "schema present",
+      "discrepancy": null
+    },
+    {
+      "version": "V029",
+      "file_exists": true,
+      "filename": "V029__recovery_p2_live_adaptive_catalog.sql",
+      "in_schema_migration_history": true,
+      "applied_effective": true,
+      "application_method": "schema_migration_history",
+      "tables_or_objects": [
+        "adaptive catalog objects"
+      ],
+      "active_code_uses": true,
+      "has_real_data": "schema present",
+      "discrepancy": null
+    },
+    {
+      "version": "V030",
+      "file_exists": true,
+      "filename": "V030__p2_live_activation_flags_and_search_ready.sql",
+      "in_schema_migration_history": true,
+      "applied_effective": true,
+      "application_method": "schema_migration_history",
+      "tables_or_objects": [
+        "runtime_feature_flags",
+        "search_ready_product_projection"
+      ],
+      "active_code_uses": true,
+      "has_real_data": {
+        "flags": 6,
+        "search_ready": 1054
+      },
+      "discrepancy": null
+    },
+    {
+      "version": "V032",
+      "file_exists": true,
+      "filename": "V032__p3_3_applicability_readiness_cohorts.sql",
+      "in_schema_migration_history": true,
+      "applied_effective": true,
+      "application_method": "schema_migration_history",
+      "tables_or_objects": [
+        "search_release_cohorts",
+        "category_quality_dimension_policies",
+        "merchant_readiness_snapshots"
+      ],
+      "active_code_uses": true,
+      "has_real_data": {
+        "cohorts": 2,
+        "versions": 17
+      },
+      "discrepancy": null
+    },
+    {
+      "version": "V033",
+      "file_exists": true,
+      "filename": "V033__p3_4_internal_e2e_performance_golden_policies.sql",
+      "in_schema_migration_history": true,
+      "applied_effective": true,
+      "application_method": "schema_migration_history",
+      "tables_or_objects": [
+        "golden/performance policies"
+      ],
+      "active_code_uses": true,
+      "has_real_data": "policies present",
+      "discrepancy": null
+    },
+    {
+      "version": "V034",
+      "file_exists": true,
+      "filename": "V034__p3_7_product_search_golden_lifecycle.sql",
+      "in_schema_migration_history": false,
+      "applied_effective": true,
+      "application_method": "harness_direct_execute_without_history",
+      "tables_or_objects": [
+        "continuous_golden_cases"
+      ],
+      "active_code_uses": true,
+      "has_real_data": {
+        "golden": 425
+      },
+      "discrepancy": "Harness artifacts claim APPLIED but schema_migration_history has no V034–V038 rows (total history=33)."
+    },
+    {
+      "version": "V035",
+      "file_exists": true,
+      "filename": "V035__p3_7_golden_review_history.sql",
+      "in_schema_migration_history": false,
+      "applied_effective": true,
+      "application_method": "harness_direct_execute_without_history",
+      "tables_or_objects": [
+        "continuous_golden_review_history"
+      ],
+      "active_code_uses": true,
+      "has_real_data": {
+        "history": 44
+      },
+      "discrepancy": "Harness artifacts claim APPLIED but schema_migration_history has no V034–V038 rows (total history=33)."
+    },
+    {
+      "version": "V036",
+      "file_exists": true,
+      "filename": "V036__p4_public_readiness_shadow_uat_canary.sql",
+      "in_schema_migration_history": false,
+      "applied_effective": true,
+      "application_method": "harness_direct_execute_without_history",
+      "tables_or_objects": [
+        "public_shadow_observations",
+        "public_canary_assignments",
+        "public_uat_cases"
+      ],
+      "active_code_uses": true,
+      "has_real_data": {
+        "shadow_obs": 1000,
+        "canary_assign": 200,
+        "uat": 150
+      },
+      "discrepancy": "Harness artifacts claim APPLIED but schema_migration_history has no V034–V038 rows (total history=33)."
+    },
+    {
+      "version": "V037",
+      "file_exists": true,
+      "filename": "V037__p4_1_canary_evidence_hardening.sql",
+      "in_schema_migration_history": false,
+      "applied_effective": false,
+      "application_method": "harness_direct_execute_without_history",
+      "tables_or_objects": [
+        "public_shadow_diversity_*",
+        "package/traffic state cols"
+      ],
+      "active_code_uses": true,
+      "has_real_data": "cohort package_state present",
+      "discrepancy": "Harness artifacts claim APPLIED but schema_migration_history has no V034–V038 rows (total history=33)."
+    },
+    {
+      "version": "V038",
+      "file_exists": true,
+      "filename": "V038__p4_2_human_evidence_closeout.sql",
+      "in_schema_migration_history": false,
+      "applied_effective": true,
+      "application_method": "harness_direct_execute_without_history",
+      "tables_or_objects": [
+        "public_real_shadow_unique_queries",
+        "evidence dashboard objects"
+      ],
+      "active_code_uses": true,
+      "has_real_data": {
+        "unique_shadow": 42
+      },
+      "discrepancy": "Artifact migration-v038.json status=APPLIED but not in schema_migration_history"
+    }
+  ],
+  "notable_tables": {
+    "catalog_domain_events": {
+      "exists": true,
+      "count": 205031
+    },
+    "runtime_feature_flags": {
+      "exists": true,
+      "count": 6
+    },
+    "merchant_readiness_snapshots": {
+      "exists": true,
+      "count": 2685
+    },
+    "merchant_category_readiness_snapshots": {
+      "exists": true,
+      "count": 3498
+    },
+    "product_readiness_projection": {
+      "exists": true,
+      "count": 1810
+    },
+    "search_ready_product_projection": {
+      "exists": true,
+      "count": 1054
+    },
+    "search_ready_product_projection_v2": {
+      "exists": true,
+      "count": 1054
+    },
+    "search_release_cohorts": {
+      "exists": true,
+      "count": 2
+    },
+    "search_release_cohort_versions": {
+      "exists": true,
+      "count": 17
+    },
+    "search_release_cohort_members": {
+      "exists": true,
+      "count": 2358
+    },
+    "source_capability_profiles": {
+      "exists": true,
+      "count": 15
+    },
+    "category_quality_dimension_policies": {
+      "exists": true,
+      "count": 1
+    },
+    "continuous_golden_cases": {
+      "exists": true,
+      "count": 425
+    },
+    "continuous_golden_review_history": {
+      "exists": true,
+      "count": 44
+    }
+  }
+}

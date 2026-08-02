@@ -1,0 +1,43 @@
+{
+  "stack": "vanilla JS SPA web/taksitlio/",
+  "modules": [
+    "public-facing.js",
+    "chat-cards.js",
+    "search-session/client.js",
+    "search-session/ui.js",
+    "progressive-products/carousel.js",
+    "clarification/card.js",
+    "constraint-chips/chips.js"
+  ],
+  "product_card_fields": [
+    "name",
+    "merchant",
+    "price",
+    "stock",
+    "image",
+    "category",
+    "product URL",
+    "ranking reason (when provided)"
+  ],
+  "finance_component": {
+    "exists": true,
+    "gated_by": "financeDisplayEnabled / finance_display_enabled",
+    "live_data": false,
+    "placeholder": false,
+    "status": "HIDDEN_WHEN_BLOCKED"
+  },
+  "flows": [
+    "loading",
+    "partial results",
+    "clarification",
+    "final results",
+    "no-result",
+    "error",
+    "unsupported finance via empty claims"
+  ],
+  "browser_integrity_p37": {
+    "cards_checked": 120,
+    "wrong_product": 0,
+    "finance_claim_shown": 0
+  }
+}

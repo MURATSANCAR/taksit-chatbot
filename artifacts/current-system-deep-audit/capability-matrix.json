@@ -1,0 +1,100 @@
+{
+  "matrix": [
+    {
+      "capability": "Basic product search",
+      "status": "INTERNAL_ACTIVE",
+      "evidence": "P3.7 INTERNAL READY; live API health ok; cohort 1054 products"
+    },
+    {
+      "capability": "Complex product search",
+      "status": "NOT_IMPLEMENTED",
+      "evidence": "no complex planner schema"
+    },
+    {
+      "capability": "Multi-constraint parsing",
+      "status": "TESTED_REAL_DATA",
+      "evidence": "fast_parser multi-entity"
+    },
+    {
+      "capability": "Hard/soft preference",
+      "status": "PARTIAL",
+      "evidence": "required flag + soft score"
+    },
+    {
+      "capability": "Conditional exceptions",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Conflict resolution",
+      "status": "PARTIAL",
+      "evidence": "negation locks / category replace"
+    },
+    {
+      "capability": "Multi-turn state",
+      "status": "PARTIAL",
+      "evidence": "UPDATE/DELETE/REQUIRE/PREFER"
+    },
+    {
+      "capability": "Multi-item/bundle",
+      "status": "NOT_IMPLEMENTED"
+    },
+    {
+      "capability": "Price ranking",
+      "status": "INTERNAL_ACTIVE"
+    },
+    {
+      "capability": "Attribute ranking",
+      "status": "CODE_ONLY",
+      "evidence": "mode exists; attribute extract limited"
+    },
+    {
+      "capability": "Product cards",
+      "status": "INTERNAL_ACTIVE"
+    },
+    {
+      "capability": "Campaign intent",
+      "status": "WIRED_NOT_TESTED",
+      "evidence": "terms/ranking_mode parsed; fulfillment blocked"
+    },
+    {
+      "capability": "Campaign matching",
+      "status": "BLOCKED_BY_DATA"
+    },
+    {
+      "capability": "Monthly-payment ranking",
+      "status": "BLOCKED_BY_DATA"
+    },
+    {
+      "capability": "Total-payment ranking",
+      "status": "BLOCKED_BY_DATA"
+    },
+    {
+      "capability": "Finance UI",
+      "status": "IMPLEMENTED_NOT_WIRED",
+      "evidence": "gated off / BLOCKED"
+    },
+    {
+      "capability": "LLM partial",
+      "status": "TESTED_REAL_DATA",
+      "evidence": "n=100 first_partial p95~208ms"
+    },
+    {
+      "capability": "SSE",
+      "status": "TESTED_REAL_DATA"
+    },
+    {
+      "capability": "INTERNAL traffic",
+      "status": "INTERNAL_ACTIVE"
+    },
+    {
+      "capability": "Public canary",
+      "status": "PUBLIC_PACKAGE_READY",
+      "evidence": "traffic_state=NOT_STARTED"
+    },
+    {
+      "capability": "Public traffic",
+      "status": "NOT_IMPLEMENTED",
+      "evidence": "no live 5%"
+    }
+  ]
+}

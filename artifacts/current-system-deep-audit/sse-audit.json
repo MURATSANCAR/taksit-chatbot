@@ -1,0 +1,25 @@
+{
+  "client_events_file": "web/taksitlio/js/search-session/client.js",
+  "events_observed_in_contract": [
+    "SEARCH_ACCEPTED",
+    "FAST_PARSE_*",
+    "CLARIFICATION_*",
+    "PRODUCT_POOL_*",
+    "PARTIAL_RESULTS_READY",
+    "RANKING_STARTED",
+    "FINAL_RESULTS_READY",
+    "SEARCH_COMPLETED",
+    "SEARCH_FAILED",
+    "SEARCH_CANCELLED",
+    "LLM_JOB_*",
+    "FINANCE_*"
+  ],
+  "last_event_id": true,
+  "reconnect": true,
+  "query_supersede": "WIRED",
+  "stale_llm_prevention": "apply_if_fresh version check",
+  "duplicate_terminal_prevention": "status machine terminals",
+  "revision_pinning": true,
+  "test_evidence": "p3-4..p3-7 sse-matrix-results PASS; p3.7 cells=12",
+  "status": "TESTED_REAL_DATA"
+}

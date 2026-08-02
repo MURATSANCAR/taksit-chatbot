@@ -1,0 +1,33 @@
+{
+  "shadow_completed_observations": 1000,
+  "unique_real_queries": 42,
+  "unique_ratio_vs_1000": 0.042,
+  "shadow_difference_critical": 0,
+  "shadow_human_review_completed": 0,
+  "operator_uat": 150,
+  "genuine_human_uat": 0,
+  "golden_human_provenance": 0,
+  "cohort_v2": {
+    "cohort_id": 1,
+    "version": 2,
+    "status": "PUBLIC_CANARY",
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED",
+    "search_ready_product_count": 1054,
+    "finance_ready_product_count": 0,
+    "merchant_count": 2,
+    "category_scope_count": 326,
+    "projection_leakage_count": 0,
+    "catalog_revision": "2026-08-01T14:27:31.026955+00:00"
+  },
+  "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+  "traffic_state": "NOT_STARTED",
+  "canary_rate_configured": "~5% assignment simulation",
+  "live_5pct_active": false,
+  "rollback_drill": "PASS (package level)",
+  "decisions": {
+    "P4": "CONDITIONALLY_READY (later corrected)",
+    "P4.1": "PUBLIC_NOT_READY",
+    "P4.2": "PUBLIC_NOT_READY"
+  }
+}

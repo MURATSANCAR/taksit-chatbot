@@ -1,0 +1,76 @@
+{
+  "gaps": [
+    {
+      "issue": "Complex Query Planner missing — multi-item/conditional/hard-soft formal plan absent",
+      "severity": "P1",
+      "impact": "Natural complex Turkish queries fail or degrade",
+      "complexity": "XL",
+      "files": [
+        "new planner module",
+        "fast_parser",
+        "orchestrator",
+        "ranking"
+      ]
+    },
+    {
+      "issue": "Active search cohort has zero finance-ready products while finance data exists on non-READY merchants",
+      "severity": "P1",
+      "impact": "Campaign/taksit requests cannot be fulfilled honestly",
+      "complexity": "L",
+      "files": [
+        "readiness",
+        "search_ready rebuild",
+        "merchant agreements"
+      ]
+    },
+    {
+      "issue": "Public canary blocked by human evidence (shadow diversity 42/500, 0 HUMAN_VERIFIED golden, 0 external UAT)",
+      "severity": "P1",
+      "impact": "No public traffic",
+      "complexity": "L",
+      "dependency": "human ops"
+    },
+    {
+      "issue": "schema_migration_history missing V034–V038 despite harness APPLIED",
+      "severity": "P2",
+      "impact": "ops drift / replay ambiguity",
+      "complexity": "S"
+    },
+    {
+      "issue": "dynamic_readiness flag config cohort_version=1 vs live v2 package",
+      "severity": "P2",
+      "impact": "config drift",
+      "complexity": "S"
+    },
+    {
+      "issue": "Attribute extraction limited to RAM; subjective/priority ranking weak",
+      "severity": "P2",
+      "impact": "complex preference queries",
+      "complexity": "M"
+    },
+    {
+      "issue": "Conversation ops missing RELAX/ROLLBACK/TEMPORARY_EXCEPTION",
+      "severity": "P2",
+      "impact": "long multi-turn UX",
+      "complexity": "M"
+    },
+    {
+      "issue": "Only 2 search-ready merchants of 26",
+      "severity": "P1",
+      "impact": "catalog coverage for natural queries",
+      "complexity": "L"
+    },
+    {
+      "issue": "Finance capability blocked — correct safety but product goal unmet",
+      "severity": "P1",
+      "impact": "core campaign promise",
+      "complexity": "L"
+    },
+    {
+      "issue": "Playwright suite only 3 API scenarios; no finance E2E",
+      "severity": "P3",
+      "impact": "regression coverage",
+      "complexity": "M"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "measured_at": "2026-08-02T18:57:41.905677+00:00",
+  "global_counts": {
+    "agreements_active": 4,
+    "finance_campaigns": 5,
+    "rate_snapshots": 7,
+    "campaign_terms": 7,
+    "financial_products": 2,
+    "product_finance_options": 31829,
+    "eligible_options": 29472,
+    "ineligible_options": 2357
+  },
+  "agreements": [
+    {
+      "id": 1,
+      "merchant_id": 8,
+      "institution_id": 1,
+      "financial_product_id": 1,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-isbank.json",
+      "created_at": "2026-07-31 22:04:06.469985+00:00",
+      "updated_at": "2026-08-01 13:32:18.900177+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "MediaMarkt"
+    },
+    {
+      "id": 3,
+      "merchant_id": 40,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "created_at": "2026-07-31 22:04:21.657497+00:00",
+      "updated_at": "2026-08-01 13:32:21.286520+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "Evofone"
+    },
+    {
+      "id": 4,
+      "merchant_id": 20,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "created_at": "2026-07-31 22:04:21.663578+00:00",
+      "updated_at": "2026-08-01 13:32:21.700426+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "Trendyol"
+    },
+    {
+      "id": 5,
+      "merchant_id": 11,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "created_at": "2026-07-31 22:04:21.672238+00:00",
+      "updated_at": "2026-08-01 13:32:25.733612+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "Teknosa"
+    }
+  ],
+  "active_product_search_cohort": {
+    "merchants": [
+      "Vatan Bilgisayar",
+      "Hepsiburada"
+    ],
+    "agreement_count": 0,
+    "finance_ready_product_count": 0,
+    "finance_coverage_on_readiness": 0.0
+  },
+  "finance_data_elsewhere_merchants": [
+    {
+      "name": "MediaMarkt",
+      "status": "PARTIAL",
+      "blockers": [
+        "category_coverage",
+        "brand_coverage",
+        "attribute_coverage"
+      ],
+      "finance_coverage": 1.0
+    },
+    {
+      "name": "Teknosa",
+      "status": "PARTIAL",
+      "blockers": [
+        "category_coverage",
+        "brand_coverage",
+        "attribute_coverage"
+      ],
+      "finance_coverage": 0.92
+    },
+    {
+      "name": "Trendyol",
+      "status": "PARTIAL",
+      "blockers": [
+        "category_coverage",
+        "brand_coverage",
+        "attribute_coverage"
+      ],
+      "finance_coverage": 0.999
+    },
+    {
+      "name": "Evofone",
+      "status": "PARTIAL",
+      "blockers": [
+        "category_coverage"
+      ],
+      "finance_coverage": 1.0
+    }
+  ],
+  "matching_flow_status": {
+    "intent_extraction": "WIRED (terms/ranking_mode/PRODUCT_WITH_FINANCE)",
+    "agreement_lookup": "CODE_ONLY relative to active cohort (no agreements on Vatan/HB)",
+    "rate_payment_calc": "IMPLEMENTED (payment_plan) but blocked by capability gate",
+    "monthly_total_ranking": "CODE_PRESENT RankingMode but NOT_APPLICABLE active",
+    "frontend_campaign_card": "IMPLEMENTED but financeDisplayEnabled=false path",
+    "campaign_gate": "CLOSED",
+    "finance_display": "BLOCKED"
+  },
+  "firewall": {
+    "file": "src/taksitlio/search_sessions/finance_firewall.py",
+    "status": "TESTED_REAL_DATA",
+    "forbidden_claim_keys": 16,
+    "p4_firewall_pass": true,
+    "cross_merchant_finance_fallback": "closed (artifact fallback_to_other_merchant_finance=0)"
+  }
+}

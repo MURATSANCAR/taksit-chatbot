@@ -1,0 +1,64 @@
+{
+  "measured_at": "2026-08-02T18:57:41.905677+00:00",
+  "global": {
+    "db_active_products": 213092,
+    "product_offers": 213092,
+    "merchants": 26,
+    "categories": 3373,
+    "brands": 2191,
+    "product_readiness_projection": 1810,
+    "search_ready_products": 1054,
+    "search_ready_by_merchant": [
+      {
+        "merchant_id": 5,
+        "n": 999,
+        "name": "Vatan Bilgisayar"
+      },
+      {
+        "merchant_id": 18,
+        "n": 55,
+        "name": "Hepsiburada"
+      }
+    ],
+    "search_ready_category_count": 326,
+    "search_ready_brand_count": 37,
+    "search_ready_with_media": 1054,
+    "search_ready_with_price": 1054,
+    "feed_product_count": "NOT_VERIFIED_LIVE_FEED_DIR_NOT_QUERIED"
+  },
+  "cohort": {
+    "cohort_code": "internal_ready_merchants",
+    "v1": {
+      "version": 1,
+      "status": "INTERNAL",
+      "search_ready": 1054,
+      "finance_ready": 0,
+      "merchants": 2,
+      "scopes": 326
+    },
+    "v2": {
+      "cohort_id": 1,
+      "version": 2,
+      "status": "PUBLIC_CANARY",
+      "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+      "traffic_state": "NOT_STARTED",
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "merchant_count": 2,
+      "category_scope_count": 326,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00"
+    },
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED"
+  },
+  "latest_readiness_summary": {
+    "READY": 2,
+    "PARTIAL": 12,
+    "BLOCKED": 1
+  },
+  "active_search_merchants": [
+    "Vatan Bilgisayar",
+    "Hepsiburada"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "search_ready_projection_used": true,
+  "tables": {
+    "search_ready_product_projection": 1054,
+    "v2": 1054
+  },
+  "cohort_filter": {
+    "cohort_id": 1,
+    "versions": {
+      "v1": "INTERNAL",
+      "v2": "PUBLIC_CANARY package ready / traffic NOT_STARTED"
+    },
+    "merchants": [
+      "Vatan Bilgisayar",
+      "Hepsiburada"
+    ]
+  },
+  "filters": {
+    "category": true,
+    "merchant": true,
+    "brand": true,
+    "attribute": "RAM_PARTIAL",
+    "price": "soft+hard budget",
+    "stock": "optional in eligibility",
+    "media": "card_media required for search_ready"
+  },
+  "unrestricted_catalog_fallback_internal": false,
+  "regression_evidence": "artifacts/.../p3-7.../unrestricted-fallback-regression.json PASS + tests/unit/search_sessions/test_unrestricted_fallback_regression.py",
+  "empty_projection_behavior": "no unrestricted fallback on INTERNAL prefer_search_ready path",
+  "no_result_merchant_leakage": "0 in P3.7/P4 artifacts",
+  "llm_timeout_unrestricted_fallback": false
+}

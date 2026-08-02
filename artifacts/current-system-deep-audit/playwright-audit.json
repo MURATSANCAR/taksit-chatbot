@@ -1,0 +1,18 @@
+{
+  "config": "playwright.config.ts",
+  "spec": "tests/e2e/playwright/internal_e2e.spec.ts",
+  "scenario_count": 3,
+  "real_browser": "Chromium",
+  "real_api": true,
+  "mocks": false,
+  "viewports_in_harness": [
+    "360x800",
+    "390x844",
+    "430x932",
+    "768x1024",
+    "1440x900"
+  ],
+  "last_known_result": "p3-7 playwright-results PASS + browser integrity PASS",
+  "finance_scenarios": "NOT_APPLICABLE / BLOCKED (firewall verified; no finance happy-path E2E)",
+  "status": "TESTED_REAL_DATA_FOR_PRODUCT_SEARCH"
+}

@@ -1,0 +1,22 @@
+{
+  "internal_token": {
+    "header": "X-Taksitlio-Internal-Token",
+    "fail_closed": true,
+    "file": "src/taksitlio/api/internal_access.py"
+  },
+  "public_guest": "legacy path without INTERNAL headers",
+  "cohort_manipulation_guard": true,
+  "tenant_isolation_canary_sim": {
+    "cross_tenant_leakage": 0,
+    "sample": "50k assignments P4.1"
+  },
+  "golden_review_auth": {
+    "admin_token_required": true,
+    "dual_control": true,
+    "optimistic_locking": true,
+    "audit_history": true
+  },
+  "secret_logging": "NOT_VERIFIED_DEEP_SCAN",
+  "pii_logging": "NOT_VERIFIED_DEEP_SCAN",
+  "critical_open_findings": []
+}

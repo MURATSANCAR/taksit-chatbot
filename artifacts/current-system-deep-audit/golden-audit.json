@@ -1,0 +1,39 @@
+{
+  "measured_at": "2026-08-02T18:57:41.905677+00:00",
+  "counts_by_lifecycle": [
+    {
+      "lifecycle_status": "APPROVED",
+      "n": 22
+    },
+    {
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "n": 403
+    }
+  ],
+  "provenance": [
+    {
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "OPERATOR_GENERATED",
+      "n": 228
+    },
+    {
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "n": 175
+    },
+    {
+      "lifecycle_status": "APPROVED",
+      "provenance_class": "OPERATOR_DUAL_CONTROL",
+      "n": 22
+    }
+  ],
+  "HUMAN_VERIFIED_APPROVED": 0,
+  "OPERATOR_DUAL_CONTROL_APPROVED": 22,
+  "OPERATOR_GENERATED_REVIEW_REQUIRED": 228,
+  "UNKNOWN_REVIEW_REQUIRED": 175,
+  "public_policy_minimum_approved_human": 250,
+  "public_policy_oos_minimum": 10,
+  "public_policy_gate": "FAIL",
+  "honesty": "P4 bulk approvals demoted; operator dual-control ≠ HUMAN_VERIFIED",
+  "internal_approved_usable": 22
+}

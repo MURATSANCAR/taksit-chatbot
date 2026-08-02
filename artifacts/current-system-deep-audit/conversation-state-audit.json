@@ -1,0 +1,43 @@
+{
+  "stores": [
+    {
+      "name": "QueryNeedState",
+      "path": "src/taksitlio/query_state/__init__.py",
+      "used_by": "SearchOrchestrator"
+    },
+    {
+      "name": "ConversationState Redis CAS",
+      "path": "src/taksitlio/conversation_state/",
+      "used_by": "ChatOrchestrator"
+    }
+  ],
+  "operations": {
+    "ADD": {
+      "supported": "IMPLICIT",
+      "via": "merge_parse_into_state"
+    },
+    "REMOVE": {
+      "supported": true,
+      "via": "cancel_constraint / ConstraintIn DELETE"
+    },
+    "REPLACE": {
+      "supported": "PARTIAL",
+      "via": "disjoint category replace + UPDATE"
+    },
+    "RELAX": {
+      "supported": false
+    },
+    "TEMPORARY_EXCEPTION": {
+      "supported": false
+    },
+    "ROLLBACK": {
+      "supported": false
+    },
+    "CLEAR": {
+      "supported": "PARTIAL",
+      "via": "RESET_NEED on chat path"
+    }
+  },
+  "pinned_revisions": true,
+  "status": "PARTIAL"
+}

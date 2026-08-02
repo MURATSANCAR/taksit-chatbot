@@ -1,0 +1,37 @@
+{
+  "method": "ripgrep sample on src/taksitlio",
+  "hits": [
+    {
+      "pattern": "Teknosa in orchestrator demo fixtures",
+      "class": "VALID_TEST_FIXTURE",
+      "file": "src/taksitlio/search_sessions/orchestrator.py:~1014"
+    },
+    {
+      "pattern": "category family tokens laptop/phone",
+      "class": "VALID_SEED_POLICY",
+      "file": "data/category_family_tokens/v1.json"
+    },
+    {
+      "pattern": "RankingWeights finance=0.10",
+      "class": "PRODUCTION_BUSINESS_HARDCODE",
+      "file": "src/taksitlio/product_query/ranking.py",
+      "note": "weights in code; adaptive_ranking flag SHADOW"
+    },
+    {
+      "pattern": "admission maximum_inflight=64",
+      "class": "PRODUCTION_BUSINESS_HARDCODE",
+      "file": "admission/backpressure policy"
+    },
+    {
+      "pattern": "negation markers Turkish list",
+      "class": "VALID_ENUM",
+      "file": "fast_parser.py"
+    },
+    {
+      "pattern": "merchant names in production entity maps",
+      "class": "FALSE_POSITIVE",
+      "note": "resolved from catalog aliases"
+    }
+  ],
+  "status": "PARTIAL_SCAN"
+}

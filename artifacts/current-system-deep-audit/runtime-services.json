@@ -1,0 +1,44 @@
+{
+  "measured_at": "2026-08-02T18:57:41.905677+00:00",
+  "host": "nanobase",
+  "workdir": "/data/nanobaseai/taksitlio-chatbot",
+  "services": [
+    {
+      "name": "taksitlio-api",
+      "port": 8040,
+      "bind": "127.0.0.1",
+      "process": "uvicorn",
+      "pid": 3839514,
+      "health": {
+        "endpoint": "/health",
+        "status": "ok"
+      },
+      "role": "INTERNAL+API+static portal",
+      "config": ".env.runtime"
+    },
+    {
+      "name": "postgres",
+      "port": 5432,
+      "bind": "127.0.0.1",
+      "process": "postgres",
+      "health": "LISTEN",
+      "role": "primary DB"
+    },
+    {
+      "name": "redis",
+      "port": 6379,
+      "bind": "127.0.0.1",
+      "process": "redis",
+      "health": "LISTEN",
+      "role": "conversation state / caches"
+    },
+    {
+      "name": "nginx",
+      "port": "NOT_VERIFIED_IN_THIS_PASS",
+      "role": "portal.nanobase.ai reverse proxy / CDN",
+      "evidence": "docker/nginx-taksitlio-portal.conf"
+    }
+  ],
+  "public_traffic": false,
+  "notes": "No new search-sessions created (WRITE_RISK)."
+}

@@ -1,0 +1,653 @@
+{
+  "migrations_v034_plus": [
+    {
+      "filename": "V030__p2_live_activation_flags_and_search_ready.sql",
+      "applied_at": "2026-08-01 13:29:14.486677+00:00"
+    },
+    {
+      "filename": "V031__mobile_phone_tel_synonym.sql",
+      "applied_at": "2026-08-01 14:04:04.761311+00:00"
+    },
+    {
+      "filename": "V032__p3_3_applicability_readiness_cohorts.sql",
+      "applied_at": "2026-08-01 14:26:51.825637+00:00"
+    },
+    {
+      "filename": "V033__p3_4_internal_e2e_performance_golden_policies.sql",
+      "applied_at": "2026-08-01 22:12:04.020363+00:00"
+    }
+  ],
+  "migration_total": 33,
+  "exists_continuous_golden_cases": true,
+  "count_continuous_golden_cases": 425,
+  "cols_continuous_golden_cases": [
+    "id",
+    "set_id",
+    "expected",
+    "anonymized",
+    "created_at",
+    "expected_entities",
+    "expected_constraints",
+    "expected_invariants",
+    "reviewed_at",
+    "demand_weight",
+    "cohort_id",
+    "cohort_version",
+    "row_version",
+    "claimed_at",
+    "prepared_at",
+    "prepare_duration_ms",
+    "review_duration_ms",
+    "provenance_class",
+    "review_decision",
+    "review_notes",
+    "human_participant_id",
+    "review_session_id",
+    "prepared_by_human_id",
+    "case_id",
+    "query_text",
+    "source_query_id",
+    "review_status",
+    "prepared_by",
+    "reviewed_by",
+    "source_signal",
+    "bucket",
+    "catalog_revision",
+    "prepared_session_id",
+    "lifecycle_status",
+    "claimed_by",
+    "reviewed_by_human_id",
+    "expected_route",
+    "prepare_notes"
+  ],
+  "exists_public_canary_assignments": true,
+  "count_public_canary_assignments": 200,
+  "cols_public_canary_assignments": [
+    "cohort_id",
+    "cohort_version",
+    "created_at",
+    "stage_percent",
+    "id",
+    "assignment_key",
+    "path"
+  ],
+  "exists_public_shadow_observations": true,
+  "count_public_shadow_observations": 1000,
+  "cols_public_shadow_observations": [
+    "created_at",
+    "shadow_id",
+    "public_payload",
+    "shadow_payload",
+    "difference_reasons",
+    "cohort_id",
+    "cohort_version",
+    "id",
+    "human_review_status",
+    "catalog_revision",
+    "difference_class",
+    "source_request_id_hash",
+    "tenant_scope",
+    "anonymized_query",
+    "query_bucket",
+    "public_route",
+    "shadow_route"
+  ],
+  "exists_public_real_shadow_unique_queries": true,
+  "count_public_real_shadow_unique_queries": 42,
+  "cols_public_real_shadow_unique_queries": [
+    "id",
+    "shadow_id",
+    "cohort_id",
+    "cohort_version",
+    "provenance_ok",
+    "created_at",
+    "tenant_scope",
+    "session_id_hash",
+    "bucket",
+    "policy_revision",
+    "source_table",
+    "catalog_revision",
+    "source_request_hash",
+    "anonymized_query",
+    "normalized_query_hash",
+    "normalized_query"
+  ],
+  "exists_public_uat_cases": true,
+  "count_public_uat_cases": 150,
+  "cols_public_uat_cases": [
+    "cohort_id",
+    "cohort_version",
+    "expected_behavior",
+    "actual_behavior",
+    "created_at",
+    "shown_products",
+    "shown_claims",
+    "started_at",
+    "completed_at",
+    "duration_ms",
+    "id",
+    "evidence_class",
+    "uat_case_id",
+    "reviewer",
+    "reviewer_role",
+    "anonymized_query",
+    "severity",
+    "decision",
+    "notes",
+    "scenario_family",
+    "human_participant_id",
+    "session_id"
+  ],
+  "exists_search_release_cohort_versions": true,
+  "count_search_release_cohort_versions": 17,
+  "cols_search_release_cohort_versions": [
+    "id",
+    "cohort_id",
+    "version",
+    "projection_leakage_count",
+    "metrics",
+    "created_at",
+    "activated_at",
+    "policy_version_id",
+    "search_ready_product_count",
+    "finance_ready_product_count",
+    "search_demand_coverage",
+    "category_scope_count",
+    "merchant_count",
+    "category_coverage",
+    "card_media_coverage",
+    "golden_coverage",
+    "critical_error_count",
+    "status",
+    "traffic_state",
+    "package_state",
+    "catalog_revision"
+  ],
+  "merchant_columns": [
+    "id",
+    "metadata",
+    "created_at",
+    "updated_at",
+    "activation_gate",
+    "canonical_name",
+    "normalized_name",
+    "merchant_code",
+    "display_name",
+    "status"
+  ],
+  "merchants": [
+    {
+      "merchant_id": 1,
+      "name": "Demo Teknoloji Mağazası"
+    },
+    {
+      "merchant_id": 2,
+      "name": "Demo Ev Mağazası"
+    },
+    {
+      "merchant_id": 29,
+      "name": "Network"
+    },
+    {
+      "merchant_id": 11,
+      "name": "Teknosa"
+    },
+    {
+      "merchant_id": 5,
+      "name": "Vatan Bilgisayar"
+    },
+    {
+      "merchant_id": 14,
+      "name": "Koçtaş"
+    },
+    {
+      "merchant_id": 15,
+      "name": "Arçelik"
+    },
+    {
+      "merchant_id": 16,
+      "name": "Beko"
+    },
+    {
+      "merchant_id": 17,
+      "name": "Decathlon"
+    },
+    {
+      "merchant_id": 18,
+      "name": "Hepsiburada"
+    },
+    {
+      "merchant_id": 20,
+      "name": "Trendyol"
+    },
+    {
+      "merchant_id": 40,
+      "name": "Evofone"
+    },
+    {
+      "merchant_id": 21,
+      "name": "Vivense"
+    },
+    {
+      "merchant_id": 22,
+      "name": "FLO"
+    },
+    {
+      "merchant_id": 23,
+      "name": "D&R"
+    },
+    {
+      "merchant_id": 25,
+      "name": "Fujifilm"
+    },
+    {
+      "merchant_id": 26,
+      "name": "Gürgençler"
+    },
+    {
+      "merchant_id": 27,
+      "name": "ETS"
+    },
+    {
+      "merchant_id": 28,
+      "name": "General Mobile"
+    },
+    {
+      "merchant_id": 30,
+      "name": "Setur"
+    },
+    {
+      "merchant_id": 31,
+      "name": "Troy"
+    },
+    {
+      "merchant_id": 32,
+      "name": "Vivo"
+    },
+    {
+      "merchant_id": 33,
+      "name": "Zuhal Müzik"
+    },
+    {
+      "merchant_id": 24,
+      "name": "Civil"
+    },
+    {
+      "merchant_id": 8,
+      "name": "MediaMarkt"
+    },
+    {
+      "merchant_id": 19,
+      "name": "n11"
+    }
+  ],
+  "search_ready_by_merchant": [
+    {
+      "merchant_id": 5,
+      "n": 999,
+      "name": "Vatan Bilgisayar"
+    },
+    {
+      "merchant_id": 18,
+      "n": 55,
+      "name": "Hepsiburada"
+    }
+  ],
+  "agreements": [
+    {
+      "id": 1,
+      "merchant_id": 8,
+      "institution_id": 1,
+      "financial_product_id": 1,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-isbank.json",
+      "created_at": "2026-07-31 22:04:06.469985+00:00",
+      "updated_at": "2026-08-01 13:32:18.900177+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "MediaMarkt"
+    },
+    {
+      "id": 3,
+      "merchant_id": 40,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "created_at": "2026-07-31 22:04:21.657497+00:00",
+      "updated_at": "2026-08-01 13:32:21.286520+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "Evofone"
+    },
+    {
+      "id": 4,
+      "merchant_id": 20,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "created_at": "2026-07-31 22:04:21.663578+00:00",
+      "updated_at": "2026-08-01 13:32:21.700426+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "Trendyol"
+    },
+    {
+      "id": 5,
+      "merchant_id": 11,
+      "institution_id": 2,
+      "financial_product_id": 3,
+      "status": "ACTIVE",
+      "valid_from": null,
+      "valid_until": null,
+      "source_reference": "/data/nanobaseai/taksitlio-chatbot/crawler/feeds/live/src-b-fibabanka.json",
+      "created_at": "2026-07-31 22:04:21.672238+00:00",
+      "updated_at": "2026-08-01 13:32:25.733612+00:00",
+      "verification_status": "SOURCE_PROVIDED",
+      "merchant_name": "Teknosa"
+    }
+  ],
+  "finance_option_cols": [
+    "metadata",
+    "product_offer_id",
+    "merchant_id",
+    "institution_id",
+    "financial_product_id",
+    "campaign_id",
+    "term_months",
+    "monthly_payment",
+    "total_repayment",
+    "fees_total",
+    "valid_until",
+    "calculated_at",
+    "id",
+    "price_snapshot_id",
+    "rate_snapshot_id",
+    "payment_plan_id",
+    "eligibility_status",
+    "plan_kind",
+    "freshness_status"
+  ],
+  "offer_cols": [
+    "id",
+    "product_id",
+    "merchant_id",
+    "location_id",
+    "current_price",
+    "list_price",
+    "shipping_cost",
+    "valid_from",
+    "valid_until",
+    "last_verified_at",
+    "created_at",
+    "updated_at",
+    "content_hash",
+    "currency",
+    "stock_status",
+    "source_reference",
+    "seller_name",
+    "checkout_url",
+    "freshness_status"
+  ],
+  "cohort_v2": {
+    "cohort_id": 1,
+    "version": 2,
+    "status": "PUBLIC_CANARY",
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED",
+    "search_ready_product_count": 1054,
+    "finance_ready_product_count": 0,
+    "merchant_count": 2,
+    "category_scope_count": 326,
+    "projection_leakage_count": 0,
+    "catalog_revision": "2026-08-01T14:27:31.026955+00:00"
+  },
+  "latest_readiness": [
+    {
+      "merchant_id": 5,
+      "status": "READY",
+      "active_products": 1003,
+      "searchable_products": 1003,
+      "category_coverage": 1.0,
+      "brand_coverage": 0.9950149551345963,
+      "attribute_coverage": 0.9990029910269193,
+      "card_media_coverage": 0.996011964107677,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[]",
+      "evaluated_at": "2026-08-02 18:53:16.810920+00:00",
+      "name": "Vatan Bilgisayar"
+    },
+    {
+      "merchant_id": 8,
+      "status": "PARTIAL",
+      "active_products": 892,
+      "searchable_products": 892,
+      "category_coverage": 0.7836322869955157,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 1.0,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.813947+00:00",
+      "name": "MediaMarkt"
+    },
+    {
+      "merchant_id": 11,
+      "status": "PARTIAL",
+      "active_products": 7450,
+      "searchable_products": 7450,
+      "category_coverage": 0.8916778523489933,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "card_media_coverage": 0.9997315436241611,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.9209395973154363,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.815357+00:00",
+      "name": "Teknosa"
+    },
+    {
+      "merchant_id": 14,
+      "status": "PARTIAL",
+      "active_products": 115,
+      "searchable_products": 115,
+      "category_coverage": 1.0,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "card_media_coverage": 0.21739130434782608,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"card_media_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.816882+00:00",
+      "name": "Koçtaş"
+    },
+    {
+      "merchant_id": 15,
+      "status": "PARTIAL",
+      "active_products": 1244,
+      "searchable_products": 1244,
+      "category_coverage": 0.5594855305466238,
+      "brand_coverage": 0.13665594855305466,
+      "attribute_coverage": 0.1382636655948553,
+      "card_media_coverage": 0.9959807073954984,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.818403+00:00",
+      "name": "Arçelik"
+    },
+    {
+      "merchant_id": 16,
+      "status": "PARTIAL",
+      "active_products": 1163,
+      "searchable_products": 1163,
+      "category_coverage": 0.6431642304385211,
+      "brand_coverage": 0.18400687876182287,
+      "attribute_coverage": 0.18400687876182287,
+      "card_media_coverage": 0.9922613929492692,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.819877+00:00",
+      "name": "Beko"
+    },
+    {
+      "merchant_id": 18,
+      "status": "READY",
+      "active_products": 57,
+      "searchable_products": 57,
+      "category_coverage": 1.0,
+      "brand_coverage": 0.9649122807017544,
+      "attribute_coverage": 0.9649122807017544,
+      "card_media_coverage": 0.9649122807017544,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[]",
+      "evaluated_at": "2026-08-02 18:53:16.821245+00:00",
+      "name": "Hepsiburada"
+    },
+    {
+      "merchant_id": 19,
+      "status": "BLOCKED",
+      "active_products": 26694,
+      "searchable_products": 26694,
+      "category_coverage": 0.33337079493519145,
+      "brand_coverage": 0.14684947928373418,
+      "attribute_coverage": 0.14684947928373418,
+      "card_media_coverage": 0.9999625383981419,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.822644+00:00",
+      "name": "n11"
+    },
+    {
+      "merchant_id": 20,
+      "status": "PARTIAL",
+      "active_products": 1007,
+      "searchable_products": 1007,
+      "category_coverage": 0.5809334657398213,
+      "brand_coverage": 0.6415094339622641,
+      "attribute_coverage": 0.6415094339622641,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.9990069513406157,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.823882+00:00",
+      "name": "Trendyol"
+    },
+    {
+      "merchant_id": 21,
+      "status": "PARTIAL",
+      "active_products": 130,
+      "searchable_products": 130,
+      "category_coverage": 0.676923076923077,
+      "brand_coverage": 1.0,
+      "attribute_coverage": 1.0,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.825140+00:00",
+      "name": "Vivense"
+    },
+    {
+      "merchant_id": 22,
+      "status": "PARTIAL",
+      "active_products": 165169,
+      "searchable_products": 165169,
+      "category_coverage": 0.7987455273083932,
+      "brand_coverage": 0.9975116395933862,
+      "attribute_coverage": 0.9975237484031507,
+      "card_media_coverage": 0.9999939455951177,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.826449+00:00",
+      "name": "FLO"
+    },
+    {
+      "merchant_id": 23,
+      "status": "PARTIAL",
+      "active_products": 750,
+      "searchable_products": 750,
+      "category_coverage": 0.9986666666666667,
+      "brand_coverage": 0.012,
+      "attribute_coverage": 0.012,
+      "card_media_coverage": 0.46,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"card_media_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.827842+00:00",
+      "name": "D&R"
+    },
+    {
+      "merchant_id": 24,
+      "status": "PARTIAL",
+      "active_products": 462,
+      "searchable_products": 462,
+      "category_coverage": 0.6666666666666666,
+      "brand_coverage": 0.9935064935064936,
+      "attribute_coverage": 0.9935064935064936,
+      "card_media_coverage": 0.9935064935064936,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.829174+00:00",
+      "name": "Civil"
+    },
+    {
+      "merchant_id": 29,
+      "status": "PARTIAL",
+      "active_products": 6826,
+      "searchable_products": 6826,
+      "category_coverage": 0.8510108409024318,
+      "brand_coverage": 0.9997070026369763,
+      "attribute_coverage": 0.9997070026369763,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 0.0,
+      "reasons": "[\"category_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.830532+00:00",
+      "name": "Network"
+    },
+    {
+      "merchant_id": 40,
+      "status": "PARTIAL",
+      "active_products": 130,
+      "searchable_products": 130,
+      "category_coverage": 0.5,
+      "brand_coverage": 1.0,
+      "attribute_coverage": 1.0,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 1.0,
+      "finance_coverage": 1.0,
+      "reasons": "[\"category_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-02 18:53:16.831507+00:00",
+      "name": "Evofone"
+    }
+  ],
+  "golden_provenance": [
+    {
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "OPERATOR_GENERATED",
+      "n": 228
+    },
+    {
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "provenance_class": "UNKNOWN",
+      "n": 175
+    },
+    {
+      "lifecycle_status": "APPROVED",
+      "provenance_class": "OPERATOR_DUAL_CONTROL",
+      "n": 22
+    }
+  ]
+}

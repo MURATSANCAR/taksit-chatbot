@@ -1,0 +1,57 @@
+{
+  "open_loop_authoritative": {
+    "5_rps": {
+      "success": 1.0,
+      "p95_ms": 355,
+      "p99_ms": 451
+    },
+    "10_rps": {
+      "success": 1.0,
+      "p95_ms": 368,
+      "p99_ms": 479
+    },
+    "25_rps": {
+      "success": 1.0,
+      "p95_ms": 383,
+      "p99_ms": 469
+    },
+    "50_rps": {
+      "success": 1.0,
+      "p95_ms": 383,
+      "p99_ms": 506
+    },
+    "100_rps_burst": {
+      "success": 1.0,
+      "p95_ms": 341,
+      "p99_ms": 381
+    }
+  },
+  "closed_loop_concurrency_reporting_only": {
+    "250": {
+      "ok": 184,
+      "http_429": 23,
+      "e2e_p95_ms": 25028,
+      "note": "queue wait dominated; not service-time SLO"
+    }
+  },
+  "single_flight_catalog": true,
+  "revision_cache": true,
+  "backpressure": {
+    "maximum_inflight": 64,
+    "policy": "BUSY_REJECT",
+    "retry_after": 2
+  },
+  "chaos": {
+    "injected_pass": [
+      "redis_unavailable",
+      "llm_unavailable_path",
+      "ranking_challenger_exception",
+      "catalog_refresh_delay"
+    ],
+    "not_injected": [
+      "media_service_failure",
+      "db_replica_lag",
+      "sse_slow_consumer"
+    ]
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "capabilities": [
+    {
+      "name": "Kategori çıkarımı",
+      "status": "TESTED_REAL_DATA",
+      "schema": "positive_categories",
+      "deterministic": true,
+      "llm": "fallback preferences only",
+      "tests": "golden+P3.7"
+    },
+    {
+      "name": "Merchant çıkarımı",
+      "status": "TESTED_REAL_DATA",
+      "schema": "merchant",
+      "deterministic": true
+    },
+    {
+      "name": "Marka çıkarımı",
+      "status": "TESTED_REAL_DATA",
+      "schema": "brands",
+      "deterministic": true
+    },
+    {
+      "name": "Fiyat üst sınırı / bütçe",
+      "status": "TESTED_REAL_DATA",
+      "schema": "budget",
+      "deterministic": true
+    },
+    {
+      "name": "Fiyat alt sınırı",
+      "status": "NOT_VERIFIED",
+      "schema": "budget.minimum?",
+      "note": "parser primarily TOTAL_MAXIMUM"
+    },
+    {
+      "name": "Attribute (RAM)",
+      "status": "TESTED_SYNTHETIC",
+      "schema": "attributes",
+      "deterministic": "RAM only",
+      "gap": "general attributes limited"
+    },
+    {
+      "name": "Pozitif tercih",
+      "status": "WIRED_NOT_TESTED",
+      "schema": "preferences/usage_contexts",
+      "note": "soft score only"
+    },
+    {
+      "name": "Negation",
+      "status": "TESTED_REAL_DATA",
+      "schema": "negative_categories",
+      "deterministic": true
+    },
+    {
+      "name": "Correction",
+      "status": "TESTED_SYNTHETIC",
+      "paths": "ADR-007 extractor + ADR-011 negation/merge"
+    },
+    {
+      "name": "Clarification",
+      "status": "TESTED_REAL_DATA",
+      "file": "query_clarification/policy.py"
+    },
+    {
+      "name": "Typo/alias",
+      "status": "TESTED_REAL_DATA",
+      "via": "CatalogAliasIndex + category_family_tokens"
+    },
+    {
+      "name": "Context continuation",
+      "status": "TESTED_SYNTHETIC",
+      "via": "hydrate_parse_from_state"
+    },
+    {
+      "name": "Query supersede",
+      "status": "WIRED_NOT_TESTED",
+      "via": "POST .../messages"
+    },
+    {
+      "name": "Out-of-scope",
+      "status": "TESTED_SYNTHETIC",
+      "via": "is_off_domain_for_assist"
+    },
+    {
+      "name": "No-result",
+      "status": "TESTED_REAL_DATA",
+      "golden_bucket": "minimum_no_result_cases"
+    },
+    {
+      "name": "LLM-required route",
+      "status": "TESTED_REAL_DATA",
+      "via": "gap_detector + llm_routing"
+    }
+  ]
+}

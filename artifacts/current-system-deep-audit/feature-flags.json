@@ -1,0 +1,90 @@
+{
+  "measured_at": "2026-08-02T18:57:41.905677+00:00",
+  "source": "runtime_feature_flags",
+  "flags": [
+    {
+      "flag": "adaptive_catalog_enabled",
+      "value": "ENABLED",
+      "config": "{}",
+      "scope": {},
+      "cohort": null,
+      "traffic_mode": null,
+      "code_reader": "src/taksitlio/runtime_flags/__init__.py",
+      "changes_runtime_behavior": true,
+      "dead_flag": false,
+      "notes": null
+    },
+    {
+      "flag": "learning_candidate_generation_enabled",
+      "value": "ENABLED",
+      "config": "{}",
+      "scope": {},
+      "cohort": null,
+      "traffic_mode": null,
+      "code_reader": "src/taksitlio/runtime_flags/__init__.py",
+      "changes_runtime_behavior": true,
+      "dead_flag": false,
+      "notes": null
+    },
+    {
+      "flag": "rolling_golden_enabled",
+      "value": "ENABLED",
+      "config": "{}",
+      "scope": {},
+      "cohort": null,
+      "traffic_mode": null,
+      "code_reader": "src/taksitlio/runtime_flags/__init__.py",
+      "changes_runtime_behavior": true,
+      "dead_flag": false,
+      "notes": null
+    },
+    {
+      "flag": "learning_auto_promotion_enabled",
+      "value": "DISABLED",
+      "config": "{\"require_gate\": true}",
+      "scope": {
+        "require_gate": true
+      },
+      "cohort": null,
+      "traffic_mode": null,
+      "code_reader": "src/taksitlio/runtime_flags/__init__.py",
+      "changes_runtime_behavior": false,
+      "dead_flag": false,
+      "notes": "DISABLED by design (auto_promotion_allowed hard safety)"
+    },
+    {
+      "flag": "adaptive_ranking_enabled",
+      "value": "SHADOW",
+      "config": "{\"topk\": 50}",
+      "scope": {
+        "topk": 50
+      },
+      "cohort": null,
+      "traffic_mode": null,
+      "code_reader": "src/taksitlio/runtime_flags/__init__.py",
+      "changes_runtime_behavior": true,
+      "dead_flag": false,
+      "notes": "SHADOW — ranking feature path not fully ENABLED"
+    },
+    {
+      "flag": "dynamic_readiness_enabled",
+      "value": "INTERNAL",
+      "config": "{\"traffic\": \"internal_only\", \"cohort_id\": 1, \"cohort_code\": \"internal_ready_merchants\", \"cohort_version\": 1, \"write_snapshots\": true, \"apply_activation_gate\": false, \"require_merchant_count\": false}",
+      "scope": {
+        "traffic": "internal_only",
+        "cohort_id": 1,
+        "cohort_code": "internal_ready_merchants",
+        "cohort_version": 1,
+        "write_snapshots": true,
+        "apply_activation_gate": false,
+        "require_merchant_count": false
+      },
+      "cohort": "internal_ready_merchants",
+      "traffic_mode": "internal_only",
+      "code_reader": "src/taksitlio/runtime_flags/__init__.py",
+      "changes_runtime_behavior": true,
+      "dead_flag": false,
+      "notes": "INTERNAL; config still cohort_version=1 while live cohort v2 is PUBLIC_CANARY package — config drift"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "file": "src/taksitlio/product_query/ranking.py",
+  "modes": [
+    "CHEAPEST_PRODUCT_PRICE",
+    "LOWEST_MONTHLY_PAYMENT",
+    "LOWEST_TOTAL_REPAYMENT",
+    "LONGEST_TERM",
+    "SHORTEST_TERM",
+    "BEST_ATTRIBUTE_MATCH",
+    "BEST_OVERALL_VALUE"
+  ],
+  "user_priority_dynamic_list": false,
+  "price_ranking": "READY / dominant in product path",
+  "attribute_ranking": "CODE_PRESENT (BEST_ATTRIBUTE_MATCH) — limited attribute extraction",
+  "soft_preference_ranking": "PARTIAL (_soft_relevance_score budget/preferences)",
+  "conditional_exception_ranking": "NOT_IMPLEMENTED",
+  "finance_modes_active": false,
+  "performance_evidence_source": "p4-1 load-slo-results / open-loop",
+  "load_open_loop": {
+    "5": {
+      "p95": 355
+    },
+    "10": {
+      "p95": 368
+    },
+    "25": {
+      "p95": 383
+    },
+    "50": {
+      "p95": 383
+    },
+    "100_burst": {
+      "p95": 341
+    },
+    "success": 1.0
+  },
+  "adaptive_ranking_flag": "SHADOW"
+}

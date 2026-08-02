@@ -1,0 +1,90 @@
+{
+  "note": "No tasks implemented in this audit",
+  "tasks": [
+    {
+      "id": "BL-NLU-01",
+      "title": "Formal Complex Query Planner schema + producer",
+      "group": "Complex Query Planner",
+      "priority": "P1",
+      "problem": "No request_type/hard/soft/conditional/multi-item plan",
+      "evidence": "complex-query-audit.json",
+      "deps": []
+    },
+    {
+      "id": "BL-NLU-02",
+      "title": "Expand attribute + preference priority extraction",
+      "group": "Natural-language understanding",
+      "priority": "P2",
+      "evidence": "query-capability-matrix.json"
+    },
+    {
+      "id": "BL-STATE-01",
+      "title": "Add RELAX/ROLLBACK/TEMPORARY_EXCEPTION ops",
+      "group": "Conversation state",
+      "priority": "P2"
+    },
+    {
+      "id": "BL-RET-01",
+      "title": "Broaden search-ready cohort merchants beyond Vatan/HB",
+      "group": "Catalog coverage",
+      "priority": "P1",
+      "evidence": "catalog-coverage.json"
+    },
+    {
+      "id": "BL-FIN-01",
+      "title": "Bring finance merchants to READY+search-ready without inventing data",
+      "group": "Finance/campaign",
+      "priority": "P1",
+      "evidence": "finance-capability-audit.json"
+    },
+    {
+      "id": "BL-FIN-02",
+      "title": "Wire campaign matching end-to-end when cohort finance_ready>0",
+      "group": "Finance/campaign",
+      "priority": "P1",
+      "deps": [
+        "BL-FIN-01"
+      ]
+    },
+    {
+      "id": "BL-RANK-01",
+      "title": "Use planner ranking_priorities; enable adaptive ranking carefully",
+      "group": "Ranking",
+      "priority": "P2"
+    },
+    {
+      "id": "BL-FE-01",
+      "title": "Finance card activation only behind READY gate + real data",
+      "group": "Frontend",
+      "priority": "P1",
+      "deps": [
+        "BL-FIN-02"
+      ]
+    },
+    {
+      "id": "BL-TEST-01",
+      "title": "Expand Playwright for multi-turn + finance firewall + complex queries",
+      "group": "Testing",
+      "priority": "P2"
+    },
+    {
+      "id": "BL-OPS-01",
+      "title": "Reconcile V034–V038 into schema_migration_history",
+      "group": "Operations",
+      "priority": "P2"
+    },
+    {
+      "id": "BL-PUB-01",
+      "title": "Human shadow diversity ≥500 + HUMAN_VERIFIED golden + external UAT",
+      "group": "Public rollout",
+      "priority": "P1",
+      "evidence": "shadow-uat-canary-audit.json"
+    },
+    {
+      "id": "BL-SEC-01",
+      "title": "Deep PII/secret logging audit",
+      "group": "Security",
+      "priority": "P3"
+    }
+  ]
+}

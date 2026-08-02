@@ -1,0 +1,1409 @@
+{
+  "mode": "READ_ONLY",
+  "migration_tables": [
+    "ai_schema_versions",
+    "schema_migration_history"
+  ],
+  "sample_ai_schema_versions": [
+    {
+      "id": 3,
+      "schema_code": "NEED_PROFILE",
+      "version": 2,
+      "schema_body": "{\"$ref\": \"package:taksitlio/schemas/need_profile.schema.json\"}",
+      "is_active": false,
+      "notes": "ADR-007 challenger schema ref — promote with prompt after review",
+      "created_at": "2026-07-31 07:27:39.479548+00:00"
+    },
+    {
+      "id": 2,
+      "schema_code": "CONVERSATION_UPDATE",
+      "version": 1,
+      "schema_body": "{\"$ref\": \"package:taksitlio/schemas/conversation_update.schema.json\"}",
+      "is_active": true,
+      "notes": "Package schema reference",
+      "created_at": "2026-07-31 07:27:38.996420+00:00"
+    },
+    {
+      "id": 1,
+      "schema_code": "NEED_PROFILE",
+      "version": 1,
+      "schema_body": "{\"$ref\": \"package:taksitlio/schemas/need_profile.schema.json\"}",
+      "is_active": true,
+      "notes": "Package schema reference",
+      "created_at": "2026-07-31 07:27:38.995356+00:00"
+    }
+  ],
+  "sample_schema_migration_history": [
+    {
+      "filename": "V033__p3_4_internal_e2e_performance_golden_policies.sql",
+      "applied_at": "2026-08-01 22:12:04.020363+00:00"
+    },
+    {
+      "filename": "V032__p3_3_applicability_readiness_cohorts.sql",
+      "applied_at": "2026-08-01 14:26:51.825637+00:00"
+    },
+    {
+      "filename": "V031__mobile_phone_tel_synonym.sql",
+      "applied_at": "2026-08-01 14:04:04.761311+00:00"
+    },
+    {
+      "filename": "V030__p2_live_activation_flags_and_search_ready.sql",
+      "applied_at": "2026-08-01 13:29:14.486677+00:00"
+    },
+    {
+      "filename": "V029__recovery_p2_live_adaptive_catalog.sql",
+      "applied_at": "2026-08-01 13:29:14.453894+00:00"
+    },
+    {
+      "filename": "V028__recovery_p1_verification_and_payment_idempotency.sql",
+      "applied_at": "2026-08-01 13:29:14.149942+00:00"
+    },
+    {
+      "filename": "V027__catalog_search_and_entity_projections.sql",
+      "applied_at": "2026-07-31 23:37:18.985280+00:00"
+    },
+    {
+      "filename": "V026__product_category_id.sql",
+      "applied_at": "2026-07-31 23:00:42.757404+00:00"
+    },
+    {
+      "filename": "V025__footwear_category.sql",
+      "applied_at": "2026-07-31 23:00:42.228164+00:00"
+    },
+    {
+      "filename": "V024__sponsored_placements.sql",
+      "applied_at": "2026-07-31 21:13:38.799032+00:00"
+    },
+    {
+      "filename": "V023__answer_integrity_claim_grounding.sql",
+      "applied_at": "2026-07-31 21:13:38.789484+00:00"
+    },
+    {
+      "filename": "V022__merchant_brand_media_logos.sql",
+      "applied_at": "2026-07-31 21:13:38.732631+00:00"
+    },
+    {
+      "filename": "V021__search_sessions_clarification_and_llm_jobs.sql",
+      "applied_at": "2026-07-31 20:41:34.706455+00:00"
+    },
+    {
+      "filename": "V020__freshness_and_scheduler_jobs.sql",
+      "applied_at": "2026-07-31 20:41:34.540639+00:00"
+    },
+    {
+      "filename": "V019__product_finance_options_and_resolution.sql",
+      "applied_at": "2026-07-31 20:41:34.508965+00:00"
+    },
+    {
+      "filename": "V018__finance_campaigns_rates_payment_plans.sql",
+      "applied_at": "2026-07-31 20:41:34.466116+00:00"
+    },
+    {
+      "filename": "V017__media_assets_and_variants.sql",
+      "applied_at": "2026-07-31 20:41:34.281367+00:00"
+    },
+    {
+      "filename": "V016__products_offers_and_snapshots.sql",
+      "applied_at": "2026-07-31 20:41:34.213559+00:00"
+    },
+    {
+      "filename": "V015__ingestion_and_merchant_locations.sql",
+      "applied_at": "2026-07-31 20:41:34.078642+00:00"
+    },
+    {
+      "filename": "V014__topk_diversification_policy.sql",
+      "applied_at": "2026-07-31 07:28:34.714720+00:00"
+    },
+    {
+      "filename": "V013__morphology_safe_retrieval_policy.sql",
+      "applied_at": "2026-07-31 07:28:34.711379+00:00"
+    },
+    {
+      "filename": "V012__end_to_end_evaluation_and_review.sql",
+      "applied_at": "2026-07-31 07:28:34.707467+00:00"
+    },
+    {
+      "filename": "V011__semantic_matcher_hardening.sql",
+      "applied_at": "2026-07-31 07:28:34.705692+00:00"
+    },
+    {
+      "filename": "V010__catalog_revision_two_stage_publish.sql",
+      "applied_at": "2026-07-31 07:28:34.702183+00:00"
+    },
+    {
+      "filename": "V009__category_embeddings_and_jobs.sql",
+      "applied_at": "2026-07-31 07:28:34.698907+00:00"
+    },
+    {
+      "filename": "V008__semantic_match_policies.sql",
+      "applied_at": "2026-07-31 07:28:34.695369+00:00"
+    },
+    {
+      "filename": "V007__dynamic_category_catalog.sql",
+      "applied_at": "2026-07-31 07:28:34.691864+00:00"
+    },
+    {
+      "filename": "V006__conversation_state_policies.sql",
+      "applied_at": "2026-07-31 07:28:34.687809+00:00"
+    },
+    {
+      "filename": "V005__prompts_sessions_audit.sql",
+      "applied_at": "2026-07-31 07:28:34.684110+00:00"
+    },
+    {
+      "filename": "V004__campaigns_eligibility_ranking.sql",
+      "applied_at": "2026-07-31 07:28:34.680298+00:00"
+    },
+    {
+      "filename": "V003__categories_and_embeddings.sql",
+      "applied_at": "2026-07-31 07:28:34.672788+00:00"
+    },
+    {
+      "filename": "V002__ai_default_policies.sql",
+      "applied_at": "2026-07-31 07:28:34.669151+00:00"
+    },
+    {
+      "filename": "V001__ai_model_management.sql",
+      "applied_at": "2026-07-31 07:28:34.665809+00:00"
+    }
+  ],
+  "table_exists": {
+    "catalog_domain_events": true,
+    "runtime_feature_flags": true,
+    "merchant_readiness_snapshots": true,
+    "merchant_category_readiness_snapshots": true,
+    "product_readiness_projection": true,
+    "search_ready_product_projection": true,
+    "search_ready_product_projection_v2": true,
+    "search_release_cohorts": true,
+    "search_release_cohort_versions": true,
+    "search_release_cohort_members": true,
+    "source_capability_profiles": true,
+    "category_quality_dimension_policies": true,
+    "continuous_golden_cases": true,
+    "continuous_golden_review_history": true,
+    "products": true,
+    "product_offers": true,
+    "merchants": true,
+    "categories": true,
+    "brands": true,
+    "merchant_financial_agreements": true,
+    "finance_campaigns": true,
+    "finance_rate_snapshots": true,
+    "product_finance_options": true,
+    "financial_products": true,
+    "campaign_terms": true,
+    "campaign_merchants": true,
+    "schema_migrations": false,
+    "applied_migrations": false
+  },
+  "table_counts": {
+    "catalog_domain_events": 205031,
+    "runtime_feature_flags": 6,
+    "merchant_readiness_snapshots": 2685,
+    "merchant_category_readiness_snapshots": 3498,
+    "product_readiness_projection": 1810,
+    "search_ready_product_projection": 1054,
+    "search_ready_product_projection_v2": 1054,
+    "search_release_cohorts": 2,
+    "search_release_cohort_versions": 17,
+    "search_release_cohort_members": 2358,
+    "source_capability_profiles": 15,
+    "category_quality_dimension_policies": 1,
+    "continuous_golden_cases": 425,
+    "continuous_golden_review_history": 44,
+    "products": 213092,
+    "product_offers": 213092,
+    "merchants": 26,
+    "categories": 3373,
+    "brands": 2191,
+    "merchant_financial_agreements": 4,
+    "finance_campaigns": 5,
+    "finance_rate_snapshots": 7,
+    "product_finance_options": 31829,
+    "financial_products": 2,
+    "campaign_terms": 7,
+    "campaign_merchants": 4
+  },
+  "flag_columns": [
+    "flag_code",
+    "description",
+    "status",
+    "config",
+    "updated_at",
+    "updated_by"
+  ],
+  "flags": [
+    {
+      "flag_code": "adaptive_catalog_enabled",
+      "description": "Master switch for adaptive catalog consumers",
+      "status": "ENABLED",
+      "config": "{}",
+      "updated_at": "2026-08-01 13:29:14.456699+00:00",
+      "updated_by": null
+    },
+    {
+      "flag_code": "learning_candidate_generation_enabled",
+      "description": "Allow Auto Ops to create OBSERVED/CANDIDATE learning rows",
+      "status": "ENABLED",
+      "config": "{}",
+      "updated_at": "2026-08-01 13:29:14.456699+00:00",
+      "updated_by": null
+    },
+    {
+      "flag_code": "rolling_golden_enabled",
+      "description": "Collect anonymized rolling golden candidates",
+      "status": "ENABLED",
+      "config": "{}",
+      "updated_at": "2026-08-01 13:29:14.456699+00:00",
+      "updated_by": null
+    },
+    {
+      "flag_code": "learning_auto_promotion_enabled",
+      "description": "Allow automatic SHADOW→PROMOTED without human/gate approval",
+      "status": "DISABLED",
+      "config": "{\"require_gate\": true}",
+      "updated_at": "2026-08-01 14:27:31.020628+00:00",
+      "updated_by": "p3.2-unblock"
+    },
+    {
+      "flag_code": "adaptive_ranking_enabled",
+      "description": "Use ranking feature projection + top-K path",
+      "status": "SHADOW",
+      "config": "{\"topk\": 50}",
+      "updated_at": "2026-08-01 14:27:31.025406+00:00",
+      "updated_by": "p3.2-unblock"
+    },
+    {
+      "flag_code": "dynamic_readiness_enabled",
+      "description": "Merchant readiness evaluation mode",
+      "status": "INTERNAL",
+      "config": "{\"traffic\": \"internal_only\", \"cohort_id\": 1, \"cohort_code\": \"internal_ready_merchants\", \"cohort_version\": 1, \"write_snapshots\": true, \"apply_activation_gate\": false, \"require_merchant_count\": false}",
+      "updated_at": "2026-08-01 14:27:42.832255+00:00",
+      "updated_by": "p3.3-applicability"
+    }
+  ],
+  "cohorts": [
+    {
+      "id": 1,
+      "cohort_code": "internal_ready_merchants",
+      "created_at": "2026-08-01 14:26:51.682981+00:00"
+    },
+    {
+      "id": 2,
+      "cohort_code": "internal_scope_lifecycle_test",
+      "created_at": "2026-08-02 11:34:23.189664+00:00"
+    }
+  ],
+  "cohort_version_columns": [
+    "id",
+    "cohort_id",
+    "version",
+    "projection_leakage_count",
+    "metrics",
+    "created_at",
+    "activated_at",
+    "policy_version_id",
+    "search_ready_product_count",
+    "finance_ready_product_count",
+    "search_demand_coverage",
+    "category_scope_count",
+    "merchant_count",
+    "category_coverage",
+    "card_media_coverage",
+    "golden_coverage",
+    "critical_error_count",
+    "status",
+    "traffic_state",
+    "package_state",
+    "catalog_revision"
+  ],
+  "cohort_versions": [
+    {
+      "id": 17,
+      "cohort_id": 1,
+      "version": 2,
+      "status": "PUBLIC_CANARY",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"purpose\": \"public_canary_candidate\", \"from_version\": 1}",
+      "created_at": "2026-08-02 13:36:26.083994+00:00",
+      "activated_at": "2026-08-02 13:52:27.743040+00:00",
+      "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 1,
+      "cohort_id": 1,
+      "version": 1,
+      "status": "INTERNAL",
+      "policy_version_id": 1,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": "1.000000",
+      "card_media_coverage": "1.000000",
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"reasons\": [], \"decision_passed\": true, \"legacy_projection\": {\"rows\": 1054, \"leakage\": {\"invalid_url\": 0, \"invalid_price\": 0, \"non_card_ready\": 0, \"non_ready_rows\": 0, \"unresolved_category\": 0, \"blocked_partial_degraded\": 0}, \"ready_merchants\": 2}, \"require_merchant_count\": false}",
+      "created_at": "2026-08-01 14:27:42.775101+00:00",
+      "activated_at": "2026-08-01 14:27:42.775101+00:00",
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 16,
+      "cohort_id": 2,
+      "version": 15,
+      "status": "INTERNAL",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"restore_test\"}",
+      "created_at": "2026-08-02 12:22:18.961376+00:00",
+      "activated_at": "2026-08-02 12:22:18.961376+00:00",
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 15,
+      "cohort_id": 2,
+      "version": 14,
+      "status": "SHADOW_VALIDATION",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"downgrade_test\"}",
+      "created_at": "2026-08-02 12:22:18.957048+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 14,
+      "cohort_id": 2,
+      "version": 13,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{}",
+      "created_at": "2026-08-02 12:22:18.935805+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 13,
+      "cohort_id": 2,
+      "version": 12,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"restore_test\"}",
+      "created_at": "2026-08-02 12:10:13.396379+00:00",
+      "activated_at": "2026-08-02 12:10:13.396379+00:00",
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 12,
+      "cohort_id": 2,
+      "version": 11,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"downgrade_test\"}",
+      "created_at": "2026-08-02 12:10:13.392740+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 11,
+      "cohort_id": 2,
+      "version": 10,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{}",
+      "created_at": "2026-08-02 12:10:13.369311+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 10,
+      "cohort_id": 2,
+      "version": 9,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"restore_test\"}",
+      "created_at": "2026-08-02 11:43:51.814800+00:00",
+      "activated_at": "2026-08-02 11:43:51.814800+00:00",
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 9,
+      "cohort_id": 2,
+      "version": 8,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"downgrade_test\"}",
+      "created_at": "2026-08-02 11:43:51.809522+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 8,
+      "cohort_id": 2,
+      "version": 7,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{}",
+      "created_at": "2026-08-02 11:43:51.781634+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 7,
+      "cohort_id": 2,
+      "version": 6,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"restore_test\"}",
+      "created_at": "2026-08-02 11:37:08.600143+00:00",
+      "activated_at": "2026-08-02 11:37:08.600143+00:00",
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 6,
+      "cohort_id": 2,
+      "version": 5,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"downgrade_test\"}",
+      "created_at": "2026-08-02 11:37:08.596085+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 5,
+      "cohort_id": 2,
+      "version": 4,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{}",
+      "created_at": "2026-08-02 11:37:08.571872+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 4,
+      "cohort_id": 2,
+      "version": 3,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"restore_test\"}",
+      "created_at": "2026-08-02 11:34:23.273321+00:00",
+      "activated_at": "2026-08-02 11:34:23.273321+00:00",
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 3,
+      "cohort_id": 2,
+      "version": 2,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{\"scope\": \"downgrade_test\"}",
+      "created_at": "2026-08-02 11:34:23.230386+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    },
+    {
+      "id": 2,
+      "cohort_id": 2,
+      "version": 1,
+      "status": "ARCHIVED",
+      "policy_version_id": null,
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "search_demand_coverage": null,
+      "category_scope_count": 326,
+      "merchant_count": 2,
+      "category_coverage": null,
+      "card_media_coverage": null,
+      "golden_coverage": null,
+      "critical_error_count": 0,
+      "projection_leakage_count": 0,
+      "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+      "metrics": "{}",
+      "created_at": "2026-08-02 11:34:23.196100+00:00",
+      "activated_at": null,
+      "package_state": "UNKNOWN",
+      "traffic_state": "NOT_STARTED"
+    }
+  ],
+  "golden_by_lifecycle": [
+    {
+      "lifecycle_status": "APPROVED",
+      "n": 22
+    },
+    {
+      "lifecycle_status": "REVIEW_REQUIRED",
+      "n": 403
+    }
+  ],
+  "golden_columns": [
+    "id",
+    "set_id",
+    "expected",
+    "anonymized",
+    "created_at",
+    "expected_entities",
+    "expected_constraints",
+    "expected_invariants",
+    "reviewed_at",
+    "demand_weight",
+    "cohort_id",
+    "cohort_version",
+    "row_version",
+    "claimed_at",
+    "prepared_at",
+    "prepare_duration_ms",
+    "review_duration_ms",
+    "provenance_class",
+    "review_decision",
+    "review_notes",
+    "human_participant_id",
+    "review_session_id",
+    "prepared_by_human_id",
+    "case_id",
+    "query_text",
+    "source_query_id",
+    "review_status",
+    "prepared_by",
+    "reviewed_by",
+    "source_signal",
+    "bucket",
+    "catalog_revision",
+    "prepared_session_id",
+    "lifecycle_status",
+    "claimed_by",
+    "reviewed_by_human_id",
+    "expected_route",
+    "prepare_notes"
+  ],
+  "golden_group_provenance_class": [
+    {
+      "v": "OPERATOR_GENERATED",
+      "n": 228
+    },
+    {
+      "v": "UNKNOWN",
+      "n": 175
+    },
+    {
+      "v": "OPERATOR_DUAL_CONTROL",
+      "n": 22
+    }
+  ],
+  "golden_group_review_decision": [
+    {
+      "v": null,
+      "n": 403
+    },
+    {
+      "v": "APPROVED",
+      "n": 22
+    }
+  ],
+  "golden_group_prepared_by": [
+    {
+      "v": "p4-preparer-ops",
+      "n": 228
+    },
+    {
+      "v": null,
+      "n": 175
+    },
+    {
+      "v": "golden-preparer-ops",
+      "n": 22
+    }
+  ],
+  "golden_group_reviewed_by": [
+    {
+      "v": "p4-reviewer-ops",
+      "n": 228
+    },
+    {
+      "v": null,
+      "n": 175
+    },
+    {
+      "v": "golden-reviewer-ops",
+      "n": 22
+    }
+  ],
+  "search_ready_columns": [
+    "product_id",
+    "offer_id",
+    "merchant_id",
+    "category_id",
+    "brand_id",
+    "card_media_id",
+    "current_price",
+    "checkout_url_present",
+    "finance_ready",
+    "updated_at",
+    "readiness_policy_version",
+    "readiness_status",
+    "media_quality_policy_version",
+    "catalog_revision",
+    "currency",
+    "stock_status"
+  ],
+  "search_ready_by_merchant": [
+    {
+      "merchant_id": 5,
+      "n": 999
+    },
+    {
+      "merchant_id": 18,
+      "n": 55
+    }
+  ],
+  "search_ready_category_count": 326,
+  "search_ready_brand_count": 37,
+  "search_ready_with_media": 1054,
+  "search_ready_with_price": 1054,
+  "product_columns": [
+    "id",
+    "canonical_product_id",
+    "merchant_id",
+    "brand_id",
+    "source_updated_at",
+    "first_seen_at",
+    "last_seen_at",
+    "last_verified_at",
+    "attributes",
+    "metadata",
+    "created_at",
+    "updated_at",
+    "category_id",
+    "full_description",
+    "manufacturer_name",
+    "condition",
+    "warranty_summary",
+    "status",
+    "data_quality_status",
+    "source_url",
+    "source_reference",
+    "external_product_id",
+    "merchant_sku",
+    "gtin",
+    "ean",
+    "mpn",
+    "content_hash",
+    "model_number",
+    "display_name",
+    "normalized_name",
+    "short_description"
+  ],
+  "products_total": 213092,
+  "products_by_status": [
+    {
+      "status": "ACTIVE",
+      "n": 213092
+    }
+  ],
+  "merchant_columns": [
+    "id",
+    "metadata",
+    "created_at",
+    "updated_at",
+    "activation_gate",
+    "canonical_name",
+    "normalized_name",
+    "merchant_code",
+    "display_name",
+    "status"
+  ],
+  "merchants_all": [
+    {
+      "display_name": "Demo Teknoloji Mağazası",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Demo Ev Mağazası",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Network",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Teknosa",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Vatan Bilgisayar",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Koçtaş",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Arçelik",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Beko",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Decathlon",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Hepsiburada",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Trendyol",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Evofone",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Vivense",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "FLO",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "D&R",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Fujifilm",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Gürgençler",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "ETS",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "General Mobile",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Setur",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Troy",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Vivo",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Zuhal Müzik",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "Civil",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "MediaMarkt",
+      "status": "ACTIVE"
+    },
+    {
+      "display_name": "n11",
+      "status": "ACTIVE"
+    }
+  ],
+  "agreements_by_status": [
+    {
+      "status": "ACTIVE",
+      "n": 4
+    }
+  ],
+  "agreements_by_merchant": [
+    {
+      "merchant_id": 11,
+      "status": "ACTIVE",
+      "n": 1
+    },
+    {
+      "merchant_id": 20,
+      "status": "ACTIVE",
+      "n": 1
+    },
+    {
+      "merchant_id": 40,
+      "status": "ACTIVE",
+      "n": 1
+    },
+    {
+      "merchant_id": 8,
+      "status": "ACTIVE",
+      "n": 1
+    }
+  ],
+  "finance_option_cols": [
+    "metadata",
+    "product_offer_id",
+    "merchant_id",
+    "institution_id",
+    "financial_product_id",
+    "campaign_id",
+    "term_months",
+    "monthly_payment",
+    "total_repayment",
+    "fees_total",
+    "valid_until",
+    "calculated_at",
+    "id",
+    "price_snapshot_id",
+    "rate_snapshot_id",
+    "payment_plan_id",
+    "eligibility_status",
+    "plan_kind",
+    "freshness_status"
+  ],
+  "finance_options_total": 31829,
+  "finance_by_eligibility_status": [
+    {
+      "v": "INELIGIBLE",
+      "n": 2357
+    },
+    {
+      "v": "ELIGIBLE",
+      "n": 29472
+    }
+  ],
+  "finance_by_freshness_status": [
+    {
+      "v": "FRESH",
+      "n": 31829
+    }
+  ],
+  "finance_options_by_merchant": [
+    {
+      "error": "column o.offer_id does not exist"
+    }
+  ],
+  "campaigns_by_status": [
+    {
+      "status": "ACTIVE",
+      "n": 4
+    },
+    {
+      "status": "DRAFT",
+      "n": 1
+    }
+  ],
+  "rate_snapshots_total": 7,
+  "campaign_terms_total": 7,
+  "financial_products_total": 2,
+  "merchant_readiness_columns": [
+    "evaluated_at",
+    "merchant_id",
+    "policy_version_id",
+    "reasons",
+    "id",
+    "active_products",
+    "searchable_products",
+    "category_coverage",
+    "brand_coverage",
+    "attribute_coverage",
+    "stock_coverage",
+    "card_media_coverage",
+    "fresh_price_coverage",
+    "valid_url_coverage",
+    "finance_coverage",
+    "payment_plan_coverage",
+    "golden_pass_rate",
+    "critical_error_count",
+    "catalog_revision",
+    "previous_status",
+    "status"
+  ],
+  "merchant_readiness_sample": [
+    {
+      "id": 1,
+      "merchant_id": 5,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 1003,
+      "searchable_products": 1003,
+      "category_coverage": 0.5902293120638086,
+      "brand_coverage": 0.9950149551345963,
+      "attribute_coverage": 0.9990029910269193,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 0.996011964107677,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "PARTIAL",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.842903+00:00"
+    },
+    {
+      "id": 2,
+      "merchant_id": 8,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 892,
+      "searchable_products": 892,
+      "category_coverage": 0.7645739910313901,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "PARTIAL",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.889330+00:00"
+    },
+    {
+      "id": 3,
+      "merchant_id": 11,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 7450,
+      "searchable_products": 7450,
+      "category_coverage": 0.4312751677852349,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 0.9997315436241611,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "BLOCKED",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.890522+00:00"
+    },
+    {
+      "id": 4,
+      "merchant_id": 14,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 115,
+      "searchable_products": 115,
+      "category_coverage": 0.034782608695652174,
+      "brand_coverage": 0.0,
+      "attribute_coverage": 0.0,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 0.21739130434782608,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "BLOCKED",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"card_media_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.891402+00:00"
+    },
+    {
+      "id": 5,
+      "merchant_id": 15,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 1244,
+      "searchable_products": 1244,
+      "category_coverage": 0.1382636655948553,
+      "brand_coverage": 0.13665594855305466,
+      "attribute_coverage": 0.1382636655948553,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 0.0,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "BLOCKED",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"card_media_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.892437+00:00"
+    },
+    {
+      "id": 6,
+      "merchant_id": 16,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 1163,
+      "searchable_products": 1163,
+      "category_coverage": 0.25365434221840066,
+      "brand_coverage": 0.18400687876182287,
+      "attribute_coverage": 0.18400687876182287,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 0.0,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "BLOCKED",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"card_media_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.893543+00:00"
+    },
+    {
+      "id": 7,
+      "merchant_id": 18,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 57,
+      "searchable_products": 57,
+      "category_coverage": 1.0,
+      "brand_coverage": 0.9649122807017544,
+      "attribute_coverage": 0.9649122807017544,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 0.9649122807017544,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "PARTIAL",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.894567+00:00"
+    },
+    {
+      "id": 8,
+      "merchant_id": 19,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 850,
+      "searchable_products": 850,
+      "category_coverage": 0.4152941176470588,
+      "brand_coverage": 0.19647058823529412,
+      "attribute_coverage": 0.19647058823529412,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "BLOCKED",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.895617+00:00"
+    },
+    {
+      "id": 9,
+      "merchant_id": 20,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 1007,
+      "searchable_products": 1007,
+      "category_coverage": 0.4746772591857001,
+      "brand_coverage": 0.6415094339622641,
+      "attribute_coverage": 0.6415094339622641,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "BLOCKED",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"brand_coverage_below_threshold\", \"attribute_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.896354+00:00"
+    },
+    {
+      "id": 10,
+      "merchant_id": 21,
+      "catalog_revision": "2026-08-01 13:08:19.919555+00:00",
+      "active_products": 130,
+      "searchable_products": 130,
+      "category_coverage": 0.5307692307692308,
+      "brand_coverage": 1.0,
+      "attribute_coverage": 1.0,
+      "stock_coverage": 0.9,
+      "card_media_coverage": 1.0,
+      "fresh_price_coverage": 0.9,
+      "valid_url_coverage": 0.99,
+      "finance_coverage": 0.0,
+      "payment_plan_coverage": 0.0,
+      "golden_pass_rate": null,
+      "critical_error_count": 0,
+      "status": "PARTIAL",
+      "previous_status": null,
+      "policy_version_id": null,
+      "reasons": "[\"category_coverage_below_threshold\", \"fresh_price_coverage_below_threshold\"]",
+      "evaluated_at": "2026-08-01 13:30:57.897099+00:00"
+    }
+  ],
+  "cohort_member_columns": [
+    "created_at",
+    "cohort_version_id",
+    "product_id",
+    "offer_id",
+    "merchant_id",
+    "category_id",
+    "id",
+    "membership_reason"
+  ],
+  "cohort_member_counts_error": "column \"cohort_id\" does not exist",
+  "related_tables": [
+    "campaign_brands",
+    "campaign_categories",
+    "campaign_channels",
+    "campaign_embeddings",
+    "campaign_exclusions",
+    "campaign_merchants",
+    "campaign_products",
+    "campaign_source_snapshots",
+    "campaign_terms",
+    "campaigns",
+    "cohort_golden_coverage_policies",
+    "cohort_golden_coverage_policy_versions",
+    "cohort_golden_coverage_snapshots",
+    "continuous_golden_cases",
+    "continuous_golden_review_history",
+    "continuous_golden_sets",
+    "finance_campaign_versions",
+    "finance_campaigns",
+    "finance_fee_snapshots",
+    "finance_rate_snapshots",
+    "finance_rate_tiers",
+    "merchant_category_readiness_snapshots",
+    "merchant_readiness_policies",
+    "merchant_readiness_policy_versions",
+    "merchant_readiness_snapshots",
+    "product_finance_options",
+    "product_readiness_projection",
+    "public_canary_assignments",
+    "public_canary_policies",
+    "public_canary_policy_versions",
+    "public_real_shadow_unique_queries",
+    "public_shadow_difference_reviews",
+    "public_shadow_diversity_policies",
+    "public_shadow_diversity_policy_versions",
+    "public_shadow_observations",
+    "public_shadow_policies",
+    "public_shadow_policy_versions",
+    "public_shadow_review_policies",
+    "public_shadow_review_policy_versions",
+    "public_uat_cases",
+    "public_uat_participants",
+    "release_cohort_policies",
+    "release_cohort_policy_versions",
+    "runtime_feature_flags",
+    "search_ready_product_projection",
+    "search_ready_product_projection_v2",
+    "search_release_cohort_lifecycle_events",
+    "search_release_cohort_members",
+    "search_release_cohort_versions",
+    "search_release_cohorts",
+    "shadow_mode_comparisons"
+  ]
+}
