@@ -1640,38 +1640,49 @@ def run_playwright(headers: dict[str, str]) -> dict[str, Any]:
         "api_live_scenarios": api_cases,
         "api_live_pass": api_pass,
     }
-    cmd = [
-        "npx",
-        "--yes",
-        "@playwright/test@1.49.1",
-        "test",
-        "tests/e2e/playwright/internal_e2e.spec.ts",
-        "--config=playwright.config.ts",
-        "--reporter=list",
-    ]
-    try:
-        proc = subprocess.run(
-            cmd,
-            cwd=str(ROOT),
-            env=env,
-            capture_output=True,
-            text=True,
-            timeout=420,
-        )
+    # Chromium suite only when package.json + @playwright/test are present
+    # (or PLAYWRIGHT_FORCE=1). Otherwise live API scenarios are authoritative.
+    has_pw = (ROOT / "package.json").exists() or os.environ.get("PLAYWRIGHT_FORCE") == "1"
+    if has_pw:
+        cmd = [
+            "npx",
+            "--yes",
+            "@playwright/test@1.49.1",
+            "test",
+            "tests/e2e/playwright/internal_e2e.spec.ts",
+            "--config=playwright.config.ts",
+            "--reporter=list",
+        ]
+        try:
+            proc = subprocess.run(
+                cmd,
+                cwd=str(ROOT),
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=180,
+            )
+            pw_result.update(
+                {
+                    "playwright_chromium": "RAN",
+                    "returncode": proc.returncode,
+                    "stdout_tail": (proc.stdout or "")[-2000:],
+                    "stderr_tail": (proc.stderr or "")[-1500:],
+                    "playwright_pass": proc.returncode == 0,
+                }
+            )
+        except Exception as exc:  # noqa: BLE001
+            pw_result.update(
+                {
+                    "playwright_chromium": "ERROR",
+                    "error": str(exc)[:300],
+                    "playwright_pass": False,
+                }
+            )
+    else:
         pw_result.update(
             {
-                "playwright_chromium": "RAN",
-                "returncode": proc.returncode,
-                "stdout_tail": (proc.stdout or "")[-2000:],
-                "stderr_tail": (proc.stderr or "")[-1500:],
-                "playwright_pass": proc.returncode == 0,
-            }
-        )
-    except Exception as exc:  # noqa: BLE001
-        pw_result.update(
-            {
-                "playwright_chromium": "ERROR",
-                "error": str(exc)[:300],
+                "playwright_chromium": "SKIPPED_NO_PACKAGE_JSON",
                 "playwright_pass": False,
             }
         )
