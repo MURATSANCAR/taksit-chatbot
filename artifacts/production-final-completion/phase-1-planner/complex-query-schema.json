@@ -1,0 +1,171 @@
+{
+  "plan_version": "v1",
+  "schema_keys": [
+    "$schema",
+    "title",
+    "type",
+    "properties",
+    "required"
+  ],
+  "forbidden_fields": [
+    "address",
+    "api_key",
+    "cookie",
+    "credit_card",
+    "email",
+    "ip_address",
+    "password",
+    "phone_number",
+    "product_id",
+    "product_ids",
+    "secret",
+    "session_id",
+    "tc_kimlik",
+    "token",
+    "user_id"
+  ],
+  "sample_plan": {
+    "plan_version": "v1",
+    "request_type": "PRODUCT_AND_CAMPAIGN_SEARCH",
+    "items": [
+      {
+        "item_id": "item-a696df08",
+        "category": {
+          "resolved_id": "category-laptop",
+          "raw_text": "laptop",
+          "confidence": 0.9
+        },
+        "hard_constraints": [
+          {
+            "constraint_id": "c-e001abbd",
+            "dimension": "category",
+            "operator": "EQ",
+            "value": "category-laptop",
+            "unit": null,
+            "strength": "HARD",
+            "priority": 0,
+            "source_text": "laptop",
+            "confidence": 0.9,
+            "source": "fast_parser",
+            "scope": "item"
+          },
+          {
+            "constraint_id": "c-8da43dfd",
+            "dimension": "",
+            "operator": "GTE",
+            "value": 16,
+            "unit": "GB",
+            "strength": "HARD",
+            "priority": 0,
+            "source_text": "",
+            "confidence": 0.0,
+            "source": "fast_parser",
+            "scope": "item"
+          }
+        ],
+        "soft_preferences": [
+          {
+            "constraint_id": "c-63742f0a",
+            "dimension": "brand",
+            "operator": "EQ",
+            "value": "brand-lenovo",
+            "unit": null,
+            "strength": "SOFT",
+            "priority": 0,
+            "source_text": "Lenovo",
+            "confidence": 0.8,
+            "source": "fast_parser",
+            "scope": "item"
+          }
+        ],
+        "excluded_constraints": [
+          {
+            "constraint_id": "c-e94e0262",
+            "dimension": "category",
+            "operator": "NEQ",
+            "value": "category-phone",
+            "unit": null,
+            "strength": "HARD",
+            "priority": 0,
+            "source_text": "telefon",
+            "confidence": 0.9,
+            "source": "fast_parser",
+            "scope": "item"
+          }
+        ],
+        "conditional_exceptions": [],
+        "ranking_priorities": [
+          "LOWEST_MONTHLY_PAYMENT"
+        ],
+        "unsupported_dimensions": []
+      }
+    ],
+    "global_constraints": {
+      "budget": {
+        "minimum": null,
+        "target_maximum": 40000.0,
+        "stretch_maximum": 46000.0,
+        "currency": "TRY"
+      },
+      "allowed_merchants": [],
+      "excluded_merchants": []
+    },
+    "campaign_intent": {
+      "requested": true,
+      "required": false,
+      "institution_preferences": [],
+      "requested_terms": [
+        12
+      ],
+      "zero_rate_preferred": false,
+      "ranking_mode": "LOWEST_MONTHLY_PAYMENT"
+    },
+    "ambiguities": [],
+    "conflicts": [
+      {
+        "type": "HARD_EXCLUDED_SAME_DIMENSION",
+        "item_id": "item-a696df08",
+        "dimension": "category",
+        "hard_constraint_id": "c-e001abbd",
+        "excluded_constraint_id": "c-e94e0262"
+      }
+    ],
+    "clarification_required": true,
+    "clarification_questions": [
+      {
+        "question_type": "conflict_resolution",
+        "text": "'category' boyutunda çelişen kısıtlamalar tespit ettim. Hangisini önceliklendirmemi istersiniz?",
+        "conflict_ref": {
+          "type": "HARD_EXCLUDED_SAME_DIMENSION",
+          "item_id": "item-a696df08",
+          "dimension": "category",
+          "hard_constraint_id": "c-e001abbd",
+          "excluded_constraint_id": "c-e94e0262"
+        }
+      },
+      {
+        "question_type": "budget_stretch",
+        "text": "Bütçenizi 40,000 TRY olarak belirlediniz. Eğer çok iyi bir fırsat varsa 46,000 TRY'ye kadar çıkmayı düşünür müsünüz?",
+        "options": [
+          {
+            "label": "Evet, fırsat varsa esnetilebilir",
+            "action": "accept_stretch"
+          },
+          {
+            "label": "Hayır, kesinlikle 40,000 TRY üstü istemiyorum",
+            "action": "reject_stretch"
+          }
+        ]
+      }
+    ],
+    "unsupported_capabilities": [
+      "FINANCE_NOT_READY"
+    ],
+    "source": {
+      "fast_parser_used": true,
+      "llm_patch_used": false
+    }
+  },
+  "complex_route": true,
+  "measured_at": "2026-08-02T19:28:37.942469+00:00"
+}

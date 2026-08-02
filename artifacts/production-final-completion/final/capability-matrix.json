@@ -1,0 +1,45 @@
+{
+  "matrix": [
+    {
+      "capability": "Basic product search",
+      "status": "INTERNAL_ACTIVE"
+    },
+    {
+      "capability": "Complex single-product search",
+      "status": "TESTED_SYNTHETIC"
+    },
+    {
+      "capability": "Hard/soft preference",
+      "status": "TESTED_SYNTHETIC"
+    },
+    {
+      "capability": "Conditional exception",
+      "status": "TESTED_SYNTHETIC"
+    },
+    {
+      "capability": "Ranking priorities",
+      "status": "TESTED_SYNTHETIC"
+    },
+    {
+      "capability": "Multi-turn RELAX/ROLLBACK",
+      "status": "TESTED_SYNTHETIC"
+    },
+    {
+      "capability": "Multi-item bundle",
+      "status": "TESTED_SYNTHETIC"
+    },
+    {
+      "capability": "Campaign matching",
+      "status": "BLOCKED_BY_DATA"
+    },
+    {
+      "capability": "Finance UI",
+      "status": "BLOCKED"
+    },
+    {
+      "capability": "Public traffic",
+      "status": "NOT_STARTED"
+    }
+  ],
+  "measured_at": "2026-08-02T19:28:37.943426+00:00"
+}

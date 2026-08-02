@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "apply_migrations_rc": 0,
+  "files": [
+    {
+      "filename": "V034__p3_7_product_search_golden_lifecycle.sql",
+      "sha256": "3a2e22a46acccdd773472bd1b8754790aec7ab7f14c8651da119b43a5f05b1c9"
+    },
+    {
+      "filename": "V035__p3_7_golden_review_history.sql",
+      "sha256": "ea8da5a4c7494609a7bb3d1905353a1a86e359762f55c5eeb413f5d7acb76f21"
+    },
+    {
+      "filename": "V036__p4_public_readiness_shadow_uat_canary.sql",
+      "sha256": "e21ee4af28129f3171358b94addb2040f0cd84749be7a8a7543b7ca3626dfecb"
+    },
+    {
+      "filename": "V037__p4_1_canary_evidence_hardening.sql",
+      "sha256": "4dc33f53278ceca1c5ec87717665b4f9b2addeff902195bfa824ab9cc0f06961"
+    },
+    {
+      "filename": "V038__p4_2_human_evidence_closeout.sql",
+      "sha256": "e9e1573073b8e4e25d9e1aeb5cd84fd4798b56ad5e13d0d7116318a666e7bc38"
+    },
+    {
+      "filename": "V039__prod_final_release_channels_and_planner_policies.sql",
+      "sha256": "404aed4671621eb2afced3b9bdfd529f573a11f81b7a0a8d032c3d7e6d867c4b"
+    }
+  ],
+  "measured_at": "2026-08-02T19:28:06.552157+00:00",
+  "history_v034_plus": [
+    {
+      "filename": "V034__p3_7_product_search_golden_lifecycle.sql",
+      "content_sha256": null,
+      "application_method": null
+    },
+    {
+      "filename": "V035__p3_7_golden_review_history.sql",
+      "content_sha256": null,
+      "application_method": null
+    },
+    {
+      "filename": "V036__p4_public_readiness_shadow_uat_canary.sql",
+      "content_sha256": null,
+      "application_method": null
+    },
+    {
+      "filename": "V037__p4_1_canary_evidence_hardening.sql",
+      "content_sha256": null,
+      "application_method": null
+    },
+    {
+      "filename": "V038__p4_2_human_evidence_closeout.sql",
+      "content_sha256": null,
+      "application_method": null
+    },
+    {
+      "filename": "V039__prod_final_release_channels_and_planner_policies.sql",
+      "content_sha256": "404aed4671621eb2afced3b9bdfd529f573a11f81b7a0a8d032c3d7e6d867c4b",
+      "application_method": "official_runner"
+    }
+  ]
+}

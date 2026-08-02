@@ -1,0 +1,10 @@
+{
+  "planner_returncode": 0,
+  "planner_pass": true,
+  "sessions_returncode": 0,
+  "sessions_pass": true,
+  "pass": true,
+  "planner_stdout_tail": "..........................................                               [100%]\n42 passed in 0.04s\n",
+  "sessions_stdout_tail": "......s..............s..................................s..              [100%]\n56 passed, 3 skipped in 0.95s\n",
+  "measured_at": "2026-08-02T19:28:37.927445+00:00"
+}

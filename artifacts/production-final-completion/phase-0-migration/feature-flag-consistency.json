@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "dynamic_readiness": {
+    "status": "INTERNAL",
+    "config": {
+      "traffic": "internal_only",
+      "cohort_id": 1,
+      "cohort_code": "internal_ready_merchants",
+      "cohort_version": 1,
+      "write_snapshots": true,
+      "internal_cohort_id": 1,
+      "public_package_state": "PUBLIC_CANARY_PACKAGE_READY",
+      "public_traffic_state": "NOT_STARTED",
+      "apply_activation_gate": false,
+      "require_merchant_count": false,
+      "internal_cohort_version": 1,
+      "public_package_cohort_id": 1,
+      "auto_enable_public_traffic": false,
+      "public_package_cohort_version": 2
+    }
+  },
+  "release_channels": [
+    {
+      "channel_code": "internal_product_search",
+      "cohort_id": 1,
+      "cohort_version": 1,
+      "package_state": "INTERNAL_ACTIVE",
+      "traffic_state": "INTERNAL_ONLY",
+      "status": "ACTIVE"
+    },
+    {
+      "channel_code": "public_canary_package",
+      "cohort_id": 1,
+      "cohort_version": 2,
+      "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+      "traffic_state": "NOT_STARTED",
+      "status": "ACTIVE"
+    }
+  ],
+  "public_traffic_enabled": false,
+  "measured_at": "2026-08-02T19:28:06.843602+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "finance_ready_products": 0,
+  "agreements": [
+    {
+      "merchant_id": 11,
+      "status": "ACTIVE",
+      "n": 1
+    },
+    {
+      "merchant_id": 20,
+      "status": "ACTIVE",
+      "n": 1
+    },
+    {
+      "merchant_id": 40,
+      "status": "ACTIVE",
+      "n": 1
+    },
+    {
+      "merchant_id": 8,
+      "status": "ACTIVE",
+      "n": 1
+    }
+  ],
+  "finance_options": 31829,
+  "campaign_gate": "CLOSED",
+  "finance_display": "BLOCKED",
+  "measured_at": "2026-08-02T19:28:06.843634+00:00"
+}

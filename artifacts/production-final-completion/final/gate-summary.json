@@ -1,0 +1,51 @@
+{
+  "technical_decision": "PROD_PRODUCT_READY_CAMPAIGN_BLOCKED",
+  "public_decision": "PUBLIC_NOT_READY",
+  "campaign_gate": "CLOSED",
+  "live_5pct": false,
+  "gates": {
+    "MIGRATION_INTEGRITY_GATE": "PASS",
+    "FEATURE_FLAG_COHORT_CONSISTENCY_GATE": "PASS",
+    "COMPLEX_QUERY_PLAN_SCHEMA_GATE": "PASS",
+    "HYBRID_PLANNER_GATE": "PASS",
+    "CONFLICT_RESOLUTION_GATE": "PASS",
+    "CONVERSATION_STATE_GATE": "PASS",
+    "RETRIEVAL_EXECUTION_GATE": "PASS",
+    "DYNAMIC_RANKING_GATE": "PARTIAL",
+    "MULTI_ITEM_BUNDLE_GATE": "PASS",
+    "CATALOG_READINESS_GATE": "PARTIAL",
+    "FINANCE_READINESS_GATE": "FAIL",
+    "FINANCE_CLAIM_GROUNDING_GATE": "PASS",
+    "FRONTEND_COMPLEX_QUERY_GATE": "PARTIAL",
+    "PLAYWRIGHT_COMPLEX_QUERY_GATE": "PARTIAL",
+    "PERFORMANCE_GATE": "NOT_VERIFIED",
+    "SECURITY_GATE": "PARTIAL",
+    "SHADOW_DIVERSITY_GATE": "HUMAN_ACTION_REQUIRED",
+    "HUMAN_GOLDEN_PROVENANCE_GATE": "HUMAN_ACTION_REQUIRED",
+    "EXTERNAL_HUMAN_UAT_GATE": "HUMAN_ACTION_REQUIRED",
+    "PUBLIC_CANARY_APPROVAL_GATE": "HUMAN_ACTION_REQUIRED"
+  },
+  "catalog": {
+    "global_active": 213092,
+    "search_ready": 1054,
+    "latest_cohort": {
+      "search_ready_product_count": 1054,
+      "finance_ready_product_count": 0,
+      "merchant_count": 2,
+      "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+      "traffic_state": "NOT_STARTED",
+      "status": "PUBLIC_CANARY",
+      "version": 2
+    },
+    "measured_at": "2026-08-02T19:28:06.843629+00:00"
+  },
+  "finance": {
+    "finance_ready_products": 0,
+    "campaign_gate": "CLOSED"
+  },
+  "unit": {
+    "planner_pass": true,
+    "sessions_pass": true
+  },
+  "measured_at": "2026-08-02T19:29:46.022077+00:00"
+}

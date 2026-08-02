@@ -1,0 +1,14 @@
+{
+  "global_active": 213092,
+  "search_ready": 1054,
+  "latest_cohort": {
+    "search_ready_product_count": 1054,
+    "finance_ready_product_count": 0,
+    "merchant_count": 2,
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED",
+    "status": "PUBLIC_CANARY",
+    "version": 2
+  },
+  "measured_at": "2026-08-02T19:28:06.843629+00:00"
+}
