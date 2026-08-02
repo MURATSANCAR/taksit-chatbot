@@ -75,8 +75,11 @@ def evaluate_internal_access(
             reason="invalid_internal_token",
         )
 
-    cfg_cohort = flag_config.get("cohort_id")
-    cfg_ver = flag_config.get("cohort_version")
+    cfg_cohort = flag_config.get("internal_cohort_id", flag_config.get("cohort_id"))
+    cfg_ver = flag_config.get("internal_cohort_version", flag_config.get("cohort_version"))
+    # Public package fields are informational only — never used for INTERNAL traffic auth.
+    _ = flag_config.get("public_package_cohort_id")
+    _ = flag_config.get("public_traffic_state")
     req_cohort = int(cohort_raw) if cohort_raw.isdigit() else None
     req_ver = int(cohort_ver_raw) if cohort_ver_raw.isdigit() else None
     if req_cohort is not None and cfg_cohort is not None and int(cfg_cohort) != req_cohort:

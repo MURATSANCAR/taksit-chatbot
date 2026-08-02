@@ -139,7 +139,10 @@ class ClarificationIn(BaseModel):
 
 
 class ConstraintIn(BaseModel):
-    action: str = Field(..., pattern="^(UPDATE|DELETE|REQUIRE|PREFER)$")
+    action: str = Field(
+        ...,
+        pattern="^(UPDATE|DELETE|ADD|REMOVE|REPLACE|RELAX|REQUIRE|PREFER|TEMPORARY_EXCEPTION|ROLLBACK|CLEAR)$",
+    )
     constraint_id: str
     value: Any = None
     expected_query_version: int = Field(..., ge=1)

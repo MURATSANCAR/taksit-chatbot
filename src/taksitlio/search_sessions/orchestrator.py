@@ -23,9 +23,17 @@ from taksitlio.query_clarification import (
     should_ask_clarification,
 )
 from taksitlio.query_fallback import degrade_with_deterministic, evaluate_deadlines
+from taksitlio.query_planning import (
+    build_plan_from_fast_parse,
+    detect_complex_route,
+    plan_to_constraints_dict,
+)
+from taksitlio.query_planning.executor import filter_products_by_plan
+from taksitlio.query_planning.state_reducer import StaleVersionError, apply_operation
 from taksitlio.query_state import (
     QueryNeedState,
     chips_from_state,
+    chips_from_plan,
     hydrate_parse_from_state,
     merge_parse_into_state,
 )
@@ -69,6 +77,8 @@ class SearchOrchestrator:
     category_token_map: dict[str, tuple[str, ...]] = field(default_factory=dict)
     states: dict[str, QueryNeedState] = field(default_factory=dict)
     parses: dict[str, Any] = field(default_factory=dict)
+    plans: dict[str, Any] = field(default_factory=dict)
+    state_op_history: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
     utterances: dict[str, str] = field(default_factory=dict)
     clarifications: dict[str, dict[str, Any]] = field(default_factory=dict)
     llm_jobs: dict[str, Any] = field(default_factory=dict)
@@ -78,6 +88,14 @@ class SearchOrchestrator:
     logo_resolver: Any = None
     traces: dict[str, Any] = field(default_factory=dict)
     session_pins: dict[str, dict[str, Any]] = field(default_factory=dict)
+    finance_ready: bool = False
+    exception_thresholds: dict[str, float] = field(
+        default_factory=lambda: {
+            "minimum_price_advantage": 0.08,
+            "minimum_feature_advantage": 0.15,
+            "minimum_overall_score_delta": 0.12,
+        }
+    )
 
     def _constraints_with_category_tokens(
         self, parse: Any, *, utterance: str = ""
@@ -311,6 +329,21 @@ class SearchOrchestrator:
             version.confidence = parse.confidence
             version.requires_llm = parse.requires_llm
 
+        # Canonical plan (ADR-015/016): minimum hook — does not replace gap routing.
+        parse_dict = parse.to_dict() if hasattr(parse, "to_dict") else dict(parse or {})
+        plan = build_plan_from_fast_parse(
+            parse_dict,
+            message=message,
+            finance_ready=bool(self.finance_ready),
+        )
+        self.plans[session.id] = plan
+        complex_route = detect_complex_route(parse_dict, message)
+        if version is not None:
+            snap = dict(version.state_snapshot or {})
+            snap["canonical_plan"] = plan.to_dict() if hasattr(plan, "to_dict") else plan
+            snap["complex_route"] = complex_route
+            version.state_snapshot = snap
+
         self.repo.set_status(session.id, SearchSessionStatus.GAP_ANALYSIS)
         if trace is not None:
             with trace.span("query.gap_analyze"):
@@ -320,11 +353,45 @@ class SearchOrchestrator:
         self._emit(
             session,
             SearchProgressEventType.GAP_ANALYSIS_COMPLETED,
-            payload=gaps.to_dict(),
+            payload={**gaps.to_dict(), "complex_route": complex_route, "plan_version": "v1"},
         )
 
-        chips = chips_from_state(state)
+        chips = chips_from_plan(plan) or chips_from_state(state)
         policy = self.repo.policy
+
+        if (
+            plan.clarification_required
+            and plan.clarification_questions
+            and gaps.confidence_band != "HIGH"
+            and session.clarification_count < policy.max_clarifications_per_session
+        ):
+            # Prefer plan-driven clarification only when fast path is already uncertain.
+            # HIGH-confidence retrieves must not be blocked by stretch/priority questions.
+            q0 = plan.clarification_questions[0] if plan.clarification_questions else {}
+            if isinstance(q0, dict) and (q0.get("question") or q0.get("text")):
+                self.repo.set_status(session.id, SearchSessionStatus.CLARIFICATION_REQUIRED)
+                clar = {
+                    "question": q0.get("question") or q0.get("text"),
+                    "reason_code": q0.get("reason_code") or q0.get("question_type") or "PLAN_CLARIFICATION",
+                    "options": q0.get("options") or [],
+                    "source": "canonical_plan",
+                }
+                self.clarifications[session.id] = clar
+                self._emit(
+                    session,
+                    SearchProgressEventType.CLARIFICATION_REQUIRED,
+                    payload=clar,
+                )
+                return {
+                    "route": "CLARIFICATION_REQUIRED",
+                    "status": session.status.value if hasattr(session.status, "value") else str(session.status),
+                    "search_session_id": session.id,
+                    "query_version": session.active_query_version,
+                    "clarification": clar,
+                    "chips": chips,
+                    "canonical_plan": plan.to_dict(),
+                    "complex_route": complex_route,
+                }
 
         if gaps.confidence_band == "HIGH":
             return self._fast_retrieve(session, parse, degraded=False, trace=trace)
@@ -405,6 +472,16 @@ class SearchOrchestrator:
         if can_transition(session.status, SearchSessionStatus.FAST_RETRIEVAL):
             self.repo.set_status(session.id, SearchSessionStatus.FAST_RETRIEVAL)
         self._emit(session, SearchProgressEventType.PRODUCT_POOL_SEARCH_STARTED)
+        plan = self.plans.get(session.id)
+        if plan is None:
+            parse_dict = parse.to_dict() if hasattr(parse, "to_dict") else dict(parse or {})
+            plan = build_plan_from_fast_parse(
+                parse_dict,
+                message=self.utterances.get(session.id, ""),
+                finance_ready=bool(self.finance_ready),
+            )
+            self.plans[session.id] = plan
+
         if trace is not None:
             with trace.span("feature.materialize"):
                 constraints = self._constraints_with_category_tokens(
@@ -414,19 +491,54 @@ class SearchOrchestrator:
             constraints = self._constraints_with_category_tokens(
                 parse, utterance=self.utterances.get(session.id, "")
             )
+        # Merge canonical plan into progressive_results constraint dict.
+        plan_constraints = plan_to_constraints_dict(plan)
+        for key in (
+            "budget",
+            "ranking_mode",
+            "ranking_priorities",
+            "conditional_exceptions",
+            "request_type",
+            "items",
+            "plan_version",
+            "unsupported_dimensions",
+            "capability_flags",
+        ):
+            if plan_constraints.get(key) is not None:
+                constraints[key] = plan_constraints[key]
+        # Finance stays blocked unless orchestrator finance_ready is true.
+        caps = dict(constraints.get("capability_flags") or {})
+        caps.setdefault(
+            "finance_display",
+            "READY" if self.finance_ready else "BLOCKED",
+        )
+        constraints["capability_flags"] = caps
+
         state = self.states.get(session.id)
         ranking_mode = getattr(parse, "ranking_mode", None) or (
             (state.payment_preferences or {}).get("ranking_mode") if state else None
         )
         if ranking_mode:
             constraints["ranking_mode"] = str(ranking_mode)
+
+        pool = list(self.product_pool)
+        try:
+            filtered = filter_products_by_plan(
+                pool, plan, exception_thresholds=dict(self.exception_thresholds)
+            )
+            # Fail-open: never empty a non-empty pool solely due to plan attr gaps.
+            if filtered or not pool:
+                pool = filtered
+        except Exception:  # noqa: BLE001
+            pool = list(self.product_pool)
+
         if trace is not None:
             with trace.span(
-                "product.retrieve", candidate_count=len(self.product_pool)
+                "product.retrieve", candidate_count=len(pool)
             ) as bag:
                 partial = build_partial_snapshot(
                     query_version=session.active_query_version,
-                    products=self.product_pool,
+                    products=pool,
                     constraints=constraints,
                     trace=trace,
                 )
@@ -434,7 +546,7 @@ class SearchOrchestrator:
         else:
             partial = build_partial_snapshot(
                 query_version=session.active_query_version,
-                products=self.product_pool,
+                products=pool,
                 constraints=constraints,
             )
         self.repo.partial_snapshots.setdefault(session.id, []).append(partial.to_dict())
@@ -518,7 +630,11 @@ class SearchOrchestrator:
         self._record_latency(session.id, "search_complete_ms", self._elapsed_ms(session.id))
         if not degraded:
             self._record_latency(session.id, "fast_path_completion_ms", self._elapsed_ms(session.id))
-        chips = chips_from_state(self.states[session.id])
+        chips = chips_from_plan(self.plans.get(session.id)) or chips_from_state(self.states[session.id])
+        plan_payload = None
+        if self.plans.get(session.id) is not None:
+            p = self.plans[session.id]
+            plan_payload = p.to_dict() if hasattr(p, "to_dict") else p
         if trace is not None:
             with trace.span("claim.validate", result_count=len(partial.products)):
                 pass
@@ -531,6 +647,7 @@ class SearchOrchestrator:
                     "route": "FAST" if not degraded else "DEGRADED",
                     "chips": chips,
                     "understanding": parse.to_dict(),
+                    "canonical_plan": plan_payload,
                     "partial_results": partial.to_dict(),
                     "results": partial.to_dict(),
                     "logos": self._logos_public(session.id),
@@ -538,7 +655,8 @@ class SearchOrchestrator:
             with trace.span("response.serialize", result_count=len(partial.products)):
                 if not partial.products:
                     payload["reply"] = (
-                        "Bu kriterlere uygun ürün bulamadım. Ürün türünü veya bütçeni tekrar yazabilirsin."
+                        "Bu şartların tamamını karşılayan ürün bulunamadı. "
+                        "Şartları gevşetmek ister misiniz?"
                     )
                 elif ranking_mode:
                     payload["reply"] = f"Sonuçları «{partial.label}» olarak sıraladım."
@@ -551,13 +669,15 @@ class SearchOrchestrator:
             "route": "FAST" if not degraded else "DEGRADED",
             "chips": chips,
             "understanding": parse.to_dict(),
+            "canonical_plan": plan_payload,
             "partial_results": partial.to_dict(),
             "results": partial.to_dict(),
             "logos": self._logos_public(session.id),
         }
         if not partial.products:
             payload["reply"] = (
-                "Bu kriterlere uygun ürün bulamadım. Ürün türünü veya bütçeni tekrar yazabilirsin."
+                "Bu şartların tamamını karşılayan ürün bulunamadı. "
+                "Şartları gevşetmek ister misiniz?"
             )
         elif ranking_mode:
             payload["reply"] = f"Sonuçları «{partial.label}» olarak sıraladım."
@@ -935,15 +1055,49 @@ class SearchOrchestrator:
             raise ValueError("query_version_mismatch")
         self.repo.append_query_version(session_id, raw_user_text=f"constraint:{action}:{constraint_id}")
         state = self.states[session_id]
-        if action == "UPDATE" and constraint_id.startswith("budget"):
-            state.budget = {"maximum": value, "currency": "TRY", "type": "RANGE"}
-            state.bump()
-        elif action == "DELETE":
-            state.cancelled_constraints.append({"id": constraint_id, "value": value})
-            state.bump()
+        plan = self.plans.get(session_id)
+        plan_dict = plan.to_dict() if plan is not None and hasattr(plan, "to_dict") else (plan or {})
+        history = list(self.state_op_history.get(session_id) or [])
+        op = str(action or "").upper()
+        # Map legacy DELETE → REMOVE
+        if op == "DELETE":
+            op = "REMOVE"
+        if op == "UPDATE":
+            op = "REPLACE"
+        try:
+            new_state_dict, new_plan_dict, record = apply_operation(
+                state.to_dict(),
+                plan_dict if isinstance(plan_dict, dict) else {},
+                op,
+                target_constraint_id=constraint_id,
+                value=value,
+                query_version=int(state.state_version),
+                history=history,
+            )
+            self.states[session_id] = QueryNeedState.from_dict(new_state_dict)
+            if new_plan_dict:
+                from taksitlio.query_planning import validate_plan
+
+                try:
+                    self.plans[session_id] = validate_plan(new_plan_dict)
+                except Exception:  # noqa: BLE001
+                    self.plans[session_id] = new_plan_dict
+            if record is not None:
+                history.append(record.to_dict() if hasattr(record, "to_dict") else dict(record))
+                self.state_op_history[session_id] = history
+        except StaleVersionError as exc:
+            raise ValueError("query_version_mismatch") from exc
+        except Exception:
+            # Fallback legacy path for budget UPDATE/DELETE
+            if action == "UPDATE" and constraint_id.startswith("budget"):
+                state.budget = {"maximum": value, "currency": "TRY", "type": "RANGE"}
+                state.bump()
+            elif action in {"DELETE", "REMOVE"}:
+                state.cancelled_constraints.append({"id": constraint_id, "value": value})
+                state.bump()
         parse = self.parses[session_id]
-        if state.budget:
-            parse.budget = dict(state.budget)
+        if self.states[session_id].budget:
+            parse.budget = dict(self.states[session_id].budget)
         return self._fast_retrieve(session, parse)
 
     def list_event_payloads(self, session_id: str, *, after_id: Optional[str] = None) -> list[dict[str, Any]]:

@@ -214,14 +214,118 @@ def cancel_constraint(state: QueryNeedState, *, constraint_key: str, value: Any)
 
 
 def chips_from_state(state: QueryNeedState) -> list[dict[str, Any]]:
-    """Guest UI no longer shows constraint chips (budget/category/etc.)."""
-    del state  # state still drives search; chips are intentionally unused
-    return []
+    """Legacy chip builder — prefer chips_from_plan for production UX."""
+    chips: list[dict[str, Any]] = []
+    for c in state.active_categories:
+        if isinstance(c, dict):
+            chips.append(
+                {
+                    "kind": "required" if c.get("required") else "preference",
+                    "label": str(c.get("display_name") or c.get("resolved_id") or "kategori"),
+                    "constraint_id": f"category:{c.get('resolved_id') or c.get('display_name')}",
+                }
+            )
+    for c in state.excluded_categories:
+        if isinstance(c, dict):
+            chips.append(
+                {
+                    "kind": "excluded",
+                    "label": str(c.get("display_name") or c.get("resolved_id") or "hariç"),
+                    "constraint_id": f"excluded:{c.get('resolved_id') or c.get('display_name')}",
+                }
+            )
+    if state.budget:
+        mx = state.budget.get("maximum") or state.budget.get("value")
+        if mx is not None:
+            chips.append(
+                {
+                    "kind": "budget",
+                    "label": f"Hedef bütçe: {mx}",
+                    "constraint_id": "budget:target_maximum",
+                }
+            )
+    return chips
+
+
+def chips_from_plan(plan: Any) -> list[dict[str, Any]]:
+    """User-facing chips from CanonicalSearchPlan (no raw JSON)."""
+
+    if plan is None:
+        return []
+    pdata = plan.to_dict() if hasattr(plan, "to_dict") else (plan if isinstance(plan, dict) else {})
+    chips: list[dict[str, Any]] = []
+    for item in pdata.get("items") or []:
+        if not isinstance(item, dict):
+            continue
+        for c in item.get("hard_constraints") or []:
+            if isinstance(c, dict):
+                chips.append(
+                    {
+                        "kind": "required",
+                        "label": f"Şart: {c.get('dimension')} {c.get('operator')} {c.get('value')}",
+                        "constraint_id": c.get("constraint_id"),
+                    }
+                )
+        for c in item.get("soft_preferences") or []:
+            if isinstance(c, dict):
+                chips.append(
+                    {
+                        "kind": "preference",
+                        "label": f"Tercih: {c.get('dimension')} {c.get('value')}",
+                        "constraint_id": c.get("constraint_id"),
+                    }
+                )
+        for c in item.get("excluded_constraints") or []:
+            if isinstance(c, dict):
+                chips.append(
+                    {
+                        "kind": "excluded",
+                        "label": f"Hariç: {c.get('dimension')} {c.get('value')}",
+                        "constraint_id": c.get("constraint_id"),
+                    }
+                )
+        for dim in item.get("unsupported_dimensions") or []:
+            chips.append(
+                {
+                    "kind": "unsupported",
+                    "label": f"Katalogda doğrulanamadı: {dim}",
+                    "constraint_id": f"unsupported:{dim}",
+                }
+            )
+    gc = pdata.get("global_constraints") or {}
+    budget = (gc.get("budget") or {}) if isinstance(gc, dict) else {}
+    if budget.get("target_maximum") is not None:
+        chips.append(
+            {
+                "kind": "budget",
+                "label": f"Hedef bütçe: {budget.get('target_maximum')} {budget.get('currency') or 'TRY'}",
+                "constraint_id": "budget:target_maximum",
+            }
+        )
+    if budget.get("stretch_maximum") is not None:
+        chips.append(
+            {
+                "kind": "stretch_budget",
+                "label": f"Esnek üst sınır: {budget.get('stretch_maximum')} {budget.get('currency') or 'TRY'}",
+                "constraint_id": "budget:stretch_maximum",
+            }
+        )
+    camp = pdata.get("campaign_intent") or {}
+    if isinstance(camp, dict) and camp.get("requested"):
+        chips.append(
+            {
+                "kind": "campaign",
+                "label": "Kampanya/taksit isteği",
+                "constraint_id": "campaign:requested",
+            }
+        )
+    return chips
 
 
 __all__ = [
     "QueryNeedState",
     "cancel_constraint",
+    "chips_from_plan",
     "chips_from_state",
     "hydrate_parse_from_state",
     "merge_parse_into_state",

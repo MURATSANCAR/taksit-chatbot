@@ -116,6 +116,9 @@ def _passes_hard_filters(
 
     for c in item.hard_constraints:
         result = _evaluate_constraint(product, c)
+        # Missing category/merchant fields defer to progressive_results matching.
+        if result is None and c.dimension in {"category", "merchant"}:
+            continue
         if result is False:
             return False
 
