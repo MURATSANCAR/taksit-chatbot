@@ -33,11 +33,11 @@
     "bundle_p95_ms_max": 10000
   },
   "open_loop_profiles": [
-    {"mode": "sustained", "requests_per_second": 5, "test_duration_s": 20, "warmup_duration_s": 3},
-    {"mode": "sustained", "requests_per_second": 10, "test_duration_s": 20, "warmup_duration_s": 3},
-    {"mode": "sustained", "requests_per_second": 25, "test_duration_s": 15, "warmup_duration_s": 3},
-    {"mode": "sustained", "requests_per_second": 50, "test_duration_s": 12, "warmup_duration_s": 2},
-    {"mode": "burst", "requests_per_second": 100, "test_duration_s": 5, "warmup_duration_s": 1}
+    {"mode": "sustained", "requests_per_second": 5, "test_duration_s": 12, "warmup_duration_s": 2},
+    {"mode": "sustained", "requests_per_second": 10, "test_duration_s": 12, "warmup_duration_s": 2},
+    {"mode": "sustained", "requests_per_second": 25, "test_duration_s": 10, "warmup_duration_s": 2},
+    {"mode": "sustained", "requests_per_second": 50, "test_duration_s": 8, "warmup_duration_s": 1},
+    {"mode": "burst", "requests_per_second": 100, "test_duration_s": 4, "warmup_duration_s": 1}
   ],
   "routes": [
     "FAST_SINGLE_PRODUCT",
