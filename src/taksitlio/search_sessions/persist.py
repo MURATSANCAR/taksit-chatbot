@@ -2,17 +2,12 @@
 
 from __future__ import annotations
 
-import json
 import uuid
 from typing import Any, Optional
 
 from taksitlio.search_sessions.orchestrator import SearchOrchestrator
 from taksitlio.search_sessions.postgres import PostgresSearchSessionRepository
 from taksitlio.search_sessions.status import SearchSessionStatus
-
-
-def _json(value: Any) -> str:
-    return json.dumps(value if value is not None else {}, ensure_ascii=False)
 
 
 class SearchSessionStatePersister:
@@ -177,7 +172,7 @@ class SearchSessionStatePersister:
                 version.version_number,
                 version.raw_user_text,
                 version.normalized_text,
-                _json(snapshot),
+                snapshot if isinstance(snapshot, dict) else {},
                 conf,
                 requires,
             )

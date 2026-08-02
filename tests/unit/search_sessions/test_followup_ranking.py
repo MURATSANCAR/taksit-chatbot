@@ -138,6 +138,27 @@ def test_supersede_after_completed_keeps_session_and_ranks_shortest() -> None:
     assert "reply" in follow
 
 
+def test_supersede_cheapest_followup_not_refused() -> None:
+    """Bare 'en ucuzlarını getir' must re-rank, not OUT_OF_SCOPE refuse."""
+
+    orch = _phone_orchestrator()
+    first = orch.start(
+        conversation_id="00000000-0000-0000-0000-00000000f011",
+        message="telefon alacağım",
+    )
+    assert first["route"] != "OUT_OF_SCOPE"
+    sid = first["search_session_id"]
+
+    follow = orch.supersede_with_message(sid, "en ucuzlarını getir bana")
+    assert follow["route"] != "OUT_OF_SCOPE"
+    assert follow["search_session_id"] == sid
+    assert follow["understanding"].get("ranking_mode") == "CHEAPEST_PRODUCT_PRICE"
+    products = (follow.get("results") or {}).get("products") or []
+    assert products
+    assert products[0]["product_id"] == "p-phone-12"
+    assert follow["results"]["label"] == "En düşük ürün fiyatı"
+
+
 def test_hard_terminal_supersede_rejected() -> None:
     orch = build_demo_orchestrator()
     out = orch.start(

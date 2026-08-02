@@ -20,8 +20,69 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def _json(value: Any) -> str:
-    return json.dumps(value if value is not None else {}, ensure_ascii=False)
+def _jsonb(value: Any) -> Any:
+    """Pass native objects to asyncpg jsonb codec (never pre-json.dumps).
+
+    The pool registers encoder=json.dumps. Pre-serializing caused JSON *string*
+    values; `object || string` then corrupted search_sessions.metadata into arrays
+    like ``[{}, "{...}"]`` and hydrate crashed with ValueError on dict(list).
+    """
+
+    if value is None:
+        return None
+    if isinstance(value, (bytes, bytearray)):
+        value = value.decode("utf-8")
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return {}
+        return json.loads(text)
+    return value
+
+
+def _as_list(value: Any) -> list[Any]:
+    parsed = _jsonb(value)
+    if parsed is None:
+        return []
+    if isinstance(parsed, list):
+        return list(parsed)
+    return []
+
+
+def _as_object_dict(value: Any) -> dict[str, Any]:
+    """Coerce jsonb metadata (object / double-encoded string / corrupt array) to dict."""
+
+    if value is None:
+        return {}
+    if isinstance(value, dict):
+        return dict(value)
+    if isinstance(value, (bytes, bytearray)):
+        value = value.decode("utf-8")
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return {}
+        try:
+            value = json.loads(text)
+        except json.JSONDecodeError:
+            return {}
+        if isinstance(value, dict):
+            return value
+    if isinstance(value, list):
+        merged: dict[str, Any] = {}
+        for item in value:
+            if isinstance(item, dict):
+                merged.update(item)
+                continue
+            if isinstance(item, str):
+                try:
+                    parsed = json.loads(item)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(parsed, dict):
+                    merged.update(parsed)
+        return merged
+    return {}
 
 
 class PostgresSearchSessionRepository:
@@ -218,7 +279,7 @@ class PostgresSearchSessionRepository:
                 severity,
                 display_message,
                 data_origin,
-                _json(payload or {}),
+                _jsonb(payload or {}),
             )
         return SessionEvent(
             id=str(eid),
@@ -274,7 +335,7 @@ class PostgresSearchSessionRepository:
                 severity=r["severity"],
                 display_message=r["display_message"],
                 data_origin=r["data_origin"],
-                payload=dict(r["payload"] or {}),
+                payload=_as_object_dict(r["payload"]),
                 created_at=r["created_at"],
             )
             for r in rows
@@ -306,8 +367,8 @@ class PostgresSearchSessionRepository:
                 int(job.get("conversation_state_version") or 0),
                 job["status"],
                 job.get("platform_role") or "UNDERSTANDING_SERVICE",
-                _json(job.get("input_payload") or {}),
-                _json(job.get("output_payload")) if job.get("output_payload") is not None else None,
+                _jsonb(job.get("input_payload") or {}),
+                _jsonb(job.get("output_payload")) if job.get("output_payload") is not None else None,
                 job.get("error_code"),
                 job.get("queued_at"),
                 job.get("started_at"),
@@ -346,7 +407,7 @@ class PostgresSearchSessionRepository:
                     "query_version": int(r["query_version"]),
                     "conversation_state_version": int(r["conversation_state_version"]),
                     "status": r["status"],
-                    "input_payload": dict(payload or {}),
+                    "input_payload": _as_object_dict(payload),
                     "platform_role": r["platform_role"],
                 }
             )
@@ -370,7 +431,7 @@ class PostgresSearchSessionRepository:
                 session_id,
                 name,
                 value,
-                _json(labels or {}),
+                _jsonb(labels or {}),
             )
 
     async def get_session(self, session_id: str) -> Optional[SearchSession]:
@@ -384,9 +445,6 @@ class PostgresSearchSessionRepository:
         return self._row_to_session(row)
 
     def _row_to_session(self, row: Any) -> SearchSession:
-        meta = row["metadata"]
-        if isinstance(meta, str):
-            meta = json.loads(meta)
         return SearchSession(
             id=str(row["id"]),
             conversation_id=str(row["conversation_id"]),
@@ -400,7 +458,7 @@ class PostgresSearchSessionRepository:
             completed_at=row["completed_at"],
             cancelled_at=row["cancelled_at"],
             superseded_by=str(row["superseded_by"]) if row["superseded_by"] else None,
-            metadata=dict(meta or {}),
+            metadata=_as_object_dict(row["metadata"]),
         )
 
     async def load_full_session(self, session_id: str) -> Optional[Any]:
@@ -460,9 +518,7 @@ class PostgresSearchSessionRepository:
                 version_number=int(r["version_number"]),
                 raw_user_text=r["raw_user_text"],
                 normalized_text=r["normalized_text"],
-                state_snapshot=dict(r["state_snapshot"] or {})
-                if not isinstance(r["state_snapshot"], str)
-                else json.loads(r["state_snapshot"] or "{}"),
+                state_snapshot=_as_object_dict(r["state_snapshot"]),
                 confidence=float(r["confidence"]) if r["confidence"] is not None else None,
                 requires_llm=bool(r["requires_llm"]),
                 created_at=r["created_at"],
@@ -478,9 +534,7 @@ class PostgresSearchSessionRepository:
                 severity=r["severity"],
                 display_message=r["display_message"],
                 data_origin=r["data_origin"],
-                payload=dict(r["payload"] or {})
-                if not isinstance(r["payload"], str)
-                else json.loads(r["payload"] or "{}"),
+                payload=_as_object_dict(r["payload"]),
                 created_at=r["created_at"],
             )
             for r in event_rows
@@ -492,30 +546,21 @@ class PostgresSearchSessionRepository:
                 "field": r["field"],
                 "question_text": r["question_text"],
                 "question_signature": r["question_signature"],
-                "options": list(r["options"] or [])
-                if not isinstance(r["options"], str)
-                else json.loads(r["options"] or "[]"),
+                "options": _as_list(r["options"]),
                 "status": r["status"],
             }
             for r in clar_rows
         ]
         partials = []
         for r in partial_rows:
-            ranking = r["ranking_payload"]
-            if isinstance(ranking, str):
-                ranking = json.loads(ranking or "{}")
-            ranking = dict(ranking or {})
+            ranking = _as_object_dict(r["ranking_payload"])
             ranking.setdefault("query_version", int(r["query_version"]))
             ranking.setdefault("label", r["label"])
             partials.append(ranking)
         llm_jobs = []
         for r in job_rows:
-            inp = r["input_payload"]
             out = r["output_payload"]
-            if isinstance(inp, str):
-                inp = json.loads(inp or "{}")
-            if isinstance(out, str):
-                out = json.loads(out) if out else None
+            out_dict = _as_object_dict(out) if out is not None else None
             llm_jobs.append(
                 {
                     "id": str(r["id"]),
@@ -523,8 +568,8 @@ class PostgresSearchSessionRepository:
                     "query_version": int(r["query_version"]),
                     "conversation_state_version": int(r["conversation_state_version"]),
                     "status": r["status"],
-                    "input_payload": dict(inp or {}),
-                    "output_payload": dict(out) if out is not None else None,
+                    "input_payload": _as_object_dict(r["input_payload"]),
+                    "output_payload": out_dict,
                     "error_code": r["error_code"],
                     "queued_at": r["queued_at"],
                     "started_at": r["started_at"],
@@ -569,8 +614,8 @@ class PostgresSearchSessionRepository:
                 session_id,
                 query_version,
                 label,
-                _json([p for p in product_ids if p is not None]),
-                _json(ranking_payload),
+                _jsonb([p for p in product_ids if p is not None]),
+                _jsonb(ranking_payload),
             )
         return sid
 
@@ -603,7 +648,7 @@ class PostgresSearchSessionRepository:
                 field,
                 question_text,
                 question_signature,
-                _json(options),
+                _jsonb(options),
                 status,
             )
 
@@ -612,12 +657,18 @@ class PostgresSearchSessionRepository:
             await conn.execute(
                 """
                 UPDATE search_sessions
-                SET metadata = COALESCE(metadata, '{}'::jsonb) || $2::jsonb,
+                SET metadata = (
+                        CASE
+                            WHEN metadata IS NULL OR jsonb_typeof(metadata) <> 'object'
+                                THEN '{}'::jsonb
+                            ELSE metadata
+                        END
+                    ) || $2::jsonb,
                     updated_at = NOW()
                 WHERE id = $1::uuid
                 """,
                 session_id,
-                _json(metadata),
+                _jsonb(metadata),
             )
 
     async def list_recent_metrics(self, *, limit: int = 500) -> list[dict[str, Any]]:
@@ -635,7 +686,7 @@ class PostgresSearchSessionRepository:
             {
                 "metric_name": r["metric_name"],
                 "metric_value": float(r["metric_value"]),
-                "labels": dict(r["labels"] or {}),
+                "labels": _as_object_dict(r["labels"]),
                 "recorded_at": r["recorded_at"].isoformat() if r["recorded_at"] else None,
             }
             for r in rows

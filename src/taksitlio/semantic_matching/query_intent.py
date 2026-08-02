@@ -263,6 +263,15 @@ def _has_any(folded: str, cues: tuple[str, ...]) -> bool:
     return any(cue in folded for cue in cues)
 
 
+def _has_ranking_refinement(text: str) -> bool:
+    """True for sort follow-ups ("en ucuzlarını getir") without product nouns."""
+
+    # Lazy import: fast_parser depends on turkish_normalize only (no cycle).
+    from taksitlio.query_understanding.fast_parser import detect_ranking_mode
+
+    return detect_ranking_mode(text) is not None
+
+
 def classify_query_intent(text: str) -> QueryIntentKind:
     """Classify whether auto-select is safe for this utterance."""
 
@@ -272,6 +281,11 @@ def classify_query_intent(text: str) -> QueryIntentKind:
 
     if _has_any(folded, _OUT_OF_SCOPE_CUES):
         return QueryIntentKind.OUT_OF_SCOPE
+
+    # Ranking refinements are product assists even without nouns/verbs.
+    # Must run before general-chat refuse ("en ucuzlarını getir bana").
+    if _has_ranking_refinement(text):
+        return QueryIntentKind.PRODUCT_PURCHASE
 
     active = _has_any(folded, _ACTIVE_PURCHASE_CUES)
     weak = _has_any(folded, _WEAK_PURCHASE_CUES)

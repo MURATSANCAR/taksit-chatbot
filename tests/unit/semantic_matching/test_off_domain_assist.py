@@ -60,5 +60,29 @@ def test_product_queries_stay_in_domain(utterance: str) -> None:
     assert is_off_domain_for_assist(utterance) is False
 
 
+@pytest.mark.parametrize(
+    "utterance",
+    (
+        "en ucuzlarını getir bana",
+        "en ucuzularını getir bana",
+        "en ucuz olsun",
+        "en düşük fiyat",
+        "taksit sayısın en az olanları getir bana",
+        "en düşük aylık ödeme",
+        "en uzun vade",
+    ),
+)
+def test_ranking_followups_stay_in_domain(utterance: str) -> None:
+    """Sort refinements must not refuse even without product nouns."""
+
+    assert is_off_domain_for_assist(utterance) is False
+    assert classify_query_intent(utterance) is QueryIntentKind.PRODUCT_PURCHASE
+
+
+def test_chitchat_still_refused() -> None:
+    assert is_off_domain_for_assist("sadece konuşalım") is True
+    assert classify_query_intent("sadece konuşalım") is QueryIntentKind.OUT_OF_SCOPE
+
+
 def test_travel_out_of_scope_refused() -> None:
     assert is_off_domain_for_assist("kapadokya otel rezervasyonu") is True
