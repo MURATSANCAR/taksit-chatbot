@@ -1,0 +1,25 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "attempted": 100,
+  "first_partial_api": {
+    "n": 100,
+    "p50": 58.892,
+    "p90": 142.354,
+    "p95": 151.523,
+    "p99": 219.687,
+    "max": 326.368,
+    "mean": 75.189
+  },
+  "blank_screen_over_4s": 0,
+  "fake_partial_product": 0,
+  "cohort_leakage": 0,
+  "browser_dom": {
+    "status": "FAIL",
+    "pass": false,
+    "error": "It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead."
+  },
+  "source_type": "BROWSER_TEST_RESULT",
+  "measured_at": "2026-08-02T11:34:46.529059+00:00",
+  "note": "API-only is insufficient; browser DOM required for PASS"
+}

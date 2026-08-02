@@ -1,0 +1,129 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "cells": [
+    {
+      "name": "fast_path_event_order",
+      "status": "PASS",
+      "pass": true,
+      "missing": [],
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "FAST_PARSE_COMPLETED",
+        "ENTITY_RESOLUTION_STARTED",
+        "BRAND_CANDIDATES_RESOLVED",
+        "ENTITY_RESOLUTION_COMPLETED",
+        "GAP_ANALYSIS_COMPLETED",
+        "PRODUCT_POOL_SEARCH_STARTED",
+        "PARTIAL_RESULTS_READY",
+        "FINANCE_SEARCH_STARTED",
+        "RANKING_STARTED",
+        "FINAL_RESULTS_READY",
+        "SEARCH_COMPLETED"
+      ],
+      "terminals": 1
+    },
+    {
+      "name": "clarification_event_order",
+      "status": "PASS",
+      "pass": true,
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "SEARCH_FAILED"
+      ],
+      "route": "OUT_OF_SCOPE"
+    },
+    {
+      "name": "llm_required_event_order",
+      "status": "PASS",
+      "pass": true,
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "FAST_PARSE_COMPLETED",
+        "ENTITY_RESOLUTION_STARTED",
+        "ENTITY_RESOLUTION_COMPLETED",
+        "GAP_ANALYSIS_COMPLETED",
+        "PRODUCT_POOL_SEARCH_STARTED",
+        "PARTIAL_RESULTS_READY",
+        "FINANCE_SEARCH_STARTED",
+        "RANKING_STARTED",
+        "FINAL_RESULTS_READY",
+        "SEARCH_COMPLETED"
+      ]
+    },
+    {
+      "name": "no_result_event_order",
+      "status": "PASS",
+      "pass": true,
+      "types": [
+        "SEARCH_ACCEPTED",
+        "FAST_PARSE_STARTED",
+        "SEARCH_FAILED"
+      ]
+    },
+    {
+      "name": "failed_search_event_order",
+      "status": "PASS",
+      "pass": true
+    },
+    {
+      "name": "query_supersede",
+      "status": "PASS",
+      "pass": true,
+      "query_version_b": 2,
+      "stale": 0
+    },
+    {
+      "name": "last_event_id_reconnect",
+      "status": "PASS",
+      "pass": true,
+      "last_event_id": "1d326dbc-585d-4574-a6d3-0747fc8f086f",
+      "new_events": 12
+    },
+    {
+      "name": "client_reconnect",
+      "status": "PASS",
+      "pass": true,
+      "reconnect_new_events": 0
+    },
+    {
+      "name": "slow_client",
+      "status": "PASS",
+      "pass": true,
+      "note": "Terminal observed despite bounded SSE read window"
+    },
+    {
+      "name": "duplicate_terminal_event",
+      "status": "PASS",
+      "pass": true,
+      "terminals": [
+        "SEARCH_COMPLETED"
+      ]
+    },
+    {
+      "name": "revision_pinning",
+      "status": "PASS",
+      "pass": true,
+      "note": "session-level pin present when events emitted"
+    },
+    {
+      "name": "cohort_pinning",
+      "status": "PASS",
+      "pass": true,
+      "wrong_cohort_events": 0
+    }
+  ],
+  "missing_required_event": 0,
+  "duplicate_terminal_event": 0,
+  "reconnect_data_loss": 0,
+  "old_query_version_event_applied": 0,
+  "wrong_cohort_event_applied": 0,
+  "fake_progress_event": 0,
+  "slow_client_search_blocking": 0,
+  "source_type": "SSE_TRACE",
+  "source_table_or_endpoint": "http://127.0.0.1:8040/v1/search-sessions/{id}/events",
+  "measured_at": "2026-08-02T11:34:12.670036+00:00"
+}

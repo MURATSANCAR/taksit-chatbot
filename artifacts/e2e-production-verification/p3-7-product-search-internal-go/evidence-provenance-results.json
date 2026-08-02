@@ -1,0 +1,11 @@
+{
+  "gate": "EVIDENCE_PROVENANCE_GATE",
+  "status": "PASS",
+  "pass": true,
+  "hardcoded_evidence_metric": 0,
+  "untraceable_report_metric": 0,
+  "db_artifact_mismatch": 0,
+  "mismatches": [],
+  "failures": [],
+  "metrics_checked": 4
+}

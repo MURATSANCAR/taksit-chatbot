@@ -290,16 +290,16 @@ async def get_golden_candidate(candidate_id: int, request: Request) -> Dict[str,
         # Cohort samples from search-ready projection (reference, not expected)
         samples = await conn.fetch(
             """
-            SELECT product_id::text, merchant_id::text, category_id::text,
-                   title, price, currency, primary_cdn_url
-            FROM search_ready_product_projection
+            SELECT s.product_id::text, s.merchant_id::text, s.category_id::text,
+                   s.current_price AS price, s.currency, s.stock_status
+            FROM search_ready_product_projection s
             ORDER BY random()
             LIMIT 5
             """
         )
         forbidden = await conn.fetch(
             """
-            SELECT p.id::text AS product_id, m.code AS merchant_code
+            SELECT p.id::text AS product_id, m.merchant_code AS merchant_code
             FROM products p
             JOIN merchants m ON m.id=p.merchant_id
             WHERE NOT EXISTS (

@@ -1,0 +1,23 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "core_total": 0,
+  "core_pass": 0,
+  "core_fail": 0,
+  "cohort_total": 0,
+  "cohort_pass": 0,
+  "cohort_fail": 0,
+  "metrics": {
+    "route_accuracy_ok": 0,
+    "route_accuracy_n": 0,
+    "cohort_leakage": 0,
+    "forbidden_finance_claim": 0,
+    "false_auto_resolution": 0,
+    "critical_failure": 0
+  },
+  "details": [],
+  "source_type": "HTTP_TEST_RESULT",
+  "source_table_or_endpoint": "http://127.0.0.1:8040/v1/search-sessions",
+  "measured_at": "2026-08-02T11:33:56.153778+00:00",
+  "note": "Empty APPROVED set ⇒ FAIL (candidates alone are not coverage)"
+}

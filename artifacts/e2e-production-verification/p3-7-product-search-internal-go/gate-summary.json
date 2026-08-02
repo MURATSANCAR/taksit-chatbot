@@ -1,0 +1,44 @@
+{
+  "gates": {
+    "EVIDENCE_PROVENANCE_GATE": "PASS",
+    "GOLDEN_CANDIDATE_PIPELINE_GATE": "PASS",
+    "COHORT_GOLDEN_COVERAGE_GATE": "FAIL",
+    "CONTINUOUS_GOLDEN_GATE": "FAIL",
+    "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "FAIL",
+    "BROWSER_DATA_INTEGRITY_GATE": "PASS",
+    "FINANCE_CAPABILITY_FIREWALL_GATE": "PASS",
+    "LIVE_SSE_MATRIX_GATE": "PASS",
+    "TEMP_COHORT_LIFECYCLE_GATE": "PASS",
+    "SCOPE_DOWNGRADE_GATE": "PASS",
+    "SCOPE_RESTORE_GATE": "PASS",
+    "INTERNAL_CHAOS_GATE": "PASS",
+    "LLM_PARTIAL_BROWSER_GATE": "FAIL",
+    "CATEGORY_TOKEN_REGRESSION_GATE": "PASS",
+    "UNRESTRICTED_FALLBACK_REGRESSION_GATE": "PASS"
+  },
+  "decision": {
+    "decision": "P3_7_INTERNAL_CONDITIONALLY_READY",
+    "blockers": [
+      "COHORT_GOLDEN_COVERAGE_GATE",
+      "CONTINUOUS_GOLDEN_GATE",
+      "PLAYWRIGHT_PRODUCT_SEARCH_GATE",
+      "LLM_PARTIAL_BROWSER_GATE"
+    ],
+    "criticals": [
+      "COHORT_GOLDEN_COVERAGE_GATE",
+      "CONTINUOUS_GOLDEN_GATE"
+    ],
+    "public_cutover": false,
+    "campaign_gate": "CLOSED",
+    "finance_capability": "NOT_APPLICABLE"
+  },
+  "zero_tolerance": {
+    "hardcoded_verification_count": 0,
+    "auto_approved_golden": 0,
+    "untraceable_report_metric": 0,
+    "unauthorized_internal_access": 0,
+    "cohort_leakage": 0,
+    "forbidden_finance_claim": 0
+  },
+  "measured_at": "2026-08-02T11:34:49.255453+00:00"
+}

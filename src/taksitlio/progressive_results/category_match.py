@@ -409,6 +409,7 @@ __all__ = [
     "matches_category_tokens",
     "matches_required_categories",
     "product_haystack",
+    "reload_category_family_tokens",
     "required_category_families",
     "utterance_name_terms",
 ]

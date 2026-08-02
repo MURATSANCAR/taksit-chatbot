@@ -1,0 +1,228 @@
+{
+  "cohort": {
+    "id": 1,
+    "version": 1,
+    "products": 1054,
+    "scopes": 326,
+    "leakage": 0,
+    "merchants": [
+      "m-hepsiburada",
+      "m-vatan"
+    ]
+  },
+  "evidence": {
+    "gate": "EVIDENCE_PROVENANCE_GATE",
+    "status": "PASS",
+    "pass": true,
+    "hardcoded_evidence_metric": 0,
+    "untraceable_report_metric": 0,
+    "db_artifact_mismatch": 0,
+    "mismatches": [],
+    "failures": [],
+    "metrics_checked": 4,
+    "persist_error": "invalid input for query argument $10: '2026-08-02T11:33:56.147060+00:00' (expected a datetime.date or datetime.datetime instance, got 'str')"
+  },
+  "golden": {
+    "candidates": 44,
+    "approved": 0,
+    "rejected": 0,
+    "needs_revision": 0,
+    "demand_weighted_coverage": 0.0,
+    "bucket_gaps": [
+      {
+        "demand_bucket": "minimum_product_search_cases",
+        "existing_candidate_count": 27,
+        "approved_count": 0,
+        "minimum_required": 5,
+        "coverage_gap": 5
+      },
+      {
+        "demand_bucket": "minimum_typo_alias_cases",
+        "existing_candidate_count": 2,
+        "approved_count": 0,
+        "minimum_required": 5,
+        "coverage_gap": 5
+      },
+      {
+        "demand_bucket": "minimum_negation_correction_cases",
+        "existing_candidate_count": 2,
+        "approved_count": 0,
+        "minimum_required": 5,
+        "coverage_gap": 5
+      },
+      {
+        "demand_bucket": "minimum_clarification_cases",
+        "existing_candidate_count": 7,
+        "approved_count": 0,
+        "minimum_required": 3,
+        "coverage_gap": 3
+      },
+      {
+        "demand_bucket": "minimum_no_result_cases",
+        "existing_candidate_count": 3,
+        "approved_count": 0,
+        "minimum_required": 2,
+        "coverage_gap": 2
+      },
+      {
+        "demand_bucket": "minimum_llm_required_cases",
+        "existing_candidate_count": 3,
+        "approved_count": 0,
+        "minimum_required": 2,
+        "coverage_gap": 2
+      }
+    ],
+    "reviewer_separation": 0
+  },
+  "browser": {
+    "pass": false,
+    "viewports": null,
+    "finance_claims": 0,
+    "integrity": {
+      "status": "PASS",
+      "pass": true,
+      "cards_checked": 120,
+      "wrong_product": 0,
+      "wrong_merchant": 0,
+      "wrong_category": 0,
+      "wrong_price": 0,
+      "wrong_image": 0,
+      "wrong_url": 0,
+      "finance_claim_shown": 0,
+      "source_type": "HTTP_TEST_RESULT",
+      "source_table_or_endpoint": "search_ready_product_projection + /v1/search-sessions",
+      "measured_at": "2026-08-02T11:34:23.188625+00:00"
+    }
+  },
+  "sse": {
+    "pass": true,
+    "cells": 12
+  },
+  "lifecycle": {
+    "status": "PASS",
+    "pass": true,
+    "temp_cohort_code": "internal_scope_lifecycle_test",
+    "temp_cohort_id": 2,
+    "versions": {
+      "lifecycle": 1,
+      "degraded": 2,
+      "restored": 3
+    },
+    "audit": [
+      {
+        "version": 1,
+        "status": "SHADOW",
+        "reason": "lifecycle:SHADOW",
+        "at": "2026-08-02T11:34:23.218730+00:00"
+      },
+      {
+        "version": 1,
+        "status": "INTERNAL",
+        "reason": "lifecycle:INTERNAL",
+        "at": "2026-08-02T11:34:23.222300+00:00"
+      },
+      {
+        "version": 1,
+        "status": "DEGRADED",
+        "reason": "lifecycle:DEGRADED",
+        "at": "2026-08-02T11:34:23.224670+00:00"
+      },
+      {
+        "version": 1,
+        "status": "SHADOW_VALIDATION",
+        "reason": "lifecycle:SHADOW_VALIDATION",
+        "at": "2026-08-02T11:34:23.226658+00:00"
+      },
+      {
+        "version": 1,
+        "status": "INTERNAL",
+        "reason": "lifecycle:INTERNAL",
+        "at": "2026-08-02T11:34:23.228383+00:00"
+      },
+      {
+        "version": 1,
+        "status": "ARCHIVED",
+        "reason": "lifecycle:ARCHIVED",
+        "at": "2026-08-02T11:34:23.230208+00:00"
+      },
+      {
+        "version": 2,
+        "status": "DEGRADED",
+        "reason": "scope_downgrade",
+        "at": "2026-08-02T11:34:23.272395+00:00"
+      },
+      {
+        "version": 2,
+        "status": "SHADOW_VALIDATION",
+        "reason": "pre_restore",
+        "at": "2026-08-02T11:34:23.278236+00:00"
+      },
+      {
+        "version": 3,
+        "status": "INTERNAL",
+        "reason": "scope_restore",
+        "at": "2026-08-02T11:34:23.280592+00:00"
+      }
+    ],
+    "live_cohort_status": "INTERNAL",
+    "old_version_status": "ARCHIVED",
+    "degraded_product_leakage": 0,
+    "existing_session_mixed_revision": 0,
+    "new_session_stale_cohort_use": 0,
+    "old_cohort_mutated": 0,
+    "manual_code_change_required": 0,
+    "source_type": "DATABASE_QUERY",
+    "source_table_or_endpoint": "search_release_cohort_versions+lifecycle_events",
+    "measured_at": "2026-08-02T11:34:23.281379+00:00"
+  },
+  "chaos": {
+    "pass": true,
+    "finance_claim_leakage": 0
+  },
+  "capabilities": {
+    "PRODUCT_SEARCH": "PARTIAL",
+    "ENTITY_RESOLUTION": "PARTIAL",
+    "CLARIFICATION": "PARTIAL",
+    "RANKING_PRICE": "READY",
+    "RANKING_FINANCE": "NOT_APPLICABLE",
+    "FINANCE_DISPLAY": "BLOCKED",
+    "LLM_PARTIAL": "PARTIAL",
+    "BROWSER_UI": "PARTIAL",
+    "SSE": "READY",
+    "REVISION_CONSISTENCY": "READY",
+    "RESILIENCE": "READY"
+  },
+  "gates": {
+    "EVIDENCE_PROVENANCE_GATE": "PASS",
+    "GOLDEN_CANDIDATE_PIPELINE_GATE": "PASS",
+    "COHORT_GOLDEN_COVERAGE_GATE": "FAIL",
+    "CONTINUOUS_GOLDEN_GATE": "FAIL",
+    "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "FAIL",
+    "BROWSER_DATA_INTEGRITY_GATE": "PASS",
+    "FINANCE_CAPABILITY_FIREWALL_GATE": "PASS",
+    "LIVE_SSE_MATRIX_GATE": "PASS",
+    "TEMP_COHORT_LIFECYCLE_GATE": "PASS",
+    "SCOPE_DOWNGRADE_GATE": "PASS",
+    "SCOPE_RESTORE_GATE": "PASS",
+    "INTERNAL_CHAOS_GATE": "PASS",
+    "LLM_PARTIAL_BROWSER_GATE": "FAIL",
+    "CATEGORY_TOKEN_REGRESSION_GATE": "PASS",
+    "UNRESTRICTED_FALLBACK_REGRESSION_GATE": "PASS"
+  },
+  "decision": {
+    "decision": "P3_7_INTERNAL_CONDITIONALLY_READY",
+    "blockers": [
+      "COHORT_GOLDEN_COVERAGE_GATE",
+      "CONTINUOUS_GOLDEN_GATE",
+      "PLAYWRIGHT_PRODUCT_SEARCH_GATE",
+      "LLM_PARTIAL_BROWSER_GATE"
+    ],
+    "criticals": [
+      "COHORT_GOLDEN_COVERAGE_GATE",
+      "CONTINUOUS_GOLDEN_GATE"
+    ],
+    "public_cutover": false,
+    "campaign_gate": "CLOSED",
+    "finance_capability": "NOT_APPLICABLE"
+  }
+}

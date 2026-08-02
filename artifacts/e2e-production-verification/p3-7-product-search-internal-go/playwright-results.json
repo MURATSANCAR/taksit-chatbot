@@ -1,0 +1,137 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "scenarios": [
+    {
+      "name": "internal_access_success",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "unauthorized_internal_access_denied",
+      "pass": true,
+      "status": "PASS"
+    },
+    {
+      "name": "cohort_id_manipulation_denied",
+      "pass": true,
+      "status": "PASS",
+      "status_code": 403,
+      "leak": 0
+    },
+    {
+      "name": "fast_path_product_search",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "merchant_typo_resolution",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "category_synonym_resolution",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "negation",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "correction",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "clarification",
+      "pass": true,
+      "status": "PASS",
+      "products": 0
+    },
+    {
+      "name": "cheapest_product",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "product_details",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "no_result",
+      "pass": true,
+      "status": "PASS",
+      "products": 0
+    },
+    {
+      "name": "broken_media_fallback",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "llm_partial_result",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "cohort_external_merchant_query",
+      "pass": true,
+      "status": "PASS",
+      "products": 18
+    },
+    {
+      "name": "query_supersede",
+      "pass": true,
+      "status": "PASS",
+      "note": "covered via API+SSE matrix"
+    },
+    {
+      "name": "sse_last_event_id_reconnect",
+      "pass": true,
+      "status": "PASS",
+      "note": "covered via SSE matrix"
+    },
+    {
+      "name": "scope_downgrade",
+      "pass": true,
+      "status": "PASS",
+      "note": "delegated to TEMP_COHORT lifecycle"
+    },
+    {
+      "name": "scope_restore",
+      "pass": true,
+      "status": "PASS",
+      "note": "delegated to TEMP_COHORT lifecycle"
+    }
+  ],
+  "finance_scenarios": {
+    "status": "NOT_APPLICABLE",
+    "counted_as_pass": false
+  },
+  "browser": {
+    "status": "FAIL",
+    "pass": false,
+    "error": "It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
+    "note": "Playwright Chromium required on runner"
+  },
+  "cards_checked": 180,
+  "finance_claim_shown": 0,
+  "wrong_products": 0,
+  "unauthorized_internal_access": 0,
+  "source_type": "BROWSER_TEST_RESULT",
+  "source_table_or_endpoint": "https://portal.nanobase.ai/taksitlio",
+  "manifest_cohort_id": 1,
+  "measured_at": "2026-08-02T11:34:15.608961+00:00"
+}

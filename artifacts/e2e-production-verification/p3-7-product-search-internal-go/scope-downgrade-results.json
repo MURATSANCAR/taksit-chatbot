@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "degraded_product_leakage": 0,
+  "existing_session_mixed_revision": 0,
+  "new_session_stale_cohort_use": 0,
+  "versions": {
+    "lifecycle": 1,
+    "degraded": 2,
+    "restored": 3
+  },
+  "source_type": "DATABASE_QUERY",
+  "measured_at": "2026-08-02T11:34:23.282005+00:00"
+}

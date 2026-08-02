@@ -1,0 +1,24 @@
+{
+  "candidates_total": 44,
+  "by_lifecycle": {
+    "REVIEW_REQUIRED": 44
+  },
+  "by_bucket": {
+    "product_search": 27,
+    "clarification": 7,
+    "llm_required": 3,
+    "no_result": 3,
+    "typo_alias": 2,
+    "negation_correction": 2
+  },
+  "missing_required_fields": 0,
+  "auto_approved": 0,
+  "source_type": "DATABASE_QUERY",
+  "source_table_or_endpoint": "continuous_golden_cases",
+  "source_query_hash": "c191c64900b0eef6be506d02",
+  "cohort_id": 1,
+  "cohort_version": 1,
+  "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+  "measured_at": "2026-08-02T11:33:56.149584+00:00",
+  "note": "Candidates ≠ coverage. APPROVED-only counts for gates."
+}

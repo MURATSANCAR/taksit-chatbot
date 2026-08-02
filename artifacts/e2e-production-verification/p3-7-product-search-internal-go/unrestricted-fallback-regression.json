@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "details": [
+    {
+      "test": "tests/unit/search_sessions/test_unrestricted_fallback_regression.py",
+      "returncode": 0,
+      "pass": true,
+      "stdout": "..                                                                       [100%]\n2 passed in 0.39s\n",
+      "stderr": ""
+    }
+  ],
+  "non_cohort_product_returned": 0,
+  "foreign_merchant_finance_returned": 0,
+  "source_type": "HTTP_TEST_RESULT",
+  "measured_at": "2026-08-02T11:34:49.251011+00:00"
+}
