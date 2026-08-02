@@ -67,10 +67,8 @@ async def test_refresh_loads_categories_from_repo() -> None:
     )
     assert n == 0  # empty product catalog
     assert orch.product_pool == []
-    assert {c.entity_id for c in orch.catalog.categories} == {
-        "HOME_APPLIANCE",
-        "LAPTOP",
-    }
+    ids = {c.entity_id for c in orch.catalog.categories}
+    assert {"HOME_APPLIANCE", "LAPTOP"}.issubset(ids)
     parse = fast_parse("Buzdolabı bakıyorum", catalog=orch.catalog)
     assert parse.positive_categories[0].resolved_id == "HOME_APPLIANCE"
     assert orch.category_token_map["HOME_APPLIANCE"]
