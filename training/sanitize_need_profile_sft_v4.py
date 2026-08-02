@@ -1345,7 +1345,9 @@ def validate_all(
 | Clean delta | {len(delta)} / 1200 |
 | Final train | {len(train)} |
 | Removed DRAFT | {base_report.get('removed_draft')} |
-| Removed eval-source (+upsample) | {base_report.get('removed_eval_source')} |
+| Removed eval-source | {base_report.get('removed_eval_source')} |
+| Removed near-eval (base) | {base_report.get('removed_near_eval_from_base')} |
+| Removed norm-dups (base) | {base_report.get('removed_normalized_dups_from_base')} |
 | Repaired corrections | {base_report.get('repaired_correction_rows')} |
 | Dropped corrections | {base_report.get('dropped_correction_rows')} |
 | Family/Pattern | {'PASS' if fam_ok and pat_ok else 'FAIL'} |
