@@ -98,7 +98,15 @@ def merge_parse_into_state(state: QueryNeedState, parse_dict: dict[str, Any]) ->
                 if c not in state.active_categories:
                     state.active_categories.append(c)
     else:
+        # Free-text invent is cold-start recovery only. On refinements with an
+        # active catalog category, drop free_text noise (ADR-010: no static
+        # typo→category maps; bogus tokens must not AND-filter the pool).
+        has_catalog = any(_is_catalog_category(c) for c in state.active_categories)
         for c in new_cats:
+            if not isinstance(c, dict):
+                continue
+            if has_catalog and not _is_catalog_category(c):
+                continue
             if c not in state.active_categories:
                 state.active_categories.append(c)
 
@@ -141,7 +149,18 @@ def merge_parse_into_state(state: QueryNeedState, parse_dict: dict[str, Any]) ->
 def hydrate_parse_from_state(parse: FastParseResult, state: QueryNeedState) -> FastParseResult:
     """Carry prior need into a refinement-only parse before retrieve/gap analysis."""
 
-    if not parse.positive_categories and state.active_categories:
+    catalog_in_parse = [
+        c
+        for c in parse.positive_categories
+        if c.resolved_id and not str(c.resolved_id).startswith("free_text:")
+    ]
+    catalog_in_state = [
+        c for c in state.active_categories if isinstance(c, dict) and _is_catalog_category(c)
+    ]
+    # Free-text-only invent must not block prior catalog need on follow-ups.
+    if not catalog_in_parse and catalog_in_state:
+        parse.positive_categories = [_dict_to_ref(c) for c in catalog_in_state]
+    elif not parse.positive_categories and state.active_categories:
         parse.positive_categories = [
             _dict_to_ref(c) for c in state.active_categories if isinstance(c, dict)
         ]

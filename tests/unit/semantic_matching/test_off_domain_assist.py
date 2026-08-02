@@ -65,6 +65,7 @@ def test_product_queries_stay_in_domain(utterance: str) -> None:
     (
         "en ucuzlarını getir bana",
         "en ucuzularını getir bana",
+        "en ucularını getir bana babama alacağım",
         "en ucuz olsun",
         "en düşük fiyat",
         "taksit sayısın en az olanları getir bana",

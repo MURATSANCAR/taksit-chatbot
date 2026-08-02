@@ -463,6 +463,67 @@ _RANKING_CUE_TABLE: tuple[tuple[str, tuple[str, ...]], ...] = (
     ),
 )
 
+# Closed RankingMode operator lemmas (system enum — not catalog entities).
+# Matched with edit-distance / prefix, never via static typo tables (ADR-010 §32).
+_CHEAPEST_LEMMAS = ("ucuz",)
+
+
+def _bounded_edit_distance(a: str, b: str, *, limit: int = 1) -> int:
+    """Levenshtein with early exit when distance would exceed ``limit``."""
+
+    if a == b:
+        return 0
+    if abs(len(a) - len(b)) > limit:
+        return limit + 1
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, start=1):
+        cur = [i]
+        row_min = i
+        for j, cb in enumerate(b, start=1):
+            ins = cur[j - 1] + 1
+            delete = prev[j] + 1
+            sub = prev[j - 1] + (0 if ca == cb else 1)
+            val = min(ins, delete, sub)
+            cur.append(val)
+            if val < row_min:
+                row_min = val
+        if row_min > limit:
+            return limit + 1
+        prev = cur
+    return prev[-1]
+
+
+def _token_near_lemma(token: str, lemma: str, *, max_edits: int = 1) -> bool:
+    """True when token is lemma, inflection of lemma, or near-miss typo of lemma."""
+
+    t = ascii_fold(turkish_lower(token or "").strip(".,!?;:\"'()[]{}"))
+    lem = ascii_fold(turkish_lower(lemma))
+    if not t or not lem or len(t) < 3:
+        return False
+    if lem in t:
+        return True
+    # Prefix windows cover inflections (ucuzlarını) and 1-edit typos (ucularını).
+    lo = max(3, len(lem) - 1)
+    hi = min(len(t), len(lem) + 2)
+    for width in range(lo, hi + 1):
+        if _bounded_edit_distance(t[:width], lem, limit=max_edits) <= max_edits:
+            return True
+    return False
+
+
+def _fuzzy_cheapest_after_en(text: str) -> bool:
+    """Detect 'en <~ucuz…>' via lemma fuzzy match (no typo word list)."""
+
+    folded = ascii_fold(turkish_lower(text or ""))
+    tokens = [tok.strip(".,!?;:\"'()[]{}") for tok in folded.split() if tok.strip(".,!?;:\"'()[]{}")]
+    for i, tok in enumerate(tokens[:-1]):
+        if tok != "en":
+            continue
+        nxt = tokens[i + 1]
+        if any(_token_near_lemma(nxt, lem) for lem in _CHEAPEST_LEMMAS):
+            return True
+    return False
+
 
 def detect_ranking_mode(text: str) -> Optional[str]:
     """Map Turkish refinement cues to a RankingMode value string."""
@@ -475,6 +536,8 @@ def detect_ranking_mode(text: str) -> Optional[str]:
             cue_n = normalize_turkish(cue).value or cue_l
             if cue_l in lower or (cue_n and cue_n in folded):
                 return mode
+    if _fuzzy_cheapest_after_en(text):
+        return "CHEAPEST_PRODUCT_PRICE"
     return None
 
 
@@ -508,6 +571,9 @@ def _is_query_stopword(token: str) -> bool:
     if not t:
         return True
     if t in _QUERY_STOPWORDS:
+        return True
+    # Ranking operator tokens (incl. fuzzy near-lemma) are never product nouns.
+    if any(_token_near_lemma(t, lem) for lem in _CHEAPEST_LEMMAS):
         return True
     folded = ascii_fold(t)
     return bool(folded) and folded in _QUERY_STOPWORDS

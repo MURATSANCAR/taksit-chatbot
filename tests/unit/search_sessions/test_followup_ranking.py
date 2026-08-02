@@ -159,6 +159,81 @@ def test_supersede_cheapest_followup_not_refused() -> None:
     assert follow["results"]["label"] == "En düşük ürün fiyatı"
 
 
+def test_supersede_cheapest_typo_with_recipient_keeps_results() -> None:
+    """Fuzzy lemma match: 'en ucularını' (~ucuz) must re-rank, not invent free_text."""
+
+    orch = _phone_orchestrator()
+    first = orch.start(
+        conversation_id="00000000-0000-0000-0000-00000000f012",
+        message="Cep telefonu alacağız, bütçemiz 40 bin TL civarı",
+    )
+    assert first["route"] == "FAST"
+    assert (first.get("results") or {}).get("products")
+    sid = first["search_session_id"]
+
+    follow = orch.supersede_with_message(
+        sid, "en ucularını getir bana babama alacağım"
+    )
+    assert follow["route"] != "OUT_OF_SCOPE"
+    assert "bulamadım" not in str(follow.get("reply") or "").casefold()
+    assert follow["understanding"].get("ranking_mode") == "CHEAPEST_PRODUCT_PRICE"
+    cats = follow["understanding"].get("positive_categories") or []
+    assert cats
+    assert not any(
+        "ucu" in str(c.get("display_name") or "").casefold() for c in cats
+    )
+    products = (follow.get("results") or {}).get("products") or []
+    assert products
+    assert products[0]["product_id"] == "p-phone-12"
+
+
+def test_hydrate_drops_free_text_when_catalog_prior_exists() -> None:
+    """Structural guard: free_text invent must not block prior catalog categories."""
+
+    from taksitlio.query_understanding.fast_parser import FastParseResult, ResolvedEntityRef
+
+    state = QueryNeedState(
+        active_categories=[
+            {
+                "resolved_id": "category-phone",
+                "display_name": "Cep Telefonu",
+                "match_type": "NORMALIZED_EXACT",
+                "confidence": 0.96,
+                "required": True,
+            }
+        ]
+    )
+    parse = FastParseResult(
+        intent="product_search",
+        positive_categories=[
+            ResolvedEntityRef(
+                resolved_id="free_text:ucularini",
+                display_name="ucularını",
+                match_type="FREE_TEXT_PRODUCT",
+                confidence=0.88,
+                required=True,
+            )
+        ],
+        confidence=0.7,
+    )
+    merge_parse_into_state(state, parse.to_dict())
+    assert all(
+        not str(c.get("resolved_id") or "").startswith("free_text:")
+        for c in state.active_categories
+    )
+    hydrated = hydrate_parse_from_state(parse, state)
+    assert hydrated.positive_categories
+    assert hydrated.positive_categories[0].resolved_id == "category-phone"
+
+
+def test_fast_parser_ranking_cues_typo_cheapest() -> None:
+    assert detect_ranking_mode("en ucularını getir bana") == "CHEAPEST_PRODUCT_PRICE"
+    assert detect_ranking_mode("en ucuzlarını getir bana") == "CHEAPEST_PRODUCT_PRICE"
+    parse = fast_parse("en ucularını getir bana babama alacağım")
+    assert parse.ranking_mode == "CHEAPEST_PRODUCT_PRICE"
+    assert parse.positive_categories == []
+
+
 def test_hard_terminal_supersede_rejected() -> None:
     orch = build_demo_orchestrator()
     out = orch.start(
