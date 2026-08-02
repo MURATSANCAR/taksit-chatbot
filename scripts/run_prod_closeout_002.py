@@ -1203,23 +1203,25 @@ async def source_backed_uplift(conn: Any, merchant_ids: list[int]) -> dict[str, 
     from taksitlio.product.taxonomy import pick_existing_category
     from taksitlio.product.taxonomy_pg import ensure_brand
 
-    # Also run proven P3.2 structured-attr / URL-breadcrumb uplift per merchant.
-    import importlib.util
+    # Optional P3.2 structured-attr / URL-breadcrumb uplift (can be slow on large merchants).
+    p32_reports: list[dict[str, Any]] = []
+    if os.environ.get("CLOSEOUT_RUN_P32_UPLIFT", "0") == "1":
+        import importlib.util
 
-    spec = importlib.util.spec_from_file_location(
-        "p32_unblock", ROOT / "scripts" / "run_p3_2_readiness_unblock.py"
-    )
-    mod = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
-    spec.loader.exec_module(mod)
-    p32_uplift = mod.source_backed_uplift
-
-    p32_reports = []
-    for mid in merchant_ids:
-        try:
-            p32_reports.append(await p32_uplift(conn, int(mid)))
-        except Exception as exc:  # noqa: BLE001
-            p32_reports.append({"merchant_id": mid, "error": str(exc)[:200]})
+        spec = importlib.util.spec_from_file_location(
+            "p32_unblock", ROOT / "scripts" / "run_p3_2_readiness_unblock.py"
+        )
+        mod = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        spec.loader.exec_module(mod)
+        p32_uplift = mod.source_backed_uplift
+        for mid in merchant_ids:
+            try:
+                p32_reports.append(await p32_uplift(conn, int(mid)))
+            except Exception as exc:  # noqa: BLE001
+                p32_reports.append({"merchant_id": mid, "error": str(exc)[:200]})
+    else:
+        p32_reports.append({"skipped": True, "reason": "CLOSEOUT_RUN_P32_UPLIFT!=1"})
 
     brands = await conn.fetch(
         "SELECT id, display_name, brand_code FROM brands WHERE status='ACTIVE'"
@@ -1249,7 +1251,55 @@ async def source_backed_uplift(conn: Any, merchant_ids: list[int]) -> dict[str, 
     mappings: list[dict[str, Any]] = []
     brand_fixed = 0
     cat_fixed = 0
-    for mid in merchant_ids:
+    # Focus on highest-ranked finance merchants only (avoid O(n*brands) on 7k+ SKUs).
+    focus_ids = list(merchant_ids[:2]) if merchant_ids else []
+    for mid in focus_ids:
+        # SQL-side brand prefix match against ACTIVE brands (title evidence).
+        brand_rows = await conn.fetch(
+            """
+            WITH need AS (
+              SELECT p.id, upper(p.display_name) AS dn
+              FROM products p
+              JOIN product_offers o ON o.product_id = p.id
+              WHERE o.merchant_id = $1 AND p.status = 'ACTIVE' AND p.brand_id IS NULL
+                AND COALESCE(p.display_name, '') <> ''
+              LIMIT 2500
+            ),
+            matched AS (
+              SELECT DISTINCT ON (n.id) n.id AS product_id, b.id AS brand_id, b.display_name
+              FROM need n
+              JOIN brands b ON b.status = 'ACTIVE' AND length(b.display_name) >= 3
+              WHERE n.dn LIKE upper(b.display_name) || ' %'
+                 OR n.dn LIKE upper(b.display_name) || '/%'
+                 OR n.dn LIKE upper(b.display_name) || '-%'
+                 OR n.dn = upper(b.display_name)
+              ORDER BY n.id, length(b.display_name) DESC
+            )
+            UPDATE products p
+               SET brand_id = m.brand_id, updated_at = NOW()
+              FROM matched m
+             WHERE p.id = m.product_id AND p.brand_id IS NULL
+            RETURNING p.id, m.brand_id, m.display_name
+            """,
+            mid,
+        )
+        for r in brand_rows:
+            brand_fixed += 1
+            mappings.append(
+                {
+                    "product_id": int(r["id"]),
+                    "merchant_id": mid,
+                    "field": "brand_id",
+                    "source": "product_title_prefix",
+                    "source_value": r["display_name"],
+                    "normalized_value": int(r["brand_id"]),
+                    "mapping_revision": "prod-closeout-002-v1",
+                    "confidence": 0.9,
+                    "provenance": "source_backed_title_sql",
+                    "review_status": "AUTO_ACCEPTED_HIGH_CONFIDENCE",
+                }
+            )
+
         products = await conn.fetch(
             """
             SELECT p.id, p.display_name, p.manufacturer_name, p.brand_id, p.category_id,
@@ -1257,94 +1307,64 @@ async def source_backed_uplift(conn: Any, merchant_ids: list[int]) -> dict[str, 
             FROM products p
             JOIN product_offers o ON o.product_id = p.id
             WHERE o.merchant_id = $1 AND p.status = 'ACTIVE'
-              AND (p.brand_id IS NULL OR p.category_id IS NULL)
+              AND p.category_id IS NULL
+            LIMIT 800
             """,
             mid,
         )
         for p in products:
             dn = (p["display_name"] or "").strip()
-            if p["brand_id"] is None and dn:
-                hit = None
-                src_val = None
-                dn_up = dn.upper()
-                for bname in brand_names:
-                    if (
-                        dn_up.startswith(bname + " ")
-                        or dn_up.startswith(bname + "/")
-                        or dn_up.startswith(bname + "-")
-                        or dn_up == bname
-                    ):
-                        hit = brand_by_upper[bname]
-                        src_val = bname
-                        break
-                if hit is None and p["manufacturer_name"]:
-                    mfg = str(p["manufacturer_name"]).strip()
-                    bid = await ensure_brand(conn, mfg)
-                    if bid:
-                        hit = int(bid)
-                        src_val = mfg
-                if hit is not None:
+            if not dn:
+                continue
+            if p["brand_id"] is None and p["manufacturer_name"]:
+                mfg = str(p["manufacturer_name"]).strip()
+                bid = await ensure_brand(conn, mfg)
+                if bid:
                     await conn.execute(
                         "UPDATE products SET brand_id=$1, updated_at=NOW() WHERE id=$2 AND brand_id IS NULL",
-                        hit,
+                        int(bid),
                         int(p["id"]),
                     )
                     brand_fixed += 1
-                    mappings.append(
-                        {
-                            "product_id": int(p["id"]),
-                            "merchant_id": mid,
-                            "field": "brand_id",
-                            "source": "product_title_prefix" if src_val and src_val == (src_val or "").upper() else "manufacturer_name",
-                            "source_value": src_val,
-                            "normalized_value": hit,
-                            "mapping_revision": "prod-closeout-002-v1",
-                            "confidence": 0.9,
-                            "provenance": "source_backed_title_or_mfg",
-                            "review_status": "AUTO_ACCEPTED_HIGH_CONFIDENCE",
-                        }
-                    )
-
-            if p["category_id"] is None and dn:
-                hit_cat = pick_existing_category(dn, categories=cat_mapped)
-                method = "product_title_taxonomy_match"
-                src_val = dn[:120]
-                if hit_cat is None:
-                    for url in (p["source_url"], p["checkout_url"]):
-                        if not url:
-                            continue
-                        parts = [x for x in urlparse(str(url)).path.split("/") if x]
-                        for part in parts[:3]:
-                            label = part.replace("-", " ").replace("_", " ")
-                            hit_cat = pick_existing_category(label, categories=cat_mapped)
-                            if hit_cat is not None:
-                                method = "source_url_path_taxonomy"
-                                src_val = label[:120]
-                                break
+            hit_cat = pick_existing_category(dn, categories=cat_mapped)
+            method = "product_title_taxonomy_match"
+            src_val = dn[:120]
+            if hit_cat is None:
+                for url in (p["source_url"], p["checkout_url"]):
+                    if not url:
+                        continue
+                    parts = [x for x in urlparse(str(url)).path.split("/") if x]
+                    for part in parts[:3]:
+                        label = part.replace("-", " ").replace("_", " ")
+                        hit_cat = pick_existing_category(label, categories=cat_mapped)
                         if hit_cat is not None:
+                            method = "source_url_path_taxonomy"
+                            src_val = label[:120]
                             break
-                if hit_cat is not None:
-                    cid = int(hit_cat["id"])
-                    await conn.execute(
-                        "UPDATE products SET category_id=$1, updated_at=NOW() WHERE id=$2 AND category_id IS NULL",
-                        cid,
-                        int(p["id"]),
-                    )
-                    cat_fixed += 1
-                    mappings.append(
-                        {
-                            "product_id": int(p["id"]),
-                            "merchant_id": mid,
-                            "field": "category_id",
-                            "source": method,
-                            "source_value": src_val,
-                            "normalized_value": cid,
-                            "mapping_revision": "prod-closeout-002-v1",
-                            "confidence": 0.85,
-                            "provenance": "approved_taxonomy_pick_existing",
-                            "review_status": "AUTO_ACCEPTED_HIGH_CONFIDENCE",
-                        }
-                    )
+                    if hit_cat is not None:
+                        break
+            if hit_cat is not None:
+                cid = int(hit_cat["id"])
+                await conn.execute(
+                    "UPDATE products SET category_id=$1, updated_at=NOW() WHERE id=$2 AND category_id IS NULL",
+                    cid,
+                    int(p["id"]),
+                )
+                cat_fixed += 1
+                mappings.append(
+                    {
+                        "product_id": int(p["id"]),
+                        "merchant_id": mid,
+                        "field": "category_id",
+                        "source": method,
+                        "source_value": src_val,
+                        "normalized_value": cid,
+                        "mapping_revision": "prod-closeout-002-v1",
+                        "confidence": 0.85,
+                        "provenance": "approved_taxonomy_pick_existing",
+                        "review_status": "AUTO_ACCEPTED_HIGH_CONFIDENCE",
+                    }
+                )
 
     return {
         "brand_fixed": brand_fixed,
