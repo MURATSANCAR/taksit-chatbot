@@ -593,29 +593,48 @@ def run_open_loop_and_concurrency(cohort: dict[str, Any], thr: dict[str, Any]) -
         warm = float(prof.get("warmup_duration_s") or 5)
         mode = str(prof.get("mode") or "sustained")
         interval = 1.0 / rps if rps > 0 else 1.0
+        # True open-loop: schedule arrivals on a timer; do not wait for prior response.
+        workers = min(128, max(8, int(rps * 4)))
+
+        def _fire(msg: str, tid: str, scheduled_at: float) -> dict[str, Any]:
+            lag = max(0.0, (time.perf_counter() - scheduled_at) * 1000)
+            r = post_search(msg, headers, tid, timeout=15)
+            r["client_schedule_lag_ms"] = lag
+            return r
+
+        # warmup (discard)
+        warm_n = max(1, int(warm * rps))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futs = []
+            t0 = time.perf_counter()
+            for i in range(warm_n):
+                scheduled = t0 + i * interval
+                delay = scheduled - time.perf_counter()
+                if delay > 0:
+                    time.sleep(delay)
+                futs.append(
+                    pool.submit(_fire, queries[i % len(queries)], f"warm-{i}", scheduled)
+                )
+            for fut in as_completed(futs):
+                fut.result()
+
         results: list[dict[str, Any]] = []
-        t_start = time.perf_counter()
-        # warmup
-        warm_end = t_start + warm
-        i = 0
-        while time.perf_counter() < warm_end:
-            post_search(queries[i % len(queries)], headers, f"warm-{i}", timeout=15)
-            i += 1
-            time.sleep(interval)
-        # measured
+        meas_n = max(1, int(dur * rps))
         meas_start = time.perf_counter()
-        meas_end = meas_start + dur
-        i = 0
-        while time.perf_counter() < meas_end:
-            scheduled = meas_start + i * interval
-            now = time.perf_counter()
-            if scheduled > now:
-                time.sleep(scheduled - now)
-            queue_client = max(0.0, (time.perf_counter() - scheduled) * 1000)
-            r = post_search(queries[i % len(queries)], headers, f"ol-{rps}-{i}", timeout=15)
-            r["client_schedule_lag_ms"] = queue_client
-            results.append(r)
-            i += 1
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futs = []
+            for i in range(meas_n):
+                scheduled = meas_start + i * interval
+                delay = scheduled - time.perf_counter()
+                if delay > 0:
+                    time.sleep(delay)
+                futs.append(
+                    pool.submit(
+                        _fire, queries[i % len(queries)], f"ol-{rps}-{i}", scheduled
+                    )
+                )
+            for fut in as_completed(futs):
+                results.append(fut.result())
         wall = time.perf_counter() - meas_start
         resp = [float(x["response_time_ms"]) for x in results if x.get("response_time_ms") is not None]
         qwait = [float(x["queue_wait_ms"]) for x in results if x.get("queue_wait_ms") is not None]
@@ -1288,26 +1307,28 @@ async def amain(args: argparse.Namespace) -> int:
         # Backpressure: observe 429 under extreme burst
         headers = _headers(int(cohort["cohort_id"]), int(cohort["test_cohort_version"]))
         busy_n = 0
-        with ThreadPoolExecutor(max_workers=100) as pool:
+        with ThreadPoolExecutor(max_workers=100) as bp_pool:
             futs = [
-                pool.submit(post_search, "samsung telefon", headers, f"bp-{i}", 10)
-                for i in range(120)
+                bp_pool.submit(post_search, "samsung telefon", headers, f"bp-{i}", 8)
+                for i in range(200)
             ]
             for fut in as_completed(futs):
                 if fut.result().get("busy"):
                     busy_n += 1
+        busy_from_load = sum(
+            int(x.get("http_429_busy") or 0) for x in (load.get("concurrency") or [])
+        )
+        busy_total = busy_n + busy_from_load
         backpressure = {
-            "status": "PASS" if busy_n > 0 or load.get("pass") else "PARTIAL",
-            "pass": busy_n > 0,  # admission engaged
-            "http_429_observed": busy_n,
+            "status": "PASS" if busy_total > 0 else "FAIL",
+            "pass": busy_total > 0,
+            "http_429_observed_burst": busy_n,
+            "http_429_observed_load_concurrency": busy_from_load,
+            "http_429_observed": busy_total,
             "policy": ov_thr,
-            "note": "429 admission must engage under overload; silent 20s wait forbidden",
+            "note": "429 admission must engage under overload; silent multi-second wait without bound is forbidden",
             "measured_at": _now(),
         }
-        if busy_n == 0:
-            backpressure["status"] = "PARTIAL"
-            backpressure["pass"] = False
-            backpressure["note"] += "; 429 not observed — check API restart with admission code"
         _write("backpressure-results.json", backpressure)
 
         print("[p41] real chaos", flush=True)

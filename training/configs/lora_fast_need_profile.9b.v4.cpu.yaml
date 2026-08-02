@@ -1,0 +1,44 @@
+# P17-V4-SFT-001 — fresh LoRA v4 on sanitized train (CPU / nanobase).
+# Fresh adapter from HF base — NEVER resume/merge from v3.
+# Campaign Gate CLOSED. No HR100 / quant in this job.
+
+experiment_id: "P17-V4-SFT-001"
+adapter_name: "needprofile-fast-nine-b-lora-v4"
+base_model_ref: "Qwen/Qwen3.5-9B"
+output_dir: "artifacts/p17/v4-sft"
+train_jsonl: "artifacts/p17/v4-sanitized/data/need_profile_sft.v4.clean.train.jsonl"
+sanitize_validation: "artifacts/p17/v4-sanitized/p17_v4_sanitize_validation.json"
+expected_train_rows: 1637
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: ["q_proj", "v_proj"]
+
+train:
+  seed: 19
+  epochs: 1
+  learning_rate: 1.5e-4
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  max_seq_len: 1536
+  bf16: false
+  fp16: false
+  logging_steps: 10
+  save_steps: 50
+  max_steps: 400
+  gradient_checkpointing: false
+  warmup_ratio: 0.0
+  lr_scheduler_type: "linear"
+  optim: "adamw_torch"
+
+runtime:
+  require_gpu: false
+  framework: "peft+transformers"
+  allow_v3_resume: false
+
+notes:
+  - "Matched v3 LoRA/hparams; only dataset is the sanitized 1637-row train"
+  - "CPU float32 — same as v3 (no CUDA on nanobase); HF peft adapter is the Ref column"
+  - "Do not claim QUALITY_READY / open Campaign Gate from this job"

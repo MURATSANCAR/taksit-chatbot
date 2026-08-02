@@ -1,0 +1,150 @@
+{
+  "profiles": [
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 5.0,
+      "duration_s": 30.0,
+      "attempted": 122,
+      "completed_ok": 122,
+      "throughput_rps": 4.056,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 223.195,
+        "p95": 354.639,
+        "p99": 451.106
+      },
+      "queue_wait_ms": {
+        "p50": 16.604,
+        "p95": 27.098
+      },
+      "service_time_ms": {
+        "p50": 200.352,
+        "p95": 329.853
+      },
+      "first_product_ms": {
+        "p95": 377.362
+      },
+      "catalog_refresh_p95_ms": 329.851
+    },
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 10.0,
+      "duration_s": 30.0,
+      "attempted": 124,
+      "completed_ok": 124,
+      "throughput_rps": 4.114,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 211.393,
+        "p95": 368.304,
+        "p99": 479.132
+      },
+      "queue_wait_ms": {
+        "p50": 14.049,
+        "p95": 24.663
+      },
+      "service_time_ms": {
+        "p50": 195.819,
+        "p95": 348.835
+      },
+      "first_product_ms": {
+        "p95": 368.304
+      },
+      "catalog_refresh_p95_ms": 348.832
+    },
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 25.0,
+      "duration_s": 30.0,
+      "attempted": 121,
+      "completed_ok": 121,
+      "throughput_rps": 4.011,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 211.306,
+        "p95": 382.593,
+        "p99": 469.263
+      },
+      "queue_wait_ms": {
+        "p50": 14.917,
+        "p95": 24.0
+      },
+      "service_time_ms": {
+        "p50": 194.779,
+        "p95": 356.963
+      },
+      "first_product_ms": {
+        "p95": 423.562
+      },
+      "catalog_refresh_p95_ms": 356.96
+    },
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 50.0,
+      "duration_s": 20.0,
+      "attempted": 80,
+      "completed_ok": 80,
+      "throughput_rps": 3.991,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 214.121,
+        "p95": 382.913,
+        "p99": 506.282
+      },
+      "queue_wait_ms": {
+        "p50": 14.951,
+        "p95": 25.515
+      },
+      "service_time_ms": {
+        "p50": 197.881,
+        "p95": 364.628
+      },
+      "first_product_ms": {
+        "p95": 399.02
+      },
+      "catalog_refresh_p95_ms": 364.627
+    },
+    {
+      "mode": "burst",
+      "requests_per_second_target": 100.0,
+      "duration_s": 10.0,
+      "attempted": 41,
+      "completed_ok": 41,
+      "throughput_rps": 4.022,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 217.533,
+        "p95": 341.081,
+        "p99": 380.639
+      },
+      "queue_wait_ms": {
+        "p50": 14.762,
+        "p95": 24.677
+      },
+      "service_time_ms": {
+        "p50": 206.406,
+        "p95": 320.444
+      },
+      "first_product_ms": {
+        "p95": 363.619
+      },
+      "catalog_refresh_p95_ms": 320.442
+    }
+  ],
+  "measured_at": "2026-08-02T18:21:41.241697+00:00"
+}

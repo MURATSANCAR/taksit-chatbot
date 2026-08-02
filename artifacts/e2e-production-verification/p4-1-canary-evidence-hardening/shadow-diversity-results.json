@@ -1,0 +1,50 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "completed": 1000,
+  "unique_normalized": 63,
+  "unique_ratio": 0.063,
+  "single_query_share": 0.087,
+  "top_10_query_share": 0.563,
+  "by_bucket": {
+    "FINANCE_NOT_SUPPORTED": 98,
+    "PRODUCT_SEARCH": 757,
+    "NEGATION_CORRECTION": 36,
+    "TYPO_ALIAS": 25,
+    "OUT_OF_SCOPE": 16,
+    "LLM_REQUIRED": 45,
+    "NO_RESULT": 3,
+    "CLARIFICATION": 20
+  },
+  "real_session_unique_queries": 42,
+  "golden_excluded_from_unique_evidence": true,
+  "policy_version": 1,
+  "policy_thresholds": {
+    "minimum_unique_ratio": 0.5,
+    "minimum_bucket_coverage": {
+      "NO_RESULT": 5,
+      "TYPO_ALIAS": 10,
+      "LLM_REQUIRED": 10,
+      "OUT_OF_SCOPE": 10,
+      "CLARIFICATION": 10,
+      "PRODUCT_SEARCH": 50,
+      "NEGATION_CORRECTION": 10,
+      "FINANCE_NOT_SUPPORTED": 10
+    },
+    "minimum_completed_queries": 1000,
+    "exclude_golden_from_unique": true,
+    "maximum_single_query_share": 0.01,
+    "maximum_top_10_query_share": 0.1,
+    "minimum_unique_normalized_queries": 500,
+    "stratified_minor_review_sample_size": 80,
+    "with_replacement_counts_as_load_only": true
+  },
+  "failed_rules": [
+    "minimum_unique_normalized_queries",
+    "minimum_unique_ratio",
+    "maximum_single_query_share",
+    "maximum_top_10_query_share",
+    "bucket:NO_RESULT"
+  ],
+  "measured_at": "2026-08-02T18:17:32.959095+00:00"
+}

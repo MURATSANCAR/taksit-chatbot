@@ -1,0 +1,11 @@
+{
+  "thresholds": {
+    "degraded_mode": "BUSY_REJECT",
+    "maximum_inflight": 64,
+    "admission_control": true,
+    "maximum_queue_depth": 64,
+    "retry_after_seconds": 2,
+    "maximum_queue_wait_ms": 2000
+  },
+  "measured_at": "2026-08-02T18:17:32.945717+00:00"
+}

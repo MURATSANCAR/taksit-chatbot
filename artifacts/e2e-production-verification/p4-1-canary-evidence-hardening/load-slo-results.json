@@ -1,0 +1,287 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "slo": {
+    "maximum_5xx_rate": 0.001,
+    "maximum_timeout_rate": 0.005,
+    "minimum_success_rate": 0.99,
+    "maximum_queue_wait_P95_ms": 500,
+    "maximum_P95_response_time_ms": 1500,
+    "maximum_P99_response_time_ms": 3000,
+    "maximum_first_product_P95_ms": 2000,
+    "maximum_resource_saturation_duration_s": 5
+  },
+  "slo_failed_rules": [],
+  "open_loop": [
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 5.0,
+      "duration_s": 30.0,
+      "attempted": 122,
+      "completed_ok": 122,
+      "throughput_rps": 4.056,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 223.195,
+        "p95": 354.639,
+        "p99": 451.106
+      },
+      "queue_wait_ms": {
+        "p50": 16.604,
+        "p95": 27.098
+      },
+      "service_time_ms": {
+        "p50": 200.352,
+        "p95": 329.853
+      },
+      "first_product_ms": {
+        "p95": 377.362
+      },
+      "catalog_refresh_p95_ms": 329.851
+    },
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 10.0,
+      "duration_s": 30.0,
+      "attempted": 124,
+      "completed_ok": 124,
+      "throughput_rps": 4.114,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 211.393,
+        "p95": 368.304,
+        "p99": 479.132
+      },
+      "queue_wait_ms": {
+        "p50": 14.049,
+        "p95": 24.663
+      },
+      "service_time_ms": {
+        "p50": 195.819,
+        "p95": 348.835
+      },
+      "first_product_ms": {
+        "p95": 368.304
+      },
+      "catalog_refresh_p95_ms": 348.832
+    },
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 25.0,
+      "duration_s": 30.0,
+      "attempted": 121,
+      "completed_ok": 121,
+      "throughput_rps": 4.011,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 211.306,
+        "p95": 382.593,
+        "p99": 469.263
+      },
+      "queue_wait_ms": {
+        "p50": 14.917,
+        "p95": 24.0
+      },
+      "service_time_ms": {
+        "p50": 194.779,
+        "p95": 356.963
+      },
+      "first_product_ms": {
+        "p95": 423.562
+      },
+      "catalog_refresh_p95_ms": 356.96
+    },
+    {
+      "mode": "sustained",
+      "requests_per_second_target": 50.0,
+      "duration_s": 20.0,
+      "attempted": 80,
+      "completed_ok": 80,
+      "throughput_rps": 3.991,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 214.121,
+        "p95": 382.913,
+        "p99": 506.282
+      },
+      "queue_wait_ms": {
+        "p50": 14.951,
+        "p95": 25.515
+      },
+      "service_time_ms": {
+        "p50": 197.881,
+        "p95": 364.628
+      },
+      "first_product_ms": {
+        "p95": 399.02
+      },
+      "catalog_refresh_p95_ms": 364.627
+    },
+    {
+      "mode": "burst",
+      "requests_per_second_target": 100.0,
+      "duration_s": 10.0,
+      "attempted": 41,
+      "completed_ok": 41,
+      "throughput_rps": 4.022,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "success_rate": 1.0,
+      "response_time_ms": {
+        "p50": 217.533,
+        "p95": 341.081,
+        "p99": 380.639
+      },
+      "queue_wait_ms": {
+        "p50": 14.762,
+        "p95": 24.677
+      },
+      "service_time_ms": {
+        "p50": 206.406,
+        "p95": 320.444
+      },
+      "first_product_ms": {
+        "p95": 363.619
+      },
+      "catalog_refresh_p95_ms": 320.442
+    }
+  ],
+  "concurrency": [
+    {
+      "concurrency": 10,
+      "active_workers": 10,
+      "queued_requests_estimate": 0,
+      "duration_s": 2.071,
+      "attempted": 10,
+      "completed_ok": 10,
+      "throughput_rps": 4.83,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 905.918,
+        "p95": 2059.871,
+        "p99": 2059.871
+      },
+      "queue_wait_ms": {
+        "p50": 729.978,
+        "p95": 1791.325,
+        "p99": 1791.325,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 25,
+      "active_workers": 25,
+      "queued_requests_estimate": 0,
+      "duration_s": 5.856,
+      "attempted": 25,
+      "completed_ok": 25,
+      "throughput_rps": 4.269,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 3176.461,
+        "p95": 5533.77,
+        "p99": 5834.184
+      },
+      "queue_wait_ms": {
+        "p50": 2898.548,
+        "p95": 4922.093,
+        "p99": 5060.702,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 50,
+      "active_workers": 50,
+      "queued_requests_estimate": 0,
+      "duration_s": 11.695,
+      "attempted": 50,
+      "completed_ok": 50,
+      "throughput_rps": 4.275,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 5301.043,
+        "p95": 11178.919,
+        "p99": 11655.293
+      },
+      "queue_wait_ms": {
+        "p50": 5121.778,
+        "p95": 10989.555,
+        "p99": 11384.517,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 100,
+      "active_workers": 80,
+      "queued_requests_estimate": 20,
+      "duration_s": 23.039,
+      "attempted": 100,
+      "completed_ok": 100,
+      "throughput_rps": 4.341,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 11765.708,
+        "p95": 18476.8,
+        "p99": 18575.205
+      },
+      "queue_wait_ms": {
+        "p50": 11489.862,
+        "p95": 18288.465,
+        "p99": 18307.062,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 250,
+      "active_workers": 80,
+      "queued_requests_estimate": 170,
+      "duration_s": 53.265,
+      "attempted": 250,
+      "completed_ok": 184,
+      "throughput_rps": 3.454,
+      "http_5xx": 0,
+      "http_429_busy": 23,
+      "timeout": 43,
+      "end_to_end_ms": {
+        "p50": 14768.104,
+        "p95": 25028.091,
+        "p99": 25031.406
+      },
+      "queue_wait_ms": {
+        "p50": 12417.551,
+        "p95": 18447.674,
+        "p99": 18950.21,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    }
+  ],
+  "p4_prior_load_invalidated": true,
+  "note": "5xx=0 alone is not PASS; SLO latency required",
+  "measured_at": "2026-08-02T18:21:41.239989+00:00"
+}

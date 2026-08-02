@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "cohort": {
+    "version": 2,
+    "status": "PUBLIC_CANARY",
+    "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+    "traffic_state": "NOT_STARTED"
+  },
+  "live_canary_started": false,
+  "measured_at": "2026-08-02T18:21:53.763954+00:00"
+}

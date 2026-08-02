@@ -1,0 +1,29 @@
+{
+  "from_freeze": {
+    "base_model_path": "Qwen/Qwen3.5-9B",
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "v_proj"
+      ],
+      "bias": "none",
+      "task_type": "CAUSAL_LM",
+      "init": "fresh_get_peft_model"
+    },
+    "optimizer": {
+      "name": "adamw_torch",
+      "learning_rate": 0.00015,
+      "lr_scheduler_type": "linear",
+      "warmup_ratio": 0.0
+    },
+    "effective_batch_size": 8,
+    "epochs": 1.0,
+    "max_steps": 400,
+    "max_sequence_length": 1536,
+    "precision": "float32_cpu",
+    "random_seed": 19
+  }
+}

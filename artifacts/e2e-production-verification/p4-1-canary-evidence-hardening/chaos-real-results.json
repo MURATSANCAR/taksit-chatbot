@@ -1,0 +1,100 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "scenarios": [
+    {
+      "name": "baseline",
+      "fault_started": false,
+      "fault_confirmed": true,
+      "request_count": 5,
+      "fallback_behavior": "none",
+      "recovery_time_s": 0,
+      "data_integrity": "ok",
+      "pass": true
+    },
+    {
+      "name": "redis_unavailable",
+      "fault_started": true,
+      "fault_confirmed": true,
+      "request_count": 5,
+      "fallback_behavior": "continue_or_error_without_wrong_products",
+      "recovery_time_s": null,
+      "during_ok": 5,
+      "after_ok": 5,
+      "finance_hits": 0,
+      "data_integrity": "ok",
+      "pass": true
+    },
+    {
+      "name": "llm_unavailable_path",
+      "fault_started": true,
+      "fault_confirmed": true,
+      "injection": "deterministic_product_search_without_llm_dependency",
+      "request_count": 5,
+      "fallback_behavior": "deterministic_continue",
+      "recovery_time_s": 0,
+      "data_integrity": "ok",
+      "pass": true
+    },
+    {
+      "name": "ranking_challenger_exception",
+      "fault_started": true,
+      "fault_confirmed": true,
+      "injection": "adaptive_ranking_SHADOW_champion_continues",
+      "request_count": 5,
+      "fallback_behavior": "champion_path",
+      "pass": true,
+      "data_integrity": "ok"
+    },
+    {
+      "name": "catalog_refresh_delay",
+      "fault_started": true,
+      "fault_confirmed": true,
+      "request_count": 1,
+      "fallback_behavior": "soft_fail_keep_prior_pool",
+      "pass": true,
+      "data_integrity": "ok"
+    },
+    {
+      "name": "media_service_failure",
+      "fault_started": false,
+      "fault_confirmed": false,
+      "pass": false,
+      "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "name": "db_replica_lag",
+      "fault_started": false,
+      "fault_confirmed": false,
+      "pass": false,
+      "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "name": "sse_slow_consumer",
+      "fault_started": false,
+      "fault_confirmed": false,
+      "pass": false,
+      "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "name": "projection_refresh_delay",
+      "fault_started": false,
+      "fault_confirmed": false,
+      "pass": false,
+      "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+      "status": "NOT_VERIFIED"
+    }
+  ],
+  "unhandled_crash": 0,
+  "wrong_product": 0,
+  "cohort_leakage": 0,
+  "forbidden_finance_claim": 0,
+  "mixed_revision": 0,
+  "stale_result": 0,
+  "fake_progress": 0,
+  "observed_baseline_not_accepted": true,
+  "measured_at": "2026-08-02T18:21:53.515687+00:00"
+}

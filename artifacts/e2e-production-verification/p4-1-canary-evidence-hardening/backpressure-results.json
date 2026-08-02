@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "http_429_observed_burst": 0,
+  "http_429_observed_load_concurrency": 23,
+  "http_429_observed": 23,
+  "note": "Admission 429 observed under concurrency=250 wave (23). Open-loop SLO separate.",
+  "measured_at": "2026-08-02T18:29:16.710740+00:00"
+}

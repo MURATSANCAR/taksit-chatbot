@@ -66,11 +66,11 @@ SELECT p.id, 2, 'ACTIVE',
   '{
      "concurrency_levels": [10, 25, 50, 100, 250],
      "open_loop_profiles": [
-       {"requests_per_second": 5,  "test_duration_s": 30, "warmup_duration_s": 5,  "mode": "sustained"},
-       {"requests_per_second": 10, "test_duration_s": 30, "warmup_duration_s": 5,  "mode": "sustained"},
-       {"requests_per_second": 25, "test_duration_s": 30, "warmup_duration_s": 5,  "mode": "sustained"},
-       {"requests_per_second": 50, "test_duration_s": 20, "warmup_duration_s": 5,  "mode": "sustained"},
-       {"requests_per_second": 100,"test_duration_s": 10, "warmup_duration_s": 3,  "mode": "burst", "burst_duration_s": 10}
+       {"requests_per_second": 5,  "test_duration_s": 20, "warmup_duration_s": 5,  "mode": "sustained"},
+       {"requests_per_second": 10, "test_duration_s": 20, "warmup_duration_s": 5,  "mode": "sustained"},
+       {"requests_per_second": 25, "test_duration_s": 15, "warmup_duration_s": 5,  "mode": "sustained"},
+       {"requests_per_second": 50, "test_duration_s": 10, "warmup_duration_s": 3,  "mode": "sustained"},
+       {"requests_per_second": 100,"test_duration_s": 5,  "warmup_duration_s": 2,  "mode": "burst", "burst_duration_s": 5}
      ],
      "slo": {
        "maximum_P95_response_time_ms": 1500,

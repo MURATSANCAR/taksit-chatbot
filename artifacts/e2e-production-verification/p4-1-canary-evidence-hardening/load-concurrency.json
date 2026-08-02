@@ -1,0 +1,125 @@
+{
+  "levels": [
+    {
+      "concurrency": 10,
+      "active_workers": 10,
+      "queued_requests_estimate": 0,
+      "duration_s": 2.071,
+      "attempted": 10,
+      "completed_ok": 10,
+      "throughput_rps": 4.83,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 905.918,
+        "p95": 2059.871,
+        "p99": 2059.871
+      },
+      "queue_wait_ms": {
+        "p50": 729.978,
+        "p95": 1791.325,
+        "p99": 1791.325,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 25,
+      "active_workers": 25,
+      "queued_requests_estimate": 0,
+      "duration_s": 5.856,
+      "attempted": 25,
+      "completed_ok": 25,
+      "throughput_rps": 4.269,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 3176.461,
+        "p95": 5533.77,
+        "p99": 5834.184
+      },
+      "queue_wait_ms": {
+        "p50": 2898.548,
+        "p95": 4922.093,
+        "p99": 5060.702,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 50,
+      "active_workers": 50,
+      "queued_requests_estimate": 0,
+      "duration_s": 11.695,
+      "attempted": 50,
+      "completed_ok": 50,
+      "throughput_rps": 4.275,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 5301.043,
+        "p95": 11178.919,
+        "p99": 11655.293
+      },
+      "queue_wait_ms": {
+        "p50": 5121.778,
+        "p95": 10989.555,
+        "p99": 11384.517,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 100,
+      "active_workers": 80,
+      "queued_requests_estimate": 20,
+      "duration_s": 23.039,
+      "attempted": 100,
+      "completed_ok": 100,
+      "throughput_rps": 4.341,
+      "http_5xx": 0,
+      "http_429_busy": 0,
+      "timeout": 0,
+      "end_to_end_ms": {
+        "p50": 11765.708,
+        "p95": 18476.8,
+        "p99": 18575.205
+      },
+      "queue_wait_ms": {
+        "p50": 11489.862,
+        "p95": 18288.465,
+        "p99": 18307.062,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    },
+    {
+      "concurrency": 250,
+      "active_workers": 80,
+      "queued_requests_estimate": 170,
+      "duration_s": 53.265,
+      "attempted": 250,
+      "completed_ok": 184,
+      "throughput_rps": 3.454,
+      "http_5xx": 0,
+      "http_429_busy": 23,
+      "timeout": 43,
+      "end_to_end_ms": {
+        "p50": 14768.104,
+        "p95": 25028.091,
+        "p99": 25031.406
+      },
+      "queue_wait_ms": {
+        "p50": 12417.551,
+        "p95": 18447.674,
+        "p99": 18950.21,
+        "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+      },
+      "note": "Worker-cap queued time is NOT reported as server processing"
+    }
+  ],
+  "measured_at": "2026-08-02T18:21:41.242538+00:00"
+}

@@ -1,0 +1,22 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "sample_size": 71,
+  "strata_counts": {
+    "TOP1_CHANGED": 710,
+    "TOP3_CHANGED": 199,
+    "OTHER_MINOR": 80,
+    "FINANCE_NOT_SUPPORTED": 11
+  },
+  "sampled_strata": {
+    "TOP1_CHANGED": 20,
+    "TOP3_CHANGED": 20,
+    "OTHER_MINOR": 20,
+    "FINANCE_NOT_SUPPORTED": 11
+  },
+  "human_reviewed": 0,
+  "pending_human_review": 71,
+  "misclassified_critical": 0,
+  "note": "Automated classification not accepted as human review.",
+  "measured_at": "2026-08-02T18:17:33.046299+00:00"
+}

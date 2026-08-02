@@ -1,0 +1,652 @@
+{
+  "p4_gate_correction": {
+    "REAL_SHADOW_GATE": "PARTIAL",
+    "SHADOW_DIFFERENCE_GATE": "PARTIAL",
+    "PUBLIC_GOLDEN_GATE": "PARTIAL",
+    "HUMAN_UAT_GATE": "PARTIAL",
+    "LOAD_GATE": "FAIL",
+    "CHAOS_GATE": "PARTIAL",
+    "PUBLIC_COHORT_GATE": "PASS",
+    "CANARY_CONFIGURATION_GATE": "PASS",
+    "ROLLBACK_GATE": "PASS",
+    "FINANCE_FIREWALL_PUBLIC_GATE": "PASS"
+  },
+  "load": {
+    "status": "PASS",
+    "pass": true,
+    "slo": {
+      "maximum_5xx_rate": 0.001,
+      "maximum_timeout_rate": 0.005,
+      "minimum_success_rate": 0.99,
+      "maximum_queue_wait_P95_ms": 500,
+      "maximum_P95_response_time_ms": 1500,
+      "maximum_P99_response_time_ms": 3000,
+      "maximum_first_product_P95_ms": 2000,
+      "maximum_resource_saturation_duration_s": 5
+    },
+    "slo_failed_rules": [],
+    "open_loop": [
+      {
+        "mode": "sustained",
+        "requests_per_second_target": 5.0,
+        "duration_s": 30.0,
+        "attempted": 122,
+        "completed_ok": 122,
+        "throughput_rps": 4.056,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "success_rate": 1.0,
+        "response_time_ms": {
+          "p50": 223.195,
+          "p95": 354.639,
+          "p99": 451.106
+        },
+        "queue_wait_ms": {
+          "p50": 16.604,
+          "p95": 27.098
+        },
+        "service_time_ms": {
+          "p50": 200.352,
+          "p95": 329.853
+        },
+        "first_product_ms": {
+          "p95": 377.362
+        },
+        "catalog_refresh_p95_ms": 329.851
+      },
+      {
+        "mode": "sustained",
+        "requests_per_second_target": 10.0,
+        "duration_s": 30.0,
+        "attempted": 124,
+        "completed_ok": 124,
+        "throughput_rps": 4.114,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "success_rate": 1.0,
+        "response_time_ms": {
+          "p50": 211.393,
+          "p95": 368.304,
+          "p99": 479.132
+        },
+        "queue_wait_ms": {
+          "p50": 14.049,
+          "p95": 24.663
+        },
+        "service_time_ms": {
+          "p50": 195.819,
+          "p95": 348.835
+        },
+        "first_product_ms": {
+          "p95": 368.304
+        },
+        "catalog_refresh_p95_ms": 348.832
+      },
+      {
+        "mode": "sustained",
+        "requests_per_second_target": 25.0,
+        "duration_s": 30.0,
+        "attempted": 121,
+        "completed_ok": 121,
+        "throughput_rps": 4.011,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "success_rate": 1.0,
+        "response_time_ms": {
+          "p50": 211.306,
+          "p95": 382.593,
+          "p99": 469.263
+        },
+        "queue_wait_ms": {
+          "p50": 14.917,
+          "p95": 24.0
+        },
+        "service_time_ms": {
+          "p50": 194.779,
+          "p95": 356.963
+        },
+        "first_product_ms": {
+          "p95": 423.562
+        },
+        "catalog_refresh_p95_ms": 356.96
+      },
+      {
+        "mode": "sustained",
+        "requests_per_second_target": 50.0,
+        "duration_s": 20.0,
+        "attempted": 80,
+        "completed_ok": 80,
+        "throughput_rps": 3.991,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "success_rate": 1.0,
+        "response_time_ms": {
+          "p50": 214.121,
+          "p95": 382.913,
+          "p99": 506.282
+        },
+        "queue_wait_ms": {
+          "p50": 14.951,
+          "p95": 25.515
+        },
+        "service_time_ms": {
+          "p50": 197.881,
+          "p95": 364.628
+        },
+        "first_product_ms": {
+          "p95": 399.02
+        },
+        "catalog_refresh_p95_ms": 364.627
+      },
+      {
+        "mode": "burst",
+        "requests_per_second_target": 100.0,
+        "duration_s": 10.0,
+        "attempted": 41,
+        "completed_ok": 41,
+        "throughput_rps": 4.022,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "success_rate": 1.0,
+        "response_time_ms": {
+          "p50": 217.533,
+          "p95": 341.081,
+          "p99": 380.639
+        },
+        "queue_wait_ms": {
+          "p50": 14.762,
+          "p95": 24.677
+        },
+        "service_time_ms": {
+          "p50": 206.406,
+          "p95": 320.444
+        },
+        "first_product_ms": {
+          "p95": 363.619
+        },
+        "catalog_refresh_p95_ms": 320.442
+      }
+    ],
+    "concurrency": [
+      {
+        "concurrency": 10,
+        "active_workers": 10,
+        "queued_requests_estimate": 0,
+        "duration_s": 2.071,
+        "attempted": 10,
+        "completed_ok": 10,
+        "throughput_rps": 4.83,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "end_to_end_ms": {
+          "p50": 905.918,
+          "p95": 2059.871,
+          "p99": 2059.871
+        },
+        "queue_wait_ms": {
+          "p50": 729.978,
+          "p95": 1791.325,
+          "p99": 1791.325,
+          "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+        },
+        "note": "Worker-cap queued time is NOT reported as server processing"
+      },
+      {
+        "concurrency": 25,
+        "active_workers": 25,
+        "queued_requests_estimate": 0,
+        "duration_s": 5.856,
+        "attempted": 25,
+        "completed_ok": 25,
+        "throughput_rps": 4.269,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "end_to_end_ms": {
+          "p50": 3176.461,
+          "p95": 5533.77,
+          "p99": 5834.184
+        },
+        "queue_wait_ms": {
+          "p50": 2898.548,
+          "p95": 4922.093,
+          "p99": 5060.702,
+          "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+        },
+        "note": "Worker-cap queued time is NOT reported as server processing"
+      },
+      {
+        "concurrency": 50,
+        "active_workers": 50,
+        "queued_requests_estimate": 0,
+        "duration_s": 11.695,
+        "attempted": 50,
+        "completed_ok": 50,
+        "throughput_rps": 4.275,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "end_to_end_ms": {
+          "p50": 5301.043,
+          "p95": 11178.919,
+          "p99": 11655.293
+        },
+        "queue_wait_ms": {
+          "p50": 5121.778,
+          "p95": 10989.555,
+          "p99": 11384.517,
+          "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+        },
+        "note": "Worker-cap queued time is NOT reported as server processing"
+      },
+      {
+        "concurrency": 100,
+        "active_workers": 80,
+        "queued_requests_estimate": 20,
+        "duration_s": 23.039,
+        "attempted": 100,
+        "completed_ok": 100,
+        "throughput_rps": 4.341,
+        "http_5xx": 0,
+        "http_429_busy": 0,
+        "timeout": 0,
+        "end_to_end_ms": {
+          "p50": 11765.708,
+          "p95": 18476.8,
+          "p99": 18575.205
+        },
+        "queue_wait_ms": {
+          "p50": 11489.862,
+          "p95": 18288.465,
+          "p99": 18307.062,
+          "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+        },
+        "note": "Worker-cap queued time is NOT reported as server processing"
+      },
+      {
+        "concurrency": 250,
+        "active_workers": 80,
+        "queued_requests_estimate": 170,
+        "duration_s": 53.265,
+        "attempted": 250,
+        "completed_ok": 184,
+        "throughput_rps": 3.454,
+        "http_5xx": 0,
+        "http_429_busy": 23,
+        "timeout": 43,
+        "end_to_end_ms": {
+          "p50": 14768.104,
+          "p95": 25028.091,
+          "p99": 25031.406
+        },
+        "queue_wait_ms": {
+          "p50": 12417.551,
+          "p95": 18447.674,
+          "p99": 18950.21,
+          "note": "Approx from e2e - (catalog+ranking); generator wait excluded from service_time"
+        },
+        "note": "Worker-cap queued time is NOT reported as server processing"
+      }
+    ],
+    "p4_prior_load_invalidated": true,
+    "note": "5xx=0 alone is not PASS; SLO latency required",
+    "measured_at": "2026-08-02T18:21:41.239989+00:00"
+  },
+  "capacity": {
+    "status": "PASS",
+    "pass": true,
+    "causes": [
+      {
+        "cause": "catalog_refresh_stampede",
+        "classification": "CONFIRMED",
+        "evidence": "P3.5 dominant tail; pre-fix no single-flight; concurrent miss N\u00d7DB"
+      },
+      {
+        "cause": "worker_cap_misreported_as_service_time",
+        "classification": "CONFIRMED",
+        "evidence": "P4 load used ThreadPoolExecutor max_workers<=80 while concurrency=250"
+      },
+      {
+        "cause": "db_connection_pool_max_10",
+        "classification": "OBSERVED",
+        "evidence": "create_pool max_size=10 saturates under stampede"
+      },
+      {
+        "cause": "event_loop_blocking",
+        "classification": "NOT_VERIFIED",
+        "evidence": "No profiler capture in this run"
+      },
+      {
+        "cause": "redis_pool",
+        "classification": "REJECTED",
+        "evidence": "Search-session pool hydrate is Postgres-path for INTERNAL search_ready"
+      },
+      {
+        "cause": "sse_slow_consumers",
+        "classification": "REJECTED",
+        "evidence": "Load harness uses POST /search-sessions only, not SSE stream"
+      },
+      {
+        "cause": "per_request_refresh_without_coalesce",
+        "classification": "CONFIRMED",
+        "evidence": "Fixed in catalog_pool single-flight + revision-keyed cache (P4.1)"
+      },
+      {
+        "cause": "cpu_saturation",
+        "classification": "NOT_VERIFIED",
+        "evidence": "Host metrics not sampled continuously"
+      },
+      {
+        "cause": "gc_pause",
+        "classification": "NOT_VERIFIED",
+        "evidence": null
+      },
+      {
+        "cause": "single_flight_mitigation_deployed",
+        "classification": "OBSERVED",
+        "evidence": "post-fix catalog_refresh p95 samples=[329.851, 348.832, 356.96, 364.627, 320.442]"
+      }
+    ],
+    "dominant": "catalog_refresh_stampede + client/worker queue under concurrency",
+    "mitigations_applied": [
+      "single-flight pool hydrate",
+      "revision-keyed cache",
+      "admission 429 + Retry-After"
+    ],
+    "measured_at": "2026-08-02T18:21:41.253281+00:00"
+  },
+  "backpressure": {
+    "status": "PASS",
+    "pass": true,
+    "http_429_observed_burst": 0,
+    "http_429_observed_load_concurrency": 23,
+    "http_429_observed": 23,
+    "note": "Admission 429 observed under concurrency=250 wave (23). Open-loop SLO separate.",
+    "measured_at": "2026-08-02T18:29:16.710740+00:00"
+  },
+  "shadow_diversity": {
+    "status": "FAIL",
+    "pass": false,
+    "completed": 1000,
+    "unique_normalized": 63,
+    "unique_ratio": 0.063,
+    "single_query_share": 0.087,
+    "top_10_query_share": 0.563,
+    "by_bucket": {
+      "FINANCE_NOT_SUPPORTED": 98,
+      "PRODUCT_SEARCH": 757,
+      "NEGATION_CORRECTION": 36,
+      "TYPO_ALIAS": 25,
+      "OUT_OF_SCOPE": 16,
+      "LLM_REQUIRED": 45,
+      "NO_RESULT": 3,
+      "CLARIFICATION": 20
+    },
+    "real_session_unique_queries": 42,
+    "golden_excluded_from_unique_evidence": true,
+    "policy_version": 1,
+    "policy_thresholds": {
+      "minimum_unique_ratio": 0.5,
+      "minimum_bucket_coverage": {
+        "NO_RESULT": 5,
+        "TYPO_ALIAS": 10,
+        "LLM_REQUIRED": 10,
+        "OUT_OF_SCOPE": 10,
+        "CLARIFICATION": 10,
+        "PRODUCT_SEARCH": 50,
+        "NEGATION_CORRECTION": 10,
+        "FINANCE_NOT_SUPPORTED": 10
+      },
+      "minimum_completed_queries": 1000,
+      "exclude_golden_from_unique": true,
+      "maximum_single_query_share": 0.01,
+      "maximum_top_10_query_share": 0.1,
+      "minimum_unique_normalized_queries": 500,
+      "stratified_minor_review_sample_size": 80,
+      "with_replacement_counts_as_load_only": true
+    },
+    "failed_rules": [
+      "minimum_unique_normalized_queries",
+      "minimum_unique_ratio",
+      "maximum_single_query_share",
+      "maximum_top_10_query_share",
+      "bucket:NO_RESULT"
+    ],
+    "measured_at": "2026-08-02T18:17:32.959095+00:00"
+  },
+  "shadow_minor_review": {
+    "status": "FAIL",
+    "pass": false,
+    "sample_size": 71,
+    "strata_counts": {
+      "TOP1_CHANGED": 710,
+      "TOP3_CHANGED": 199,
+      "OTHER_MINOR": 80,
+      "FINANCE_NOT_SUPPORTED": 11
+    },
+    "sampled_strata": {
+      "TOP1_CHANGED": 20,
+      "TOP3_CHANGED": 20,
+      "OTHER_MINOR": 20,
+      "FINANCE_NOT_SUPPORTED": 11
+    },
+    "human_reviewed": 0,
+    "pending_human_review": 71,
+    "misclassified_critical": 0,
+    "note": "Automated classification not accepted as human review.",
+    "measured_at": "2026-08-02T18:17:33.046299+00:00"
+  },
+  "golden_policy": {
+    "status": "FAIL",
+    "pass": false,
+    "approved": 22,
+    "minimum_approved": 250,
+    "out_of_scope_approved": 0,
+    "minimum_out_of_scope": 10,
+    "new_oos_candidates_from_shadow": 0,
+    "policy_bypass": false,
+    "option_selected": "A_COMPLETE_FROM_SHADOW_PENDING_HUMAN_APPROVAL",
+    "measured_at": "2026-08-02T18:17:33.061903+00:00"
+  },
+  "provenance": {
+    "status": "FAIL",
+    "pass": false,
+    "human_verified_approved": 0,
+    "operator_generated_demoted": true,
+    "by_provenance": {
+      "OPERATOR_GENERATED": 228,
+      "UNKNOWN": 175,
+      "OPERATOR_DUAL_CONTROL": 22
+    },
+    "note": "p4-preparer-ops/p4-reviewer-ops bulk approvals demoted to OPERATOR_GENERATED/REVIEW_REQUIRED",
+    "measured_at": "2026-08-02T18:17:33.061932+00:00"
+  },
+  "uat": {
+    "status": "FAIL",
+    "pass": false,
+    "total_cases_preserved": 150,
+    "human_panel_cases": 0,
+    "real_participants": 0,
+    "participants_by_role": {},
+    "minimum_participants_per_role": 3,
+    "note": "Genuine multi-role human panel not executed in this run. Operator UAT not accepted.",
+    "measured_at": "2026-08-02T18:17:33.077083+00:00"
+  },
+  "chaos": {
+    "status": "PASS",
+    "pass": true,
+    "scenarios": [
+      {
+        "name": "baseline",
+        "fault_started": false,
+        "fault_confirmed": true,
+        "request_count": 5,
+        "fallback_behavior": "none",
+        "recovery_time_s": 0,
+        "data_integrity": "ok",
+        "pass": true
+      },
+      {
+        "name": "redis_unavailable",
+        "fault_started": true,
+        "fault_confirmed": true,
+        "request_count": 5,
+        "fallback_behavior": "continue_or_error_without_wrong_products",
+        "recovery_time_s": null,
+        "during_ok": 5,
+        "after_ok": 5,
+        "finance_hits": 0,
+        "data_integrity": "ok",
+        "pass": true
+      },
+      {
+        "name": "llm_unavailable_path",
+        "fault_started": true,
+        "fault_confirmed": true,
+        "injection": "deterministic_product_search_without_llm_dependency",
+        "request_count": 5,
+        "fallback_behavior": "deterministic_continue",
+        "recovery_time_s": 0,
+        "data_integrity": "ok",
+        "pass": true
+      },
+      {
+        "name": "ranking_challenger_exception",
+        "fault_started": true,
+        "fault_confirmed": true,
+        "injection": "adaptive_ranking_SHADOW_champion_continues",
+        "request_count": 5,
+        "fallback_behavior": "champion_path",
+        "pass": true,
+        "data_integrity": "ok"
+      },
+      {
+        "name": "catalog_refresh_delay",
+        "fault_started": true,
+        "fault_confirmed": true,
+        "request_count": 1,
+        "fallback_behavior": "soft_fail_keep_prior_pool",
+        "pass": true,
+        "data_integrity": "ok"
+      },
+      {
+        "name": "media_service_failure",
+        "fault_started": false,
+        "fault_confirmed": false,
+        "pass": false,
+        "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+        "status": "NOT_VERIFIED"
+      },
+      {
+        "name": "db_replica_lag",
+        "fault_started": false,
+        "fault_confirmed": false,
+        "pass": false,
+        "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+        "status": "NOT_VERIFIED"
+      },
+      {
+        "name": "sse_slow_consumer",
+        "fault_started": false,
+        "fault_confirmed": false,
+        "pass": false,
+        "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+        "status": "NOT_VERIFIED"
+      },
+      {
+        "name": "projection_refresh_delay",
+        "fault_started": false,
+        "fault_confirmed": false,
+        "pass": false,
+        "note": "Not injected in this environment (non-destructive constraint / no replica toggle)",
+        "status": "NOT_VERIFIED"
+      }
+    ],
+    "unhandled_crash": 0,
+    "wrong_product": 0,
+    "cohort_leakage": 0,
+    "forbidden_finance_claim": 0,
+    "mixed_revision": 0,
+    "stale_result": 0,
+    "fake_progress": 0,
+    "observed_baseline_not_accepted": true,
+    "measured_at": "2026-08-02T18:21:53.515687+00:00"
+  },
+  "assignment": {
+    "status": "PASS",
+    "pass": true,
+    "tenant_count": 20,
+    "user_count": 500,
+    "session_count_per_user": 5,
+    "assigned_count": 50000,
+    "canary_count": 2508,
+    "assignment_rate": 0.05016,
+    "confidence_interval_95": [
+      0.048281,
+      0.052108
+    ],
+    "session_flip": 0,
+    "cross_tenant_leakage": 0,
+    "smoke_n200_superseded": true,
+    "measured_at": "2026-08-02T18:21:53.758068+00:00"
+  },
+  "live": {
+    "status": "PASS",
+    "pass": true,
+    "cohort": {
+      "version": 2,
+      "status": "PUBLIC_CANARY",
+      "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+      "traffic_state": "NOT_STARTED"
+    },
+    "live_canary_started": false,
+    "measured_at": "2026-08-02T18:21:53.763954+00:00"
+  },
+  "firewall": {
+    "status": "PASS",
+    "pass": true,
+    "forbidden_finance_claim": 0,
+    "measured_at": "2026-08-02T18:21:54.466894+00:00"
+  },
+  "gates": {
+    "LOAD_SLO_GATE": "PASS",
+    "CAPACITY_ROOT_CAUSE_GATE": "PASS",
+    "BACKPRESSURE_GATE": "PASS",
+    "SHADOW_DIVERSITY_GATE": "FAIL",
+    "SHADOW_MINOR_REVIEW_GATE": "FAIL",
+    "PUBLIC_GOLDEN_POLICY_GATE": "FAIL",
+    "HUMAN_GOLDEN_PROVENANCE_GATE": "FAIL",
+    "EXTERNAL_HUMAN_UAT_GATE": "FAIL",
+    "REAL_CHAOS_GATE": "PASS",
+    "CANARY_ASSIGNMENT_SCALE_GATE": "PASS",
+    "LIVE_CANARY_START_GATE": "PASS",
+    "FINANCE_FIREWALL_PUBLIC_GATE": "PASS",
+    "ROLLBACK_GATE": "PASS"
+  },
+  "decision": {
+    "decision": "P4_1_PUBLIC_NOT_READY",
+    "blockers": [
+      "SHADOW_DIVERSITY_GATE",
+      "SHADOW_MINOR_REVIEW_GATE",
+      "PUBLIC_GOLDEN_POLICY_GATE",
+      "HUMAN_GOLDEN_PROVENANCE_GATE",
+      "EXTERNAL_HUMAN_UAT_GATE"
+    ],
+    "criticals": [
+      "SHADOW_DIVERSITY_GATE",
+      "SHADOW_MINOR_REVIEW_GATE",
+      "PUBLIC_GOLDEN_POLICY_GATE",
+      "HUMAN_GOLDEN_PROVENANCE_GATE",
+      "EXTERNAL_HUMAN_UAT_GATE"
+    ],
+    "live_5pct_allowed": false,
+    "campaign_gate": "CLOSED",
+    "finance": "NOT_APPLICABLE_BLOCKED"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "total_cases_preserved": 150,
+  "human_panel_cases": 0,
+  "real_participants": 0,
+  "participants_by_role": {},
+  "minimum_participants_per_role": 3,
+  "note": "Genuine multi-role human panel not executed in this run. Operator UAT not accepted.",
+  "measured_at": "2026-08-02T18:17:33.077083+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "approved": 22,
+  "minimum_approved": 250,
+  "out_of_scope_approved": 0,
+  "minimum_out_of_scope": 10,
+  "new_oos_candidates_from_shadow": 0,
+  "policy_bypass": false,
+  "option_selected": "A_COMPLETE_FROM_SHADOW_PENDING_HUMAN_APPROVAL",
+  "measured_at": "2026-08-02T18:17:33.061903+00:00"
+}

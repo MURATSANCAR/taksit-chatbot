@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "tenant_count": 20,
+  "user_count": 500,
+  "session_count_per_user": 5,
+  "assigned_count": 50000,
+  "canary_count": 2508,
+  "assignment_rate": 0.05016,
+  "confidence_interval_95": [
+    0.048281,
+    0.052108
+  ],
+  "session_flip": 0,
+  "cross_tenant_leakage": 0,
+  "smoke_n200_superseded": true,
+  "measured_at": "2026-08-02T18:21:53.758068+00:00"
+}

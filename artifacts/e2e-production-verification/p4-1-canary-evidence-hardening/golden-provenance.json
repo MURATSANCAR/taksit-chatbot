@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "pass": false,
+  "human_verified_approved": 0,
+  "operator_generated_demoted": true,
+  "by_provenance": {
+    "OPERATOR_GENERATED": 228,
+    "UNKNOWN": 175,
+    "OPERATOR_DUAL_CONTROL": 22
+  },
+  "note": "p4-preparer-ops/p4-reviewer-ops bulk approvals demoted to OPERATOR_GENERATED/REVIEW_REQUIRED",
+  "measured_at": "2026-08-02T18:17:33.061932+00:00"
+}

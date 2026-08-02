@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "pass": true,
+  "causes": [
+    {
+      "cause": "catalog_refresh_stampede",
+      "classification": "CONFIRMED",
+      "evidence": "P3.5 dominant tail; pre-fix no single-flight; concurrent miss N×DB"
+    },
+    {
+      "cause": "worker_cap_misreported_as_service_time",
+      "classification": "CONFIRMED",
+      "evidence": "P4 load used ThreadPoolExecutor max_workers<=80 while concurrency=250"
+    },
+    {
+      "cause": "db_connection_pool_max_10",
+      "classification": "OBSERVED",
+      "evidence": "create_pool max_size=10 saturates under stampede"
+    },
+    {
+      "cause": "event_loop_blocking",
+      "classification": "NOT_VERIFIED",
+      "evidence": "No profiler capture in this run"
+    },
+    {
+      "cause": "redis_pool",
+      "classification": "REJECTED",
+      "evidence": "Search-session pool hydrate is Postgres-path for INTERNAL search_ready"
+    },
+    {
+      "cause": "sse_slow_consumers",
+      "classification": "REJECTED",
+      "evidence": "Load harness uses POST /search-sessions only, not SSE stream"
+    },
+    {
+      "cause": "per_request_refresh_without_coalesce",
+      "classification": "CONFIRMED",
+      "evidence": "Fixed in catalog_pool single-flight + revision-keyed cache (P4.1)"
+    },
+    {
+      "cause": "cpu_saturation",
+      "classification": "NOT_VERIFIED",
+      "evidence": "Host metrics not sampled continuously"
+    },
+    {
+      "cause": "gc_pause",
+      "classification": "NOT_VERIFIED",
+      "evidence": null
+    },
+    {
+      "cause": "single_flight_mitigation_deployed",
+      "classification": "OBSERVED",
+      "evidence": "post-fix catalog_refresh p95 samples=[329.851, 348.832, 356.96, 364.627, 320.442]"
+    }
+  ],
+  "dominant": "catalog_refresh_stampede + client/worker queue under concurrency",
+  "mitigations_applied": [
+    "single-flight pool hydrate",
+    "revision-keyed cache",
+    "admission 429 + Retry-After"
+  ],
+  "measured_at": "2026-08-02T18:21:41.253281+00:00"
+}

@@ -189,3 +189,21 @@ Next to unlock `%5` live canary:
 3. Optionally thicken `out_of_scope` approved golden to public policy mins.
 
 Until then: keep Campaign Gate CLOSED, finance blocked, and do **not** start live `%5` public canary traffic.
+
+## P4.1 gate correction
+
+P4.1 honesty correction (do not treat prior LOAD/UAT/shadow as canary-ready):
+
+```
+REAL_SHADOW_GATE = PARTIAL
+SHADOW_DIFFERENCE_GATE = PARTIAL
+PUBLIC_GOLDEN_GATE = PARTIAL
+HUMAN_UAT_GATE = PARTIAL
+LOAD_GATE = FAIL
+CHAOS_GATE = PARTIAL
+PUBLIC_COHORT_GATE = PASS
+CANARY_CONFIGURATION_GATE = PASS
+ROLLBACK_GATE = PASS
+FINANCE_FIREWALL_PUBLIC_GATE = PASS
+```
+

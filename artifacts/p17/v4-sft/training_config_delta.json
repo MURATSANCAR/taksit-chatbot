@@ -1,0 +1,39 @@
+{
+  "matched_intentionally": [
+    "base_model_ref",
+    "lora_r",
+    "lora_alpha",
+    "lora_dropout",
+    "target_modules",
+    "learning_rate",
+    "optimizer",
+    "scheduler",
+    "batch_size",
+    "gradient_accumulation",
+    "epochs",
+    "max_steps",
+    "max_seq_len",
+    "precision"
+  ],
+  "differences": {
+    "seed": {
+      "v3": null,
+      "v4": 19
+    },
+    "train_rows": {
+      "v3": 2500,
+      "v4": 1637
+    },
+    "train_jsonl": {
+      "v3": "training/exports/need_profile_sft.v3.jsonl",
+      "v4": "artifacts/p17/v4-sanitized/data/need_profile_sft.v4.clean.train.jsonl"
+    }
+  },
+  "primary_variable": "sanitized_dataset",
+  "notes": [
+    "v3 yaml had no explicit seed; v4 freezes seed=19 for shuffle/reproducibility",
+    "v3 train_rows=2500 dirty; v4 train_rows=1637 clean — same max_steps=400 ⇒ more passes over data",
+    "No CUDA on nanobase: precision remains float32_cpu (identical to v3 train_meta device=cpu)",
+    "FP16/BF16 in the task sense means HF peft adapter Ref (not GGUF/Q4), not CUDA amp"
+  ]
+}

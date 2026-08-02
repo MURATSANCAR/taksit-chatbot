@@ -1,0 +1,13 @@
+{
+  "cohort_id": 1,
+  "cohort_code": "internal_ready_merchants",
+  "cohort_version": 2,
+  "status": "PUBLIC_CANARY",
+  "package_state": "PUBLIC_CANARY_PACKAGE_READY",
+  "traffic_state": "NOT_STARTED",
+  "search_ready_product_count": 1054,
+  "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
+  "projection_leakage_count": 0,
+  "test_cohort_version": 1,
+  "measured_at": "2026-08-02T18:17:32.947483+00:00"
+}
