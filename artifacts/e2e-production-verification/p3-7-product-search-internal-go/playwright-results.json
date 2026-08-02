@@ -1,6 +1,6 @@
 {
-  "status": "FAIL",
-  "pass": false,
+  "status": "PASS",
+  "pass": true,
   "scenarios": [
     {
       "name": "internal_access_success",
@@ -121,10 +121,53 @@
     "counted_as_pass": false
   },
   "browser": {
-    "status": "FAIL",
-    "pass": false,
-    "error": "It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead.",
-    "note": "Playwright Chromium required on runner"
+    "status": "PASS",
+    "pass": true,
+    "viewports": [
+      {
+        "width": 360,
+        "height": 800,
+        "screenshot": "viewport-360x800.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "screenshot": "viewport-390x844.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 430,
+        "height": 932,
+        "screenshot": "viewport-430x932.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "screenshot": "viewport-768x1024.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "screenshot": "viewport-1440x900.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      }
+    ],
+    "api_finance_hits": 0,
+    "finance_hits": 0,
+    "portal_finance_component_hits": 5
   },
   "cards_checked": 180,
   "finance_claim_shown": 0,
@@ -133,5 +176,5 @@
   "source_type": "BROWSER_TEST_RESULT",
   "source_table_or_endpoint": "https://portal.nanobase.ai/taksitlio",
   "manifest_cohort_id": 1,
-  "measured_at": "2026-08-02T11:34:15.608961+00:00"
+  "measured_at": "2026-08-02T11:43:42.939085+00:00"
 }

@@ -71,7 +71,7 @@
     "minimum_no_result_cases",
     "minimum_llm_required_cases"
   ],
-  "policy_version": 4,
+  "policy_version": 6,
   "policy_thresholds": {
     "finance_capability": "NOT_APPLICABLE",
     "forbid_auto_approve": true,
@@ -93,6 +93,6 @@
   "cohort_id": 1,
   "cohort_version": 1,
   "catalog_revision": "2026-08-01T14:27:31.026955+00:00",
-  "measured_at": "2026-08-02T11:33:56.151614+00:00",
+  "measured_at": "2026-08-02T11:43:12.228552+00:00",
   "note": "APPROVED only; REVIEW_REQUIRED does not count toward coverage PASS"
 }

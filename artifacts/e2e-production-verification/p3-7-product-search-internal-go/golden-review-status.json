@@ -8,5 +8,5 @@
   "review_ui": "/v1/admin/golden/review",
   "pass": false,
   "source_type": "DATABASE_QUERY",
-  "measured_at": "2026-08-02T11:33:56.151926+00:00"
+  "measured_at": "2026-08-02T11:43:12.229064+00:00"
 }

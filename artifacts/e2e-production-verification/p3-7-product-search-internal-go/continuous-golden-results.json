@@ -18,6 +18,6 @@
   "details": [],
   "source_type": "HTTP_TEST_RESULT",
   "source_table_or_endpoint": "http://127.0.0.1:8040/v1/search-sessions",
-  "measured_at": "2026-08-02T11:33:56.153778+00:00",
+  "measured_at": "2026-08-02T11:43:12.231117+00:00",
   "note": "Empty APPROVED set ⇒ FAIL (candidates alone are not coverage)"
 }

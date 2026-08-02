@@ -5,10 +5,10 @@
   "existing_session_mixed_revision": 0,
   "new_session_stale_cohort_use": 0,
   "versions": {
-    "lifecycle": 1,
-    "degraded": 2,
-    "restored": 3
+    "lifecycle": 7,
+    "degraded": 8,
+    "restored": 9
   },
   "source_type": "DATABASE_QUERY",
-  "measured_at": "2026-08-02T11:34:23.282005+00:00"
+  "measured_at": "2026-08-02T11:43:51.823968+00:00"
 }

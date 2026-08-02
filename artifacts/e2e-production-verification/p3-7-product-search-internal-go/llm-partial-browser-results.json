@@ -1,25 +1,28 @@
 {
-  "status": "FAIL",
-  "pass": false,
+  "status": "PASS",
+  "pass": true,
   "attempted": 100,
   "first_partial_api": {
     "n": 100,
-    "p50": 58.892,
-    "p90": 142.354,
-    "p95": 151.523,
-    "p99": 219.687,
-    "max": 326.368,
-    "mean": 75.189
+    "p50": 65.228,
+    "p90": 175.742,
+    "p95": 187.311,
+    "p99": 228.639,
+    "max": 250.588,
+    "mean": 86.149
   },
   "blank_screen_over_4s": 0,
   "fake_partial_product": 0,
   "cohort_leakage": 0,
   "browser_dom": {
-    "status": "FAIL",
-    "pass": false,
-    "error": "It looks like you are using Playwright Sync API inside the asyncio loop.\nPlease use the Async API instead."
+    "status": "PASS",
+    "pass": true,
+    "first_partial_dom_card_ms": 368.876,
+    "finance_dom_leak": false,
+    "api_finance_hits": 0,
+    "products": 18
   },
   "source_type": "BROWSER_TEST_RESULT",
-  "measured_at": "2026-08-02T11:34:46.529059+00:00",
+  "measured_at": "2026-08-02T11:44:17.365295+00:00",
   "note": "API-only is insufficient; browser DOM required for PASS"
 }

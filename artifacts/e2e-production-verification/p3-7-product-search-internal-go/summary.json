@@ -20,7 +20,7 @@
     "mismatches": [],
     "failures": [],
     "metrics_checked": 4,
-    "persist_error": "invalid input for query argument $10: '2026-08-02T11:33:56.147060+00:00' (expected a datetime.date or datetime.datetime instance, got 'str')"
+    "persist_error": "invalid input for query argument $10: '2026-08-02T11:43:12.221585+00:00' (expected a datetime.date or datetime.datetime instance, got 'str')"
   },
   "golden": {
     "candidates": 44,
@@ -75,8 +75,49 @@
     "reviewer_separation": 0
   },
   "browser": {
-    "pass": false,
-    "viewports": null,
+    "pass": true,
+    "viewports": [
+      {
+        "width": 360,
+        "height": 800,
+        "screenshot": "viewport-360x800.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "screenshot": "viewport-390x844.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 430,
+        "height": 932,
+        "screenshot": "viewport-430x932.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "screenshot": "viewport-768x1024.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "screenshot": "viewport-1440x900.png",
+        "horizontal_scroll": false,
+        "finance_component_hidden": false,
+        "finance_hits": 1
+      }
+    ],
     "finance_claims": 0,
     "integrity": {
       "status": "PASS",
@@ -91,7 +132,7 @@
       "finance_claim_shown": 0,
       "source_type": "HTTP_TEST_RESULT",
       "source_table_or_endpoint": "search_ready_product_projection + /v1/search-sessions",
-      "measured_at": "2026-08-02T11:34:23.188625+00:00"
+      "measured_at": "2026-08-02T11:43:51.771603+00:00"
     }
   },
   "sse": {
@@ -104,64 +145,64 @@
     "temp_cohort_code": "internal_scope_lifecycle_test",
     "temp_cohort_id": 2,
     "versions": {
-      "lifecycle": 1,
-      "degraded": 2,
-      "restored": 3
+      "lifecycle": 7,
+      "degraded": 8,
+      "restored": 9
     },
     "audit": [
       {
-        "version": 1,
+        "version": 7,
         "status": "SHADOW",
         "reason": "lifecycle:SHADOW",
-        "at": "2026-08-02T11:34:23.218730+00:00"
+        "at": "2026-08-02T11:43:51.799414+00:00"
       },
       {
-        "version": 1,
+        "version": 7,
         "status": "INTERNAL",
         "reason": "lifecycle:INTERNAL",
-        "at": "2026-08-02T11:34:23.222300+00:00"
+        "at": "2026-08-02T11:43:51.801936+00:00"
       },
       {
-        "version": 1,
+        "version": 7,
         "status": "DEGRADED",
         "reason": "lifecycle:DEGRADED",
-        "at": "2026-08-02T11:34:23.224670+00:00"
+        "at": "2026-08-02T11:43:51.803895+00:00"
       },
       {
-        "version": 1,
+        "version": 7,
         "status": "SHADOW_VALIDATION",
         "reason": "lifecycle:SHADOW_VALIDATION",
-        "at": "2026-08-02T11:34:23.226658+00:00"
+        "at": "2026-08-02T11:43:51.805691+00:00"
       },
       {
-        "version": 1,
+        "version": 7,
         "status": "INTERNAL",
         "reason": "lifecycle:INTERNAL",
-        "at": "2026-08-02T11:34:23.228383+00:00"
+        "at": "2026-08-02T11:43:51.807465+00:00"
       },
       {
-        "version": 1,
+        "version": 7,
         "status": "ARCHIVED",
         "reason": "lifecycle:ARCHIVED",
-        "at": "2026-08-02T11:34:23.230208+00:00"
+        "at": "2026-08-02T11:43:51.809294+00:00"
       },
       {
-        "version": 2,
+        "version": 8,
         "status": "DEGRADED",
         "reason": "scope_downgrade",
-        "at": "2026-08-02T11:34:23.272395+00:00"
+        "at": "2026-08-02T11:43:51.813572+00:00"
       },
       {
-        "version": 2,
+        "version": 8,
         "status": "SHADOW_VALIDATION",
         "reason": "pre_restore",
-        "at": "2026-08-02T11:34:23.278236+00:00"
+        "at": "2026-08-02T11:43:51.819820+00:00"
       },
       {
-        "version": 3,
+        "version": 9,
         "status": "INTERNAL",
         "reason": "scope_restore",
-        "at": "2026-08-02T11:34:23.280592+00:00"
+        "at": "2026-08-02T11:43:51.821725+00:00"
       }
     ],
     "live_cohort_status": "INTERNAL",
@@ -173,7 +214,7 @@
     "manual_code_change_required": 0,
     "source_type": "DATABASE_QUERY",
     "source_table_or_endpoint": "search_release_cohort_versions+lifecycle_events",
-    "measured_at": "2026-08-02T11:34:23.281379+00:00"
+    "measured_at": "2026-08-02T11:43:51.822684+00:00"
   },
   "chaos": {
     "pass": true,
@@ -181,13 +222,13 @@
   },
   "capabilities": {
     "PRODUCT_SEARCH": "PARTIAL",
-    "ENTITY_RESOLUTION": "PARTIAL",
-    "CLARIFICATION": "PARTIAL",
+    "ENTITY_RESOLUTION": "READY",
+    "CLARIFICATION": "READY",
     "RANKING_PRICE": "READY",
     "RANKING_FINANCE": "NOT_APPLICABLE",
     "FINANCE_DISPLAY": "BLOCKED",
-    "LLM_PARTIAL": "PARTIAL",
-    "BROWSER_UI": "PARTIAL",
+    "LLM_PARTIAL": "READY",
+    "BROWSER_UI": "READY",
     "SSE": "READY",
     "REVISION_CONSISTENCY": "READY",
     "RESILIENCE": "READY"
@@ -197,7 +238,7 @@
     "GOLDEN_CANDIDATE_PIPELINE_GATE": "PASS",
     "COHORT_GOLDEN_COVERAGE_GATE": "FAIL",
     "CONTINUOUS_GOLDEN_GATE": "FAIL",
-    "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "FAIL",
+    "PLAYWRIGHT_PRODUCT_SEARCH_GATE": "PASS",
     "BROWSER_DATA_INTEGRITY_GATE": "PASS",
     "FINANCE_CAPABILITY_FIREWALL_GATE": "PASS",
     "LIVE_SSE_MATRIX_GATE": "PASS",
@@ -205,7 +246,7 @@
     "SCOPE_DOWNGRADE_GATE": "PASS",
     "SCOPE_RESTORE_GATE": "PASS",
     "INTERNAL_CHAOS_GATE": "PASS",
-    "LLM_PARTIAL_BROWSER_GATE": "FAIL",
+    "LLM_PARTIAL_BROWSER_GATE": "PASS",
     "CATEGORY_TOKEN_REGRESSION_GATE": "PASS",
     "UNRESTRICTED_FALLBACK_REGRESSION_GATE": "PASS"
   },
@@ -213,9 +254,7 @@
     "decision": "P3_7_INTERNAL_CONDITIONALLY_READY",
     "blockers": [
       "COHORT_GOLDEN_COVERAGE_GATE",
-      "CONTINUOUS_GOLDEN_GATE",
-      "PLAYWRIGHT_PRODUCT_SEARCH_GATE",
-      "LLM_PARTIAL_BROWSER_GATE"
+      "CONTINUOUS_GOLDEN_GATE"
     ],
     "criticals": [
       "COHORT_GOLDEN_COVERAGE_GATE",

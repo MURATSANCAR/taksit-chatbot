@@ -80,7 +80,7 @@
       "name": "last_event_id_reconnect",
       "status": "PASS",
       "pass": true,
-      "last_event_id": "1d326dbc-585d-4574-a6d3-0747fc8f086f",
+      "last_event_id": "36963b1a-b8fc-423e-a767-dc9e4d9e9026",
       "new_events": 12
     },
     {
@@ -125,5 +125,5 @@
   "slow_client_search_blocking": 0,
   "source_type": "SSE_TRACE",
   "source_table_or_endpoint": "http://127.0.0.1:8040/v1/search-sessions/{id}/events",
-  "measured_at": "2026-08-02T11:34:12.670036+00:00"
+  "measured_at": "2026-08-02T11:43:28.800430+00:00"
 }

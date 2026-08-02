@@ -6,10 +6,10 @@
       "test": "tests/unit/progressive_results/test_category_family_tokens.py",
       "returncode": 0,
       "pass": true,
-      "stdout": ".....                                                                    [100%]\n5 passed in 0.31s\n",
+      "stdout": ".....                                                                    [100%]\n5 passed in 0.35s\n",
       "stderr": ""
     }
   ],
   "source_type": "HTTP_TEST_RESULT",
-  "measured_at": "2026-08-02T11:34:49.250996+00:00"
+  "measured_at": "2026-08-02T11:44:20.246643+00:00"
 }
