@@ -381,7 +381,21 @@ async def refresh_orchestrator_from_catalog(
                 name_terms=search_terms,
                 limit=limit,
             )
-        if not pool_rows:
+            if not pool_rows:
+                # Cohort-safe fallback only — never unrestricted catalog (leakage + finance claims).
+                pool_rows = await _pool_rows_from_search_ready(
+                    pg_pool,
+                    name_terms=[],
+                    limit=limit,
+                )
+            if logos is not None:
+                orch.logo_resolver = logos  # type: ignore[attr-defined]
+                for row in pool_rows:
+                    if not row.get("merchant_logo_cdn_url"):
+                        row["merchant_logo_cdn_url"] = logos.merchant(
+                            row.get("merchant_id")
+                        )
+        elif not pool_rows:
             cands = await load_search_candidates_from_catalog(
                 catalog,
                 utterance=utterance,
@@ -449,7 +463,9 @@ async def _pool_rows_from_search_ready(
         async with pg_pool.acquire() as conn:
             if terms:
                 clauses = " OR ".join(
-                    f"p.display_name ILIKE ${i + 2}" for i in range(len(terms))
+                    f"(p.display_name ILIKE ${i + 2} OR coalesce(p.normalized_name,'') ILIKE ${i + 2} "
+                    f"OR coalesce(c.display_name,'') ILIKE ${i + 2} OR coalesce(c.category_code,'') ILIKE ${i + 2})"
+                    for i in range(len(terms))
                 )
                 params: list[Any] = [limit, *[f"%{t}%" for t in terms]]
                 rows = await conn.fetch(
@@ -464,6 +480,7 @@ async def _pool_rows_from_search_ready(
                     JOIN products p ON p.id = s.product_id
                     JOIN merchants m ON m.id = s.merchant_id
                     LEFT JOIN media_assets ma ON ma.id = s.card_media_id
+                    LEFT JOIN categories c ON c.id = s.category_id
                     WHERE ({clauses})
                     ORDER BY s.current_price ASC NULLS LAST
                     LIMIT $1

@@ -300,6 +300,8 @@ Quality PASS ∧ Runtime FAIL → Campaign **CLOSED**.
 # A. P17.1 — V3 residual export (start here)
 
 **Experiment id:** `P17-V3-RESIDUAL-001`  
+**Runner:** `evaluation/p17_v3_residual_export.py` (nanobase → `:8026` LoRA-v3)  
+**Artifacts:** `artifacts/p17/v3/{experiment_meta,residual_raw,residual_review,metrics,failure_patterns}`  
 **Goal:** produce measurable residuals so v4 data plan comes from pattern distribution, not guesswork.
 
 ## A.1 Re-run and record raw outputs
