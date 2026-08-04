@@ -313,7 +313,14 @@ def build_in_memory_container(
     merchant_directory = InMemoryMerchantDirectory()
     finance_option_index = InMemoryFinanceOptionIndex()
     from taksitlio.campaign_catalog.feed_apply import InMemoryCampaignCatalog
+    from taksitlio.conversation_state import (
+        ConversationStateManager as Adr003ConversationStateManager,
+        InMemoryConversationStateRepository,
+    )
 
+    conversation_state = Adr003ConversationStateManager(
+        InMemoryConversationStateRepository()
+    )
     campaign_catalog = InMemoryCampaignCatalog()
     institution_label_loader = InMemoryInstitutionLabelLoader()
     institution_labels = InstitutionLabelResolver(labels={})
@@ -347,6 +354,7 @@ def build_in_memory_container(
         http_client=client,
         extras={
             "sessions": sessions,
+            "conversation_state": conversation_state,
             "campaign_repo": campaign_repo,
             "category_repo": categories,
             "category_matcher": matcher,
@@ -412,6 +420,19 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             redis,
             key_prefix=settings.redis_key_prefix,
             ttl_seconds=settings.session_ttl_seconds,
+        )
+    )
+    from taksitlio.conversation_state import (
+        ConversationStateManager as Adr003ConversationStateManager,
+    )
+    from taksitlio.conversation_state.redis_repository import (
+        RedisConversationStateRepository,
+    )
+
+    conversation_state = Adr003ConversationStateManager(
+        RedisConversationStateRepository(
+            redis,
+            key_prefix=f"{settings.redis_key_prefix}:cstate",
         )
     )
     prompts = StaticPromptProvider({"NEED_UNDERSTANDING": DEFAULT_NEED_PROMPT})
@@ -538,6 +559,7 @@ async def build_production_container(settings: InfraSettings) -> AppContainer:
             "pool": pool,
             "redis": redis,
             "sessions": sessions,
+            "conversation_state": conversation_state,
             "campaign_repo": campaign_repo,
             "category_matcher": matcher,
             "campaign_ranker": RankingEngine(),

@@ -48,12 +48,21 @@ class GuestOrchestratorAdapter:
 
         extras = getattr(container, "extras", {}) or {}
 
-        # 1. Conversation state (zorunlu)
-        state_manager = extras.get("sessions")
+        # 1. Conversation state (ADR-003 manager — create_session / UUID / CAS)
+        state_manager = (
+            extras.get("conversation_state")
+            or extras.get("conversation_state_manager")
+        )
+        if state_manager is None:
+            candidate = extras.get("sessions")
+            if candidate is not None and hasattr(candidate, "create_session"):
+                state_manager = candidate
         if state_manager is None:
             raise RuntimeError(
-                "Guest flow requires container.extras['sessions'] "
-                "(ConversationStateManager). Check build_*_container()."
+                "Guest flow requires container.extras['conversation_state'] "
+                "(taksitlio.conversation_state.ConversationStateManager) "
+                "or extras['sessions'] with create_session(). "
+                "Check build_*_container()."
             )
 
         # 2. FAST extractor – pipeline veya explicit
