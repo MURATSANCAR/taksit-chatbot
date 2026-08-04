@@ -54,13 +54,13 @@ _LOW_RATE = re.compile(r"düşük\s+(?:faiz|oran|kar)|ucuz\s+kredi|düşük\s+ma
 _LOW_DOWN = re.compile(r"peşinat\s+düşük|düşük\s+peşinat|peşinatsız|az\s+peşinat", re.I)
 
 _CATEGORY_MAP = [
-    (re.compile(r"\b(cep\s*telefon|telefon|iphone|samsung\s*galaxy|xiaomi|redmi)\b", re.I), "cep telefonu"),
+    (re.compile(r"\b(cep\s*telefon\w*|telefon\w*|iphone|samsung\s*galaxy|xiaomi|redmi)\b", re.I), "cep telefonu"),
     (re.compile(r"\b(bilgisayar|laptop|notebook|macbook)\b", re.I), "bilgisayar"),
     (re.compile(r"\b(tablet|ipad)\b", re.I), "tablet"),
     (re.compile(r"\b(televizyon|tv\b|smart\s*tv)\b", re.I), "televizyon"),
-    (re.compile(r"\b(buzdolab|çamaşır|bulaşık|beyaz\s*eşya)\b", re.I), "beyaz eşya"),
+    (re.compile(r"\b(buzdolab\w*|çamaşır\w*|bulaşık\w*|beyaz\s*eşya)\b", re.I), "beyaz eşya"),
     (re.compile(r"\b(klima)\b", re.I), "klima"),
-    (re.compile(r"\b(oyun\s*konsol|playstation|xbox|nintendo)\b", re.I), "oyun konsolu"),
+    (re.compile(r"\b(oyun\s*konsol\w*|playstation|xbox|nintendo)\b", re.I), "oyun konsolu"),
 ]
 
 _BRANDS = re.compile(

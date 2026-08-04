@@ -76,11 +76,11 @@ _BUDGET_NUM = re.compile(
     re.IGNORECASE,
 )
 
-# Complex / out-of-scope signals → strong fallback
+# Operational OOS only — peşinat/vade belong to COMPLEX_NEED (universal router).
 _COMPLEX_OR_OOS = re.compile(
     r"\b(karşılaştır|vs\.?|versus|hangisi\s+daha|stok|kargo|iade|"
     r"şikayet|iptal|hesabım|limitim|başvuru\s+durumu|ödeme\s+planı\s+hesapla|"
-    r"peşinat|kredi\s+notu|ssk|maaş)\b",
+    r"kredi\s+notu|ssk|maaş)\b",
     re.IGNORECASE,
 )
 

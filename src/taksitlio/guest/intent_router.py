@@ -88,7 +88,8 @@ _NEED_PRODUCT = re.compile(
 )
 
 _BUDGET = re.compile(
-    r"(\d+(?:[.,]\d{3})*|\d+)\s*(?:bin)?\s*(?:tl|lira|₺)|bütçe",
+    r"(\d+(?:[.,]\d{3})*|\d+)\s*bin(?:\s*(?:tl|lira|₺))?|"
+    r"(\d+(?:[.,]\d{3})*|\d+)\s*(?:tl|lira|₺)|bütçe",
     re.IGNORECASE,
 )
 

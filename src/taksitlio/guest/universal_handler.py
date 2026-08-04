@@ -125,6 +125,7 @@ class UniversalGuestHandler:
                 client_message_id=client_message_id or "complex-1",
                 client_sequence=client_sequence,
                 locale=locale,
+                bypass_oos=True,
             )
             payload = result.to_api_payload() if hasattr(result, "to_api_payload") else result
             payload.setdefault("diagnostics", {})

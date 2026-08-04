@@ -153,6 +153,7 @@ class GuestEntryHandler:
         client_message_id: str,
         client_sequence: int,
         locale: str = "tr-TR",
+        bypass_oos: bool = False,
     ) -> GuestTurnResult:
         sid = UUID(session_id) if not isinstance(session_id, UUID) else session_id
 
@@ -169,7 +170,7 @@ class GuestEntryHandler:
         last_rec = guest_ctx.get("last_recommendation")
 
         # ---------- 1. Complex / out-of-scope → strong fallback ----------
-        if is_complex_or_oos(user_utterance):
+        if not bypass_oos and is_complex_or_oos(user_utterance):
             return await self._finalize(
                 sid=sid,
                 expected_revision=expected_revision,

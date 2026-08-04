@@ -1,8 +1,8 @@
 {
   "total": 1000,
-  "hard_ok": 944,
+  "hard_ok": 984,
   "soft_ok": 1000,
-  "hard_accuracy": 0.944,
+  "hard_accuracy": 0.984,
   "soft_accuracy": 1.0,
   "by_tier": {
     "T0_smalltalk": {
@@ -31,12 +31,11 @@
       "ok": 192
     },
     "T3_complex_brand": {
-      "ok": 96,
-      "soft": 24
+      "ok": 120
     },
     "T3_extra": {
-      "soft": 32,
-      "ok": 8
+      "ok": 24,
+      "soft": 16
     },
     "T4_refinement": {
       "ok": 11
