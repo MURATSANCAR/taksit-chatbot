@@ -98,11 +98,21 @@ def activate_campaign_for_projection(
     *,
     agreement_active: bool = True,
 ) -> FinanceCampaignRecord:
-    """Return an ACTIVE copy suitable for estimate projection (not personal approval)."""
+    """Return an ACTIVE copy suitable for estimate projection (not personal approval).
 
+    Elevates UNVERIFIED → SOURCE_PROVIDED so eligibility matches the DB projection
+    path (source file present). Does not claim VERIFIED / personal credit approval.
+    """
+
+    from taksitlio.campaign_catalog.models import VerificationStatus
+
+    verification = campaign.verification_status
+    if verification is VerificationStatus.UNVERIFIED:
+        verification = VerificationStatus.SOURCE_PROVIDED
     return replace(
         campaign,
         status=CampaignStatus.ACTIVE,
+        verification_status=verification,
         agreement_active=agreement_active,
     )
 

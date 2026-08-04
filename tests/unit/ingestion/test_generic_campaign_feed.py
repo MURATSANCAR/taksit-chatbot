@@ -28,6 +28,7 @@ FIXTURES = (
 )
 FIXTURE = FIXTURES / "src-b-fibabanka.json"
 ALBARAKA_DRAFT = FIXTURES / "src-b-albaraka.json"
+KUVEYTTURK_DRAFT = FIXTURES / "src-b-kuveytturk.json"
 
 
 @pytest.mark.asyncio
@@ -111,3 +112,24 @@ async def test_albaraka_draft_fixture_parses_without_merchant_invent() -> None:
     assert all(r.monthly_rate == pytest.approx(0.0199) for r in result.rates)
     assert all(c.status.value == "DRAFT" for c in result.campaigns)
     assert all(not c.eligible_merchant_codes for c in result.campaigns)
+    phone = next(c for c in result.campaigns if c.campaign_code == "alb-9502-phone-le-20k")
+    assert phone.eligible_category_codes == ("MOBILE_PHONE",)
+    tablet = next(c for c in result.campaigns if c.campaign_code == "alb-9502-tablet-laptop")
+    assert tablet.eligible_category_codes == ("TABLET", "LAPTOP")
+
+
+@pytest.mark.asyncio
+async def test_kuveytturk_draft_fixture_parses_without_scope_invent() -> None:
+    assert KUVEYTTURK_DRAFT.exists()
+    adapter = GenericCampaignFeedAdapter(
+        feed_path=KUVEYTTURK_DRAFT,
+        default_institution_code="fi-kuveytturk",
+    )
+    result = await run_campaign_feed_dry(adapter)
+    assert len(result.campaigns) == 1
+    camp = result.campaigns[0]
+    assert camp.campaign_code == "kuv-7802-new-customer"
+    assert camp.eligible_merchant_codes == ()
+    assert camp.eligible_category_codes == ()
+    assert len(result.rates) == 2
+    assert all(r.monthly_rate == pytest.approx(0.0299) for r in result.rates)

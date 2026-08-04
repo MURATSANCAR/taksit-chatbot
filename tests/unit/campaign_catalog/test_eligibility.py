@@ -78,3 +78,33 @@ def test_term_and_amount_bounds() -> None:
         CampaignEligibilityInput(merchant_code="m1", purchase_amount=10000, term_months=9),
     )
     assert "term_excluded" in excl.reasons
+
+
+def test_category_scope_enforced_when_product_has_category() -> None:
+    camp = _campaign(eligible_category_ids=(10, 20))
+    bad = evaluate_campaign_eligibility(
+        camp,
+        CampaignEligibilityInput(
+            merchant_code="m1", purchase_amount=10000, term_months=12, category_id=99
+        ),
+    )
+    assert "category_not_eligible" in bad.reasons
+    ok = evaluate_campaign_eligibility(
+        camp,
+        CampaignEligibilityInput(
+            merchant_code="m1", purchase_amount=10000, term_months=12, category_id=10
+        ),
+    )
+    assert ok.eligible is True
+
+
+def test_category_scope_skipped_when_product_category_missing() -> None:
+    # Unknown product category must not invent a pass/fail — filter only when known.
+    camp = _campaign(eligible_category_ids=(10,))
+    result = evaluate_campaign_eligibility(
+        camp,
+        CampaignEligibilityInput(
+            merchant_code="m1", purchase_amount=10000, term_months=12, category_id=None
+        ),
+    )
+    assert result.eligible is True

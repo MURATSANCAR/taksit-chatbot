@@ -23,10 +23,75 @@ class CampaignPersistStats:
     rates_upserted: int
     financial_products_upserted: int
     activated: int
+    categories_linked: int = 0
+    categories_unresolved: int = 0
 
 
 def _normalize_name(name: str) -> str:
     return name.strip().casefold()
+
+
+def normalize_category_codes(codes: Sequence[str]) -> tuple[str, ...]:
+    """Uppercase DB taxonomy codes; drop blanks. Never invent mappings."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in codes:
+        code = str(raw or "").strip().upper()
+        if not code or code in seen:
+            continue
+        seen.add(code)
+        out.append(code)
+    return tuple(out)
+
+
+async def resolve_category_ids_by_code(
+    conn: Any, codes: Sequence[str]
+) -> tuple[tuple[int, ...], tuple[str, ...]]:
+    """Lookup ``categories.id`` by ``category_code`` only — no inserts."""
+    normalized = normalize_category_codes(codes)
+    if not normalized:
+        return (), ()
+    rows = await conn.fetch(
+        """
+        SELECT id, category_code
+        FROM categories
+        WHERE category_code = ANY($1::text[])
+          AND status = 'ACTIVE'
+        """,
+        list(normalized),
+    )
+    found = {str(r["category_code"]).upper(): int(r["id"]) for r in rows}
+    ids = tuple(found[c] for c in normalized if c in found)
+    missing = tuple(c for c in normalized if c not in found)
+    return ids, missing
+
+
+async def link_campaign_categories(
+    conn: Any,
+    *,
+    campaign_id: int,
+    category_ids: Sequence[int],
+) -> int:
+    """Replace category links when ``category_ids`` is non-empty."""
+    if not category_ids:
+        return 0
+    await conn.execute(
+        "DELETE FROM campaign_categories WHERE campaign_id = $1",
+        campaign_id,
+    )
+    linked = 0
+    for cid in category_ids:
+        await conn.execute(
+            """
+            INSERT INTO campaign_categories (campaign_id, category_id)
+            VALUES ($1, $2)
+            ON CONFLICT DO NOTHING
+            """,
+            campaign_id,
+            int(cid),
+        )
+        linked += 1
+    return linked
 
 
 async def ensure_institution(conn: Any, *, code: str, name: str) -> int:
@@ -157,6 +222,8 @@ async def persist_campaign_feed(
     rates_upserted = 0
     products_upserted = 0
     activated = 0
+    categories_linked = 0
+    categories_unresolved = 0
 
     for camp in result.campaigns:
         iname = names.get(camp.institution_code) or camp.institution_code
@@ -270,6 +337,20 @@ async def persist_campaign_feed(
             )
             agreements_upserted += 1
 
+        cat_codes = camp.eligible_category_codes
+        if not cat_codes and isinstance(raw, Mapping):
+            raw_cats = raw.get("category_codes")
+            if isinstance(raw_cats, (list, tuple)):
+                cat_codes = normalize_category_codes(
+                    [str(x) for x in raw_cats if x is not None]
+                )
+        if cat_codes:
+            cat_ids, missing = await resolve_category_ids_by_code(conn, cat_codes)
+            categories_unresolved += len(missing)
+            categories_linked += await link_campaign_categories(
+                conn, campaign_id=cid, category_ids=cat_ids
+            )
+
         if isinstance(raw, Mapping) and raw:
             await conn.execute(
                 """
@@ -369,6 +450,8 @@ async def persist_campaign_feed(
         rates_upserted=rates_upserted,
         financial_products_upserted=products_upserted,
         activated=activated,
+        categories_linked=categories_linked,
+        categories_unresolved=categories_unresolved,
     )
 
 
@@ -420,7 +503,20 @@ async def load_term_option_inputs_for_merchant(
              JOIN merchants m ON m.id = cm.merchant_id
              WHERE cm.campaign_id = c.id),
             '{}'::text[]
-          ) AS eligible_merchant_codes
+          ) AS eligible_merchant_codes,
+          COALESCE(
+            (SELECT array_agg(cc.category_id ORDER BY cc.category_id)
+             FROM campaign_categories cc
+             WHERE cc.campaign_id = c.id),
+            '{}'::bigint[]
+          ) AS eligible_category_ids,
+          COALESCE(
+            (SELECT array_agg(cat.category_code ORDER BY cat.category_code)
+             FROM campaign_categories cc
+             JOIN categories cat ON cat.id = cc.category_id
+             WHERE cc.campaign_id = c.id),
+            '{}'::text[]
+          ) AS eligible_category_codes
         FROM finance_campaigns c
         JOIN financial_institutions i ON i.id = c.institution_id
         WHERE c.status = 'ACTIVE'
@@ -444,6 +540,8 @@ async def load_term_option_inputs_for_merchant(
         institution_ids[str(row["institution_code"])] = str(row["institution_id"])
         terms = tuple(int(t) for t in (row["eligible_terms"] or []))
         merchants = tuple(str(m) for m in (row["eligible_merchant_codes"] or []))
+        cat_ids = tuple(int(x) for x in (row["eligible_category_ids"] or []))
+        cat_codes = tuple(str(x) for x in (row["eligible_category_codes"] or []))
         campaigns.append(
             FinanceCampaignRecord(
                 campaign_code=str(row["campaign_code"]),
@@ -466,6 +564,8 @@ async def load_term_option_inputs_for_merchant(
                 ),
                 eligible_terms=terms,
                 eligible_merchant_codes=merchants,
+                eligible_category_ids=cat_ids,
+                eligible_category_codes=cat_codes,
                 agreement_active=bool(row["agreement_active"]),
                 source_reference=row["source_reference"],
             )
@@ -560,7 +660,10 @@ __all__ = [
     "ensure_financial_product",
     "ensure_institution",
     "ensure_merchant",
+    "link_campaign_categories",
     "load_term_option_inputs_for_merchant",
+    "normalize_category_codes",
     "persist_campaign_feed",
+    "resolve_category_ids_by_code",
     "upsert_merchant_agreement",
 ]

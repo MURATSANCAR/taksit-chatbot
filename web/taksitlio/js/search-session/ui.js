@@ -315,7 +315,11 @@
       if (!Cards) return;
       var snap = (payload && (payload.results || payload.partial_results)) || {};
       var cards = productsToCards(snap);
-      if (!cards.length) return;
+      if (!cards.length) {
+        var staleCta = thread.querySelector("[data-membership-cta]");
+        if (staleCta) staleCta.remove();
+        return;
+      }
       state.lastProducts = snap.products || [];
 
       var existing = thread.querySelector("[data-showroom-live]");
@@ -339,14 +343,61 @@
         " seçenek</h2></div>" +
         shown.map(Cards.dealArticleHtml).join("");
       thread.appendChild(wrap);
+      appendMembershipCta(thread, payload && payload.cta);
       requestAnimationFrame(function () {
         wrap.querySelectorAll(".deal, .offer").forEach(function (node) {
           node.classList.add("on");
         });
+        var ctaNode = thread.querySelector("[data-membership-cta]");
+        if (ctaNode) ctaNode.classList.add("on");
         focusTopProduct(wrap);
       });
       var panels = ensurePanels(thread);
       renderFeedback(panels.querySelector("[data-feedback]"));
+    }
+
+    function appendMembershipCta(threadEl, cta) {
+      var CardsApi = global.TaksitlioCards;
+      if (!CardsApi) return;
+      var prev = threadEl.querySelector("[data-membership-cta]");
+      if (prev) prev.remove();
+      if (!cta || cta.enabled === false) return;
+      var label = String(cta.label || "Taksitlio'ya üye ol");
+      var body =
+        String(
+          cta.body ||
+            "Bu seçeneklerden yararlanmak ve başvuruyu tamamlamak için üye olun."
+        );
+      var url = cta.url ? String(cta.url) : "";
+      // Never invent finance claims in CTA copy.
+      if (/(%|\bTL\b|\bfaiz\b)/i.test(label + " " + body)) {
+        body = "Bu seçeneklerden yararlanmak ve başvuruyu tamamlamak için üye olun.";
+      }
+      var card = document.createElement("div");
+      card.className = "cta-card";
+      card.dataset.membershipCta = "1";
+      var btnHtml;
+      if (url) {
+        btnHtml =
+          '<a class="cta-btn" href="' +
+          CardsApi.escapeHtml(url) +
+          '" target="_blank" rel="noopener noreferrer">' +
+          CardsApi.escapeHtml(label) +
+          "</a>";
+      } else {
+        btnHtml =
+          '<button type="button" class="cta-btn" disabled>' +
+          CardsApi.escapeHtml(label) +
+          "</button>";
+      }
+      card.innerHTML =
+        "<p><strong>" +
+        CardsApi.escapeHtml(label) +
+        "</strong>" +
+        CardsApi.escapeHtml(body) +
+        "</p>" +
+        btnHtml;
+      threadEl.appendChild(card);
     }
 
     function wireChips(panels, chips) {

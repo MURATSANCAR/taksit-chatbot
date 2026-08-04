@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "status": "DRAFT_NOT_FOR_LIVE_INGEST",
+    "activate": false,
+    "retail_cms_campaign_id": 7802,
+    "source": "Fehmi Excel — Kategoriler ve Kampanya Örnekleri.xlsx / Kampanyalar",
+    "institution_registry": "fi-kuveytturk (crawler/ops/crawl-registry.yaml)",
+    "notes": [
+      "Do NOT copy into crawler/feeds/live or add to ingest_live_feeds_postgres.py whitelist until Fehmi confirms merchants + category scope.",
+      "Excel company_codes / fin_codes / category links were empty; merchant_codes and category_codes left empty on purpose.",
+      "Subtitle says up to 6 months at %2,99; sample payment plan uses 3 months / 10.000 TL — both terms kept with explicit monthly_rate_pct.",
+      "New-customer + positive credit allocation stays disclosure-only (personalized approval still closed).",
+      "valid_until 2099-09-09 is CMS placeholder from source."
+    ],
+    "open_questions": [
+      "Which Taksitlio merchant_codes does campaign 7802 cover?",
+      "Any category restrictions, or platform-wide on linked merchants?",
+      "Are terms 1..6 all at %2,99 or only advertised 3 and 6?"
+    ]
+  },
+  "campaigns": [
+    {
+      "id": "kuv-7802-new-customer",
+      "institution_code": "fi-kuveytturk",
+      "name": "Kuveyt Türk Kampanyası — Yeni müşteri %2,99",
+      "campaign_type": "INSTALLMENT",
+      "summary": "Kuveyt Türk kampanyası (retail CMS 7802). İlk defa Kuveyt Türk müşterisi olacak kişiler ile tahsis süreçleri olumlu olan müşteriler yararlanabilir. Kaynak subtitle: yeni müşterilere özel 6 aya kadar %2,99 kar payı oranı. Örnek ödeme planı (bilgi amaçlı): 3 ay / 10.000 TL, aylık kar oranı %2,99.",
+      "valid_from": "2026-07-20",
+      "valid_until": "2099-09-09",
+      "min_amount": 1000.0,
+      "max_amount": null,
+      "terms": [
+        { "months": 3, "monthly_rate_pct": 2.99 },
+        { "months": 6, "monthly_rate_pct": 2.99 }
+      ],
+      "merchant_codes": [],
+      "category_codes": [],
+      "source_url": "https://www.kuveytturk.com.tr",
+      "retail_cms_campaign_id": 7802,
+      "new_customer_only": true,
+      "content_hash": "draft-kuv-7802-new-customer"
+    }
+  ]
+}

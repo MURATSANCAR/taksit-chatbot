@@ -292,6 +292,18 @@ async def main() -> None:
                     stats["rate_snapshots"] += 1
 
                 merchant_codes = tuple(str(m["merchant_code"]) for m in merchants)
+                cat_rows = await conn.fetch(
+                    """
+                    SELECT cc.category_id, cat.category_code
+                    FROM campaign_categories cc
+                    JOIN categories cat ON cat.id = cc.category_id
+                    WHERE cc.campaign_id = $1
+                    ORDER BY cc.category_id
+                    """,
+                    camp["id"],
+                )
+                cat_ids = tuple(int(r["category_id"]) for r in cat_rows)
+                cat_codes = tuple(str(r["category_code"]) for r in cat_rows)
                 try:
                     ctype = CampaignType(str(camp["campaign_type"]))
                 except ValueError:
@@ -316,6 +328,8 @@ async def main() -> None:
                     ),
                     eligible_terms=tuple(int(t["months"]) for t in usable),
                     eligible_merchant_codes=merchant_codes,
+                    eligible_category_ids=cat_ids,
+                    eligible_category_codes=cat_codes,
                     agreement_active=True,
                     source_reference=camp["source_reference"],
                 )
@@ -360,10 +374,12 @@ async def main() -> None:
                         offers = await conn.fetch(
                             """
                             SELECT po.id AS offer_id, po.product_id, po.current_price,
-                                   po.stock_status, po.freshness_status
+                                   po.stock_status, po.freshness_status,
+                                   p.category_id
                             FROM product_offers po
                             JOIN campaign_products cp
                               ON cp.product_id = po.product_id AND cp.campaign_id = $2
+                            JOIN products p ON p.id = po.product_id
                             WHERE po.merchant_id = $1
                               AND po.freshness_status = 'FRESH'
                               AND po.current_price IS NOT NULL
@@ -376,8 +392,10 @@ async def main() -> None:
                         offers = await conn.fetch(
                             """
                             SELECT po.id AS offer_id, po.product_id, po.current_price,
-                                   po.stock_status, po.freshness_status
+                                   po.stock_status, po.freshness_status,
+                                   p.category_id
                             FROM product_offers po
+                            JOIN products p ON p.id = po.product_id
                             WHERE po.merchant_id = $1
                               AND po.freshness_status = 'FRESH'
                               AND po.current_price IS NOT NULL
@@ -424,7 +442,11 @@ async def main() -> None:
                             purchase_price=float(offer["current_price"]),
                             stock_status=str(offer["stock_status"] or "UNKNOWN"),
                             price_freshness=str(offer["freshness_status"] or "FRESH"),
-                            category_id=None,
+                            category_id=(
+                                None
+                                if offer["category_id"] is None
+                                else int(offer["category_id"])
+                            ),
                         )
                         rows = rebuild_finance_options(ctx, term_options)
                         await index.put(str(offer["product_id"]), rows)

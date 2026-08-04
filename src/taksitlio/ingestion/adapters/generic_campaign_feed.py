@@ -227,6 +227,9 @@ def to_finance_campaign_record(campaign: NormalizedCampaign) -> FinanceCampaignR
         maximum_purchase_amount=campaign.max_amount,
         eligible_terms=eligible_terms,
         eligible_merchant_codes=campaign.merchant_codes,
+        eligible_category_codes=tuple(
+            c.strip().upper() for c in campaign.category_codes if c and str(c).strip()
+        ),
         agreement_active=False,
         source_reference=campaign.source_reference or campaign.source_url,
     )

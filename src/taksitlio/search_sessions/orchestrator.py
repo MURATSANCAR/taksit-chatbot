@@ -45,6 +45,7 @@ from taksitlio.search_progress import (
     display_message_for,
 )
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
+from taksitlio.search_sessions.membership_cta import attach_guest_membership_cta
 from taksitlio.search_sessions.repository import (
     InMemorySearchSessionRepository,
     SearchSession,
@@ -651,6 +652,7 @@ class SearchOrchestrator:
                     "results": partial.to_dict(),
                     "logos": self._logos_public(session.id),
                 }
+                attach_guest_membership_cta(payload)
             with trace.span("response.serialize", result_count=len(partial.products)):
                 if not partial.products:
                     payload["reply"] = (
@@ -673,6 +675,7 @@ class SearchOrchestrator:
             "results": partial.to_dict(),
             "logos": self._logos_public(session.id),
         }
+        attach_guest_membership_cta(payload)
         if not partial.products:
             payload["reply"] = (
                 "Bu şartların tamamını karşılayan ürün bulunamadı. "
@@ -738,7 +741,7 @@ class SearchOrchestrator:
             )
         self.repo.record_metric(session.id, "llm_route", 1.0)
         GLOBAL_SEARCH_METRICS.incr("llm_route")
-        return {
+        payload = {
             "search_session_id": session.id,
             "query_version": session.active_query_version,
             "status": session.status.value,
@@ -756,6 +759,8 @@ class SearchOrchestrator:
                 "cancel": True,
             },
         }
+        attach_guest_membership_cta(payload)
+        return payload
 
     def answer_clarification(
         self,

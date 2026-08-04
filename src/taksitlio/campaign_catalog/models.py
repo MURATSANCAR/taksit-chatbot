@@ -60,6 +60,8 @@ class FinanceCampaignRecord:
     excluded_terms: tuple[int, ...] = ()
     eligible_merchant_codes: tuple[str, ...] = ()
     eligible_category_ids: tuple[int, ...] = ()
+    # Feed taxonomy codes (e.g. MOBILE_PHONE); resolved to ids at persist/load.
+    eligible_category_codes: tuple[str, ...] = ()
     agreement_active: bool = False
     source_reference: Optional[str] = None
 
