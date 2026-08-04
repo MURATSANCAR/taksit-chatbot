@@ -728,6 +728,41 @@
     }
     .cta-btn:active { transform: scale(0.985); }
 
+    .need-extract {
+      width: min(100%, var(--bubble-max));
+      margin: 4px 0 8px 36px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .need-extract.on {
+      animation: offerIn .45s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .need-extract-head {
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface) 70%, var(--bg));
+      border-bottom: 1px solid var(--line);
+    }
+    .need-extract-row {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 8px;
+      padding: 11px 14px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .need-extract-row:first-of-type { border-top: 0; }
+    .need-extract-row .k { color: var(--muted); font-weight: 500; }
+    .need-extract-row .v { color: var(--ink); font-weight: 650; }
+
     .constraint-chips {
       display: flex;
       flex-wrap: wrap;
@@ -1336,7 +1371,7 @@
   <script src="js/entity-logos.js?v=20260801a"></script>
   <script src="js/chat-cards.js?v=20260801a"></script>
   <script src="js/search-session/client.js?v=20260801b"></script>
-  <script src="js/search-session/ui.js?v=20260801b"></script>
+  <script src="js/search-session/ui.js?v=20260804a"></script>
   <script src="js/search-progress/timeline.js?v=20260801a"></script>
   <script src="js/clarification/card.js?v=20260801a"></script>
   <script src="js/constraint-chips/chips.js?v=20260801a"></script>

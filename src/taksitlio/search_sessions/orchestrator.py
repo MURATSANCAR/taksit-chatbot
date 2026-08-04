@@ -46,6 +46,7 @@ from taksitlio.search_progress import (
 )
 from taksitlio.search_sessions.metrics import GLOBAL_SEARCH_METRICS
 from taksitlio.search_sessions.membership_cta import attach_guest_membership_cta
+from taksitlio.search_sessions.need_extract import attach_need_extract
 from taksitlio.search_sessions.repository import (
     InMemorySearchSessionRepository,
     SearchSession,
@@ -653,6 +654,7 @@ class SearchOrchestrator:
                     "logos": self._logos_public(session.id),
                 }
                 attach_guest_membership_cta(payload)
+                attach_need_extract(payload)
             with trace.span("response.serialize", result_count=len(partial.products)):
                 if not partial.products:
                     payload["reply"] = (
@@ -676,6 +678,7 @@ class SearchOrchestrator:
             "logos": self._logos_public(session.id),
         }
         attach_guest_membership_cta(payload)
+        attach_need_extract(payload)
         if not partial.products:
             payload["reply"] = (
                 "Bu şartların tamamını karşılayan ürün bulunamadı. "
@@ -760,6 +763,7 @@ class SearchOrchestrator:
             },
         }
         attach_guest_membership_cta(payload)
+        attach_need_extract(payload)
         return payload
 
     def answer_clarification(

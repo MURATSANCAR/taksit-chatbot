@@ -519,6 +519,93 @@
       });
     }
 
+    function formatBudgetTl(amount) {
+      var n = Number(amount);
+      if (!isFinite(n)) return null;
+      try {
+        return (
+          "≈ " +
+          Math.round(n).toLocaleString("tr-TR") +
+          " TL"
+        );
+      } catch (_) {
+        return "≈ " + String(Math.round(n)) + " TL";
+      }
+    }
+
+    function needExtractRows(understanding) {
+      if (!understanding || typeof understanding !== "object") return [];
+      var rows = [];
+      var cats =
+        understanding.positive_categories ||
+        (understanding.entities && understanding.entities.categories) ||
+        [];
+      var catNames = [];
+      (Array.isArray(cats) ? cats : []).forEach(function (c) {
+        if (c && c.display_name) catNames.push(String(c.display_name));
+      });
+      if (catNames.length) rows.push({ k: "Kategori", v: catNames.join(", ") });
+
+      var brands = understanding.brands || [];
+      var brandNames = [];
+      (Array.isArray(brands) ? brands : []).forEach(function (b) {
+        if (b && b.display_name) brandNames.push(String(b.display_name));
+      });
+      if (brandNames.length) rows.push({ k: "Marka", v: brandNames.join(", ") });
+
+      var budget = understanding.budget;
+      if (budget && typeof budget === "object") {
+        var amount =
+          budget.value != null
+            ? budget.value
+            : budget.maximum != null
+              ? budget.maximum
+              : budget.min;
+        var formatted = formatBudgetTl(amount);
+        if (formatted) rows.push({ k: "Bütçe", v: formatted });
+      }
+      return rows;
+    }
+
+    function renderNeedExtractCard(extract) {
+      var CardsApi = global.TaksitlioCards;
+      var prev = thread.querySelector("[data-need-extract]");
+      if (prev) prev.remove();
+      if (!extract || !CardsApi) return;
+      var rows = Array.isArray(extract.rows) ? extract.rows : [];
+      if (!rows.length) return;
+      var title = String(extract.title || "Anladıklarım");
+      var card = document.createElement("div");
+      card.className = "need-extract";
+      card.dataset.needExtract = "1";
+      card.innerHTML =
+        '<div class="need-extract-head">' +
+        CardsApi.escapeHtml(title) +
+        "</div>" +
+        rows
+          .map(function (row) {
+            return (
+              '<div class="need-extract-row"><div class="k">' +
+              CardsApi.escapeHtml(String(row.k || "")) +
+              '</div><div class="v">' +
+              CardsApi.escapeHtml(String(row.v || "")) +
+              "</div></div>"
+            );
+          })
+          .join("");
+      thread.appendChild(card);
+      requestAnimationFrame(function () {
+        card.classList.add("on");
+      });
+    }
+
+    function renderNeedExtract(understanding) {
+      // Fallback when older payloads lack need_extract.
+      var rows = needExtractRows(understanding);
+      if (!rows.length) return;
+      renderNeedExtractCard({ title: "Anladıklarım", rows: rows });
+    }
+
     function applyPayload(payload, options) {
       options = options || {};
       var panels = ensurePanels(thread);
@@ -543,6 +630,12 @@
                   ? "Bu kriterlere uygun ürün bulamadım. Ürün türünü veya bütçeni tekrar yazabilirsin."
                   : null);
         if (text) botBubble(text);
+      }
+
+      if (payload.need_extract && payload.need_extract.rows) {
+        renderNeedExtractCard(payload.need_extract);
+      } else if (payload.understanding) {
+        renderNeedExtract(payload.understanding);
       }
 
       wireChips(panels, payload.chips || state.chips || []);

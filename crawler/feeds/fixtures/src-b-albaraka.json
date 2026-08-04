@@ -17,6 +17,56 @@
       "Which Taksitlio merchant_codes does campaign 9502 cover?",
       "Is %1,99 monthly kar oranı for all terms 1..6 or only max term?",
       "Confirm new-customer-only and rejection rights stay disclosure-only vs hard eligibility filter."
+    ],
+    "merchant_candidates_for_confirmation": [
+      {
+        "merchant_code": "m-vatan",
+        "display_name": "Vatan Bilgisayar",
+        "readiness": "READY",
+        "search_ready_n": 999,
+        "pfo_eligible_n": 0,
+        "note": "Active search cohort — no Albaraka agreement yet"
+      },
+      {
+        "merchant_code": "m-hepsiburada",
+        "display_name": "Hepsiburada",
+        "readiness": "READY",
+        "search_ready_n": 55,
+        "pfo_eligible_n": 0,
+        "note": "Active search cohort — no Albaraka agreement yet"
+      },
+      {
+        "merchant_code": "m-teknosa",
+        "display_name": "Teknosa",
+        "readiness": "PARTIAL",
+        "search_ready_n": 0,
+        "pfo_eligible_n": 27444,
+        "note": "Has finance PFOs (other banks) but not search-ready"
+      },
+      {
+        "merchant_code": "m-mediamarkt",
+        "display_name": "MediaMarkt",
+        "readiness": "PARTIAL",
+        "search_ready_n": 0,
+        "pfo_eligible_n": 892,
+        "note": "Has finance PFOs but not search-ready"
+      },
+      {
+        "merchant_code": "m-trendyol",
+        "display_name": "Trendyol",
+        "readiness": "PARTIAL",
+        "search_ready_n": 0,
+        "pfo_eligible_n": 1006,
+        "note": "Has finance PFOs but not search-ready"
+      },
+      {
+        "merchant_code": "m-evofone",
+        "display_name": "Evofone",
+        "readiness": "PARTIAL",
+        "search_ready_n": 0,
+        "pfo_eligible_n": 130,
+        "note": "Has finance PFOs but not search-ready"
+      }
     ]
   },
   "campaigns": [
