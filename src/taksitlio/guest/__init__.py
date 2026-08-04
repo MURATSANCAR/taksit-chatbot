@@ -8,6 +8,7 @@ from .refinement import (
     detect_refinement,
     is_complex_or_oos,
 )
+from .universal_handler import UniversalGuestHandler
 
 __all__ = [
     "GuestEntryHandler",
@@ -17,6 +18,7 @@ __all__ = [
     "NeedsAnalysisService",
     "RefinementIntent",
     "RefinementSignal",
+    "UniversalGuestHandler",
     "detect_refinement",
     "is_complex_or_oos",
 ]

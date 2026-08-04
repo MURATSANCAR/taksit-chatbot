@@ -1,0 +1,52 @@
+{
+  "total": 1000,
+  "hard_ok": 944,
+  "soft_ok": 1000,
+  "hard_accuracy": 0.944,
+  "soft_accuracy": 1.0,
+  "by_tier": {
+    "T0_smalltalk": {
+      "ok": 11
+    },
+    "T1_faq": {
+      "ok": 17,
+      "faq_key_mismatch": 2
+    },
+    "T2_extra": {
+      "ok": 30
+    },
+    "T2_pad": {
+      "ok": 363
+    },
+    "T2_simple_both": {
+      "ok": 160
+    },
+    "T2_simple_budget": {
+      "ok": 10
+    },
+    "T2_simple_product": {
+      "ok": 28
+    },
+    "T3_complex": {
+      "ok": 192
+    },
+    "T3_complex_brand": {
+      "ok": 96,
+      "soft": 24
+    },
+    "T3_extra": {
+      "soft": 32,
+      "ok": 8
+    },
+    "T4_refinement": {
+      "ok": 11
+    },
+    "T5_oos": {
+      "ok": 10
+    },
+    "T6_unknown": {
+      "ok": 8
+    }
+  },
+  "failures_sample": []
+}

@@ -103,7 +103,9 @@ class GuestOrchestratorAdapter:
             max_recommendations=2,
             membership_cta_enabled=True,
         )
-        return cls(handler)
+        from taksitlio.guest.universal_handler import UniversalGuestHandler
+
+        return cls(UniversalGuestHandler(handler))
 
     # ------------------------------------------------------------------
     # Public API (Chat route tarafından çağrılır)
@@ -119,7 +121,7 @@ class GuestOrchestratorAdapter:
             client_message_id=client_message_id,
             locale=locale,
         )
-        return result.to_api_payload()
+        return result.to_api_payload() if hasattr(result, "to_api_payload") else result
 
     async def handle_guest_turn(
         self,
@@ -131,15 +133,19 @@ class GuestOrchestratorAdapter:
         client_sequence: int = 1,
         locale: str = "tr-TR",
     ) -> dict[str, Any]:
-        result = await self._handler.handle_turn(
-            session_id=session_id,
-            user_utterance=utterance,
-            expected_revision=expected_revision,
-            client_message_id=client_message_id or str(uuid.uuid4()),
-            client_sequence=client_sequence,
-            locale=locale,
-        )
-        return result.to_api_payload()
+        # UniversalGuestHandler(utterance=...) wraps GuestEntryHandler(user_utterance=...).
+        kwargs: dict[str, Any] = {
+            "session_id": session_id,
+            "expected_revision": expected_revision,
+            "client_message_id": client_message_id or str(uuid.uuid4()),
+            "client_sequence": client_sequence,
+            "locale": locale,
+        }
+        if hasattr(self._handler, "_entry"):
+            result = await self._handler.handle_turn(utterance=utterance, **kwargs)
+        else:
+            result = await self._handler.handle_turn(user_utterance=utterance, **kwargs)
+        return result.to_api_payload() if hasattr(result, "to_api_payload") else result
 
 
 # ---------------------------------------------------------------------------

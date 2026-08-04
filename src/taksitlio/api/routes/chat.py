@@ -67,11 +67,14 @@ async def chat(payload: ChatMessageIn, request: Request) -> ChatMessageOut:
             else:
                 # Session_id yoksa önce açılış yapıp id al
                 session_id = payload.session_id
+                expected_revision = payload.revision or 0
                 if not session_id or session_id in ("new", "null", ""):
                     open_res = await adapter.start_guest_session(locale="tr-TR")
                     session_id = open_res["session_id"]
+                    # Opening advances revision; don't CAS against 0 on the next turn.
+                    if payload.revision is None:
+                        expected_revision = int(open_res.get("revision") or 1)
 
-                expected_revision = payload.revision or 0
                 # Prefer explicit client_sequence; otherwise derive from revision so
                 # multi-turn curl/smokes without sequence don't hit CAS duplicates.
                 client_sequence = payload.client_sequence

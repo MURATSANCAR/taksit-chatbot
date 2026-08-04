@@ -1,0 +1,1000 @@
+{"id": "G-0001", "tier": "T0_smalltalk", "utterance": "merhaba", "expect_intent": "SMALLTALK"}
+{"id": "G-0002", "tier": "T0_smalltalk", "utterance": "selam", "expect_intent": "SMALLTALK"}
+{"id": "G-0003", "tier": "T0_smalltalk", "utterance": "hi", "expect_intent": "SMALLTALK"}
+{"id": "G-0004", "tier": "T0_smalltalk", "utterance": "günaydın", "expect_intent": "SMALLTALK"}
+{"id": "G-0005", "tier": "T0_smalltalk", "utterance": "teşekkürler", "expect_intent": "SMALLTALK"}
+{"id": "G-0006", "tier": "T0_smalltalk", "utterance": "sağol", "expect_intent": "SMALLTALK"}
+{"id": "G-0007", "tier": "T0_smalltalk", "utterance": "tamam", "expect_intent": "SMALLTALK"}
+{"id": "G-0008", "tier": "T0_smalltalk", "utterance": "ok", "expect_intent": "SMALLTALK"}
+{"id": "G-0009", "tier": "T0_smalltalk", "utterance": "peki", "expect_intent": "SMALLTALK"}
+{"id": "G-0010", "tier": "T0_smalltalk", "utterance": "anladım", "expect_intent": "SMALLTALK"}
+{"id": "G-0011", "tier": "T0_smalltalk", "utterance": "süper", "expect_intent": "SMALLTALK"}
+{"id": "G-0012", "tier": "T1_faq", "utterance": "nasıl üye olurum?", "expect_intent": "FAQ", "expect_faq_key": "membership_how"}
+{"id": "G-0013", "tier": "T1_faq", "utterance": "üye olmak istiyorum", "expect_intent": "FAQ", "expect_faq_key": "membership_how"}
+{"id": "G-0014", "tier": "T1_faq", "utterance": "üyelik ücretsiz mi", "expect_intent": "FAQ", "expect_faq_key": "membership_how"}
+{"id": "G-0015", "tier": "T1_faq", "utterance": "üye olmadan kampanya görür müyüm", "expect_intent": "FAQ", "expect_faq_key": "membership_required"}
+{"id": "G-0016", "tier": "T1_faq", "utterance": "üyelik zorunlu mu", "expect_intent": "FAQ", "expect_faq_key": "membership_required"}
+{"id": "G-0017", "tier": "T1_faq", "utterance": "taksit nasıl işler", "expect_intent": "FAQ", "expect_faq_key": "installment_how"}
+{"id": "G-0018", "tier": "T1_faq", "utterance": "taksitlendirme nasıl oluyor", "expect_intent": "FAQ", "expect_faq_key": "installment_how"}
+{"id": "G-0019", "tier": "T1_faq", "utterance": "kar oranı ne demek", "expect_intent": "FAQ", "expect_faq_key": "installment_how"}
+{"id": "G-0020", "tier": "T1_faq", "utterance": "kampanya koşulları ne", "expect_intent": "FAQ", "expect_faq_key": "campaign_conditions"}
+{"id": "G-0021", "tier": "T1_faq", "utterance": "kimler yararlanabilir", "expect_intent": "FAQ", "expect_faq_key": "campaign_conditions"}
+{"id": "G-0022", "tier": "T1_faq", "utterance": "Albaraka mı Kuveyt mi", "expect_intent": "FAQ", "expect_faq_key": "bank_diff"}
+{"id": "G-0023", "tier": "T1_faq", "utterance": "bankalar arası fark ne", "expect_intent": "FAQ", "expect_faq_key": "bank_diff"}
+{"id": "G-0024", "tier": "T1_faq", "utterance": "Taksitlio ne işe yarar", "expect_intent": "FAQ", "expect_faq_key": "what_is_taksitlio"}
+{"id": "G-0025", "tier": "T1_faq", "utterance": "bu uygulama nasıl çalışır", "expect_intent": "FAQ", "expect_faq_key": "what_is_taksitlio"}
+{"id": "G-0026", "tier": "T1_faq", "utterance": "tahsis ücreti var mı", "expect_intent": "FAQ", "expect_faq_key": "fees"}
+{"id": "G-0027", "tier": "T1_faq", "utterance": "gizli masraf çıkar mı", "expect_intent": "FAQ", "expect_faq_key": "fees"}
+{"id": "G-0028", "tier": "T1_faq", "utterance": "BSMV nedir", "expect_intent": "FAQ", "expect_faq_key": "fees"}
+{"id": "G-0029", "tier": "T2_simple_product", "utterance": "cep telefonu bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0030", "tier": "T2_simple_product", "utterance": "cep telefonu almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0031", "tier": "T2_simple_product", "utterance": "telefon bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0032", "tier": "T2_simple_product", "utterance": "telefon almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0033", "tier": "T2_simple_product", "utterance": "iPhone bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0034", "tier": "T2_simple_product", "utterance": "iPhone almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0035", "tier": "T2_simple_product", "utterance": "Samsung telefon bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0036", "tier": "T2_simple_product", "utterance": "Samsung telefon almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0037", "tier": "T2_simple_product", "utterance": "tablet bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0038", "tier": "T2_simple_product", "utterance": "tablet almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0039", "tier": "T2_simple_product", "utterance": "iPad bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0040", "tier": "T2_simple_product", "utterance": "iPad almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0041", "tier": "T2_simple_product", "utterance": "laptop bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0042", "tier": "T2_simple_product", "utterance": "laptop almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0043", "tier": "T2_simple_product", "utterance": "bilgisayar bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0044", "tier": "T2_simple_product", "utterance": "bilgisayar almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0045", "tier": "T2_simple_product", "utterance": "televizyon bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0046", "tier": "T2_simple_product", "utterance": "televizyon almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0047", "tier": "T2_simple_product", "utterance": "buzdolabı bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0048", "tier": "T2_simple_product", "utterance": "buzdolabı almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0049", "tier": "T2_simple_product", "utterance": "çamaşır makinesi bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0050", "tier": "T2_simple_product", "utterance": "çamaşır makinesi almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0051", "tier": "T2_simple_product", "utterance": "klima bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0052", "tier": "T2_simple_product", "utterance": "klima almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0053", "tier": "T2_simple_product", "utterance": "PlayStation bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0054", "tier": "T2_simple_product", "utterance": "PlayStation almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0055", "tier": "T2_simple_product", "utterance": "kulaklık bakıyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0056", "tier": "T2_simple_product", "utterance": "kulaklık almak istiyorum", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0057", "tier": "T2_simple_budget", "utterance": "bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0058", "tier": "T2_simple_budget", "utterance": "bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0059", "tier": "T2_simple_budget", "utterance": "bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0060", "tier": "T2_simple_budget", "utterance": "bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0061", "tier": "T2_simple_budget", "utterance": "bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0062", "tier": "T2_simple_budget", "utterance": "bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0063", "tier": "T2_simple_budget", "utterance": "bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0064", "tier": "T2_simple_budget", "utterance": "bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0065", "tier": "T2_simple_budget", "utterance": "bütçem 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0066", "tier": "T2_simple_budget", "utterance": "bütçem 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0067", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0068", "tier": "T2_simple_both", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0069", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0070", "tier": "T2_simple_both", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0071", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0072", "tier": "T2_simple_both", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0073", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0074", "tier": "T2_simple_both", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0075", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0076", "tier": "T2_simple_both", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0077", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0078", "tier": "T2_simple_both", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0079", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0080", "tier": "T2_simple_both", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0081", "tier": "T2_simple_both", "utterance": "cep telefonu alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0082", "tier": "T2_simple_both", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0083", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0084", "tier": "T2_simple_both", "utterance": "telefon, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0085", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0086", "tier": "T2_simple_both", "utterance": "telefon, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0087", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0088", "tier": "T2_simple_both", "utterance": "telefon, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0089", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0090", "tier": "T2_simple_both", "utterance": "telefon, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0091", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0092", "tier": "T2_simple_both", "utterance": "telefon, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0093", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0094", "tier": "T2_simple_both", "utterance": "telefon, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0095", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0096", "tier": "T2_simple_both", "utterance": "telefon, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0097", "tier": "T2_simple_both", "utterance": "telefon alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0098", "tier": "T2_simple_both", "utterance": "telefon, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0099", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0100", "tier": "T2_simple_both", "utterance": "iPhone, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0101", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0102", "tier": "T2_simple_both", "utterance": "iPhone, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0103", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0104", "tier": "T2_simple_both", "utterance": "iPhone, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0105", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0106", "tier": "T2_simple_both", "utterance": "iPhone, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0107", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0108", "tier": "T2_simple_both", "utterance": "iPhone, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0109", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0110", "tier": "T2_simple_both", "utterance": "iPhone, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0111", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0112", "tier": "T2_simple_both", "utterance": "iPhone, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0113", "tier": "T2_simple_both", "utterance": "iPhone alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0114", "tier": "T2_simple_both", "utterance": "iPhone, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0115", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0116", "tier": "T2_simple_both", "utterance": "Samsung telefon, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0117", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0118", "tier": "T2_simple_both", "utterance": "Samsung telefon, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0119", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0120", "tier": "T2_simple_both", "utterance": "Samsung telefon, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0121", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0122", "tier": "T2_simple_both", "utterance": "Samsung telefon, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0123", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0124", "tier": "T2_simple_both", "utterance": "Samsung telefon, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0125", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0126", "tier": "T2_simple_both", "utterance": "Samsung telefon, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0127", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0128", "tier": "T2_simple_both", "utterance": "Samsung telefon, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0129", "tier": "T2_simple_both", "utterance": "Samsung telefon alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0130", "tier": "T2_simple_both", "utterance": "Samsung telefon, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0131", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0132", "tier": "T2_simple_both", "utterance": "tablet, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0133", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0134", "tier": "T2_simple_both", "utterance": "tablet, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0135", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0136", "tier": "T2_simple_both", "utterance": "tablet, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0137", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0138", "tier": "T2_simple_both", "utterance": "tablet, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0139", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0140", "tier": "T2_simple_both", "utterance": "tablet, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0141", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0142", "tier": "T2_simple_both", "utterance": "tablet, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0143", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0144", "tier": "T2_simple_both", "utterance": "tablet, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0145", "tier": "T2_simple_both", "utterance": "tablet alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0146", "tier": "T2_simple_both", "utterance": "tablet, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0147", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0148", "tier": "T2_simple_both", "utterance": "iPad, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0149", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0150", "tier": "T2_simple_both", "utterance": "iPad, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0151", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0152", "tier": "T2_simple_both", "utterance": "iPad, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0153", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0154", "tier": "T2_simple_both", "utterance": "iPad, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0155", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0156", "tier": "T2_simple_both", "utterance": "iPad, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0157", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0158", "tier": "T2_simple_both", "utterance": "iPad, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0159", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0160", "tier": "T2_simple_both", "utterance": "iPad, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0161", "tier": "T2_simple_both", "utterance": "iPad alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0162", "tier": "T2_simple_both", "utterance": "iPad, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0163", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0164", "tier": "T2_simple_both", "utterance": "laptop, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0165", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0166", "tier": "T2_simple_both", "utterance": "laptop, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0167", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0168", "tier": "T2_simple_both", "utterance": "laptop, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0169", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0170", "tier": "T2_simple_both", "utterance": "laptop, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0171", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0172", "tier": "T2_simple_both", "utterance": "laptop, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0173", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0174", "tier": "T2_simple_both", "utterance": "laptop, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0175", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0176", "tier": "T2_simple_both", "utterance": "laptop, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0177", "tier": "T2_simple_both", "utterance": "laptop alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0178", "tier": "T2_simple_both", "utterance": "laptop, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0179", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0180", "tier": "T2_simple_both", "utterance": "bilgisayar, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0181", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0182", "tier": "T2_simple_both", "utterance": "bilgisayar, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0183", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0184", "tier": "T2_simple_both", "utterance": "bilgisayar, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0185", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0186", "tier": "T2_simple_both", "utterance": "bilgisayar, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0187", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0188", "tier": "T2_simple_both", "utterance": "bilgisayar, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0189", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0190", "tier": "T2_simple_both", "utterance": "bilgisayar, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0191", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0192", "tier": "T2_simple_both", "utterance": "bilgisayar, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0193", "tier": "T2_simple_both", "utterance": "bilgisayar alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0194", "tier": "T2_simple_both", "utterance": "bilgisayar, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0195", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0196", "tier": "T2_simple_both", "utterance": "televizyon, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0197", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0198", "tier": "T2_simple_both", "utterance": "televizyon, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0199", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0200", "tier": "T2_simple_both", "utterance": "televizyon, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0201", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0202", "tier": "T2_simple_both", "utterance": "televizyon, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0203", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0204", "tier": "T2_simple_both", "utterance": "televizyon, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0205", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0206", "tier": "T2_simple_both", "utterance": "televizyon, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0207", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0208", "tier": "T2_simple_both", "utterance": "televizyon, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0209", "tier": "T2_simple_both", "utterance": "televizyon alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0210", "tier": "T2_simple_both", "utterance": "televizyon, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0211", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0212", "tier": "T2_simple_both", "utterance": "buzdolabı, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0213", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0214", "tier": "T2_simple_both", "utterance": "buzdolabı, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0215", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0216", "tier": "T2_simple_both", "utterance": "buzdolabı, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0217", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0218", "tier": "T2_simple_both", "utterance": "buzdolabı, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0219", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0220", "tier": "T2_simple_both", "utterance": "buzdolabı, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0221", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0222", "tier": "T2_simple_both", "utterance": "buzdolabı, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0223", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0224", "tier": "T2_simple_both", "utterance": "buzdolabı, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0225", "tier": "T2_simple_both", "utterance": "buzdolabı alıcaz, bütçem 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0226", "tier": "T2_simple_both", "utterance": "buzdolabı, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0227", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0228", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0229", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0230", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0231", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0232", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0233", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0234", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0235", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0236", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0237", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0238", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0239", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0240", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0241", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0242", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0243", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0244", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0245", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0246", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0247", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0248", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0249", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0250", "tier": "T3_complex", "utterance": "cep telefonu istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0251", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0252", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0253", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0254", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0255", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0256", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0257", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0258", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0259", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0260", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0261", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0262", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0263", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0264", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0265", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0266", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0267", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0268", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0269", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0270", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0271", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0272", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0273", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0274", "tier": "T3_complex", "utterance": "telefon istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0275", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0276", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0277", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0278", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0279", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0280", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0281", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0282", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0283", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0284", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0285", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0286", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0287", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0288", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0289", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0290", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0291", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0292", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0293", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0294", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0295", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0296", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0297", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0298", "tier": "T3_complex", "utterance": "iPhone istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0299", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0300", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0301", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0302", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0303", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0304", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0305", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0306", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0307", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0308", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0309", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0310", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0311", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0312", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0313", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0314", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0315", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0316", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0317", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0318", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0319", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0320", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0321", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0322", "tier": "T3_complex", "utterance": "Samsung telefon istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0323", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0324", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0325", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0326", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0327", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0328", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0329", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0330", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0331", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0332", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0333", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0334", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0335", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0336", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0337", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0338", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0339", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0340", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0341", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0342", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0343", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0344", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0345", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0346", "tier": "T3_complex", "utterance": "tablet istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0347", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0348", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0349", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0350", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0351", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0352", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0353", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0354", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0355", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0356", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0357", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0358", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0359", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0360", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0361", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0362", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0363", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0364", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0365", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0366", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0367", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0368", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0369", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0370", "tier": "T3_complex", "utterance": "iPad istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0371", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0372", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0373", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0374", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0375", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0376", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0377", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0378", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0379", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0380", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0381", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0382", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0383", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0384", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0385", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0386", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0387", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0388", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0389", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0390", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0391", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0392", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0393", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0394", "tier": "T3_complex", "utterance": "laptop istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0395", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 10 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0396", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 10 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0397", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 10 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0398", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 10 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0399", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 15.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0400", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 15.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0401", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 15.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0402", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 15.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0403", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 20 bin, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0404", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 20 bin, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0405", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 20 bin, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0406", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 20 bin, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0407", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 25.000 TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0408", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 25.000 TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0409", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 25.000 TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0410", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 25.000 TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0411", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 30 bin TL, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0412", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 30 bin TL, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0413", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 30 bin TL, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0414", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 30 bin TL, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0415", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 40 bin TL civarı, 3 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0416", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 40 bin TL civarı, 6 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0417", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 40 bin TL civarı, 12 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0418", "tier": "T3_complex", "utterance": "bilgisayar istiyorum, bütçe 40 bin TL civarı, 18 ay, düşük faiz olsun", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0419", "tier": "T3_complex_brand", "utterance": "Samsung cep telefonu, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0420", "tier": "T3_complex_brand", "utterance": "Apple cep telefonu, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0421", "tier": "T3_complex_brand", "utterance": "Xiaomi cep telefonu, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0422", "tier": "T3_complex_brand", "utterance": "LG cep telefonu, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0423", "tier": "T3_complex_brand", "utterance": "Samsung cep telefonu, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0424", "tier": "T3_complex_brand", "utterance": "Apple cep telefonu, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0425", "tier": "T3_complex_brand", "utterance": "Xiaomi cep telefonu, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0426", "tier": "T3_complex_brand", "utterance": "LG cep telefonu, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0427", "tier": "T3_complex_brand", "utterance": "Samsung cep telefonu, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0428", "tier": "T3_complex_brand", "utterance": "Apple cep telefonu, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0429", "tier": "T3_complex_brand", "utterance": "Xiaomi cep telefonu, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0430", "tier": "T3_complex_brand", "utterance": "LG cep telefonu, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0431", "tier": "T3_complex_brand", "utterance": "Samsung cep telefonu, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0432", "tier": "T3_complex_brand", "utterance": "Apple cep telefonu, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0433", "tier": "T3_complex_brand", "utterance": "Xiaomi cep telefonu, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0434", "tier": "T3_complex_brand", "utterance": "LG cep telefonu, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0435", "tier": "T3_complex_brand", "utterance": "Samsung cep telefonu, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0436", "tier": "T3_complex_brand", "utterance": "Apple cep telefonu, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0437", "tier": "T3_complex_brand", "utterance": "Xiaomi cep telefonu, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0438", "tier": "T3_complex_brand", "utterance": "LG cep telefonu, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0439", "tier": "T3_complex_brand", "utterance": "Samsung telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0440", "tier": "T3_complex_brand", "utterance": "Apple telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0441", "tier": "T3_complex_brand", "utterance": "Xiaomi telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0442", "tier": "T3_complex_brand", "utterance": "LG telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0443", "tier": "T3_complex_brand", "utterance": "Samsung telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0444", "tier": "T3_complex_brand", "utterance": "Apple telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0445", "tier": "T3_complex_brand", "utterance": "Xiaomi telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0446", "tier": "T3_complex_brand", "utterance": "LG telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0447", "tier": "T3_complex_brand", "utterance": "Samsung telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0448", "tier": "T3_complex_brand", "utterance": "Apple telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0449", "tier": "T3_complex_brand", "utterance": "Xiaomi telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0450", "tier": "T3_complex_brand", "utterance": "LG telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0451", "tier": "T3_complex_brand", "utterance": "Samsung telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0452", "tier": "T3_complex_brand", "utterance": "Apple telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0453", "tier": "T3_complex_brand", "utterance": "Xiaomi telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0454", "tier": "T3_complex_brand", "utterance": "LG telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0455", "tier": "T3_complex_brand", "utterance": "Samsung telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0456", "tier": "T3_complex_brand", "utterance": "Apple telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0457", "tier": "T3_complex_brand", "utterance": "Xiaomi telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0458", "tier": "T3_complex_brand", "utterance": "LG telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0459", "tier": "T3_complex_brand", "utterance": "Samsung iPhone, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0460", "tier": "T3_complex_brand", "utterance": "Apple iPhone, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0461", "tier": "T3_complex_brand", "utterance": "Xiaomi iPhone, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0462", "tier": "T3_complex_brand", "utterance": "LG iPhone, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0463", "tier": "T3_complex_brand", "utterance": "Samsung iPhone, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0464", "tier": "T3_complex_brand", "utterance": "Apple iPhone, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0465", "tier": "T3_complex_brand", "utterance": "Xiaomi iPhone, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0466", "tier": "T3_complex_brand", "utterance": "LG iPhone, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0467", "tier": "T3_complex_brand", "utterance": "Samsung iPhone, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0468", "tier": "T3_complex_brand", "utterance": "Apple iPhone, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0469", "tier": "T3_complex_brand", "utterance": "Xiaomi iPhone, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0470", "tier": "T3_complex_brand", "utterance": "LG iPhone, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0471", "tier": "T3_complex_brand", "utterance": "Samsung iPhone, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0472", "tier": "T3_complex_brand", "utterance": "Apple iPhone, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0473", "tier": "T3_complex_brand", "utterance": "Xiaomi iPhone, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0474", "tier": "T3_complex_brand", "utterance": "LG iPhone, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0475", "tier": "T3_complex_brand", "utterance": "Samsung iPhone, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0476", "tier": "T3_complex_brand", "utterance": "Apple iPhone, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0477", "tier": "T3_complex_brand", "utterance": "Xiaomi iPhone, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0478", "tier": "T3_complex_brand", "utterance": "LG iPhone, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0479", "tier": "T3_complex_brand", "utterance": "Samsung Samsung telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0480", "tier": "T3_complex_brand", "utterance": "Apple Samsung telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0481", "tier": "T3_complex_brand", "utterance": "Xiaomi Samsung telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0482", "tier": "T3_complex_brand", "utterance": "LG Samsung telefon, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0483", "tier": "T3_complex_brand", "utterance": "Samsung Samsung telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0484", "tier": "T3_complex_brand", "utterance": "Apple Samsung telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0485", "tier": "T3_complex_brand", "utterance": "Xiaomi Samsung telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0486", "tier": "T3_complex_brand", "utterance": "LG Samsung telefon, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0487", "tier": "T3_complex_brand", "utterance": "Samsung Samsung telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0488", "tier": "T3_complex_brand", "utterance": "Apple Samsung telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0489", "tier": "T3_complex_brand", "utterance": "Xiaomi Samsung telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0490", "tier": "T3_complex_brand", "utterance": "LG Samsung telefon, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0491", "tier": "T3_complex_brand", "utterance": "Samsung Samsung telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0492", "tier": "T3_complex_brand", "utterance": "Apple Samsung telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0493", "tier": "T3_complex_brand", "utterance": "Xiaomi Samsung telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0494", "tier": "T3_complex_brand", "utterance": "LG Samsung telefon, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0495", "tier": "T3_complex_brand", "utterance": "Samsung Samsung telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0496", "tier": "T3_complex_brand", "utterance": "Apple Samsung telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0497", "tier": "T3_complex_brand", "utterance": "Xiaomi Samsung telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0498", "tier": "T3_complex_brand", "utterance": "LG Samsung telefon, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0499", "tier": "T3_complex_brand", "utterance": "Samsung tablet, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0500", "tier": "T3_complex_brand", "utterance": "Apple tablet, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0501", "tier": "T3_complex_brand", "utterance": "Xiaomi tablet, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0502", "tier": "T3_complex_brand", "utterance": "LG tablet, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0503", "tier": "T3_complex_brand", "utterance": "Samsung tablet, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0504", "tier": "T3_complex_brand", "utterance": "Apple tablet, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0505", "tier": "T3_complex_brand", "utterance": "Xiaomi tablet, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0506", "tier": "T3_complex_brand", "utterance": "LG tablet, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0507", "tier": "T3_complex_brand", "utterance": "Samsung tablet, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0508", "tier": "T3_complex_brand", "utterance": "Apple tablet, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0509", "tier": "T3_complex_brand", "utterance": "Xiaomi tablet, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0510", "tier": "T3_complex_brand", "utterance": "LG tablet, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0511", "tier": "T3_complex_brand", "utterance": "Samsung tablet, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0512", "tier": "T3_complex_brand", "utterance": "Apple tablet, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0513", "tier": "T3_complex_brand", "utterance": "Xiaomi tablet, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0514", "tier": "T3_complex_brand", "utterance": "LG tablet, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0515", "tier": "T3_complex_brand", "utterance": "Samsung tablet, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0516", "tier": "T3_complex_brand", "utterance": "Apple tablet, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0517", "tier": "T3_complex_brand", "utterance": "Xiaomi tablet, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0518", "tier": "T3_complex_brand", "utterance": "LG tablet, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0519", "tier": "T3_complex_brand", "utterance": "Samsung iPad, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0520", "tier": "T3_complex_brand", "utterance": "Apple iPad, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0521", "tier": "T3_complex_brand", "utterance": "Xiaomi iPad, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0522", "tier": "T3_complex_brand", "utterance": "LG iPad, 10 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0523", "tier": "T3_complex_brand", "utterance": "Samsung iPad, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0524", "tier": "T3_complex_brand", "utterance": "Apple iPad, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0525", "tier": "T3_complex_brand", "utterance": "Xiaomi iPad, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0526", "tier": "T3_complex_brand", "utterance": "LG iPad, 15.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0527", "tier": "T3_complex_brand", "utterance": "Samsung iPad, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0528", "tier": "T3_complex_brand", "utterance": "Apple iPad, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0529", "tier": "T3_complex_brand", "utterance": "Xiaomi iPad, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0530", "tier": "T3_complex_brand", "utterance": "LG iPad, 20 bin, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0531", "tier": "T3_complex_brand", "utterance": "Samsung iPad, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0532", "tier": "T3_complex_brand", "utterance": "Apple iPad, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0533", "tier": "T3_complex_brand", "utterance": "Xiaomi iPad, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0534", "tier": "T3_complex_brand", "utterance": "LG iPad, 25.000 TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0535", "tier": "T3_complex_brand", "utterance": "Samsung iPad, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0536", "tier": "T3_complex_brand", "utterance": "Apple iPad, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0537", "tier": "T3_complex_brand", "utterance": "Xiaomi iPad, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0538", "tier": "T3_complex_brand", "utterance": "LG iPad, 30 bin TL, peşinat düşük, uzun vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0539", "tier": "T4_refinement", "utterance": "daha ucuz olsun", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0540", "tier": "T4_refinement", "utterance": "daha uygun kampanya", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0541", "tier": "T4_refinement", "utterance": "daha uzun vade", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0542", "tier": "T4_refinement", "utterance": "12 ay olsun", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0543", "tier": "T4_refinement", "utterance": "daha kısa vade", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0544", "tier": "T4_refinement", "utterance": "başka banka", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0545", "tier": "T4_refinement", "utterance": "Albaraka olmasın", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0546", "tier": "T4_refinement", "utterance": "daha fazla seçenek", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0547", "tier": "T4_refinement", "utterance": "alternatif var mı", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0548", "tier": "T4_refinement", "utterance": "bütçeyi artır", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0549", "tier": "T4_refinement", "utterance": "bütçeyi düşür", "expect_intent": "REFINEMENT", "phase_hint": "COMPLETED"}
+{"id": "G-0550", "tier": "T5_oos", "utterance": "stok var mı", "expect_intent": "OOS"}
+{"id": "G-0551", "tier": "T5_oos", "utterance": "kargo ne zaman", "expect_intent": "OOS"}
+{"id": "G-0552", "tier": "T5_oos", "utterance": "iade etmek istiyorum", "expect_intent": "OOS"}
+{"id": "G-0553", "tier": "T5_oos", "utterance": "şikayetim var", "expect_intent": "OOS"}
+{"id": "G-0554", "tier": "T5_oos", "utterance": "başvuru durumum ne", "expect_intent": "OOS"}
+{"id": "G-0555", "tier": "T5_oos", "utterance": "limitim ne kadar", "expect_intent": "OOS"}
+{"id": "G-0556", "tier": "T5_oos", "utterance": "kredi notum düşük", "expect_intent": "OOS"}
+{"id": "G-0557", "tier": "T5_oos", "utterance": "belge yüklemek istiyorum", "expect_intent": "OOS"}
+{"id": "G-0558", "tier": "T5_oos", "utterance": "iPhone ile Samsung karşılaştır", "expect_intent": "OOS"}
+{"id": "G-0559", "tier": "T5_oos", "utterance": "hangisi daha iyi kamera", "expect_intent": "OOS"}
+{"id": "G-0560", "tier": "T6_unknown", "utterance": "asdfgh", "expect_intent": "UNKNOWN"}
+{"id": "G-0561", "tier": "T6_unknown", "utterance": "???", "expect_intent": "UNKNOWN"}
+{"id": "G-0562", "tier": "T6_unknown", "utterance": "123", "expect_intent": "UNKNOWN"}
+{"id": "G-0563", "tier": "T6_unknown", "utterance": "anlamadım ki", "expect_intent": "UNKNOWN"}
+{"id": "G-0564", "tier": "T6_unknown", "utterance": "başka bir şey", "expect_intent": "UNKNOWN"}
+{"id": "G-0565", "tier": "T6_unknown", "utterance": "hava nasıl", "expect_intent": "UNKNOWN"}
+{"id": "G-0566", "tier": "T6_unknown", "utterance": "maç kaç kaç", "expect_intent": "UNKNOWN"}
+{"id": "G-0567", "tier": "T6_unknown", "utterance": "yemek tarifi ver", "expect_intent": "UNKNOWN"}
+{"id": "G-0568", "tier": "T2_extra", "utterance": "telefon lazım 35 bin civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0569", "tier": "T2_extra", "utterance": "40k bütçeyle telefon", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0570", "tier": "T2_extra", "utterance": "beyaz eşya bakacağız 30.000", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0571", "tier": "T2_extra", "utterance": "laptop arıyorum bütçe 25 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0572", "tier": "T2_extra", "utterance": "klima alacağım 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0573", "tier": "T2_extra", "utterance": "tv istiyorum 15.000 tl", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0574", "tier": "T2_extra", "utterance": "telefon lazım 35 bin civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0575", "tier": "T2_extra", "utterance": "40k bütçeyle telefon", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0576", "tier": "T2_extra", "utterance": "beyaz eşya bakacağız 30.000", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0577", "tier": "T2_extra", "utterance": "laptop arıyorum bütçe 25 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0578", "tier": "T2_extra", "utterance": "klima alacağım 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0579", "tier": "T2_extra", "utterance": "tv istiyorum 15.000 tl", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0580", "tier": "T2_extra", "utterance": "telefon lazım 35 bin civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0581", "tier": "T2_extra", "utterance": "40k bütçeyle telefon", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0582", "tier": "T2_extra", "utterance": "beyaz eşya bakacağız 30.000", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0583", "tier": "T2_extra", "utterance": "laptop arıyorum bütçe 25 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0584", "tier": "T2_extra", "utterance": "klima alacağım 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0585", "tier": "T2_extra", "utterance": "tv istiyorum 15.000 tl", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0586", "tier": "T2_extra", "utterance": "telefon lazım 35 bin civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0587", "tier": "T2_extra", "utterance": "40k bütçeyle telefon", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0588", "tier": "T2_extra", "utterance": "beyaz eşya bakacağız 30.000", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0589", "tier": "T2_extra", "utterance": "laptop arıyorum bütçe 25 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0590", "tier": "T2_extra", "utterance": "klima alacağım 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0591", "tier": "T2_extra", "utterance": "tv istiyorum 15.000 tl", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0592", "tier": "T2_extra", "utterance": "telefon lazım 35 bin civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0593", "tier": "T2_extra", "utterance": "40k bütçeyle telefon", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0594", "tier": "T2_extra", "utterance": "beyaz eşya bakacağız 30.000", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0595", "tier": "T2_extra", "utterance": "laptop arıyorum bütçe 25 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0596", "tier": "T2_extra", "utterance": "klima alacağım 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0597", "tier": "T2_extra", "utterance": "tv istiyorum 15.000 tl", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0598", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0599", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0600", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0601", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0602", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0603", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0604", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0605", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0606", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0607", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0608", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0609", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0610", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0611", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0612", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0613", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0614", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0615", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0616", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0617", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0618", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0619", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0620", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0621", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0622", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0623", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0624", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0625", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0626", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0627", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0628", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0629", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0630", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0631", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0632", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0633", "tier": "T3_extra", "utterance": "Samsung telefon 45 bin uzun vade düşük peşinat", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0634", "tier": "T3_extra", "utterance": "iPhone 50k 12 ay düşük faiz", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0635", "tier": "T3_extra", "utterance": "hem buzdolabı hem çamaşır 60 bin peşinat düşük", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0636", "tier": "T3_extra", "utterance": "oyun konsolu 20 bin kısa vade", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0637", "tier": "T3_extra", "utterance": "Apple tablet 30 bin tercihen 6 ay", "expect_intent": "COMPLEX_NEED"}
+{"id": "G-0638", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0639", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0640", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0641", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0642", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0643", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0644", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0645", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0646", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0647", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0648", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0649", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0650", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0651", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0652", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0653", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0654", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0655", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0656", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0657", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0658", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0659", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0660", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0661", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0662", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0663", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0664", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0665", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0666", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0667", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0668", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0669", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0670", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0671", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0672", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0673", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0674", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0675", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0676", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0677", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0678", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0679", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0680", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0681", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0682", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0683", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0684", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0685", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0686", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0687", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0688", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0689", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0690", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0691", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0692", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0693", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0694", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0695", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0696", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0697", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0698", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0699", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0700", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0701", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0702", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0703", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0704", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0705", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0706", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0707", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0708", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0709", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0710", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0711", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0712", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0713", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0714", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0715", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0716", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0717", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0718", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0719", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0720", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0721", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0722", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0723", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0724", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0725", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0726", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0727", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0728", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0729", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0730", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0731", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0732", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0733", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0734", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0735", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0736", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0737", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0738", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0739", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0740", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0741", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0742", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0743", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0744", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0745", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0746", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0747", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0748", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0749", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0750", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0751", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0752", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0753", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0754", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0755", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0756", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0757", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0758", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0759", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0760", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0761", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0762", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0763", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0764", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0765", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0766", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0767", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0768", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0769", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0770", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0771", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0772", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0773", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0774", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0775", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0776", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0777", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0778", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0779", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0780", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0781", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0782", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0783", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0784", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0785", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0786", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0787", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0788", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0789", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0790", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0791", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0792", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0793", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0794", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0795", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0796", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0797", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0798", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0799", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0800", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0801", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0802", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0803", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0804", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0805", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0806", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0807", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0808", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0809", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0810", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0811", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0812", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0813", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0814", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0815", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0816", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0817", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0818", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0819", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0820", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0821", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0822", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0823", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0824", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0825", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0826", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0827", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0828", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0829", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0830", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0831", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0832", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0833", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0834", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0835", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0836", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0837", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0838", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0839", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0840", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0841", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0842", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0843", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0844", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0845", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0846", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0847", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0848", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0849", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0850", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0851", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0852", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0853", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0854", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0855", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0856", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0857", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0858", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0859", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0860", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0861", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0862", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0863", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0864", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0865", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0866", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0867", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0868", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0869", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0870", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0871", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0872", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0873", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0874", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0875", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0876", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0877", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0878", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0879", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0880", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0881", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0882", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0883", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0884", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0885", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0886", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0887", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0888", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0889", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0890", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0891", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0892", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0893", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0894", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0895", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0896", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0897", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0898", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0899", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0900", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0901", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0902", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0903", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0904", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0905", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0906", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0907", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0908", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0909", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0910", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0911", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0912", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0913", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0914", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0915", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0916", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0917", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0918", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0919", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0920", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0921", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0922", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0923", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0924", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0925", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0926", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0927", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0928", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0929", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0930", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0931", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0932", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0933", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0934", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0935", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0936", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0937", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0938", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0939", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0940", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0941", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0942", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0943", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0944", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0945", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0946", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0947", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0948", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0949", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0950", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0951", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0952", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0953", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0954", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0955", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0956", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0957", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0958", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0959", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0960", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0961", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0962", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0963", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0964", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0965", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0966", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0967", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0968", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0969", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0970", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0971", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0972", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0973", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0974", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0975", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0976", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0977", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0978", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0979", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0980", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0981", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0982", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0983", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0984", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0985", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0986", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0987", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0988", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0989", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0990", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0991", "tier": "T2_pad", "utterance": "cep telefonu, 10 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0992", "tier": "T2_pad", "utterance": "cep telefonu, 15.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0993", "tier": "T2_pad", "utterance": "cep telefonu, 20 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0994", "tier": "T2_pad", "utterance": "cep telefonu, 25.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0995", "tier": "T2_pad", "utterance": "cep telefonu, 30 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0996", "tier": "T2_pad", "utterance": "cep telefonu, 40 bin TL civarı", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0997", "tier": "T2_pad", "utterance": "cep telefonu, 50.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0998", "tier": "T2_pad", "utterance": "cep telefonu, 60 bin", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-0999", "tier": "T2_pad", "utterance": "cep telefonu, 75.000 TL", "expect_intent": "NEEDS_ANALYSIS"}
+{"id": "G-1000", "tier": "T2_pad", "utterance": "cep telefonu, 100 bin TL", "expect_intent": "NEEDS_ANALYSIS"}
