@@ -17,6 +17,12 @@ from taksitlio.product_query.chat_bridge import (
     run_catalog_search_for_chat,
 )
 from taksitlio.response.grounded import GroundedReply, GroundedResponseGenerator
+from taksitlio.pipeline.orchestrator_budget_gate import (
+    has_budget_cue,
+    need_profile_has_budget,
+    should_run_early_product_search,
+    should_try_product_path,
+)
 from taksitlio.search_sessions.chat_bridge import bridge_search_start
 from taksitlio.search_sessions.orchestrator import SearchOrchestrator
 from taksitlio.semantic_matching.query_intent import is_off_domain_for_assist
@@ -93,13 +99,39 @@ class ChatPipeline:
                 latency_ms=(time.perf_counter() - started) * 1000.0,
             )
 
-        # ADR-011: clarification-first product search before legacy understanding LLM.
-        # Explicit product_phase keeps ADR-010 catalog progressive card path.
+        # Conversion-first: product cue without budget → ask budget before
+        # search-sessions short-circuit or understanding fallback dumps OOS/cards.
+        _phase = (request.product_phase or "").upper()
         if (
-            request.prefer_search_sessions
-            and self._search_orchestrator is not None
-            and not request.product_phase
-            and self._looks_like_product_query(request.message)
+            self._looks_like_product_query(request.message)
+            and not has_budget_cue(request.message)
+            and _phase not in ("FIRST_CARDS", "FINANCE_ENRICHED")
+        ):
+            reply = await self._responder.clarify("budget")
+            return ChatResponse(
+                session_id=request.session_id,
+                reply=reply.text,
+                decision="CLARIFY",
+                need_profile=None,
+                cards=[],
+                phase="CLARIFY",
+                diagnostics={
+                    "reason": "budget_required_before_products",
+                    "product_path": False,
+                    "reply_template": reply.template_used,
+                },
+                latency_ms=(time.perf_counter() - started) * 1000.0,
+                clarification={"text": reply.text},
+            )
+
+        # ADR-011: product search only when budget is present OR client
+        # explicitly asked for progressive catalog (product_phase).
+        # Without budget, do not dump MediaMarkt cards — conversion clarify first.
+        if self._search_orchestrator is not None and should_run_early_product_search(
+            message=request.message,
+            product_phase=request.product_phase,
+            prefer_search_sessions=request.prefer_search_sessions,
+            looks_like_product=self._looks_like_product_query(request.message),
         ):
             await self._refresh_search_catalog(request.message)
             bridged = bridge_search_start(
@@ -204,27 +236,53 @@ class ChatPipeline:
                 category_codes=category_codes,
             )
 
-        # Prefer ADR-010 catalog path when products exist; else legacy V004 campaigns.
-        product_hit = await self._try_product_path(request, need_profile)
-        if product_hit is not None:
-            reply, cards, phase, product_extra = product_hit
-            return self._build(
-                request,
-                turn,
-                reply,
-                match_result.matches,
-                [],
-                started,
-                cards=cards,
-                phase=phase,
-                extra={
-                    "product_path": True,
-                    "model_profile": understanding.used_profile_code,
-                    "fallback_used": understanding.fallback_used,
-                    "was_update": turn.was_update,
-                    **product_extra,
-                },
-            )
+        # Conversion-first: without budget do NOT dump product catalog.
+        # Explicit product_phase=FIRST_CARDS still allows browse.
+        if should_try_product_path(
+            need_profile=need_profile,
+            product_phase=request.product_phase,
+            product_path_enabled=bool(
+                self._product_path and getattr(self._product_path, "enabled", True)
+            ),
+        ):
+            product_hit = await self._try_product_path(request, need_profile)
+            if product_hit is not None:
+                reply, cards, phase, product_extra = product_hit
+                return self._build(
+                    request,
+                    turn,
+                    reply,
+                    match_result.matches,
+                    [],
+                    started,
+                    cards=cards,
+                    phase=phase,
+                    extra={
+                        "product_path": True,
+                        "model_profile": understanding.used_profile_code,
+                        "fallback_used": understanding.fallback_used,
+                        "was_update": turn.was_update,
+                        **product_extra,
+                    },
+                )
+        else:
+            # Budget missing → clarify before products/campaigns dump
+            if need_profile and not need_profile_has_budget(need_profile):
+                reply = await self._responder.clarify("budget")
+                return self._build(
+                    request,
+                    turn,
+                    reply,
+                    match_result.matches,
+                    [],
+                    started,
+                    phase="CLARIFY",
+                    extra={
+                        "reason": "budget_required_before_products",
+                        "product_path": False,
+                        "category_codes": category_codes,
+                    },
+                )
 
         # Retrieve → eligibility → rank (legacy campaigns)
         candidates = await self._retriever.retrieve(category_codes)
