@@ -148,12 +148,29 @@ class GuestOrchestratorAdapter:
 
 class _NullFastExtractor:
     async def extract(self, utterance: str, locale: str = "tr-TR") -> dict:
-        # Minimal fallback – gerçek FAST yoksa en azından boş döner
-        return {
-            "intent": {"type": "UNKNOWN"},
-            "budget": {},
-            "category_signals": {"positive": [], "negative": []},
-        }
+        # Prefer production query parser so budget/intent are not invented empty.
+        try:
+            from taksitlio.query_understanding.fast_parser import fast_parse
+
+            parsed = fast_parse(utterance).to_dict()
+            return {
+                "intent": {"type": parsed.get("intent") or "PRODUCT_SEARCH"},
+                "budget": parsed.get("budget") or {},
+                "category_signals": {
+                    "positive": [
+                        str(c.get("display_name") or "")
+                        for c in (parsed.get("positive_categories") or [])
+                        if c.get("display_name")
+                    ],
+                    "negative": [],
+                },
+            }
+        except Exception:
+            return {
+                "intent": {"type": "UNKNOWN"},
+                "budget": {},
+                "category_signals": {"positive": [], "negative": []},
+            }
 
 
 class _NullMatcher:

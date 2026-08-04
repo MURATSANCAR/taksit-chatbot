@@ -15,18 +15,17 @@ Beklenen:
 
 from __future__ import annotations
 
+from uuid import UUID, uuid4
+
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-# These imports assume the package is installed in editable mode.
-# In CI the same fixtures used by the existing evaluation suite are reused.
 from taksitlio.guest.entry import GuestEntryHandler, GuestPhase
-from taksitlio.guest.needs_analysis import NeedsAnalysisService, NeedsAnalysisOutcome
+from taksitlio.guest.needs_analysis import NeedsAnalysisService
 
 
-# ---------------------------------------------------------------------------
-# Fixtures that mirror production components with deterministic behaviour
-# ---------------------------------------------------------------------------
+SESSION_ID = UUID("11111111-1111-4111-8111-111111111111")
+
 
 @pytest.fixture
 def fake_fast():
@@ -46,6 +45,7 @@ def fake_matcher():
         "status": "MATCHED",
         "category_id": 1,
         "category_name": "Cep Telefonu",
+        "category_code": "MOBILE_PHONE",
         "score": 0.94,
         "method": "embedding+lexical",
     }
@@ -122,11 +122,10 @@ def needs_service(
 @pytest.fixture
 def fake_state_manager():
     mgr = AsyncMock()
-    # Minimal session object
     session = MagicMock()
-    session.session_id = "guest-test-001"
+    session.session_id = SESSION_ID
     session.revision = 0
-    session.data = {"guest": {"phase": "AWAITING_NEED"}}
+    session.resolved_context = {"guest": {"phase": "AWAITING_NEED"}}
     mgr.create_session.return_value = session
     mgr.get_session.return_value = session
 
@@ -136,13 +135,8 @@ def fake_state_manager():
     return mgr
 
 
-# ---------------------------------------------------------------------------
-# Tests
-# ---------------------------------------------------------------------------
-
 @pytest.mark.asyncio
 async def test_golden_guest_phone_40k(needs_service, fake_state_manager):
-    """Exact product use-case golden path."""
     handler = GuestEntryHandler(
         state_manager=fake_state_manager,
         needs_service=needs_service,
@@ -150,14 +144,12 @@ async def test_golden_guest_phone_40k(needs_service, fake_state_manager):
         membership_cta_enabled=True,
     )
 
-    # 1. Opening
     opening = await handler.start_session(locale="tr-TR")
     assert opening.phase == GuestPhase.OPENING
     assert "ihtiyaç analizi" in opening.messages[0]["content"].lower()
 
-    # 2. User free-text turn
     result = await handler.handle_turn(
-        session_id="guest-test-001",
+        session_id=str(SESSION_ID),
         user_utterance="cep telefonu alıcaz, bütçem 40 bin TL civarı",
         expected_revision=1,
         client_message_id="msg-1",
@@ -170,12 +162,10 @@ async def test_golden_guest_phone_40k(needs_service, fake_state_manager):
     assert result.membership_cta["label"] == "Üye ol, kampanyadan yararlan"
     assert result.membership_cta["action"] == "NAVIGATE_REGISTER"
 
-    # At least one campaign card
     cards = [m for m in result.messages if m.get("type") == "campaign_card"]
     assert 1 <= len(cards) <= 2
     assert cards[0]["card"]["campaign_id"] in (9502, 7802)
 
-    # Diagnostics should show the expected extractions
     assert result.diagnostics["category_id"] == 1
     assert result.diagnostics["budget_value"] == 40000.0
     assert result.diagnostics["gate_status"] in ("OK", "PROVISIONAL")
@@ -183,17 +173,16 @@ async def test_golden_guest_phone_40k(needs_service, fake_state_manager):
 
 @pytest.mark.asyncio
 async def test_missing_budget_triggers_clarify(needs_service, fake_state_manager):
-    """When budget is absent the bot asks once for it."""
     needs_service._fast.extract.return_value = {
         "intent": {"type": "PRODUCT_SEARCH"},
         "budget": {},
         "category_signals": {"positive": ["cep telefonu"]},
     }
-    # Force matcher to still return category so only budget is missing
     needs_service._matcher.match.return_value = {
         "status": "MATCHED",
         "category_id": 1,
         "category_name": "Cep Telefonu",
+        "category_code": "MOBILE_PHONE",
         "score": 0.9,
     }
 
@@ -202,7 +191,7 @@ async def test_missing_budget_triggers_clarify(needs_service, fake_state_manager
         needs_service=needs_service,
     )
     result = await handler.handle_turn(
-        session_id="guest-test-001",
+        session_id=str(SESSION_ID),
         user_utterance="cep telefonu bakıyorum",
         expected_revision=1,
         client_message_id="msg-2",
@@ -214,7 +203,6 @@ async def test_missing_budget_triggers_clarify(needs_service, fake_state_manager
 
 @pytest.mark.asyncio
 async def test_no_campaign_still_offers_cta(needs_service, fake_state_manager):
-    """Empty ranking must still surface the membership CTA."""
     needs_service._ranker.rank.return_value = []
     needs_service._campaigns.list_active.return_value = []
 
@@ -223,7 +211,7 @@ async def test_no_campaign_still_offers_cta(needs_service, fake_state_manager):
         needs_service=needs_service,
     )
     result = await handler.handle_turn(
-        session_id="guest-test-001",
+        session_id=str(SESSION_ID),
         user_utterance="cep telefonu alıcaz, bütçem 40 bin TL civarı",
         expected_revision=1,
         client_message_id="msg-3",
@@ -231,4 +219,3 @@ async def test_no_campaign_still_offers_cta(needs_service, fake_state_manager):
     )
     assert result.phase == GuestPhase.COMPLETED
     assert result.membership_cta is not None
-    assert "üye ol" in result.messages[0]["content"].lower() or True  # soft check

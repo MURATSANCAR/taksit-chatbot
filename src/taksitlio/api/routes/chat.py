@@ -43,6 +43,7 @@ class ChatMessageOut(BaseModel):
     events_url: Optional[str] = None
     clarification: Optional[Dict[str, Any]] = None
     chips: List[Dict[str, Any]] = Field(default_factory=list)
+    revision: Optional[int] = None
 
 
 @router.post("/chat", response_model=ChatMessageOut)
@@ -156,6 +157,7 @@ def _map_guest_to_out(result: dict) -> ChatMessageOut:
         events_url=None,
         clarification={"text": reply} if phase == "CLARIFY" else None,
         chips=[],
+        revision=result.get("revision"),
     )
 
 
