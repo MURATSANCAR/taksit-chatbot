@@ -6,9 +6,9 @@ import os
 from typing import Any, Mapping, Optional
 
 
-DEFAULT_LABEL = "Taksitlio'ya üye ol"
+DEFAULT_LABEL = "Üye ol, kampanyadan yararlan"
 DEFAULT_BODY = (
-    "Bu seçeneklerden yararlanmak ve başvuruyu tamamlamak için üye olun."
+    "Bu teklifleri kilitlemek ve başvuruya devam etmek için ücretsiz üye olman yeterli."
 )
 
 

@@ -66,9 +66,9 @@
   }
 
   var GREETING_ASSIST =
-    "Tanıştığımıza memnun oldum. Ben Taksitlio Yapay Zeka asistanıyım; " +
-    "ihtiyacınız olan ürünleri en uygun ve en iyi ödeme koşullarıyla bulmanız " +
-    "için buradayım. Hangi ürünü arıyorsunuz?";
+    "Senin için ihtiyaç analizi yapayım mı? " +
+    "İhtiyacını ve bütçeni yazman yeterli; sana uygun ürün ve kampanya " +
+    "seçeneklerini bulmana yardımcı olayım.";
   var OUT_OF_SCOPE_ASSIST =
     "Bu konuda yardımcı olamam. Ben Taksitlio Yapay Zeka asistanıyım; " +
     "ürün ve taksit kampanyalarında size en uygun seçenekleri bulmak için " +
@@ -362,16 +362,17 @@
       var prev = threadEl.querySelector("[data-membership-cta]");
       if (prev) prev.remove();
       if (!cta || cta.enabled === false) return;
-      var label = String(cta.label || "Taksitlio'ya üye ol");
+      var label = String(cta.label || "Üye ol, kampanyadan yararlan");
       var body =
         String(
           cta.body ||
-            "Bu seçeneklerden yararlanmak ve başvuruyu tamamlamak için üye olun."
+            "Bu teklifleri kilitlemek ve başvuruya devam etmek için ücretsiz üye olman yeterli."
         );
       var url = cta.url ? String(cta.url) : "";
       // Never invent finance claims in CTA copy.
       if (/(%|\bTL\b|\bfaiz\b)/i.test(label + " " + body)) {
-        body = "Bu seçeneklerden yararlanmak ve başvuruyu tamamlamak için üye olun.";
+        body =
+          "Bu teklifleri kilitlemek ve başvuruya devam etmek için ücretsiz üye olman yeterli.";
       }
       var card = document.createElement("div");
       card.className = "cta-card";

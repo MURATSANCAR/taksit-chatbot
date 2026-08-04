@@ -253,7 +253,7 @@ class GroundedResponseGenerator:
         public_cards = [dict(c) for c in cards[: policy.max_campaigns_in_reply]]
         cta = MembershipCTA(
             enabled=policy.membership_cta_enabled,
-            label="Taksitlio'ya üye ol",
+            label="Üye ol, kampanyadan yararlan",
             url=None,
             reason="product_path_cta",
         )
@@ -582,7 +582,7 @@ def _build_cta(
         if camp.membership_required:
             return MembershipCTA(
                 enabled=True,
-                label=camp.membership_cta_label or "Taksitlio'ya üye ol",
+                label=camp.membership_cta_label or "Üye ol, kampanyadan yararlan",
                 url=camp.membership_cta_url,
                 reason="membership_required",
             )
@@ -590,13 +590,13 @@ def _build_cta(
         camp = ranked[0].campaign
         return MembershipCTA(
             enabled=True,
-            label=camp.membership_cta_label or "Taksitlio'ya üye ol",
+            label=camp.membership_cta_label or "Üye ol, kampanyadan yararlan",
             url=camp.membership_cta_url,
             reason="default_cta",
         )
     return MembershipCTA(
         enabled=True,
-        label="Taksitlio'ya üye ol",
+        label="Üye ol, kampanyadan yararlan",
         url=None,
         reason="fallback_cta",
     )

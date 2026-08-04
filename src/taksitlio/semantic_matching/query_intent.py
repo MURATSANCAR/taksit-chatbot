@@ -226,9 +226,9 @@ _CHOICE_RE = re.compile(
 )
 
 GREETING_ASSIST_MESSAGE = (
-    "Tanıştığımıza memnun oldum. Ben Taksitlio Yapay Zeka asistanıyım; "
-    "ihtiyacınız olan ürünleri en uygun ve en iyi ödeme koşullarıyla bulmanız "
-    "için buradayım. Hangi ürünü arıyorsunuz?"
+    "Senin için ihtiyaç analizi yapayım mı? "
+    "İhtiyacını ve bütçeni yazman yeterli; sana uygun ürün ve kampanya "
+    "seçeneklerini bulmana yardımcı olayım."
 )
 
 OUT_OF_SCOPE_ASSIST_MESSAGE = (

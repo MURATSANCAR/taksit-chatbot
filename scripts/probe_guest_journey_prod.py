@@ -30,7 +30,7 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / "artifacts" / "e2e-production-verification" / "guest-journey-probe"
 
-GREETING_SNIP = "Tanıştığımıza memnun oldum"
+GREETING_SNIP = "ihtiyaç analizi"
 OFFTOPIC_SNIP = "Bu konuda yardımcı olamam"
 LATENCY_OFF_DOMAIN_MS = 500  # hard fail above this for pure greet/chat
 

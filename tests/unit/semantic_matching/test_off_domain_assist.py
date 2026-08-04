@@ -37,7 +37,8 @@ def test_greeting_gets_warm_intro() -> None:
     assert is_greeting_utterance("sen kimsin") is True
     assert is_greeting_utterance("tanışalım") is True
     assert assist_message_for_utterance("merhaba") == GREETING_ASSIST_MESSAGE
-    assert "Tanıştığımıza memnun oldum" in assist_message_for_utterance("kimsin")
+    assert "ihtiyaç analizi" in assist_message_for_utterance("kimsin")
+    assert "Tanıştığımıza memnun oldum" not in assist_message_for_utterance("kimsin")
 
 
 def test_offtopic_gets_redirect_not_greeting() -> None:
