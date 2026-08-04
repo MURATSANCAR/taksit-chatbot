@@ -88,8 +88,7 @@ _NEED_PRODUCT = re.compile(
 )
 
 _BUDGET = re.compile(
-    r"(\d+(?:[.,]\d{3})*|\d+)\s*bin(?:\s*(?:tl|lira|₺))?|"
-    r"(\d+(?:[.,]\d{3})*|\d+)\s*(?:tl|lira|₺)|bütçe",
+    r"(\d+(?:[.,]\d{3})*|\d+)\s*(?:bin)?\s*(?:tl|lira|₺)|bütçe",
     re.IGNORECASE,
 )
 
@@ -102,11 +101,10 @@ _COMPLEX_MARKERS = re.compile(
 )
 
 _REFINEMENT = re.compile(
-    r"\b(daha\s+ucuz\w*|daha\s+uygun\w*|daha\s+uzun\s+vade|daha\s+kısa|"
+    r"\b(daha\s+ucuz|daha\s+uygun|daha\s+uzun\s+vade|daha\s+kısa|"
     r"başka\s+banka|diğer\s+banka|daha\s+fazla\s+seçenek|"
     r"bütçe(?:yi)?\s+(?:artır|düşür)|alternatif|"
-    r"\d{1,2}\s*ay\s+olsun|albaraka\s+olmasın|kuveyt\s+olmasın|"
-    r"ucuzu\s+var)\b",
+    r"\d{1,2}\s*ay\s+olsun|albaraka\s+olmasın|kuveyt\s+olmasın)\b",
     re.IGNORECASE,
 )
 

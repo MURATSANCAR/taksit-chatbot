@@ -38,8 +38,8 @@ class RefinementSignal:
 # ---------------------------------------------------------------------------
 
 _CHEAPER = re.compile(
-    r"\b(daha\s+ucuz|daha\s+uygun|düşük\s+(?:faiz|oran|taksit|kar)|"
-    r"en\s+ucuz|ucuzlat|indirim|daha\s+az\s+öde)",
+    r"\b(daha\s+ucuz\w*|daha\s+uygun\w*|düşük\s+(?:faiz|oran|taksit|kar)|"
+    r"en\s+ucuz\w*|ucuzlat|indirim|daha\s+az\s+öde|ucuzu\s+var)",
     re.IGNORECASE,
 )
 _LONGER = re.compile(

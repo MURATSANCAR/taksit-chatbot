@@ -9,6 +9,7 @@ Extends the working simple path with:
 from __future__ import annotations
 
 import logging
+import re
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -141,7 +142,7 @@ class GuestEntryHandler:
             phase=GuestPhase.OPENING,
             messages=[{"role": "assistant", "content": self._opening, "type": "text"}],
             state_revision=getattr(cas, "revision", state.revision + 1),
-            diagnostics={"entry": "proactive_opening"},
+            diagnostics={"entry": "proactive_opening", "intent": "SMALLTALK"},
         )
 
     async def handle_turn(
@@ -168,6 +169,7 @@ class GuestEntryHandler:
         guest_ctx = (state.resolved_context or {}).get("guest") or {}
         current_phase = guest_ctx.get("phase", GuestPhase.AWAITING_NEED.value)
         last_rec = guest_ctx.get("last_recommendation")
+        pending_need = guest_ctx.get("pending_need") or {}
 
         # ---------- 1. Complex / out-of-scope → strong fallback ----------
         if not bypass_oos and is_complex_or_oos(user_utterance):
@@ -219,12 +221,42 @@ class GuestEntryHandler:
             )
 
         # ---------- 3. First-time needs analysis (OPENING / AWAITING / CLARIFY) ----------
+        analyse_utterance = user_utterance
+        if current_phase == GuestPhase.CLARIFY.value and pending_need:
+            analyse_utterance = self._merge_clarify_utterance(user_utterance, pending_need)
+
         outcome = await self._needs.analyse(
-            utterance=user_utterance,
+            utterance=analyse_utterance,
             session_id=str(sid),
             locale=locale,
             max_recommendations=self._max_recs,
         )
+        # Soft-merge pending slots if FAST/match still missed one side
+        if pending_need:
+            if outcome.category_id is None and pending_need.get("category_id") is not None:
+                outcome.category_id = pending_need.get("category_id")
+                outcome.category_name = pending_need.get("category_name") or outcome.category_name
+                if hasattr(outcome, "category_code"):
+                    outcome.category_code = pending_need.get("category_code") or getattr(
+                        outcome, "category_code", None
+                    )
+            if outcome.budget_value is None and pending_need.get("budget_value") is not None:
+                outcome.budget_value = pending_need.get("budget_value")
+            # Re-run once with merged natural text if we still lack ranks but have both slots
+            if (
+                outcome.category_id
+                and outcome.budget_value
+                and not outcome.ranked_campaigns
+                and analyse_utterance == user_utterance
+            ):
+                merged = self._merge_clarify_utterance(user_utterance, pending_need)
+                if merged != user_utterance:
+                    outcome = await self._needs.analyse(
+                        utterance=merged,
+                        session_id=str(sid),
+                        locale=locale,
+                        max_recommendations=self._max_recs,
+                    )
 
         diagnostics = {
             "phase_before": current_phase,
@@ -275,6 +307,7 @@ class GuestEntryHandler:
                     }
                 ],
                 diagnostics=diagnostics,
+                extra_guest={"pending_need": self._pending_from_outcome(outcome)},
             )
 
         if not outcome.budget_value:
@@ -292,6 +325,7 @@ class GuestEntryHandler:
                     }
                 ],
                 diagnostics=diagnostics,
+                extra_guest={"pending_need": self._pending_from_outcome(outcome)},
             )
 
         if not outcome.category_id:
@@ -309,6 +343,7 @@ class GuestEntryHandler:
                     }
                 ],
                 diagnostics=diagnostics,
+                extra_guest={"pending_need": self._pending_from_outcome(outcome)},
             )
 
         if not outcome.ranked_campaigns:
@@ -568,6 +603,40 @@ class GuestEntryHandler:
     # ------------------------------------------------------------------
     # Shared helpers
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _pending_from_outcome(outcome: Any) -> dict[str, Any]:
+        return {
+            "category_id": getattr(outcome, "category_id", None),
+            "category_name": getattr(outcome, "category_name", None),
+            "category_code": getattr(outcome, "category_code", None),
+            "budget_value": getattr(outcome, "budget_value", None),
+        }
+
+    @staticmethod
+    def _merge_clarify_utterance(utterance: str, pending: dict[str, Any]) -> str:
+        """Combine prior CLARIFY slots with the new turn so FAST/match see both."""
+        text = (utterance or "").strip()
+        cat = pending.get("category_name") or pending.get("category_code")
+        bud = pending.get("budget_value")
+        chunks: list[str] = []
+        has_product = bool(
+            re.search(
+                r"telefon|tablet|laptop|bilgisayar|klima|televizyon|\btv\b|"
+                r"buzdolab|çamaşır|bulaşık|konsol|playstation",
+                text,
+                re.I,
+            )
+        )
+        if cat and not has_product:
+            chunks.append(str(cat))
+        chunks.append(text)
+        if bud is not None and not re.search(r"\d", text):
+            try:
+                chunks.append(f"bütçem {float(bud):.0f} TL")
+            except (TypeError, ValueError):
+                pass
+        return ", ".join(c for c in chunks if c)
 
     async def _finalize(
         self,

@@ -1,0 +1,9 @@
+{
+  "scenarios": 75,
+  "scenarios_ok": 75,
+  "scenario_accuracy": 1.0,
+  "turns": 157,
+  "turns_ok": 157,
+  "turn_accuracy": 1.0,
+  "failures_sample": []
+}

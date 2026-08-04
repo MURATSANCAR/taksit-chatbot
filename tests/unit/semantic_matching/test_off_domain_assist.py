@@ -72,6 +72,9 @@ def test_product_queries_stay_in_domain(utterance: str) -> None:
         "taksit sayısın en az olanları getir bana",
         "en düşük aylık ödeme",
         "en uzun vade",
+        "daha ucuzu var mı",
+        "daha ucuz olsun",
+        "daha uygun bir şey",
     ),
 )
 def test_ranking_followups_stay_in_domain(utterance: str) -> None:

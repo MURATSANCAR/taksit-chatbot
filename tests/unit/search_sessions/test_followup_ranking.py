@@ -260,6 +260,9 @@ def test_fast_parser_ranking_cues_no_bogus_categories() -> None:
     assert detect_ranking_mode("en ucuz olsun") == "CHEAPEST_PRODUCT_PRICE"
     assert detect_ranking_mode("en uzun vade") == "LONGEST_TERM"
     assert detect_ranking_mode("en düşük aylık ödeme") == "LOWEST_MONTHLY_PAYMENT"
+    assert detect_ranking_mode("daha ucuzu var mı") == "CHEAPEST_PRODUCT_PRICE"
+    assert detect_ranking_mode("daha ucuz olsun") == "CHEAPEST_PRODUCT_PRICE"
+    assert detect_ranking_mode("daha uygun bir şey") == "CHEAPEST_PRODUCT_PRICE"
 
     parse = fast_parse("taksit sayısın en az olanları getir bana")
     assert parse.ranking_mode == "SHORTEST_TERM"

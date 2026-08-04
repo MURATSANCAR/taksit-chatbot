@@ -1,0 +1,2181 @@
+{
+  "base_url": "http://127.0.0.1:8011",
+  "scenarios": 75,
+  "scenarios_ok": 75,
+  "scenario_accuracy": 1.0,
+  "turns": 157,
+  "turns_ok": 157,
+  "turn_accuracy": 1.0,
+  "results": [
+    {
+      "id": "MT-001",
+      "name": "happy_open_need_refine",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "merhaba",
+          "phase": "OPENING",
+          "intent": "SMALLTALK",
+          "revision": 1,
+          "cards": false,
+          "cta": false,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu alıcaz, bütçem 40 bin TL civarı",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 2,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-002",
+      "name": "happy_need_then_faq_membership",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet, 15 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "nasıl üye olurum?",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-003",
+      "name": "happy_complex_then_longer_tenure",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "Samsung telefon 45 bin, uzun vade, düşük peşinat",
+          "phase": "COMPLETED",
+          "intent": "COMPLEX_NEED",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-010",
+      "name": "clarify_budget_then_complete",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "cep telefonu bakıyorum",
+          "phase": "CLARIFY",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": false,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "bütçem 40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-011",
+      "name": "clarify_category_then_complete",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "bütçem 30.000 TL",
+          "phase": "CLARIFY",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": false,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "buzdolabı alacağım",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 3,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-012",
+      "name": "complex_missing_budget_clarify",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "iPhone uzun vade düşük peşinat istiyorum",
+          "phase": "CLARIFY",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": false,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "50 bin TL civarı",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 3,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-020",
+      "name": "oos_after_recommendation",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop 25 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "stok var mı",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 2,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-021",
+      "name": "unknown_then_recover",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "asdfgh",
+          "phase": "UNKNOWN",
+          "intent": "UNKNOWN",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu, 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-022",
+      "name": "compare_oos_then_need",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "iPhone ile Samsung karşılaştır",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "Samsung telefon 40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-030",
+      "name": "faq_chain_membership_fees",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "üyelik zorunlu mu",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "tahsis ücreti var mı",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 2,
+          "utterance": "taksit nasıl işler",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-031",
+      "name": "faq_then_need",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "Taksitlio ne işe yarar",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "klima 20 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-040",
+      "name": "double_refine",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "cep telefonu 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başka banka",
+          "phase": "COMPLETED",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 2,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 4,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-041",
+      "name": "refine_then_membership_faq",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 35 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 2,
+          "utterance": "nasıl üye olurum?",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 3,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-051",
+      "name": "noisy_1",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tlfn 40b",
+          "phase": "UNKNOWN",
+          "intent": "UNKNOWN",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-052",
+      "name": "noisy_2",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "CEP TEL 40.000tl",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-053",
+      "name": "noisy_3",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "  samsung   s23  ,  30bin  ",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-054",
+      "name": "noisy_4",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "bütçe:40.000 ürün:telefon",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-060",
+      "name": "long_session_8_turns",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "selam",
+          "phase": "OPENING",
+          "intent": "SMALLTALK",
+          "revision": 1,
+          "cards": false,
+          "cta": false,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "kampanya koşulları ne",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 2,
+          "utterance": "telefon bakıyorum",
+          "phase": "CLARIFY",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": false,
+          "ok": true
+        },
+        {
+          "turn": 3,
+          "utterance": "40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 4,
+          "utterance": "daha ucuz",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 4,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 5,
+          "utterance": "stok var mı",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 4,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 6,
+          "utterance": "başka banka",
+          "phase": "COMPLETED",
+          "intent": "REFINEMENT",
+          "revision": 5,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 7,
+          "utterance": "nasıl üye olurum?",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 5,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-101",
+      "name": "variant_need_1",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "cep telefonu, bütçem 15 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-102",
+      "name": "variant_need_2",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet, bütçem 25.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-103",
+      "name": "variant_need_3",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop, bütçem 40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-104",
+      "name": "variant_need_4",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima, bütçem 50 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-105",
+      "name": "variant_need_5",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "televizyon, bütçem 60.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-106",
+      "name": "variant_need_6",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "cep telefonu, bütçem 15 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-107",
+      "name": "variant_need_7",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet, bütçem 25.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-108",
+      "name": "variant_need_8",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop, bütçem 40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-109",
+      "name": "variant_need_9",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima, bütçem 50 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-110",
+      "name": "variant_need_10",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "televizyon, bütçem 60.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-111",
+      "name": "variant_need_11",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "cep telefonu, bütçem 15 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-112",
+      "name": "variant_need_12",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet, bütçem 25.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-113",
+      "name": "variant_need_13",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop, bütçem 40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-114",
+      "name": "variant_need_14",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima, bütçem 50 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-115",
+      "name": "variant_need_15",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "televizyon, bütçem 60.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-116",
+      "name": "variant_need_16",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "cep telefonu, bütçem 15 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-117",
+      "name": "variant_need_17",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet, bütçem 25.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-118",
+      "name": "variant_need_18",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop, bütçem 40 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-119",
+      "name": "variant_need_19",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima, bütçem 50 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-120",
+      "name": "variant_need_20",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "televizyon, bütçem 60.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-201",
+      "name": "variant_faq_1",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "nasıl üye olurum?",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-202",
+      "name": "variant_faq_2",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "taksit nasıl işler",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-203",
+      "name": "variant_faq_3",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "bankalar arası fark ne",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-204",
+      "name": "variant_faq_4",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "gizli masraf çıkar mı",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-205",
+      "name": "variant_faq_5",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "üyelik ücretsiz mi",
+          "phase": "FAQ",
+          "intent": "FAQ",
+          "revision": 1,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "cep telefonu 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-300",
+      "name": "pad_need_refine_0",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon alacağım bütçe 12 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-301",
+      "name": "pad_need_refine_1",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet alacağım bütçe 18.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-302",
+      "name": "pad_need_refine_2",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop alacağım bütçe 22 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başka banka",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-303",
+      "name": "pad_need_refine_3",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "TV alacağım bütçe 33.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "12 ay olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-304",
+      "name": "pad_need_refine_4",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima alacağım bütçe 41 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha fazla seçenek",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-305",
+      "name": "pad_need_refine_5",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "buzdolabı alacağım bütçe 55.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-306",
+      "name": "pad_need_refine_6",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "PlayStation alacağım bütçe 70 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-307",
+      "name": "pad_need_refine_7",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "kulaklık alacağım bütçe 90.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başka banka",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-308",
+      "name": "pad_need_refine_8",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon alacağım bütçe 12 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "12 ay olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-309",
+      "name": "pad_need_refine_9",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet alacağım bütçe 18.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha fazla seçenek",
+          "phase": "COMPLETED",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-310",
+      "name": "pad_need_refine_10",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop alacağım bütçe 22 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-311",
+      "name": "pad_need_refine_11",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "TV alacağım bütçe 33.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-312",
+      "name": "pad_need_refine_12",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima alacağım bütçe 41 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başka banka",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-313",
+      "name": "pad_need_refine_13",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "buzdolabı alacağım bütçe 55.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "12 ay olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-314",
+      "name": "pad_need_refine_14",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "PlayStation alacağım bütçe 70 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha fazla seçenek",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-315",
+      "name": "pad_need_refine_15",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "kulaklık alacağım bütçe 90.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-316",
+      "name": "pad_need_refine_16",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon alacağım bütçe 12 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-317",
+      "name": "pad_need_refine_17",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "tablet alacağım bütçe 18.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başka banka",
+          "phase": "COMPLETED",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-318",
+      "name": "pad_need_refine_18",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "laptop alacağım bütçe 22 bin TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "12 ay olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-319",
+      "name": "pad_need_refine_19",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "TV alacağım bütçe 33.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha fazla seçenek",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-320",
+      "name": "pad_need_refine_20",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "klima alacağım bütçe 41 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha ucuz",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-321",
+      "name": "pad_need_refine_21",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "buzdolabı alacağım bütçe 55.000",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "daha uzun vade",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-322",
+      "name": "pad_need_refine_22",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "PlayStation alacağım bütçe 70 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başka banka",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-323",
+      "name": "pad_need_refine_23",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "kulaklık alacağım bütçe 90.000 TL",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "12 ay olsun",
+          "phase": "REFINING",
+          "intent": "REFINEMENT",
+          "revision": 3,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-400",
+      "name": "pad_oos_0",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "iade etmek istiyorum",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-401",
+      "name": "pad_oos_1",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "kargo ne zaman gelir",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-402",
+      "name": "pad_oos_2",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "limitim kaç",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-403",
+      "name": "pad_oos_3",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "belge yüklemek istiyorum",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-404",
+      "name": "pad_oos_4",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "şikayetim var",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-405",
+      "name": "pad_oos_5",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "başvuru durumum ne",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-406",
+      "name": "pad_oos_6",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "garanti süresi ne",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "id": "MT-407",
+      "name": "pad_oos_7",
+      "ok": true,
+      "errors": [],
+      "turns": [
+        {
+          "turn": 0,
+          "utterance": "telefon 40 bin",
+          "phase": "COMPLETED",
+          "intent": "NEEDS_ANALYSIS",
+          "revision": 2,
+          "cards": true,
+          "cta": true,
+          "ok": true
+        },
+        {
+          "turn": 1,
+          "utterance": "servis nerede",
+          "phase": "OOS",
+          "intent": "OOS",
+          "revision": 2,
+          "cards": false,
+          "cta": true,
+          "ok": true
+        }
+      ]
+    }
+  ]
+}

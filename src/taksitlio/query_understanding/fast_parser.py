@@ -461,6 +461,14 @@ _RANKING_CUE_TABLE: tuple[tuple[str, tuple[str, ...]], ...] = (
             "en düşük fiyat",
             "fiyati en dusuk",
             "fiyatı en düşük",
+            # Comparative follow-ups after a result set ("daha ucuzu var mı?")
+            "daha ucuz",
+            "daha uygun",
+            "ucuzunu",
+            "ucuzlarini",
+            "ucuzlarını",
+            "ucuzlarin",
+            "ucuzların",
         ),
     ),
 )
@@ -527,6 +535,22 @@ def _fuzzy_cheapest_after_en(text: str) -> bool:
     return False
 
 
+def _fuzzy_cheapest_after_daha(text: str) -> bool:
+    """Detect 'daha <~ucuz…|uygun…>' comparative refinements."""
+
+    folded = ascii_fold(turkish_lower(text or ""))
+    tokens = [tok.strip(".,!?;:\"'()[]{}") for tok in folded.split() if tok.strip(".,!?;:\"'()[]{}")]
+    for i, tok in enumerate(tokens[:-1]):
+        if tok != "daha":
+            continue
+        nxt = tokens[i + 1]
+        if any(_token_near_lemma(nxt, lem) for lem in _CHEAPEST_LEMMAS):
+            return True
+        if any(_token_near_lemma(nxt, lem) for lem in ("uygun",)):
+            return True
+    return False
+
+
 def detect_ranking_mode(text: str) -> Optional[str]:
     """Map Turkish refinement cues to a RankingMode value string."""
 
@@ -538,7 +562,7 @@ def detect_ranking_mode(text: str) -> Optional[str]:
             cue_n = normalize_turkish(cue).value or cue_l
             if cue_l in lower or (cue_n and cue_n in folded):
                 return mode
-    if _fuzzy_cheapest_after_en(text):
+    if _fuzzy_cheapest_after_en(text) or _fuzzy_cheapest_after_daha(text):
         return "CHEAPEST_PRODUCT_PRICE"
     return None
 
