@@ -342,6 +342,7 @@ class GuestEntryHandler:
                 "last_recommendation": {
                     "category_id": outcome.category_id,
                     "category_code": getattr(outcome, "category_code", None),
+                    "category_name": outcome.category_name,
                     "budget_value": outcome.budget_value,
                     "campaign_ids": [c.get("id") for c in outcome.ranked_campaigns],
                     "ts": datetime.now(timezone.utc).isoformat(),
@@ -377,13 +378,19 @@ class GuestEntryHandler:
         }
         refined_profile = apply_refinement_to_profile(base_profile, signal, last_rec)
 
-        # Re-run analysis with synthetic utterance that keeps category+budget context
-        # while letting ranking see the new preferences.
-        synthetic = (
-            f"kategori={(last_rec or {}).get('category_id')} "
-            f"bütçe={(refined_profile.get('budget') or {}).get('value')} "
-            f"refinement={signal.intent.value}"
+        # Re-run analysis with a natural utterance so FAST/matcher still resolve
+        # category+budget (synthetic key=value text fails semantic match).
+        budget_val = (refined_profile.get("budget") or {}).get("value") or (
+            last_rec or {}
+        ).get("budget_value")
+        cat_hint = (
+            (last_rec or {}).get("category_name")
+            or (last_rec or {}).get("category_code")
+            or "cep telefonu"
         )
+        synthetic = f"{cat_hint} alacağım, bütçem {budget_val:g} TL".replace(
+            ".0 TL", " TL"
+        ) if budget_val is not None else f"{cat_hint} kampanya"
 
         # Prefer calling ranker directly if needs service supports preference injection;
         # otherwise fall back to full analyse with a preference-aware utterance.
@@ -447,12 +454,13 @@ class GuestEntryHandler:
                 or c.get("installment_count") is None
             ]
 
-        # Drop already-shown campaigns when user asks for more / other bank
+        # Drop already-shown campaigns when user asks for more / other bank.
+        # CHEAPER keeps the pool (re-ranked / preference-weighted) so a 2-card
+        # demo catalog does not collapse to empty after the first COMPLETED turn.
         shown_ids = set((last_rec or {}).get("campaign_ids") or [])
         if signal.intent in (
             RefinementIntent.MORE_OPTIONS,
             RefinementIntent.OTHER_BANK,
-            RefinementIntent.CHEAPER,
         ):
             filtered = [c for c in filtered if c.get("id") not in shown_ids]
 
@@ -546,6 +554,7 @@ class GuestEntryHandler:
                 "last_recommendation": {
                     "category_id": (last_rec or {}).get("category_id"),
                     "category_code": (last_rec or {}).get("category_code"),
+                    "category_name": (last_rec or {}).get("category_name"),
                     "budget_value": (refined_profile.get("budget") or {}).get("value")
                     or (last_rec or {}).get("budget_value"),
                     "campaign_ids": merged_ids,

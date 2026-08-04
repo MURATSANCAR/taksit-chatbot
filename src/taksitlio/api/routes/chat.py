@@ -72,12 +72,17 @@ async def chat(payload: ChatMessageIn, request: Request) -> ChatMessageOut:
                     session_id = open_res["session_id"]
 
                 expected_revision = payload.revision or 0
+                # Prefer explicit client_sequence; otherwise derive from revision so
+                # multi-turn curl/smokes without sequence don't hit CAS duplicates.
+                client_sequence = payload.client_sequence
+                if client_sequence is None and expected_revision:
+                    client_sequence = int(expected_revision) + 1
                 result = await adapter.handle_guest_turn(
                     session_id=session_id,
                     utterance=payload.message,
                     expected_revision=expected_revision,
                     client_message_id=payload.client_message_id or str(uuid.uuid4()),
-                    client_sequence=payload.client_sequence or 1,
+                    client_sequence=client_sequence,
                     locale="tr-TR",
                 )
 

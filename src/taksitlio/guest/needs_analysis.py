@@ -1,65 +1,41 @@
-"""Production Needs Analysis Service — real CampaignRepository interface.
+"""Production Needs Analysis Service for guest (and authenticated) turns.
 
-Uses:
-  - list_by_category_codes(category_codes)  (PostgresCampaignRepository / InMemory)
-  - RankingEngine.rank(...)
-  - EligibilityEngine.is_eligible(...)
+Talks to real FAST / SemanticCategoryMatcher / CampaignRepository /
+EligibilityEngine / RankingEngine surfaces, while remaining duck-typed
+for golden mocks.
 """
 
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Mapping, Optional, Sequence
 
 logger = logging.getLogger(__name__)
+
+_GUEST_RANK_WEIGHTS = {
+    "budget_fit": 0.40,
+    "preference_fit": 0.15,
+    "semantic_relevance": 0.20,
+    "installment_fit": 0.15,
+    "freshness": 0.10,
+}
 
 
 @dataclass
 class NeedsAnalysisOutcome:
+    """Structured result of a full needs-analysis pass."""
+
     fast_success: bool = False
     category_id: Optional[int] = None
-    category_code: Optional[str] = None
     category_name: Optional[str] = None
+    category_code: Optional[str] = None
     budget_value: Optional[float] = None
-    budget_type: Optional[str] = None
+    budget_type: Optional[str] = None  # RANGE | APPROXIMATE | MAXIMUM
     intent: Optional[str] = None
     ranked_campaigns: list[dict[str, Any]] = field(default_factory=list)
-    gate_status: str = "OK"
+    gate_status: str = "OK"  # OK | CLARIFY | SAFE_FAILURE | PROVISIONAL
     diagnostics: dict[str, Any] = field(default_factory=dict)
-
-
-def _campaign_to_dict(c: Any) -> dict[str, Any]:
-    """Normalize Campaign dataclass or dict to ranking/response shape."""
-    if isinstance(c, dict):
-        return c
-    attrs = getattr(c, "attributes", None) or {}
-    return {
-        "id": getattr(c, "id", None),
-        "campaign_code": getattr(c, "campaign_code", None),
-        "title": getattr(c, "title", ""),
-        "summary": getattr(c, "summary", ""),
-        "subtitle": getattr(c, "summary", ""),
-        "bank": getattr(c, "brand", None),
-        "brand": getattr(c, "brand", None),
-        "rate_text": attrs.get("rate_text") if isinstance(attrs, dict) else None,
-        "max_amount": getattr(c, "max_budget", None),
-        "max_budget": getattr(c, "max_budget", None),
-        "min_budget": getattr(c, "min_budget", None),
-        "max_tenure": getattr(c, "installment_count", None),
-        "installment_count": getattr(c, "installment_count", None),
-        "monthly_payment": getattr(c, "monthly_payment", None),
-        "text": attrs.get("raw_subtitle") if isinstance(attrs, dict) else None,
-        "status": getattr(c, "status", "ACTIVE"),
-        "membership_required": getattr(c, "membership_required", True),
-        "membership_cta_label": getattr(c, "membership_cta_label", None),
-        "starts_at": getattr(c, "starts_at", None),
-        "ends_at": getattr(c, "ends_at", None),
-        "category_code": getattr(c, "category_code", None),
-        "category_id": getattr(c, "category_id", None),
-        "score": getattr(c, "semantic_score", 0.0),
-        "attributes": attrs,
-    }
 
 
 class NeedsAnalysisService:
@@ -93,13 +69,20 @@ class NeedsAnalysisService:
         outcome = NeedsAnalysisOutcome()
         diag: dict[str, Any] = {"utterance_len": len(utterance)}
 
-        # 1. FAST
+        # 1. FAST extraction
         try:
-            fast_result = await self._fast.extract(utterance, locale=locale)
+            fast_result = await self._normalize_fast(
+                await self._invoke_fast(utterance, locale=locale),
+                utterance=utterance,
+            )
             outcome.fast_success = True
             outcome.intent = (fast_result.get("intent") or {}).get("type")
             budget = fast_result.get("budget") or {}
-            outcome.budget_value = budget.get("value") or budget.get("maximum")
+            outcome.budget_value = _as_float(
+                budget.get("value")
+                if budget.get("value") is not None
+                else budget.get("maximum")
+            )
             outcome.budget_type = budget.get("type")
             diag["fast"] = {
                 "intent": outcome.intent,
@@ -107,66 +90,48 @@ class NeedsAnalysisService:
                 "signals": fast_result.get("category_signals"),
             }
         except Exception as exc:
-            logger.exception("FAST extraction failed session=%s", session_id)
+            logger.exception("FAST extraction failed for session %s", session_id)
             outcome.fast_success = False
             outcome.gate_status = "SAFE_FAILURE"
             outcome.diagnostics = {"error": "fast_failure", "detail": str(exc)}
             return outcome
 
         # 2. Semantic category match
+        category_code: Optional[str] = None
         try:
-            match_query = {
-                "utterance": utterance,
-                "locale": locale,
-                "budget": outcome.budget_value,
-                "signals": fast_result.get("category_signals"),
-            }
-            match_result = await self._matcher.match(match_query)
+            match_result = await self._normalize_match(
+                await self._invoke_matcher(utterance, locale=locale, fast_result=fast_result)
+            )
             if match_result and match_result.get("status") == "MATCHED":
                 outcome.category_id = match_result.get("category_id")
-                outcome.category_code = str(
-                    match_result.get("category_code")
-                    or match_result.get("category_id")
-                    or ""
-                )
                 outcome.category_name = match_result.get("category_name")
+                category_code = match_result.get("category_code")
+                outcome.category_code = category_code
                 diag["match"] = {
                     "category_id": outcome.category_id,
-                    "category_code": outcome.category_code,
+                    "category_code": category_code,
                     "score": match_result.get("score"),
                     "method": match_result.get("method"),
                 }
             else:
                 diag["match"] = {"status": "NO_MATCH"}
         except Exception as exc:
-            logger.exception("Semantic match failed session=%s", session_id)
+            logger.exception("Semantic match failed for session %s", session_id)
             diag["match_error"] = str(exc)
 
+        # 3. Early exit
         if not outcome.category_id and not outcome.budget_value:
             outcome.gate_status = "CLARIFY"
             outcome.diagnostics = diag
             return outcome
 
-        # 3. Load candidates — real repo interface
-        category_codes: list[str] = []
-        if outcome.category_code:
-            category_codes.append(str(outcome.category_code))
-        elif outcome.category_id is not None:
-            category_codes.append(str(outcome.category_id))
-
+        # 4. Load candidates
         try:
-            if hasattr(self._campaigns, "list_by_category_codes") and category_codes:
-                candidates_raw = await self._campaigns.list_by_category_codes(
-                    category_codes, limit=50
-                )
-            elif hasattr(self._campaigns, "list_active"):
-                # backward-compat for older in-memory stubs
-                candidates_raw = await self._campaigns.list_active(
-                    category_id=outcome.category_id, locale=locale
-                )
-            else:
-                candidates_raw = []
-            candidates = [_campaign_to_dict(c) for c in candidates_raw]
+            candidates = await self._load_candidates(
+                category_id=outcome.category_id,
+                category_code=category_code,
+                locale=locale,
+            )
             diag["candidates"] = len(candidates)
         except Exception as exc:
             logger.exception("Campaign repository failed")
@@ -178,7 +143,7 @@ class NeedsAnalysisService:
             outcome.diagnostics = diag
             return outcome
 
-        # 4. Eligibility
+        # 5. Eligibility
         need_profile = {
             "budget": {
                 "value": outcome.budget_value,
@@ -186,66 +151,37 @@ class NeedsAnalysisService:
             },
             "intent": outcome.intent,
             "category_id": outcome.category_id,
-            "category_code": outcome.category_code,
         }
-        eligible = []
-        for camp in candidates:
-            try:
-                if self._eligibility.is_eligible(camp, need_profile):
-                    eligible.append(camp)
-            except Exception:
-                # tolerant: if eligibility signature expects Campaign object, try raw
-                try:
-                    if self._eligibility.is_eligible(candidates_raw[candidates.index(camp)], need_profile):
-                        eligible.append(camp)
-                except Exception:
-                    continue
+        try:
+            eligible = await self._filter_eligible(
+                candidates,
+                need_profile,
+                category_codes=[category_code] if category_code else [],
+            )
+        except Exception as exc:
+            logger.exception("Eligibility failed")
+            outcome.gate_status = "SAFE_FAILURE"
+            outcome.diagnostics = {**diag, "error": "eligibility", "detail": str(exc)}
+            return outcome
         diag["eligible"] = len(eligible)
-
         if not eligible:
             outcome.diagnostics = diag
             return outcome
 
-        # 5. Ranking
+        # 6. Ranking
         try:
-            ranked = self._ranker.rank(
-                campaigns=eligible,
-                need_profile=need_profile,
-                max_results=max_recommendations,
-                weights={
-                    "budget_fit": 0.40,
-                    "preference_fit": 0.15,
-                    "semantic_relevance": 0.20,
-                    "installment_fit": 0.15,
-                    "freshness": 0.10,
-                },
-            )
-            # Ensure dict shape
-            outcome.ranked_campaigns = [_campaign_to_dict(c) for c in ranked]
+            ranked = self._rank(eligible, need_profile, max_recommendations)
+            outcome.ranked_campaigns = ranked
             diag["ranked"] = [
-                {"id": c.get("id"), "score": c.get("score")} for c in outcome.ranked_campaigns
+                {"id": c.get("id"), "score": c.get("score")} for c in ranked
             ]
-        except TypeError:
-            # Some RankingEngine signatures omit weights=
-            try:
-                ranked = self._ranker.rank(
-                    campaigns=eligible,
-                    need_profile=need_profile,
-                    max_results=max_recommendations,
-                )
-                outcome.ranked_campaigns = [_campaign_to_dict(c) for c in ranked]
-            except Exception as exc:
-                logger.exception("Ranking failed")
-                outcome.gate_status = "SAFE_FAILURE"
-                outcome.diagnostics = {**diag, "error": "ranking", "detail": str(exc)}
-                return outcome
         except Exception as exc:
             logger.exception("Ranking failed")
             outcome.gate_status = "SAFE_FAILURE"
             outcome.diagnostics = {**diag, "error": "ranking", "detail": str(exc)}
             return outcome
 
-        # 6. Gate
+        # 7. Gate
         if self._gate is not None:
             gate_decision = self._gate.evaluate(
                 ranked=outcome.ranked_campaigns,
@@ -255,13 +191,218 @@ class NeedsAnalysisService:
             outcome.gate_status = gate_decision.get("status", "OK")
             diag["gate"] = gate_decision
         else:
-            if (
-                outcome.ranked_campaigns
-                and (outcome.ranked_campaigns[0].get("score") or 0) < 0.35
-            ):
-                outcome.gate_status = "PROVISIONAL"
-            else:
-                outcome.gate_status = "OK"
+            top = outcome.ranked_campaigns[0].get("score", 0) if outcome.ranked_campaigns else 0
+            outcome.gate_status = "PROVISIONAL" if top < 0.35 else "OK"
 
         outcome.diagnostics = diag
         return outcome
+
+    # ------------------------------------------------------------------
+    # Component adapters
+    # ------------------------------------------------------------------
+
+    async def _invoke_fast(self, utterance: str, *, locale: str) -> Any:
+        extract = getattr(self._fast, "extract", None)
+        if extract is None:
+            raise RuntimeError("fast_extractor has no extract()")
+        try:
+            return await extract(utterance, locale=locale)
+        except TypeError:
+            return await extract(utterance)
+
+    async def _normalize_fast(self, raw: Any, *, utterance: str) -> dict[str, Any]:
+        if isinstance(raw, Mapping):
+            data = dict(raw)
+        else:
+            profile = getattr(raw, "need_profile", None) or {}
+            intent = profile.get("intent") if isinstance(profile, Mapping) else None
+            if not isinstance(intent, Mapping):
+                intent = {"type": intent} if intent else {"type": "UNKNOWN"}
+            data = {
+                "intent": intent,
+                "budget": (profile.get("budget") if isinstance(profile, Mapping) else {})
+                or {},
+                "category_signals": {"positive": [], "negative": []},
+            }
+
+        budget = data.get("budget") or {}
+        if not budget.get("value") and not budget.get("maximum"):
+            # Production fallback: deterministic query parser (budget/intent).
+            try:
+                from taksitlio.query_understanding.fast_parser import fast_parse
+
+                parsed = fast_parse(utterance).to_dict()
+                pb = parsed.get("budget") or {}
+                if pb.get("value") is not None or pb.get("maximum") is not None:
+                    data["budget"] = pb
+                if not (data.get("intent") or {}).get("type"):
+                    data["intent"] = {"type": parsed.get("intent") or "PRODUCT_SEARCH"}
+            except Exception:
+                logger.debug("fast_parse budget fallback unavailable", exc_info=True)
+        return data
+
+    async def _invoke_matcher(
+        self, utterance: str, *, locale: str, fast_result: Mapping[str, Any]
+    ) -> Any:
+        match = getattr(self._matcher, "match", None)
+        if match is None:
+            return {"status": "NO_MATCH"}
+        signals = (fast_result.get("category_signals") or {}).get("positive") or []
+        # Mock / guest dict API
+        try:
+            return await match(
+                {
+                    "utterance": utterance,
+                    "locale": locale,
+                    "signals": signals,
+                }
+            )
+        except TypeError:
+            pass
+        # Real SemanticCategoryMatcher(need_description, extra_texts=...)
+        return await match(utterance, extra_texts=[str(s) for s in signals if s])
+
+    async def _normalize_match(self, raw: Any) -> dict[str, Any]:
+        if isinstance(raw, Mapping):
+            return dict(raw)
+        matches = getattr(raw, "matches", None) or []
+        if not matches:
+            return {"status": "NO_MATCH"}
+        top = matches[0]
+        category = getattr(top, "category", None)
+        if category is None:
+            return {"status": "NO_MATCH"}
+        return {
+            "status": "MATCHED",
+            "category_id": getattr(category, "id", None),
+            "category_name": getattr(category, "display_name", None),
+            "category_code": getattr(category, "category_code", None),
+            "score": getattr(top, "score", None),
+            "method": "semantic_matcher",
+        }
+
+    async def _load_candidates(
+        self,
+        *,
+        category_id: Optional[int],
+        category_code: Optional[str],
+        locale: str,
+    ) -> list[Any]:
+        if hasattr(self._campaigns, "list_active"):
+            return list(
+                await self._campaigns.list_active(
+                    category_id=category_id, locale=locale
+                )
+            )
+        if hasattr(self._campaigns, "list_by_category_codes") and category_code:
+            return list(
+                await self._campaigns.list_by_category_codes([category_code], limit=50)
+            )
+        if hasattr(self._campaigns, "list_by_category_codes"):
+            # Broad fallback — all known seed codes if category unresolved
+            return list(
+                await self._campaigns.list_by_category_codes(
+                    ["MOBILE_PHONE", "LAPTOP", "TABLET", "HOME_APPLIANCE"],
+                    limit=50,
+                )
+            )
+        return []
+
+    async def _filter_eligible(
+        self,
+        candidates: Sequence[Any],
+        need_profile: Mapping[str, Any],
+        *,
+        category_codes: Sequence[str],
+    ) -> list[Any]:
+        if hasattr(self._eligibility, "is_eligible"):
+            out = []
+            for camp in candidates:
+                try:
+                    if self._eligibility.is_eligible(camp, need_profile):
+                        out.append(camp)
+                except Exception:
+                    continue
+            return out
+
+        if hasattr(self._eligibility, "filter_eligible"):
+            rules = [{"type": "STATUS_ACTIVE"}, {"type": "WITHIN_DATE_WINDOW"}]
+            if hasattr(self._campaigns, "get_eligibility_rules"):
+                try:
+                    rules = await self._campaigns.get_eligibility_rules()
+                except Exception:
+                    pass
+            # Only Campaign dataclasses go through real eligibility
+            from taksitlio.campaign.models import Campaign
+
+            typed = [c for c in candidates if isinstance(c, Campaign)]
+            if typed:
+                return self._eligibility.filter_eligible(
+                    typed,
+                    need_profile,
+                    category_codes=list(category_codes) or [
+                        c.category_code for c in typed
+                    ],
+                    rules=rules,
+                )
+            return list(candidates)
+        return list(candidates)
+
+    def _rank(
+        self,
+        eligible: Sequence[Any],
+        need_profile: Mapping[str, Any],
+        max_results: int,
+    ) -> list[dict[str, Any]]:
+        # Prefer keyword API of RankingEngine
+        try:
+            ranked = self._ranker.rank(
+                eligible,
+                need_profile,
+                weights=_GUEST_RANK_WEIGHTS,
+                max_results=max_results,
+            )
+        except TypeError:
+            ranked = self._ranker.rank(
+                campaigns=eligible,
+                need_profile=need_profile,
+                max_results=max_results,
+                weights=_GUEST_RANK_WEIGHTS,
+            )
+
+        out: list[dict[str, Any]] = []
+        for item in ranked:
+            if isinstance(item, Mapping):
+                out.append(dict(item))
+                continue
+            camp = getattr(item, "campaign", None)
+            score = float(getattr(item, "score", 0.0) or 0.0)
+            if camp is None:
+                continue
+            out.append(
+                {
+                    "id": getattr(camp, "id", None),
+                    "title": getattr(camp, "title", None),
+                    "subtitle": getattr(camp, "summary", None),
+                    "summary": getattr(camp, "summary", None),
+                    "bank": getattr(camp, "brand", None),
+                    "rate_text": (getattr(camp, "attributes", None) or {}).get(
+                        "rate_text"
+                    ),
+                    "max_amount": getattr(camp, "max_budget", None),
+                    "max_tenure": getattr(camp, "installment_count", None),
+                    "text": getattr(camp, "search_text", None),
+                    "score": score,
+                    "list_price": getattr(camp, "list_price", None),
+                }
+            )
+        return out
+
+
+def _as_float(value: Any) -> Optional[float]:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
