@@ -31,6 +31,8 @@ from typing import Any, Optional
 
 import openpyxl
 
+from taksitlio.campaign.seed_budget_fix import infer_budget_bounds
+
 logger = logging.getLogger(__name__)
 
 # Excel ACTIVE rows that are general retail finance — apply to phone (1) by default
@@ -81,29 +83,6 @@ def _infer_bank(title: str, text: str) -> Optional[str]:
     return None
 
 
-def _infer_max_budget(text: str, subtitle: str) -> Optional[float]:
-    combined = f"{subtitle or ''} {text or ''}"
-    # Prefer range upper bound: "1.000–150.000 TL" / "1000-150000 TL"
-    range_m = re.search(
-        r"(\d{1,3}(?:\.\d{3})*|\d+)\s*[–\-]\s*(\d{1,3}(?:\.\d{3})*|\d+)\s*(?:TL|tl)",
-        combined,
-        re.IGNORECASE,
-    )
-    if range_m:
-        try:
-            return float(range_m.group(2).replace(".", ""))
-        except ValueError:
-            pass
-    # Otherwise take the largest TL amount mentioned (avoids picking "1.000" from a range).
-    amounts: list[float] = []
-    for m in re.finditer(r"(\d{1,3}(?:\.\d{3})*|\d+)\s*(?:TL|tl)", combined, re.IGNORECASE):
-        try:
-            amounts.append(float(m.group(1).replace(".", "")))
-        except ValueError:
-            continue
-    return max(amounts) if amounts else None
-
-
 def _infer_tenure(text: str) -> Optional[int]:
     m = re.search(r"(\d+)\s*ay", text or "", re.IGNORECASE)
     if m:
@@ -136,7 +115,9 @@ def load_active_campaigns(excel_path: Path) -> list[dict[str, Any]]:
         subtitle = (row.get("subtitle") or "").strip() or None
         bank = _infer_bank(title, text)
         rate_text = _extract_rate_text(text)
-        max_budget = _infer_max_budget(text, subtitle or "")
+        min_b, max_b = infer_budget_bounds(text, subtitle or "")
+        min_budget = min_b if min_b is not None else 1000.0
+        max_budget = max_b  # None = no ceiling → eligibility unrestricted
         tenure = _infer_tenure(text)
 
         campaign_code = f"EXCEL-{external_id}" if external_id is not None else f"EXCEL-{hash(title) % 10_000_000}"
@@ -155,7 +136,7 @@ def load_active_campaigns(excel_path: Path) -> list[dict[str, Any]]:
             "brand": bank,
             "rate_text": rate_text,
             "max_budget": max_budget,
-            "min_budget": 1000.0,
+            "min_budget": min_budget,
             "installment_count": tenure,
             "membership_required": True,
             "membership_cta_label": "Üye ol, kampanyadan yararlan",
