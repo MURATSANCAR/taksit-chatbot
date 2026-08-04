@@ -23,13 +23,11 @@ from taksitlio.ingestion.binding import (
 )
 
 
-FIXTURE = (
-    Path(__file__).resolve().parents[3]
-    / "crawler"
-    / "feeds"
-    / "fixtures"
-    / "src-b-fibabanka.json"
+FIXTURES = (
+    Path(__file__).resolve().parents[3] / "crawler" / "feeds" / "fixtures"
 )
+FIXTURE = FIXTURES / "src-b-fibabanka.json"
+ALBARAKA_DRAFT = FIXTURES / "src-b-albaraka.json"
 
 
 @pytest.mark.asyncio
@@ -87,3 +85,29 @@ def test_campaign_adapter_rejects_inline_secrets() -> None:
     )
     with pytest.raises(ValueError, match="credential_ref"):
         instantiate_campaign_adapter(binding)
+
+
+@pytest.mark.asyncio
+async def test_albaraka_draft_fixture_parses_without_merchant_invent() -> None:
+    """Fehmi CMS 9502 draft: explicit monthly rates, empty merchants, DB category codes."""
+    assert ALBARAKA_DRAFT.exists()
+    adapter = GenericCampaignFeedAdapter(
+        feed_path=ALBARAKA_DRAFT,
+        default_institution_code="fi-albaraka",
+    )
+    loaded = await adapter.load_campaigns()
+    assert len(loaded) == 3
+    assert all(c.institution_code == "fi-albaraka" for c in loaded)
+    assert all(c.merchant_codes == () for c in loaded)
+    codes = {c.external_campaign_id: c for c in loaded}
+    assert codes["alb-9502-phone-le-20k"].category_codes == ("MOBILE_PHONE",)
+    assert codes["alb-9502-phone-gt-20k"].max_amount == 150000.0
+    assert codes["alb-9502-tablet-laptop"].category_codes == ("TABLET", "LAPTOP")
+
+    result = await run_campaign_feed_dry(adapter)
+    assert len(result.campaigns) == 3
+    # monthly_rate_pct present → rate snapshots (no invent)
+    assert len(result.rates) == 3
+    assert all(r.monthly_rate == pytest.approx(0.0199) for r in result.rates)
+    assert all(c.status.value == "DRAFT" for c in result.campaigns)
+    assert all(not c.eligible_merchant_codes for c in result.campaigns)

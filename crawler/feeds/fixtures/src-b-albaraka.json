@@ -1,0 +1,87 @@
+{
+  "_meta": {
+    "status": "DRAFT_NOT_FOR_LIVE_INGEST",
+    "activate": false,
+    "retail_cms_campaign_id": 9502,
+    "source": "Fehmi Excel — Kategoriler ve Kampanya Örnekleri.xlsx / Kampanyalar",
+    "institution_registry": "fi-albaraka (crawler/ops/crawl-registry.yaml)",
+    "notes": [
+      "Do NOT copy into crawler/feeds/live or add to ingest_live_feeds_postgres.py whitelist until Fehmi confirms merchants + legal term matrix.",
+      "Excel company_codes / fin_codes were empty; merchant_codes left empty on purpose (no invented merchant mapping).",
+      "category_codes use DB taxonomy codes (MOBILE_PHONE/TABLET/LAPTOP), NOT Fehmi Excel numeric ids (1/3/4).",
+      "Albaraka phone max-term depends on purchase amount (>20k → 3 ay, ≤20k → 6 ay). Encoded as separate draft rows because eligibility has no category×amount term rule yet.",
+      "monthly_rate_pct is required for rate snapshots (rate_apr alone is skipped by generic.campaign_feed.v1).",
+      "valid_until 2099-09-09 is CMS placeholder from source; treat as open-ended until bank confirms."
+    ],
+    "open_questions": [
+      "Which Taksitlio merchant_codes does campaign 9502 cover?",
+      "Is %1,99 monthly kar oranı for all terms 1..6 or only max term?",
+      "Confirm new-customer-only and rejection rights stay disclosure-only vs hard eligibility filter."
+    ]
+  },
+  "campaigns": [
+    {
+      "id": "alb-9502-phone-le-20k",
+      "institution_code": "fi-albaraka",
+      "name": "Albaraka Türk — Cep Telefonu (≤20.000 TL) %1,99",
+      "campaign_type": "INSTALLMENT",
+      "summary": "Albaraka Türk %1,99 Kar Oranı Finansman Kampanyası (retail CMS 9502). İlk defa Albaraka Türk müşterisi olacak kişiler yararlanabilir. Cep telefonu ≤20.000 TL için maksimum 6 ay vade. Finansman üst limiti 150.000 TL. Kaynak metin: Fehmi Excel ACTIVE kampanya 9502.",
+      "valid_from": "2026-06-30",
+      "valid_until": "2099-09-09",
+      "min_amount": 1000.0,
+      "max_amount": 20000.0,
+      "terms": [
+        { "months": 6, "monthly_rate_pct": 1.99 }
+      ],
+      "merchant_codes": [],
+      "category_codes": ["MOBILE_PHONE"],
+      "source_url": "https://www.albaraka.com.tr",
+      "retail_cms_campaign_id": 9502,
+      "new_customer_only": true,
+      "draft_rule": "phone_amount_le_20000_max_term_6",
+      "content_hash": "draft-alb-9502-phone-le-20k"
+    },
+    {
+      "id": "alb-9502-phone-gt-20k",
+      "institution_code": "fi-albaraka",
+      "name": "Albaraka Türk — Cep Telefonu (>20.000 TL) %1,99",
+      "campaign_type": "INSTALLMENT",
+      "summary": "Albaraka Türk %1,99 Kar Oranı Finansman Kampanyası (retail CMS 9502). İlk defa Albaraka Türk müşterisi olacak kişiler yararlanabilir. 20.000 TL üzerindeki cep telefonlarında maksimum 3 ay vade. Finansman üst limiti 150.000 TL.",
+      "valid_from": "2026-06-30",
+      "valid_until": "2099-09-09",
+      "min_amount": 20000.01,
+      "max_amount": 150000.0,
+      "terms": [
+        { "months": 3, "monthly_rate_pct": 1.99 }
+      ],
+      "merchant_codes": [],
+      "category_codes": ["MOBILE_PHONE"],
+      "source_url": "https://www.albaraka.com.tr",
+      "retail_cms_campaign_id": 9502,
+      "new_customer_only": true,
+      "draft_rule": "phone_amount_gt_20000_max_term_3",
+      "content_hash": "draft-alb-9502-phone-gt-20k"
+    },
+    {
+      "id": "alb-9502-tablet-laptop",
+      "institution_code": "fi-albaraka",
+      "name": "Albaraka Türk — Tablet / Bilgisayar %1,99",
+      "campaign_type": "INSTALLMENT",
+      "summary": "Albaraka Türk %1,99 Kar Oranı Finansman Kampanyası (retail CMS 9502). Tablet ve bilgisayar kategorilerinde maksimum 6 ay vade. 1.000–150.000 TL. İlk defa Albaraka Türk müşterisi olacak kişiler yararlanabilir.",
+      "valid_from": "2026-06-30",
+      "valid_until": "2099-09-09",
+      "min_amount": 1000.0,
+      "max_amount": 150000.0,
+      "terms": [
+        { "months": 6, "monthly_rate_pct": 1.99 }
+      ],
+      "merchant_codes": [],
+      "category_codes": ["TABLET", "LAPTOP"],
+      "source_url": "https://www.albaraka.com.tr",
+      "retail_cms_campaign_id": 9502,
+      "new_customer_only": true,
+      "draft_rule": "tablet_laptop_max_term_6",
+      "content_hash": "draft-alb-9502-tablet-laptop"
+    }
+  ]
+}
