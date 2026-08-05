@@ -61,16 +61,8 @@ class GuestOrchestratorAdapter:
         )
         return cls(pipeline)
 
-    async def start_guest_session(
-        self, *, locale: str = "tr-TR", session_id: Optional[str] = None
-    ) -> dict[str, Any]:
-        sid = None
-        if session_id and session_id not in ("new", "null", ""):
-            try:
-                sid = uuid.UUID(str(session_id))
-            except Exception:
-                sid = None
-        return await self._pipeline.start(locale=locale, session_id=sid)
+    async def start_guest_session(self, *, locale: str = "tr-TR") -> dict[str, Any]:
+        return await self._pipeline.start(locale=locale)
 
     async def handle_guest_turn(
         self,

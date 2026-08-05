@@ -7,7 +7,6 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from taksitlio.api.deps import container_from
-from taksitlio.application.guest_orchestrator_adapter import GuestOrchestratorAdapter
 from taksitlio.llm_routing.worker import schedule_llm_job
 from taksitlio.pipeline.orchestrator import ChatRequest
 
@@ -50,49 +49,19 @@ class ChatMessageOut(BaseModel):
 async def chat(payload: ChatMessageIn, request: Request) -> ChatMessageOut:
     container = container_from(request)
 
-    # ========== GUEST (loginsiz) BRANCH ==========
+    # ========== GUEST (loginsiz) CAMPAIGN-ONLY ==========
     if not payload.user_id:
         try:
-            adapter = GuestOrchestratorAdapter.from_container(container)
-
-            msg = (payload.message or "").strip().lower()
-            is_opening = (
-                not payload.session_id
-                or payload.session_id in ("new", "null", "")
-                or msg in ("", "merhaba", "selam", "hi", "hello")
+            from taksitlio.api.routes.chat_guest_branch import (
+                run_guest_branch,
+                map_guest_to_out,
             )
 
-            if is_opening and msg in ("", "merhaba", "selam", "hi", "hello"):
-                result = await adapter.start_guest_session(locale="tr-TR")
-            else:
-                # Session_id yoksa önce açılış yapıp id al
-                session_id = payload.session_id
-                expected_revision = payload.revision or 0
-                if not session_id or session_id in ("new", "null", ""):
-                    open_res = await adapter.start_guest_session(locale="tr-TR")
-                    session_id = open_res["session_id"]
-                    # Opening advances revision; don't CAS against 0 on the next turn.
-                    if payload.revision is None:
-                        expected_revision = int(open_res.get("revision") or 1)
-
-                # Prefer explicit client_sequence; otherwise derive from revision so
-                # multi-turn curl/smokes without sequence don't hit CAS duplicates.
-                client_sequence = payload.client_sequence
-                if client_sequence is None and expected_revision:
-                    client_sequence = int(expected_revision) + 1
-                result = await adapter.handle_guest_turn(
-                    session_id=session_id,
-                    utterance=payload.message,
-                    expected_revision=expected_revision,
-                    client_message_id=payload.client_message_id or str(uuid.uuid4()),
-                    client_sequence=client_sequence,
-                    locale="tr-TR",
-                )
-
-            return _map_guest_to_out(result)
+            raw = await run_guest_branch(payload, container)
+            return ChatMessageOut(**map_guest_to_out(raw))
         except Exception as exc:  # noqa: BLE001
             raise HTTPException(status_code=502, detail=str(exc)) from exc
-    # ========== /GUEST BRANCH ==========
+    # ========== /GUEST ==========
 
     try:
         result = await container.pipeline.handle(
@@ -129,44 +98,10 @@ async def chat(payload: ChatMessageIn, request: Request) -> ChatMessageOut:
 
 
 def _map_guest_to_out(result: dict) -> ChatMessageOut:
-    messages = result.get("messages") or []
-    text_parts = [m.get("content", "") for m in messages if m.get("type") == "text"]
-    reply = "\n\n".join(p for p in text_parts if p).strip()
+    """Legacy helper — prefer chat_guest_branch.map_guest_to_out."""
+    from taksitlio.api.routes.chat_guest_branch import map_guest_to_out as _map
 
-    cards = [
-        m["card"]
-        for m in messages
-        if m.get("type") == "campaign_card" and m.get("card")
-    ]
-
-    phase = result.get("phase", "COMPLETED")
-    cta = result.get("membership_cta")
-
-    if cards:
-        decision = "GUEST_RECOMMENDATION"
-    elif phase == "CLARIFY":
-        decision = "GUEST_CLARIFY"
-    else:
-        decision = "GUEST_SAFE"
-
-    return ChatMessageOut(
-        session_id=result["session_id"],
-        reply=reply,
-        decision=decision,
-        need_profile=result.get("diagnostics") or {},
-        categories=[],
-        campaigns=cards,
-        cards=cards,
-        phase=phase,
-        cta=cta,
-        diagnostics=result.get("diagnostics") or {},
-        latency_ms=0.0,
-        search_session_id=None,
-        events_url=None,
-        clarification={"text": reply} if phase == "CLARIFY" else None,
-        chips=[],
-        revision=result.get("revision"),
-    )
+    return ChatMessageOut(**_map(result))
 
 
 @router.delete("/sessions/{session_id}")
