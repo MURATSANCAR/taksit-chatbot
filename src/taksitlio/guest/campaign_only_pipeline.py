@@ -41,6 +41,37 @@ from taksitlio.guest.need_extraction import (
     extract_profile as _extract_profile_det,
     resolve_category as _resolve_category_det,
 )
+from taksitlio.guest.llm_fallback import IDENTITY_TEXT, SEARCHING_TEXT
+
+
+# Tappable starter prompts shown on empty/clarify screens. Consistent with the
+# 28-category catalog and realistic budgets; tapping sends `message` verbatim,
+# which flows through the same extraction → ranking pipeline.
+STARTER_CHIPS: list[dict[str, str]] = [
+    {"label": "📱 Cep telefonu · 40.000 ₺", "message": "cep telefonu, 40.000 TL"},
+    {"label": "💻 Laptop · 35.000 ₺", "message": "laptop, 35.000 TL"},
+    {"label": "❄️ Buzdolabı · 30.000 ₺", "message": "buzdolabı, 30.000 TL"},
+    {"label": "🫧 Çamaşır makinesi · 25.000 ₺", "message": "çamaşır makinesi, 25.000 TL"},
+    {"label": "📺 Televizyon · 30.000 ₺", "message": "televizyon, 30.000 TL"},
+    {"label": "🎧 Kulaklık · 5.000 ₺", "message": "kulaklık, 5.000 TL"},
+]
+
+# "Sen kimsin / yapay zeka mısın" → fixed Taksitlio identity (never reveal AI).
+# No trailing \b (Turkish suffixes: "modelsin", "botsun"); internal boundaries only.
+_IDENTITY_RE = re.compile(
+    r"(sen\s+kimsin|\bkimsin|\bnesin\b|yapay\s*zek[aâ]|robot\s+mu|bot\s+mu|"
+    r"chatgpt|\bclaude\b|\bgpt\b|hangi\s+model|dil\s+model|ai\s+m[ıi]s[ıi]n|"
+    r"insan\s+m[ıi]s[ıi]n|gerçek\s+mi|kim\s+geli[şs]tir|seni\s+kim)",
+    re.I,
+)
+
+# Gate for the LLM fallback — only spend a model call when the turn looks like a
+# real shopping need (has budget, a need verb, or enough words), never on chit-chat.
+_NEED_HINT_RE = re.compile(
+    r"\b(al[ıi]c[ae][km]|alaca[ğg][ıi]m|almak|al[ıi]r[ıi]m|laz[ıi]m|ar[ıi]yorum|"
+    r"bak[ıi]yorum|istiyorum|ihtiyac|bütçe|butce|bin|tl|lira|₺)\b",
+    re.I,
+)
 
 
 def _lexical(text: str) -> Optional[Any]:
@@ -186,12 +217,16 @@ class CampaignOnlyGuestPipeline:
         ranker: Any = None,
         eligibility: Any = None,
         max_campaigns: int = 2,
+        category_llm: Any = None,
     ) -> None:
         self._state = state_manager
         self._campaigns = campaign_repo
         self._ranker = ranker
         self._eligibility = eligibility
         self._max = max_campaigns
+        # Optional Tier-2 small-LLM fallback (async .resolve). None → pure
+        # deterministic (no network). Consulted only on deterministic miss.
+        self._llm = category_llm
 
     async def start(
         self,
@@ -267,6 +302,21 @@ class CampaignOnlyGuestPipeline:
         need = _extract_need(utterance)
         low = (utterance or "").casefold()
 
+        # Identity guard: never disclose AI/model — fixed Taksitlio message.
+        if _IDENTITY_RE.search(utterance or ""):
+            return await self._finish(
+                sid,
+                expected_revision,
+                client_message_id,
+                client_sequence,
+                ctx,
+                phase=ctx.phase or GuestPhase.AWAITING_NEED.value,
+                reply=IDENTITY_TEXT,
+                campaigns=[],
+                cta=None,
+                diag={"intent": "identity", "campaign_only": True, "product_path": False},
+            )
+
         # Rich profile: honor multi-constraint preferences from the FIRST turn
         # (cheaper / longer vade / bank exclude-include / tenure) with no LLM.
         profile = _extract_profile_det(utterance)
@@ -282,6 +332,31 @@ class CampaignOnlyGuestPipeline:
         for _b in profile.include_banks:
             if _b not in ctx.include_banks:
                 ctx.include_banks.append(_b)
+
+        # --- Tier 2: small-LLM category fallback (ONLY on deterministic miss) ---
+        # Deterministic lexicon already resolved the common case sub-ms. Spend a
+        # model call only when it missed AND the turn looks like a real need.
+        llm_diag: dict[str, Any] = {
+            "category_source": "deterministic" if need["category_code"] else "none"
+        }
+        if (
+            need["category_code"] is None
+            and self._llm is not None
+            and _NEED_HINT_RE.search(utterance or "")
+        ):
+            try:
+                llm_hit = await self._llm.resolve(utterance)
+            except Exception:  # noqa: BLE001 — fail-open, never block the turn
+                llm_hit = None
+            llm_diag = {
+                "category_source": "llm_fallback" if llm_hit else "llm_miss",
+                "llm_latency_ms": getattr(self._llm, "last_latency_ms", None),
+            }
+            if llm_hit is not None:
+                need["category_code"] = llm_hit.category_code
+                need["category_name"] = llm_hit.display_name
+                need["lexical_family"] = llm_hit.family
+                need["has_product_noun"] = True
 
         # --- Refinement flags (after COMPLETED) ---
         if ctx.phase in (GuestPhase.COMPLETED.value, GuestPhase.REFINING.value):
@@ -336,6 +411,7 @@ class CampaignOnlyGuestPipeline:
             "secondary_categories": [
                 (h.category_code, h.display_name) for h in profile.secondary
             ],
+            **llm_diag,
             "profile": {
                 "prefer_cheaper": ctx.prefer_cheaper,
                 "prefer_longer": ctx.prefer_longer,
@@ -743,6 +819,17 @@ class CampaignOnlyGuestPipeline:
             decision = "GUEST_OPENING"
         else:
             decision = "GUEST_SAFE"
+        # Offer tappable starter prompts on empty/clarify screens so the user
+        # can start with one tap; hide them once we're recommending.
+        chips = (
+            STARTER_CHIPS
+            if phase in (
+                GuestPhase.OPENING.value,
+                GuestPhase.AWAITING_NEED.value,
+                GuestPhase.CLARIFY.value,
+            )
+            else []
+        )
         return {
             "session_id": session_id,
             "phase": phase,
@@ -753,6 +840,10 @@ class CampaignOnlyGuestPipeline:
             "cards": [],  # HARD: never product cards
             "cta": cta,
             "membership_cta": cta,
+            "chips": chips,
+            # Canonical "searching…" text the client shows while a turn is
+            # in-flight (esp. the slow LLM path) so the UI never feels frozen.
+            "progress_hint": SEARCHING_TEXT,
             "diagnostics": {**diagnostics, "product_path": False, "campaign_only": True},
             "messages": (
                 [{"role": "assistant", "content": reply, "type": "text"}]

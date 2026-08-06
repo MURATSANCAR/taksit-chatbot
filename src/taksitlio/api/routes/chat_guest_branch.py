@@ -58,7 +58,8 @@ def map_guest_to_out(result: dict) -> dict:
         "search_session_id": None,
         "events_url": None,
         "clarification": {"text": reply} if phase == "CLARIFY" else None,
-        "chips": [],
+        "chips": result.get("chips") or [],
+        "progress_hint": result.get("progress_hint"),
         "revision": result.get("revision"),
     }
 

@@ -52,12 +52,25 @@ class GuestOrchestratorAdapter:
         ranker = extras.get("campaign_ranker")
         eligibility = extras.get("eligibility_engine")
 
+        # Tier-2 small-LLM category fallback. Prefer an injected instance;
+        # otherwise build from env (GUEST_FAST_* / FAST_*). Absent config →
+        # None → pure deterministic guest (no network, no behaviour change).
+        category_llm = extras.get("guest_category_llm")
+        if category_llm is None:
+            try:
+                from taksitlio.guest.llm_fallback import GuestCategoryResolverLLM
+
+                category_llm = GuestCategoryResolverLLM.from_env()
+            except Exception:  # noqa: BLE001 — never fail guest startup on this
+                category_llm = None
+
         pipeline = CampaignOnlyGuestPipeline(
             state_manager=state_manager,
             campaign_repo=campaign_repo,
             ranker=ranker,
             eligibility=eligibility,
             max_campaigns=2,
+            category_llm=category_llm,
         )
         return cls(pipeline)
 

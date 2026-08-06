@@ -190,7 +190,7 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("28", "Mücevherat", "JEWELRY", (
         "mücevher", "mucevher", "kolye", "yüzük", "yuzuk", "bilezik", "küpe", "kupe",
-        "pırlanta", "pirlanta", "takı", "gümüş takı", "alyans",
+        "pırlanta", "pirlanta", "gümüş takı", "takı seti", "alyans",
     )),
 )
 

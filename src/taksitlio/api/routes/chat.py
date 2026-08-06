@@ -42,6 +42,7 @@ class ChatMessageOut(BaseModel):
     events_url: Optional[str] = None
     clarification: Optional[Dict[str, Any]] = None
     chips: List[Dict[str, Any]] = Field(default_factory=list)
+    progress_hint: Optional[str] = None
     revision: Optional[int] = None
 
 
