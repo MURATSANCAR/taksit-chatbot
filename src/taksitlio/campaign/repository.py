@@ -75,6 +75,28 @@ class PostgresCampaignRepository:
             )
         return [_campaign_from_row(r) for r in rows]
 
+    async def list_active(
+        self, category_id: int | None = None, locale: str = "tr-TR", *, limit: int = 100
+    ) -> list[Campaign]:
+        """All ACTIVE campaigns (with category_code) — used by the guest
+        general-finance merge so category-agnostic bank offers surface for any
+        resolved category."""
+        async with self._pool.acquire() as conn:
+            rows = await conn.fetch(
+                """
+                SELECT ca.*, cat.category_code
+                FROM campaigns ca
+                JOIN categories cat ON cat.id = ca.category_id
+                WHERE ca.status = 'ACTIVE'
+                  AND ($1::int IS NULL OR ca.category_id = $1)
+                ORDER BY ca.updated_at DESC
+                LIMIT $2
+                """,
+                category_id,
+                limit,
+            )
+        return [_campaign_from_row(r) for r in rows]
+
     async def get_eligibility_rules(self, rule_set_code: str = "DEFAULT") -> list[dict[str, Any]]:
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(

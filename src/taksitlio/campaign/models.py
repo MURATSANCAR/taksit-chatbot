@@ -105,6 +105,17 @@ class InMemoryCampaignRepository:
         matched = [c for c in self._campaigns if c.category_code in codes]
         return matched[:limit]
 
+    async def list_active(
+        self, category_id: int | None = None, locale: str = "tr-TR"
+    ) -> list[Campaign]:
+        """All ACTIVE campaigns — used by the guest general-finance merge."""
+        return [
+            c
+            for c in self._campaigns
+            if str(getattr(c, "status", "ACTIVE")).upper() == "ACTIVE"
+            and (category_id is None or getattr(c, "category_id", None) == category_id)
+        ]
+
     async def get_eligibility_rules(self, rule_set_code: str = "DEFAULT") -> list[dict[str, Any]]:
         return list(self._rules)
 

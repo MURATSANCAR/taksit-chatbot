@@ -199,7 +199,7 @@ def build_demo_campaigns() -> list[Campaign]:
             membership_cta_label="Üye ol, kampanyadan yararlan",
             starts_at=now - timedelta(days=7),
             ends_at=now + timedelta(days=365),
-            attributes={"rate_text": "%1,99 kar oranı"},
+            attributes={"rate_text": "%1,99 kar oranı", "scope": "GENERAL"},
             search_text="albaraka cep telefonu taksit kampanya",
         ),
         Campaign(
@@ -218,7 +218,7 @@ def build_demo_campaigns() -> list[Campaign]:
             membership_cta_label="Üye ol, kampanyadan yararlan",
             starts_at=now - timedelta(days=7),
             ends_at=now + timedelta(days=365),
-            attributes={"rate_text": "%2,99 kar payı"},
+            attributes={"rate_text": "%2,99 kar payı", "scope": "GENERAL"},
             search_text="kuveyt turk cep telefonu taksit kampanya",
         ),
     ]

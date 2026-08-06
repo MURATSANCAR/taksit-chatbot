@@ -598,15 +598,32 @@ class CampaignOnlyGuestPipeline:
         codes = list(dict.fromkeys(codes))
 
         raw: list[Any] = []
+        active_all: list[Any] = []
         try:
             if hasattr(self._campaigns, "list_by_category_codes") and codes:
                 raw = list(await self._campaigns.list_by_category_codes(codes, limit=50))
-            # Do NOT cross-pollinate categories (WHITE_GOODS must never pull phone).
-            if not raw and hasattr(self._campaigns, "list_active"):
-                raw = list(await self._campaigns.list_active())
+            if hasattr(self._campaigns, "list_active"):
+                active_all = list(await self._campaigns.list_active())
         except Exception as exc:
             logger.exception("campaign repo failed: %s", exc)
             return []
+
+        # Always merge GENERAL (category-agnostic bank finance) offers into the
+        # pool so they surface for every category — even when a category-specific
+        # campaign already exists. Product-specific campaigns are NOT merged, so
+        # WHITE_GOODS still never pulls a phone-specific campaign.
+        seen_keys = {str(self._to_dict(c).get("id") or self._to_dict(c).get("campaign_code")) for c in raw}
+        for c in active_all:
+            d = self._to_dict(c)
+            scope = str((d.get("attributes") or {}).get("scope") or "").upper()
+            if scope == "GENERAL" or d.get("general_finance"):
+                key = str(d.get("id") or d.get("campaign_code"))
+                if key not in seen_keys:
+                    seen_keys.add(key)
+                    raw.append(c)
+        # Do NOT cross-pollinate product-specific categories on total miss.
+        if not raw:
+            raw = active_all
 
         items: list[dict[str, Any]] = []
         allowed_codes = {c.upper() for c in codes if c}
