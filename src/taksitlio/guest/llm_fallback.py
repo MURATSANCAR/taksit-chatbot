@@ -26,6 +26,7 @@ in the pipeline, and reinforced here for any future chat use).
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import re
@@ -195,17 +196,25 @@ class GuestCategoryResolverLLM:
             headers["Authorization"] = f"Bearer {self._api_key}"
         started = time.perf_counter()
         try:
-            resp = await self._client.post(
-                f"{self._base_url}{self._chat_path}",
-                json=self.request_body(utterance),
-                headers=headers,
-                timeout=self._timeout_s,
+            # asyncio.wait_for enforces the budget regardless of transport, so a
+            # slow model can never exceed self._timeout_s (belt-and-suspenders
+            # with httpx's own timeout). On expiry → TimeoutError → fail-open.
+            payload = await asyncio.wait_for(
+                self._post(headers, utterance), timeout=self._timeout_s
             )
-            resp.raise_for_status()
-            payload = resp.json()
         finally:
             self.last_latency_ms = (time.perf_counter() - started) * 1000.0
         return self._parse_code(payload)
+
+    async def _post(self, headers: dict[str, str], utterance: str) -> Any:
+        resp = await self._client.post(
+            f"{self._base_url}{self._chat_path}",
+            json=self.request_body(utterance),
+            headers=headers,
+            timeout=self._timeout_s,
+        )
+        resp.raise_for_status()
+        return resp.json()
 
     @staticmethod
     def _parse_code(payload: Any) -> Optional[str]:
