@@ -71,6 +71,16 @@ _CATEGORY_SYSTEM_PROMPT = (
     "veya ürün belirsizse {\"category_code\":null}.\n"
     "- Kod yalnızca yukarıdaki listeden olabilir; asla uydurma.\n"
     "- Cümlede olmayan bilgiyi ekleme, açıklama/markdown yazma.\n"
+    # Few-shot examples materially lift small-model accuracy (measured: a 1.5B
+    # went 0→9/12 with these). Includes the ambiguous cases small models miss.
+    "Örnekler: 'buzdolabı 20 bin'->{\"category_code\":\"7\"} ; "
+    "'laptop 30 bin'->{\"category_code\":\"3\"} ; "
+    "'iphone alacağım'->{\"category_code\":\"1\"} ; "
+    "'kulaklık'->{\"category_code\":\"10\"} ; "
+    "'ütü'->{\"category_code\":\"2\"} ; "
+    "'ps5'->{\"category_code\":\"11\"} ; "
+    "'akıllı saat'->{\"category_code\":\"12\"} ; "
+    "'koltuk takımı'->{\"category_code\":\"15\"}.\n"
     + GUEST_PERSONA_RULES
 )
 
