@@ -36,7 +36,18 @@ except ImportError:  # pragma: no cover
     guard_resolved_category = None  # type: ignore
 
 
+from taksitlio.guest.need_extraction import (
+    extract_need as _extract_need_det,
+    resolve_category as _resolve_category_det,
+)
+
+
 def _lexical(text: str) -> Optional[Any]:
+    # Deterministic 28-category lexicon first (covers full catalog). Falls back
+    # to the legacy narrow guard only if the lexicon misses.
+    hit = _resolve_category_det(text)
+    if hit is not None:
+        return hit
     if detect_lexical_category is None:
         return _fallback_lexical(text)
     return detect_lexical_category(text)
@@ -144,21 +155,11 @@ class GuestContext:
 
 
 def _parse_budget(text: str) -> Optional[float]:
-    m = _BUDGET_RE.search(text or "")
-    if not m:
-        return None
+    # Delegates to the hardened parser (ignores model/spec numbers, supports
+    # "40k", "kırk bin", ranges). Legacy _BUDGET_RE retained for reference only.
+    from taksitlio.guest.need_extraction import parse_budget
 
-    def to_f(num: str, bin_flag: Optional[str]) -> float:
-        v = float(num.replace(".", "").replace(",", ""))
-        if bin_flag or (v < 1000 and "bin" in (text or "").lower()):
-            v *= 1000
-        return v
-
-    low = to_f(m.group(1), m.group(2))
-    if m.group(3):
-        high = to_f(m.group(3), m.group(4))
-        return max(low, high)
-    return low
+    return parse_budget(text)
 
 
 def _extract_need(text: str) -> dict[str, Any]:
