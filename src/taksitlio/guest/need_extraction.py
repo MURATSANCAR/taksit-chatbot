@@ -32,6 +32,14 @@ def normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text.translate(_TR_LOWER).lower()).strip()
 
 
+_ASCII_FOLD = str.maketrans({"ç": "c", "ğ": "g", "ı": "i", "ö": "o", "ş": "s", "ü": "u"})
+
+
+def ascii_fold(text: str) -> str:
+    """Fold Turkish diacritics so 'buzdolabı' == 'buzdolabi' (users often omit them)."""
+    return normalize(text).translate(_ASCII_FOLD)
+
+
 _LETTER = "a-zçğıöşü"
 
 
@@ -69,8 +77,12 @@ _CATALOG: tuple[_CatDef, ...] = (
     _CatDef("1", "Cep Telefonu", "MOBILE_PHONE", (
         "cep telefonu", "akıllı telefon", "akilli telefon", "telefon", "telefonu",
         "smartphone", "iphone", "samsung galaxy", "galaxy s", "galaxy a", "galaxy z",
-        "xiaomi", "redmi", "poco", "oppo", "realme", "vivo", "huawei", "tecno",
-        "reeder", "android telefon", "gsm",
+        "galaxy note", "xiaomi", "redmi", "redmi note", "poco", "oppo", "realme",
+        "vivo", "huawei", "tecno", "reeder", "android telefon", "gsm",
+        # common phone model tokens without the brand word ("s24 ultra", "a54")
+        "s24", "s23", "s22", "s21", "a54", "a34", "a24", "a14", "note 13",
+        "14 pro max", "15 pro max", "16 pro max", "13 pro", "14 pro", "15 pro",
+        "16 pro", "pro max",
     )),
     _CatDef("2", "Elektrikli Küçük Ev Aletleri", "SMALL_APPLIANCE", (
         "küçük ev aleti", "kucuk ev aleti", "airfryer", "air fryer", "fritöz", "fritoz",
@@ -104,17 +116,19 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("8", "Kişisel Bakım Ürünleri", "PERSONAL_CARE", (
         "kişisel bakım", "kisisel bakim", "tıraş makinesi", "tiras makinesi",
-        "epilasyon", "epilatör", "saç kurutma", "fön makinesi", "fon makinesi",
-        "saç düzleştirici", "düzleştirici", "saç maşası", "diş fırçası",
+        "epilasyon aleti", "epilasyon", "epilatör", "saç kurutma makinesi",
+        "saç kurutma", "fön makinesi", "fon makinesi", "saç düzleştirici",
+        "düzleştirici", "saç maşası", "diş fırçası",
     )),
     _CatDef("9", "Klima, Isıtma/Soğutma Ekipmanları", "AIR_CONDITIONER", (
         "klima", "split klima", "portatif klima", "ısıtıcı", "isitici", "soğutucu",
         "vantilatör", "vantilator", "kombi", "radyatör", "şofben", "termosifon",
     )),
     _CatDef("10", "Mobil Aksesuar", "ACCESSORY", (
-        "mobil aksesuar", "kılıf", "kilif", "ekran koruyucu", "şarj cihazı",
-        "şarj aleti", "sarj aleti", "powerbank", "power bank", "kulaklık", "kulaklik",
-        "airpods", "earbuds", "bluetooth kulaklık", "kablo", "adaptör", "telefon tutucu",
+        "mobil aksesuar", "telefon kılıfı", "telefon kilifi", "kılıf", "kilif",
+        "ekran koruyucu", "şarj cihazı", "şarj aleti", "sarj aleti", "powerbank",
+        "power bank", "kulaklık", "kulaklik", "airpods", "earbuds",
+        "bluetooth kulaklık", "kablo", "adaptör", "telefon tutucu",
     )),
     _CatDef("11", "Oyun Konsolları", "CONSOLE", (
         "oyun konsolu", "konsol", "playstation", "ps5", "ps4", "ps 5", "ps 4",
@@ -160,7 +174,8 @@ _CATALOG: tuple[_CatDef, ...] = (
         "termometre", "ateş ölçer", "medikal", "oksijen konsantratörü",
     )),
     _CatDef("23", "Turizm/Seyahat", "TRAVEL", (
-        "tatil", "seyahat", "uçak bileti", "otel", "konaklama", "turizm", "vize",
+        "tatil", "seyahat", "tur paketi", "uçak bileti", "otel", "konaklama",
+        "turizm", "vize",
     )),
     _CatDef("24", "Eğitim", "EDUCATION", (
         "eğitim", "egitim", "kurs", "online kurs", "dil kursu", "sertifika programı",
@@ -180,24 +195,42 @@ _CATALOG: tuple[_CatDef, ...] = (
 )
 
 
-def _compile_alias(alias: str) -> re.Pattern[str]:
-    a = normalize(alias)
+# Public code -> (display_name, family) index — used by the LLM fallback to
+# validate/hydrate a model-returned category code against the real catalog.
+CATALOG_BY_CODE: dict[str, tuple[str, str]] = {
+    c.code: (c.name, c.family) for c in _CATALOG
+}
+
+
+def _compile_alias(alias: str, *, fold: bool = False) -> re.Pattern[str]:
+    a = ascii_fold(alias) if fold else normalize(alias)
+    letters = "a-z" if fold else _LETTER
     escaped = re.escape(a).replace(r"\ ", r"\s+")
-    # left boundary: not preceded by a letter/digit; allow trailing Turkish
-    # suffix letters so "telefon" matches "telefonu", "telefonlar", "telefonumu".
-    return re.compile(rf"(?<![{_LETTER}0-9])" + escaped + rf"[{_LETTER}]*")
+    # left boundary: not preceded by a letter/digit; allow trailing suffix
+    # letters so "telefon" matches "telefonu", "telefonlar", "telefonumu".
+    return re.compile(rf"(?<![{letters}0-9])" + escaped + rf"[{letters}]*")
 
 
 # Pre-compile, ranked most-specific first (more words, then longer alias).
-_RANKED: list[tuple[re.Pattern[str], _CatDef, int]] = sorted(
+# Each entry carries a Turkish pattern and an ASCII-folded pattern so inputs
+# without diacritics ("buzdolabi", "gozluk") still resolve.
+_RANKED: list[tuple[re.Pattern[str], re.Pattern[str], _CatDef, int]] = sorted(
     (
-        (_compile_alias(alias), cat, len(alias.split()) * 100 + len(alias))
+        (
+            _compile_alias(alias),
+            _compile_alias(alias, fold=True),
+            cat,
+            len(alias.split()) * 100 + len(alias),
+        )
         for cat in _CATALOG
         for alias in cat.aliases
     ),
-    key=lambda t: t[2],
+    key=lambda t: t[3],
     reverse=True,
 )
+
+
+_NEGATION_AFTER = re.compile(r"\s*(değil|degil|istemiyorum|olmas[ıi]n|yok\b|de[ğg]il)")
 
 
 def resolve_categories(text: str, *, limit: int = 4) -> list[CategoryHit]:
@@ -209,12 +242,21 @@ def resolve_categories(text: str, *, limit: int = 4) -> list[CategoryHit]:
     norm = normalize(text)
     if not norm:
         return []
+    norm_ascii = norm.translate(_ASCII_FOLD)
     hits: list[CategoryHit] = []
     seen: set[str] = set()
-    for pat, cat, _rank in _RANKED:
+    for pat, pat_ascii, cat, _rank in _RANKED:
         if cat.code in seen:
             continue
-        if pat.search(norm):
+        m = pat.search(norm)
+        src = norm
+        if m is None:
+            m = pat_ascii.search(norm_ascii)
+            src = norm_ascii
+        if m is not None:
+            # Negation guard: "telefon değil tablet" must not resolve to phone.
+            if _NEGATION_AFTER.match(src[m.end():m.end() + 14]):
+                continue
             seen.add(cat.code)
             hits.append(CategoryHit(
                 category_code=cat.code,
@@ -259,17 +301,17 @@ _TENS = {
 
 
 def _spelled_out_thousands(norm: str) -> Optional[float]:
-    """Parse "kırk bin", "otuz beş bin", "yüz bin", "iki yüz bin", "bir milyon"."""
-    # milyon
-    m = re.search(rf"(?:(bir|iki|üç|uc|dört|dort|beş|bes)\s+)?milyon", norm)
-    if m:
-        base = _ONES.get(m.group(1), 1) if m.group(1) else 1
-        return float(base * 1_000_000)
-    # <...> bin  (hundreds + tens + ones)
+    """Parse "kırk bin", "otuz beş bin", "yüz bin", "iki yüz bin" (spelled thousands).
+
+    Millions are handled separately in parse_budget (compound-aware).
+    """
+    # <...> bin  (hundreds + tens + ones). Leading lookbehind prevents matching
+    # "on" inside words like "telefon"; trailing suffix allows "bine"/"binlik".
     m = re.search(
+        r"(?<![a-zçğıöşü0-9])"
         r"((?:(?:bir|iki|üç|uc|dört|dort|beş|bes|altı|alti|yedi|sekiz|dokuz)\s+)?yüz\s+)?"
         r"(on|yirmi|otuz|kırk|kirk|elli|altmış|altmis|yetmiş|yetmis|seksen|doksan)?\s*"
-        r"(bir|iki|üç|uc|dört|dort|beş|bes|altı|alti|yedi|sekiz|dokuz)?\s*bin\b",
+        r"(bir|iki|üç|uc|dört|dort|beş|bes|altı|alti|yedi|sekiz|dokuz)?\s*bin[a-zçğıöşü]*",
         norm,
     )
     if not m or not m.group(0).strip():
@@ -318,17 +360,36 @@ def parse_budget(text: str) -> Optional[float]:
     if spelled:
         candidates.append(spelled)
 
-    # 2) digit + "bin"/"k" thousand cue  ("40 bin", "40bin", "40k")
-    for m in re.finditer(r"(\d[\d.,]*)\s*(bin|k)(?![a-zçğıöşü])", norm):
+    # 2a) digit + "bin" (+ suffix: "40 bin", "40bin", "30 bine", "40 binlik")
+    for m in re.finditer(r"(\d[\d.,]*)\s*bin[a-zçğıöşü]*", norm):
+        val = _to_number(m.group(1))
+        if val is not None:
+            candidates.append(val * 1000)
+    # 2b) digit + "k" (strict: "40k" yes, "40 kadar" no)
+    for m in re.finditer(r"(\d[\d.,]*)\s*k(?![a-zçğıöşü])", norm):
         val = _to_number(m.group(1))
         if val is not None:
             candidates.append(val * 1000)
 
-    # 3) digit + milyon
-    for m in re.finditer(r"(\d[\d.,]*)\s*milyon", norm):
-        val = _to_number(m.group(1))
-        if val is not None:
-            candidates.append(val * 1_000_000)
+    # 3) milyon — compound aware ("2 milyon 500 bin" = 2.5M, "yarım milyon" = 0.5M)
+    for m in re.finditer(
+        r"(?<![a-zçğıöşü0-9])"
+        r"(\d+(?:[.,]\d+)?|yar[ıi]m|bir|iki|üç|uc|dört|dort|beş|bes|altı|alti|yedi|sekiz|dokuz|on)"
+        r"\s*milyon(?:\s*(\d[\d.,]*)\s*bin[a-zçğıöşü]*)?",
+        norm,
+    ):
+        tok = m.group(1)
+        base = {"yarım": 0.5, "yarim": 0.5}.get(tok)
+        if base is None:
+            base = _ONES.get(tok)
+        if base is None:
+            base = _to_number(tok) or 0
+        total = base * 1_000_000
+        if m.group(2):
+            sub = _to_number(m.group(2))
+            if sub is not None:
+                total += sub * 1000
+        candidates.append(total)
 
     # 4) digit + currency ("40000 tl", "3.500 lira", "₺25000")
     for m in re.finditer(r"(\d[\d.,]*)\s*(?:tl|lira|try|₺)\b", norm):
