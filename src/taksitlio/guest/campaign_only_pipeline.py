@@ -38,6 +38,7 @@ except ImportError:  # pragma: no cover
 
 from taksitlio.guest.need_extraction import (
     extract_need as _extract_need_det,
+    extract_profile as _extract_profile_det,
     resolve_category as _resolve_category_det,
 )
 
@@ -152,6 +153,8 @@ class GuestContext:
     prefer_cheaper: bool = False
     prefer_longer: bool = False
     exclude_banks: list[str] = field(default_factory=list)
+    include_banks: list[str] = field(default_factory=list)
+    tenure_months: Optional[int] = None
 
 
 def _parse_budget(text: str) -> Optional[float]:
@@ -264,6 +267,22 @@ class CampaignOnlyGuestPipeline:
         need = _extract_need(utterance)
         low = (utterance or "").casefold()
 
+        # Rich profile: honor multi-constraint preferences from the FIRST turn
+        # (cheaper / longer vade / bank exclude-include / tenure) with no LLM.
+        profile = _extract_profile_det(utterance)
+        if profile.prefer_cheaper:
+            ctx.prefer_cheaper = True
+        if profile.prefer_longer:
+            ctx.prefer_longer = True
+        if profile.tenure_months:
+            ctx.tenure_months = profile.tenure_months
+        for _b in profile.exclude_banks:
+            if _b not in ctx.exclude_banks:
+                ctx.exclude_banks.append(_b)
+        for _b in profile.include_banks:
+            if _b not in ctx.include_banks:
+                ctx.include_banks.append(_b)
+
         # --- Refinement flags (after COMPLETED) ---
         if ctx.phase in (GuestPhase.COMPLETED.value, GuestPhase.REFINING.value):
             if _REFINE_CHEAPER.search(utterance or ""):
@@ -314,6 +333,18 @@ class CampaignOnlyGuestPipeline:
             "lexical_family": ctx.lexical_family,
             "product_path": False,
             "campaign_only": True,
+            "secondary_categories": [
+                (h.category_code, h.display_name) for h in profile.secondary
+            ],
+            "profile": {
+                "prefer_cheaper": ctx.prefer_cheaper,
+                "prefer_longer": ctx.prefer_longer,
+                "tenure_months": ctx.tenure_months,
+                "exclude_banks": ctx.exclude_banks,
+                "include_banks": ctx.include_banks,
+                "budget_type": profile.budget_type,
+                "is_complex": profile.is_complex,
+            },
         }
 
         # Membership FAQ
@@ -445,6 +476,13 @@ class CampaignOnlyGuestPipeline:
             if rate:
                 part += f" ({rate})"
             lines.append(part)
+        secondary = diag.get("secondary_categories") or []
+        if secondary:
+            names = ", ".join(n for _c, n in secondary if n)
+            lines.append(
+                f"\nAyrıca {names} için de kampanyalar var; "
+                "üye olunca hepsini birlikte inceleyebiliriz."
+            )
         lines.append(
             "\nBu kampanyalardan yararlanmak için üye olman yeterli. "
             "İstersen \"daha ucuz\", \"daha uzun vade\" veya \"başka banka\" yazabilirsin."
@@ -511,7 +549,17 @@ class CampaignOnlyGuestPipeline:
             if d.get("status") and str(d["status"]).upper() != "ACTIVE":
                 continue
             camp_code = str(d.get("category_code") or "").upper()
-            if allowed_codes and camp_code and camp_code not in allowed_codes:
+            is_general = bool(d.get("general_finance")) or str(
+                (d.get("attributes") or {}).get("scope") or ""
+            ).upper() == "GENERAL"
+            # General bank-finance offers (Albaraka/Kuveyt/GetirFinans genel
+            # alışveriş finansmanı) apply to ANY category — only budget-gated.
+            if (
+                not is_general
+                and allowed_codes
+                and camp_code
+                and camp_code not in allowed_codes
+            ):
                 # Hard: never show phone campaigns for non-phone family
                 if fam and fam not in ("MOBILE_PHONE", "PHONE") and camp_code in (
                     "MOBILE_PHONE",
@@ -535,6 +583,8 @@ class CampaignOnlyGuestPipeline:
             if ctx.exclude_banks and "__diversify__" not in ctx.exclude_banks:
                 if any(x in bank for x in ctx.exclude_banks):
                     continue
+            if ctx.include_banks and not any(x in bank for x in ctx.include_banks):
+                continue
             items.append(d)
 
         # Drop already shown on "more / other bank"
@@ -549,16 +599,36 @@ class CampaignOnlyGuestPipeline:
                 if filtered:
                     items = filtered
 
+        def _rate_pct(d: dict[str, Any]) -> Optional[float]:
+            txt = d.get("rate_text") or (d.get("attributes") or {}).get("rate_text") or ""
+            m = re.search(r"%\s*(\d+(?:[.,]\d+)?)", str(txt))
+            return float(m.group(1).replace(",", ".")) if m else None
+
         def score(d: dict[str, Any]) -> float:
             s = 0.5
+            b = ctx.budget_value
+            mn = d.get("min_budget")
             mx = d.get("max_budget")
-            if mx and ctx.budget_value:
-                ratio = float(ctx.budget_value) / float(mx)
-                s += 0.35 * max(0.0, 1.0 - abs(1.0 - min(ratio, 2.0)))
-            if d.get("rate_text"):
-                s += 0.15 if ctx.prefer_cheaper else 0.08
-            if ctx.prefer_longer and d.get("installment_count"):
-                s += min(0.2, float(d["installment_count"]) / 60.0)
+            # Budget fit: comfortably-within-range beats a tight ceiling match.
+            if b is not None:
+                if mx is not None and float(b) > float(mx):
+                    s -= 0.20
+                elif mn is not None and float(b) < float(mn):
+                    s -= 0.10
+                else:
+                    s += 0.30
+            # Real numeric rate: lower %% is cheaper → higher score.
+            rate = _rate_pct(d)
+            if rate is not None:
+                rate_score = max(0.0, 1.0 - rate / 5.0)
+                s += (0.30 if ctx.prefer_cheaper else 0.15) * rate_score
+            # Tenure: honor "uzun vade" and an explicit "<n> ay" target.
+            inst = d.get("installment_count")
+            if inst:
+                if ctx.prefer_longer:
+                    s += min(0.20, float(inst) / 60.0)
+                if ctx.tenure_months:
+                    s += 0.10 * max(0.0, 1.0 - abs(float(inst) - ctx.tenure_months) / 12.0)
             return s
 
         items.sort(key=score, reverse=True)
@@ -600,6 +670,8 @@ class CampaignOnlyGuestPipeline:
             prefer_cheaper=bool(guest.get("prefer_cheaper")),
             prefer_longer=bool(guest.get("prefer_longer")),
             exclude_banks=list(guest.get("exclude_banks") or []),
+            include_banks=list(guest.get("include_banks") or []),
+            tenure_months=guest.get("tenure_months"),
         )
 
     async def _finish(
@@ -627,6 +699,8 @@ class CampaignOnlyGuestPipeline:
             "prefer_cheaper": ctx.prefer_cheaper,
             "prefer_longer": ctx.prefer_longer,
             "exclude_banks": ctx.exclude_banks,
+            "include_banks": ctx.include_banks,
+            "tenure_months": ctx.tenure_months,
         }
         cas = await self._state.apply_model_update(
             sid,

@@ -147,6 +147,10 @@ def load_active_campaigns(excel_path: Path) -> list[dict[str, Any]]:
                 "excel_id": external_id,
                 "rate_text": rate_text,
                 "raw_subtitle": subtitle,
+                # Excel ACTIVE rows are general retail-finance offers that apply
+                # across categories; the guest ranker surfaces GENERAL campaigns
+                # for any resolved category (budget-gated), not just phone (1).
+                "scope": "GENERAL",
             },
             "search_text": f"{title} {subtitle or ''} {bank or ''} {rate_text or ''}".strip(),
         }

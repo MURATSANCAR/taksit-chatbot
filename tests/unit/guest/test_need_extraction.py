@@ -9,7 +9,12 @@ from __future__ import annotations
 
 import pytest
 
-from taksitlio.guest.need_extraction import parse_budget, resolve_category
+from taksitlio.guest.need_extraction import (
+    extract_profile,
+    parse_budget,
+    resolve_categories,
+    resolve_category,
+)
 
 
 # --- Budget: the previously-broken model/spec traps must not leak into budget --
@@ -85,3 +90,46 @@ def test_category_hint_alias_matches_pipeline_contract():
     hit = resolve_category("buzdolabı")
     assert hit.category_hint == "7"
     assert hit.family == "WHITE_GOODS"
+
+
+# --- Long / multi-constraint prompts ------------------------------------------
+
+def test_profile_extracts_all_constraints_from_long_prompt():
+    p = extract_profile(
+        "telefon alıcam bütçem 40 bin civarı, uzun vade istiyorum, "
+        "albaraka olmasın, peşinatı düşük olsun, yeni müşteriyim"
+    )
+    assert p.primary_code == "1"
+    assert p.budget_value == 40000
+    assert p.budget_type == "APPROXIMATE"
+    assert p.prefer_longer is True
+    assert p.low_downpayment is True
+    assert p.new_customer is True
+    assert p.exclude_banks == ["albaraka"]
+    assert p.is_complex is True
+
+
+def test_profile_multi_category_and_tenure_and_maximum():
+    p = extract_profile("laptop lazım en fazla 35 bin, 12 ay taksit olsun, kuveyt olsun")
+    assert p.primary_code == "3"
+    assert p.budget_type == "MAXIMUM"
+    assert p.tenure_months == 12
+    assert p.include_banks == ["kuveyt"]
+
+
+def test_profile_two_products_are_both_captured():
+    p = extract_profile("hem buzdolabı hem çamaşır makinesi lazım, en ucuz olsun")
+    codes = {p.primary_code} | {h.category_code for h in p.secondary}
+    assert {"6", "7"} <= codes
+    assert p.prefer_cheaper is True
+
+
+def test_resolve_categories_dedupes_and_orders_by_specificity():
+    hits = resolve_categories("akıllı saat ve normal saat")
+    # akıllı saat (12) must be primary over saat (18); both distinct
+    assert hits[0].category_code == "12"
+    assert "18" in {h.category_code for h in hits}
+
+
+def test_simple_prompt_is_not_flagged_complex():
+    assert extract_profile("cep telefonu alıcaz, bütçem 40 bin TL civarı").is_complex is False

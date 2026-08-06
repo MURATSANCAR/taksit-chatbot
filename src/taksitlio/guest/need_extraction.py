@@ -200,24 +200,41 @@ _RANKED: list[tuple[re.Pattern[str], _CatDef, int]] = sorted(
 )
 
 
-def resolve_category(text: str) -> Optional[CategoryHit]:
-    """Return the best catalog CategoryHit for free-text, or None.
+def resolve_categories(text: str, *, limit: int = 4) -> list[CategoryHit]:
+    """Return all distinct catalog categories mentioned, most-specific first.
 
-    Specific/multi-word aliases win over generic ones, so "akıllı saat"
-    resolves to Giyilebilir Teknoloji (12), not Saat (18).
+    Deduplicated by category_code; the first (highest-specificity) match is the
+    primary need, the rest are secondary needs in a multi-product prompt.
     """
     norm = normalize(text)
     if not norm:
-        return None
+        return []
+    hits: list[CategoryHit] = []
+    seen: set[str] = set()
     for pat, cat, _rank in _RANKED:
+        if cat.code in seen:
+            continue
         if pat.search(norm):
-            return CategoryHit(
+            seen.add(cat.code)
+            hits.append(CategoryHit(
                 category_code=cat.code,
                 display_name=cat.name,
                 family=cat.family,
                 confidence=0.92 if " " in cat.aliases[0] else 0.85,
-            )
-    return None
+            ))
+            if len(hits) >= limit:
+                break
+    return hits
+
+
+def resolve_category(text: str) -> Optional[CategoryHit]:
+    """Return the single best catalog CategoryHit for free-text, or None.
+
+    Specific/multi-word aliases win over generic ones, so "akıllı saat"
+    resolves to Giyilebilir Teknoloji (12), not Saat (18).
+    """
+    hits = resolve_categories(text, limit=1)
+    return hits[0] if hits else None
 
 
 # ---------------------------------------------------------------------------
@@ -378,3 +395,125 @@ def extract_need(text: str) -> NeedExtraction:
             "matched_family": hit.family if hit else None,
         },
     )
+
+
+# ---------------------------------------------------------------------------
+# Rich profile for long / multi-constraint prompts
+# ---------------------------------------------------------------------------
+# A long free-text prompt can carry many constraints at once, e.g.
+#   "eşime doğum günü için telefon alıcam bütçem 40 bin civarı ama peşinatı
+#    düşük olsun, uzun vade istiyorum, albaraka olmasın, yeni müşteriyim"
+# We extract ALL of them deterministically so the fast path can honor
+# preferences on the very first turn — no LLM round-trip.
+
+_BANKS = {
+    "albaraka": "albaraka",
+    "kuveyt": "kuveyt",
+    "kuveyt türk": "kuveyt",
+    "getirfinans": "getirfinans",
+    "getir finans": "getirfinans",
+}
+
+_PREF_CHEAPER = re.compile(
+    r"\b(en\s+ucuz|daha\s+ucuz|ucuz|en\s+uygun|daha\s+uygun|"
+    r"d[üu][şs][üu]k\s+(?:faiz|oran|kar|maliyet)|faizsiz|%\s*0)\b"
+)
+_PREF_LONGER = re.compile(r"\b(en\s+uzun\s+vade|uzun\s+vade|vadeyi\s+uzat|uzun\s+taksit)\b")
+_PREF_SHORTER = re.compile(r"\b(k[ıi]sa\s+vade|az\s+taksit|tek\s+[çc]ekim|pe[şs]in)\b")
+_PESINAT_LOW = re.compile(
+    r"pe[şs]inats[ıi]z|"
+    r"pe[şs]inat\w*\s+(?:yok|olmas[ıi]n|d[üu][şs][üu]k|az)|"
+    r"(?:d[üu][şs][üu]k|az)\s+pe[şs]inat"
+)
+_NEW_CUSTOMER = re.compile(r"yeni\s+m[üu][şs]teri|ilk\s+defa|hi[çc]\s+kullanmad")
+
+
+def _extract_tenure_months(norm: str) -> Optional[int]:
+    """Highest explicit '<n> ay' / '<n> taksit' up to 60 months."""
+    vals = [int(m.group(1)) for m in re.finditer(r"(\d{1,2})\s*(?:ay|taksit)\b", norm)]
+    vals = [v for v in vals if 1 <= v <= 60]
+    return max(vals) if vals else None
+
+
+def _extract_banks(norm: str) -> tuple[list[str], list[str]]:
+    """Return (include, exclude) bank slugs from phrases like 'albaraka olsun',
+    'kuveyt olmasın', 'getirfinans hariç', 'sadece albaraka'."""
+    include: list[str] = []
+    exclude: list[str] = []
+    for phrase, slug in _BANKS.items():
+        for m in re.finditer(re.escape(phrase), norm):
+            window = norm[m.end():m.end() + 18]
+            if re.search(r"\b(olmas[ıi]n|hari[çc]|istemiyorum|d[ıi][şs][ıi]nda)\b", window):
+                exclude.append(slug)
+            elif re.search(r"\b(olsun|istiyorum|tercih|sadece|sadece\s+)\b", window) or \
+                    re.search(r"\bsadece\s+" + re.escape(phrase), norm):
+                include.append(slug)
+    return list(dict.fromkeys(include)), list(dict.fromkeys(exclude))
+
+
+@dataclass
+class NeedProfile:
+    primary_code: Optional[str] = None
+    primary_name: Optional[str] = None
+    primary_family: Optional[str] = None
+    secondary: list[CategoryHit] = field(default_factory=list)
+    budget_value: Optional[float] = None
+    budget_type: str = "NONE"          # NONE | APPROXIMATE | MAXIMUM | RANGE
+    tenure_months: Optional[int] = None
+    prefer_cheaper: bool = False
+    prefer_longer: bool = False
+    prefer_shorter: bool = False
+    low_downpayment: bool = False
+    new_customer: bool = False
+    include_banks: list[str] = field(default_factory=list)
+    exclude_banks: list[str] = field(default_factory=list)
+    is_complex: bool = False
+    diagnostics: dict = field(default_factory=dict)
+
+
+def _budget_type(norm: str, value: Optional[float]) -> str:
+    if value is None:
+        return "NONE"
+    if re.search(r"[-–—]\s*\d|\barası\b", norm):
+        return "RANGE"
+    if re.search(r"\b(en\s+fazla|maks|maksimum|ge[çc]me|a[şs]mas[ıi]n|kadar|alt[ıi]nda)\b", norm):
+        return "MAXIMUM"
+    if re.search(r"\b(civar[ıi]|yakla[şs][ıi]k|falan|filan|gibi|dolaylar[ıi])\b", norm):
+        return "APPROXIMATE"
+    return "APPROXIMATE"
+
+
+def extract_profile(text: str) -> NeedProfile:
+    """Full deterministic extraction for long / multi-constraint prompts."""
+    norm = normalize(text)
+    cats = resolve_categories(text, limit=4)
+    budget = parse_budget(text)
+    include, exclude = _extract_banks(norm)
+    primary = cats[0] if cats else None
+    constraints = [
+        bool(_PREF_CHEAPER.search(norm)),
+        bool(_PREF_LONGER.search(norm)),
+        bool(_extract_tenure_months(norm)),
+        bool(include or exclude),
+        bool(_PESINAT_LOW.search(norm)),
+        len(cats) > 1,
+    ]
+    profile = NeedProfile(
+        primary_code=primary.category_code if primary else None,
+        primary_name=primary.display_name if primary else None,
+        primary_family=primary.family if primary else None,
+        secondary=cats[1:],
+        budget_value=budget,
+        budget_type=_budget_type(norm, budget),
+        tenure_months=_extract_tenure_months(norm),
+        prefer_cheaper=bool(_PREF_CHEAPER.search(norm)),
+        prefer_longer=bool(_PREF_LONGER.search(norm)),
+        prefer_shorter=bool(_PREF_SHORTER.search(norm)),
+        low_downpayment=bool(_PESINAT_LOW.search(norm)),
+        new_customer=bool(_NEW_CUSTOMER.search(norm)),
+        include_banks=include,
+        exclude_banks=exclude,
+        is_complex=sum(constraints) >= 2 or len(norm) > 120,
+        diagnostics={"resolver": "deterministic_profile_v1", "n_categories": len(cats)},
+    )
+    return profile
