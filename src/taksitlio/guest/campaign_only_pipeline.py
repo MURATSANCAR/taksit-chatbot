@@ -665,9 +665,14 @@ class CampaignOnlyGuestPipeline:
             if d.get("status") and str(d["status"]).upper() != "ACTIVE":
                 continue
             camp_code = str(d.get("category_code") or "").upper()
-            is_general = bool(d.get("general_finance")) or str(
-                (d.get("attributes") or {}).get("scope") or ""
-            ).upper() == "GENERAL"
+            _attrs = d.get("attributes") or {}
+            is_general = (
+                bool(d.get("general_finance"))
+                or str(_attrs.get("scope") or "").upper() == "GENERAL"
+                # Excel-seeded bank finance offers (no product_name) are
+                # category-agnostic even if not explicitly scoped GENERAL.
+                or (str(_attrs.get("source") or "") == "excel_seed" and not d.get("product_name"))
+            )
             # General bank-finance offers (Albaraka/Kuveyt/GetirFinans genel
             # alışveriş finansmanı) apply to ANY category — only budget-gated.
             if (
@@ -765,6 +770,7 @@ class CampaignOnlyGuestPipeline:
             "summary": getattr(c, "summary", ""),
             "brand": getattr(c, "brand", None),
             "bank": getattr(c, "brand", None),
+            "product_name": getattr(c, "product_name", None),
             "min_budget": getattr(c, "min_budget", None),
             "max_budget": getattr(c, "max_budget", None),
             "rate_text": attrs.get("rate_text") if isinstance(attrs, dict) else None,
