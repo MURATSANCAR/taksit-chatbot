@@ -638,8 +638,7 @@ class CampaignOnlyGuestPipeline:
         seen_keys = {str(self._to_dict(c).get("id") or self._to_dict(c).get("campaign_code")) for c in raw}
         for c in active_all:
             d = self._to_dict(c)
-            scope = str((d.get("attributes") or {}).get("scope") or "").upper()
-            if scope == "GENERAL" or d.get("general_finance"):
+            if self._is_general_campaign(d):
                 key = str(d.get("id") or d.get("campaign_code"))
                 if key not in seen_keys:
                     seen_keys.add(key)
@@ -665,14 +664,7 @@ class CampaignOnlyGuestPipeline:
             if d.get("status") and str(d["status"]).upper() != "ACTIVE":
                 continue
             camp_code = str(d.get("category_code") or "").upper()
-            _attrs = d.get("attributes") or {}
-            is_general = (
-                bool(d.get("general_finance"))
-                or str(_attrs.get("scope") or "").upper() == "GENERAL"
-                # Excel-seeded bank finance offers (no product_name) are
-                # category-agnostic even if not explicitly scoped GENERAL.
-                or (str(_attrs.get("source") or "") == "excel_seed" and not d.get("product_name"))
-            )
+            is_general = self._is_general_campaign(d)
             # General bank-finance offers (Albaraka/Kuveyt/GetirFinans genel
             # alışveriş finansmanı) apply to ANY category — only budget-gated.
             if (
@@ -757,6 +749,19 @@ class CampaignOnlyGuestPipeline:
         for d in out:
             d["score"] = round(score(d), 3)
         return out
+
+    @staticmethod
+    def _is_general_campaign(d: dict[str, Any]) -> bool:
+        """Category-agnostic bank-finance offer: explicit scope=GENERAL, a
+        general_finance flag, or an Excel-seeded bank offer (source=excel_seed
+        with no product_name). Used for BOTH the cross-category merge and the
+        category-filter bypass so they never diverge."""
+        attrs = d.get("attributes") or {}
+        return bool(
+            str(attrs.get("scope") or "").upper() == "GENERAL"
+            or d.get("general_finance")
+            or (str(attrs.get("source") or "") == "excel_seed" and not d.get("product_name"))
+        )
 
     @staticmethod
     def _to_dict(c: Any) -> dict[str, Any]:
