@@ -117,7 +117,7 @@ async def test_llm_fallback_resolves_on_deterministic_miss():
     # "akordeon" is not in the lexicon → deterministic miss → LLM maps to, say, 19/None.
     llm = _FakeLLM(code="15")  # pretend model says "Mobilya"
     pipe = CampaignOnlyGuestPipeline(_MemState(), _Repo(), category_llm=llm)
-    res = await _run(pipe, "akordeon alıcam 30 bin bütçem var")
+    res = await _run(pipe, "zamazingo alıcam 30 bin bütçem var")
     assert llm.calls == 1
     assert res["diagnostics"]["ctx_category"] == "15"
     assert res["diagnostics"]["category_source"] == "llm_fallback"

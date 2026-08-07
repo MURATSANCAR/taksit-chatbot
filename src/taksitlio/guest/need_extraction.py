@@ -145,10 +145,10 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("14", "Fotoğraf Makinesi ve Kamera", "CAMERA", (
         "fotoğraf makinesi", "fotograf makinesi", "kamera", "dslr", "aynasız",
-        "mirrorless", "gopro", "aksiyon kamera", "objektif", "lens", "kompakt kamera",
+        "mirrorless", "gopro", "aksiyon kamera", "drone", "dron", "objektif", "lens", "kompakt kamera",
     )),
     _CatDef("15", "Mobilya", "FURNITURE", (
-        "mobilya", "koltuk", "kanepe", "yemek masası", "masa", "sandalye", "gardırop",
+        "mobilya", "koltuk", "kanepe", "salon takımı", "oturma grubu", "yemek masası", "masa", "sandalye", "gardırop",
         "dolap", "tv ünitesi", "komodin", "kitaplık", "vestiyer", "berjer", "puf",
     )),
     _CatDef("16", "Yatak", "BED", (
@@ -191,6 +191,32 @@ _CATALOG: tuple[_CatDef, ...] = (
     _CatDef("28", "Mücevherat", "JEWELRY", (
         "mücevher", "mucevher", "kolye", "yüzük", "yuzuk", "bilezik", "küpe", "kupe",
         "pırlanta", "pirlanta", "gümüş takı", "takı seti", "alyans",
+    )),
+    # --- Beyond the Excel-28: common products the catalog doesn't cover, so
+    #     they resolve deterministically (no LLM guessing) and get the general
+    #     bank-finance campaigns. Not linked to DB category-specific campaigns.
+    _CatDef("29", "Spor ve Fitness", "SPORTS", (
+        "koşu bandı", "kosu bandi", "yürüyüş bandı", "yuruyus bandi", "kondisyon aleti",
+        "kondisyon bisikleti", "spinning bisikleti", "eliptik bisiklet",
+        "kürek çekme aleti", "ağırlık seti", "dambıl", "dumbbell", "fitness aleti",
+        "spor aleti", "masaj aleti", "masaj koltuğu", "masaj",
+    )),
+    _CatDef("30", "Müzik Enstrümanı", "MUSIC", (
+        "gitar", "elektro gitar", "akustik gitar", "akordeon", "akordiyon", "piyano",
+        "dijital piyano", "keman", "davul", "bateri", "saksafon", "flüt", "bağlama",
+        "ukulele", "enstrüman", "çalgı",
+    )),
+    _CatDef("31", "Giyim ve Ayakkabı", "APPAREL", (
+        "manto", "kürk", "mont", "kaban", "elbise", "ayakkabı", "ayakkabi", "ceket",
+        "pantolon", "gömlek", "takım elbise", "spor ayakkabı", "sneaker", "çizme",
+    )),
+    _CatDef("32", "Bebek ve Çocuk", "BABY", (
+        "bebek arabası", "bebek arabasi", "puset", "mama sandalyesi", "oto koltuğu",
+        "bebek oto koltuğu", "bebek beşiği", "beşik", "emzik", "biberon", "bebek bezi",
+    )),
+    _CatDef("33", "Kamp ve Outdoor", "OUTDOOR", (
+        "kamp çadırı", "çadır", "cadir", "uyku tulumu", "kamp sandalyesi", "kamp masası",
+        "trekking", "matara", "kamp seti", "outdoor",
     )),
 )
 
