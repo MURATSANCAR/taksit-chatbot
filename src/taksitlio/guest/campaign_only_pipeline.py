@@ -464,18 +464,8 @@ class CampaignOnlyGuestPipeline:
                 diag=diag,
             )
 
-        # "kampanya var mı" with existing ctx → re-rank
-        if _KAMPANYA.search(utterance or "") and ctx.category_code and ctx.budget_value:
-            ranked = await self._rank_campaigns(ctx)
-            return await self._recommend(
-                sid,
-                expected_revision,
-                client_message_id,
-                client_sequence,
-                ctx,
-                ranked,
-                diag,
-            )
+        # "kampanya var mı" / "farklı kampanya" with existing ctx falls through to
+        # the unified recommend+noop path below (so repeats get a contextual reply).
 
         # Clarify
         if not ctx.category_code and not ctx.budget_value:
@@ -522,8 +512,31 @@ class CampaignOnlyGuestPipeline:
                 diag=diag,
             )
 
+        already_recommended = (
+            ctx.phase in (GuestPhase.COMPLETED.value, GuestPhase.REFINING.value)
+            and bool(ctx.campaign_ids)
+        )
         ranked = await self._rank_campaigns(ctx)
         diag["ranked_count"] = len(ranked)
+        # Follow-up ("farklı kampanya var mı", "daha ucuz", "başka") but the
+        # re-ranking surfaces nothing new → don't repeat the identical intro;
+        # give a contextual, non-repetitive answer + membership nudge.
+        if already_recommended and ranked:
+            prev = {str(x) for x in (ctx.campaign_ids or [])}
+            new_ids = {str(c.get("id") or c.get("campaign_code")) for c in ranked}
+            if new_ids == prev:
+                return await self._finish(
+                    sid,
+                    expected_revision,
+                    client_message_id,
+                    client_sequence,
+                    ctx,
+                    phase=GuestPhase.REFINING.value,
+                    reply=self._refinement_noop_reply(ctx, utterance, ranked),
+                    campaigns=[],
+                    cta=CTA,
+                    diag={**diag, "refinement": "no_new_options"},
+                )
         return await self._recommend(
             sid,
             expected_revision,
@@ -533,6 +546,43 @@ class CampaignOnlyGuestPipeline:
             ranked,
             diag,
         )
+
+    @staticmethod
+    def _refinement_noop_reply(ctx: GuestContext, utterance: str, ranked: list[dict[str, Any]]) -> str:
+        """Contextual reply when a follow-up yields no new campaigns."""
+        low = (utterance or "").casefold()
+
+        def _rate(c: dict[str, Any]) -> float:
+            txt = c.get("rate_text") or (c.get("attributes") or {}).get("rate_text") or ""
+            m = re.search(r"%\s*(\d+(?:[.,]\d+)?)", str(txt))
+            return float(m.group(1).replace(",", ".")) if m else 99.0
+
+        best = min(ranked, key=_rate) if ranked else None
+        bank = (best.get("brand") or best.get("bank") or "") if best else ""
+        rate = (
+            ((best.get("attributes") or {}).get("rate_text") or best.get("rate_text") or "")
+            if best else ""
+        )
+        n = len(ranked)
+        if any(w in low for w in ("ucuz", "uygun", "düşük", "dusuk", "indirim", "faiz")):
+            base = (
+                f"Şu an en düşük oranlı kampanya zaten {bank} ({rate}); "
+                "bundan daha uygunu bulunmuyor."
+            )
+        elif any(
+            w in low
+            for w in ("farklı", "farkli", "başka", "baska", "alternatif",
+                      "seçenek", "secenek", "daha fazla", "var mı", "var mi", "diğer", "diger")
+        ):
+            base = f"Şu an sana uygun aktif kampanyalar bu {n} tanesi; başka aktif kampanya yok."
+        elif any(w in low for w in ("telefon", "ürün", "urun", "fiyat", "model", "marka model")):
+            base = (
+                "Ben ürün fiyatı değil, sana en uygun finansman kampanyalarını öneriyorum. "
+                "Ürünü ve kampanyayı birlikte seçmek için üyelik yeterli."
+            )
+        else:
+            base = f"Şu an aktif en uygun {n} kampanya bunlar."
+        return base + " 👉 Üye olursan daha fazla banka ve marka kampanyasını birlikte tararız."
 
     async def _recommend(
         self,
