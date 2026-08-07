@@ -202,6 +202,24 @@ CATALOG_BY_CODE: dict[str, tuple[str, str]] = {
 }
 
 
+def catalog_hint_line(max_aliases: int = 5) -> str:
+    """Rich `code=Name (alias, alias, …)` block for grounding the LLM prompt.
+
+    Uses the same Excel-derived aliases as the deterministic resolver, so the
+    LLM sees exactly the products each catalog category covers.
+    """
+    lines = []
+    for c in _CATALOG:
+        seen: list[str] = []
+        for a in c.aliases:
+            if a not in seen and len(a) <= 22:
+                seen.append(a)
+            if len(seen) >= max_aliases:
+                break
+        lines.append(f"{c.code}={c.name} ({', '.join(seen)})")
+    return "\n".join(lines)
+
+
 def _compile_alias(alias: str, *, fold: bool = False) -> re.Pattern[str]:
     a = ascii_fold(alias) if fold else normalize(alias)
     letters = "a-z" if fold else _LETTER

@@ -33,7 +33,12 @@ import re
 import time
 from typing import Any, Mapping, Optional
 
-from taksitlio.guest.need_extraction import CATALOG_BY_CODE, CategoryHit, normalize
+from taksitlio.guest.need_extraction import (
+    CATALOG_BY_CODE,
+    CategoryHit,
+    catalog_hint_line,
+    normalize,
+)
 
 
 # --- Persona / guardrails (reused by any guest-facing LLM) --------------------
@@ -59,42 +64,65 @@ IDENTITY_TEXT = (
     "istediğini ve bütçeni yazman yeterli."
 )
 
-# Compact catalog list for the classifier prompt: "1=Cep Telefonu; 2=..."
-_CATALOG_LINE = "; ".join(f"{code}={name}" for code, (name, _fam) in CATALOG_BY_CODE.items())
+# Rich, Excel-grounded catalog block: each category with its real products
+# (same aliases as the deterministic resolver). Constant → KV-cached by the
+# server (cache_prompt), so its length costs prompt-processing only once.
+_CATALOG_BLOCK = catalog_hint_line()
+
+# Valid codes for the enum-constrained output (server enforces via grammar).
+_VALID_CODES = list(CATALOG_BY_CODE.keys())
+
+# Disambiguation for the pairs a small model confuses (measured on the 3B).
+_DISAMBIG = (
+    "AYRIM KURALLARI:\n"
+    "- 14=Fotoğraf/Kamera SADECE fotoğraf/video çeken cihaz; tablet=4, "
+    "tıraş makinesi=8, airfryer/blender=2 ASLA 14 değildir.\n"
+    "- 18=Saat sadece kol/duvar saati; gözlük=17, yüzük/kolye/pırlanta=28 "
+    "ASLA 18 değildir. Akıllı saat=12.\n"
+    "- 22=Sağlık: tansiyon aleti, nebulizatör, termometre (medikal cihaz) — "
+    "küçük ev aleti(2) değil.\n"
+    "- 25=Oto Yedek Parça: lastik, akü, jant — turizm(23) değil.\n"
+    "- 8=Kişisel Bakım: tıraş makinesi, epilasyon, saç kurutma.\n"
+    "- 20=Yenilenmiş telefon (refurbished/yenilenmiş) — normal telefon=1.\n"
+)
 
 _CATEGORY_SYSTEM_PROMPT = (
     "Görevin: Türkçe bir alışveriş cümlesindeki ÜRÜNÜ aşağıdaki katalog "
-    "kategorilerinden BİRİNE eşlemek.\n"
-    f"Kategoriler: {_CATALOG_LINE}.\n"
-    "Kurallar:\n"
-    "- Sadece tek satır minified JSON döndür: {\"category_code\":\"<kod>\"} "
-    "veya ürün belirsizse {\"category_code\":null}.\n"
-    "- Kod yalnızca yukarıdaki listeden olabilir; asla uydurma.\n"
-    "- Cümlede olmayan bilgiyi ekleme, açıklama/markdown yazma.\n"
-    # Few-shot examples materially lift small-model accuracy (measured: a 1.5B
-    # went 0→9/12 with these). Includes the ambiguous cases small models miss.
+    "kategorilerinden BİRİNE eşlemek. Kod yalnızca listeden olabilir.\n\n"
+    f"KATEGORİLER (kod=ad (örnek ürünler)):\n{_CATALOG_BLOCK}\n\n"
+    + _DISAMBIG +
+    "\nÇIKTI: sadece {\"category_code\":\"<kod>\"} ya da belirsizse "
+    "{\"category_code\":null}. Açıklama/markdown yok.\n"
     "Örnekler: 'buzdolabı 20 bin'->{\"category_code\":\"7\"} ; "
-    "'laptop 30 bin'->{\"category_code\":\"3\"} ; "
-    "'iphone alacağım'->{\"category_code\":\"1\"} ; "
-    "'ipad'->{\"category_code\":\"4\"} ; "
-    "'kulaklık'->{\"category_code\":\"10\"} ; "
-    "'ütü'->{\"category_code\":\"2\"} ; "
-    "'ps5'->{\"category_code\":\"11\"} ; "
-    "'akıllı saat'->{\"category_code\":\"12\"} ; "
-    "'koltuk takımı'->{\"category_code\":\"15\"} ; "
-    "'epilasyon aleti'->{\"category_code\":\"8\"} ; "
-    "'tarayıcı'->{\"category_code\":\"13\"} ; "
-    "'güneş gözlüğü'->{\"category_code\":\"17\"} ; "
-    "'refurbished telefon'->{\"category_code\":\"20\"} ; "
-    "'termometre'->{\"category_code\":\"22\"} ; "
-    "'sertifika programı'->{\"category_code\":\"24\"} ; "
-    "'jant'->{\"category_code\":\"25\"} ; "
-    "'gıda alışverişi'->{\"category_code\":\"27\"} ; "
-    "'kolye'->{\"category_code\":\"28\"}. "
-    "İpucu: sağlık cihazı=22, eğitim/kurs=24, oto parça=25, market/gıda=27, "
-    "takı/mücevher=28, yenilenmiş telefon=20, yazıcı/tarayıcı=13.\n"
+    "'çocuğa tablet'->{\"category_code\":\"4\"} ; "
+    "'tıraş makinesi'->{\"category_code\":\"8\"} ; "
+    "'tansiyon aleti'->{\"category_code\":\"22\"} ; "
+    "'lastik akü'->{\"category_code\":\"25\"} ; "
+    "'numaralı gözlük'->{\"category_code\":\"17\"} ; "
+    "'pırlanta yüzük'->{\"category_code\":\"28\"} ; "
+    "'ingilizce kursu'->{\"category_code\":\"24\"} ; "
+    "'market alışverişi'->{\"category_code\":\"27\"} ; "
+    "'yenilenmiş iphone'->{\"category_code\":\"20\"}.\n"
     + GUEST_PERSONA_RULES
 )
+
+# JSON-schema that pins category_code to a valid code or null. llama.cpp turns
+# this into a grammar → the model CANNOT emit garbage or an off-catalog code.
+_RESPONSE_FORMAT = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "CategoryPick",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["category_code"],
+            "properties": {
+                "category_code": {"type": ["string", "null"], "enum": [*_VALID_CODES, None]}
+            },
+        },
+    },
+}
 
 _JSON_OBJ = re.compile(r"\{.*?\}", re.DOTALL)
 
@@ -204,7 +232,11 @@ class GuestCategoryResolverLLM:
             "temperature": 0.0,
             "max_tokens": self._max_output_tokens,
             "stream": False,
-            "response_format": {"type": "json_object"},
+            # Enum-constrained output → always a valid catalog code or null.
+            "response_format": _RESPONSE_FORMAT,
+            # Reuse the (fixed, rich) system-prompt KV across calls → the long
+            # prompt is processed once; later calls only process the utterance.
+            "cache_prompt": True,
             "messages": self.preview_messages(utterance),
         }
 
