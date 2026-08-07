@@ -208,7 +208,7 @@ def test_from_env_builds_when_configured():
     body = llm.request_body("cep telefonu 40 bin")
     assert body["model"] == "small-fast"
     assert body["messages"][1]["content"] == "cep telefonu 40 bin"
-    assert "Taksitlio" in body["messages"][0]["content"]  # persona embedded
+    assert "category_code" in body["messages"][0]["content"]  # classifier prompt
 
 
 def test_parse_code_extracts_and_validates():

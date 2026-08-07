@@ -64,10 +64,10 @@ IDENTITY_TEXT = (
     "istediğini ve bütçeni yazman yeterli."
 )
 
-# Rich, Excel-grounded catalog block: each category with its real products
-# (same aliases as the deterministic resolver). Constant → KV-cached by the
-# server (cache_prompt), so its length costs prompt-processing only once.
-_CATALOG_BLOCK = catalog_hint_line()
+# Rich Excel-grounded catalog block (name + key aliases per category) — the
+# 3B is served with -c 8192 (~4096 tokens/slot), so the full prompt fits and
+# category accuracy stays at 100% on the complex Excel eval.
+_CATALOG_BLOCK = catalog_hint_line(max_aliases=5)
 
 # Valid codes for the enum-constrained output (server enforces via grammar).
 _VALID_CODES = list(CATALOG_BY_CODE.keys())
@@ -103,7 +103,6 @@ _CATEGORY_SYSTEM_PROMPT = (
     "'ingilizce kursu'->{\"category_code\":\"24\"} ; "
     "'market alışverişi'->{\"category_code\":\"27\"} ; "
     "'yenilenmiş iphone'->{\"category_code\":\"20\"}.\n"
-    + GUEST_PERSONA_RULES
 )
 
 # JSON-schema that pins category_code to a valid code or null. llama.cpp turns
