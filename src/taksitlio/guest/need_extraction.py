@@ -178,8 +178,8 @@ _CATALOG: tuple[_CatDef, ...] = (
         "turizm", "vize",
     )),
     _CatDef("24", "Eğitim", "EDUCATION", (
-        "eğitim", "egitim", "kurs", "online kurs", "dil kursu", "sertifika programı",
-        "üniversite", "okul taksidi", "ders",
+        "eğitim", "egitim", "dil kursu", "online kurs", "kurs", "sertifika programı",
+        "okul taksidi", "üniversite eğitimi", "özel ders",
     )),
     _CatDef("25", "Otomotiv Yedek Parça", "AUTOPARTS", (
         "yedek parça", "yedek parca", "lastik", "akü", "aku", "jant", "fren balata",
