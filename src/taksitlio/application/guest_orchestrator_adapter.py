@@ -64,6 +64,13 @@ class GuestOrchestratorAdapter:
             except Exception:  # noqa: BLE001 — never fail guest startup on this
                 category_llm = None
 
+        import os
+
+        llm_primary = str(
+            extras.get("guest_llm_primary")
+            or os.environ.get("GUEST_LLM_PRIMARY", "")
+        ).strip().lower() in {"1", "true", "yes", "on"}
+
         pipeline = CampaignOnlyGuestPipeline(
             state_manager=state_manager,
             campaign_repo=campaign_repo,
@@ -71,6 +78,7 @@ class GuestOrchestratorAdapter:
             eligibility=eligibility,
             max_campaigns=2,
             category_llm=category_llm,
+            llm_primary=llm_primary,
         )
         return cls(pipeline)
 

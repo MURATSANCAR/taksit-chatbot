@@ -218,15 +218,21 @@ class CampaignOnlyGuestPipeline:
         eligibility: Any = None,
         max_campaigns: int = 2,
         category_llm: Any = None,
+        llm_primary: bool = False,
     ) -> None:
         self._state = state_manager
         self._campaigns = campaign_repo
         self._ranker = ranker
         self._eligibility = eligibility
         self._max = max_campaigns
-        # Optional Tier-2 small-LLM fallback (async .resolve). None → pure
-        # deterministic (no network). Consulted only on deterministic miss.
+        # Optional small-LLM (async .resolve). None → pure deterministic.
         self._llm = category_llm
+        # llm_primary=False → LLM consulted only on deterministic miss (Tier-2).
+        # llm_primary=True  → LLM does the understanding on EVERY need turn; the
+        #   deterministic layer is demoted to a safety net (timeout/unavailable
+        #   fallback + hard lexical guard). Budget stays deterministic (regex is
+        #   100% on 30k cases; LLM would risk number hallucination).
+        self._llm_primary = bool(llm_primary)
 
     async def start(
         self,
@@ -333,30 +339,47 @@ class CampaignOnlyGuestPipeline:
             if _b not in ctx.include_banks:
                 ctx.include_banks.append(_b)
 
-        # --- Tier 2: small-LLM category fallback (ONLY on deterministic miss) ---
-        # Deterministic lexicon already resolved the common case sub-ms. Spend a
-        # model call only when it missed AND the turn looks like a real need.
+        # --- LLM understanding ---
+        # llm_primary=True  → LLM does category understanding on EVERY need turn
+        #                     (deterministic = safety net + hard guard + budget).
+        # llm_primary=False → LLM consulted only on deterministic miss (Tier-2).
         llm_diag: dict[str, Any] = {
             "category_source": "deterministic" if need["category_code"] else "none"
         }
-        if (
-            need["category_code"] is None
-            and self._llm is not None
-            and _NEED_HINT_RE.search(utterance or "")
-        ):
+        _looks_need = bool(_NEED_HINT_RE.search(utterance or ""))
+        _call_llm = self._llm is not None and _looks_need and (
+            self._llm_primary or need["category_code"] is None
+        )
+        if _call_llm:
             try:
                 llm_hit = await self._llm.resolve(utterance)
             except Exception:  # noqa: BLE001 — fail-open, never block the turn
                 llm_hit = None
-            llm_diag = {
-                "category_source": "llm_fallback" if llm_hit else "llm_miss",
-                "llm_latency_ms": getattr(self._llm, "last_latency_ms", None),
-            }
+            lat = getattr(self._llm, "last_latency_ms", None)
             if llm_hit is not None:
-                need["category_code"] = llm_hit.category_code
-                need["category_name"] = llm_hit.display_name
+                code, name = llm_hit.category_code, llm_hit.display_name
+                # Hard lexical guard on LLM output: "buzdolabı" must never become
+                # a phone even if the model says so.
+                if guard_resolved_category is not None:
+                    code, name, _g = guard_resolved_category(utterance, code, name)
+                need["category_code"] = code
+                need["category_name"] = name
                 need["lexical_family"] = llm_hit.family
                 need["has_product_noun"] = True
+                llm_diag = {
+                    "category_source": "llm_primary" if self._llm_primary else "llm_fallback",
+                    "llm_latency_ms": lat,
+                }
+            else:
+                # LLM unavailable/timeout → keep whatever deterministic found.
+                llm_diag = {
+                    "category_source": (
+                        "llm_primary_fallback_deterministic"
+                        if self._llm_primary and need["category_code"]
+                        else ("llm_primary_unresolved" if self._llm_primary else "llm_miss")
+                    ),
+                    "llm_latency_ms": lat,
+                }
 
         # --- Refinement flags (after COMPLETED) ---
         if ctx.phase in (GuestPhase.COMPLETED.value, GuestPhase.REFINING.value):

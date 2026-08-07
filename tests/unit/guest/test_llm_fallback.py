@@ -166,6 +166,36 @@ async def test_starter_chips_and_progress_hint_present():
     assert res["campaigns"]
 
 
+@pytest.mark.asyncio
+async def test_llm_primary_overrides_deterministic():
+    # Deterministic would resolve "laptop" → 3; in primary mode the LLM decides.
+    llm = _FakeLLM(code="3")
+    pipe = CampaignOnlyGuestPipeline(_MemState(), _Repo(), category_llm=llm, llm_primary=True)
+    res = await _run(pipe, "laptop 35 bin")
+    assert llm.calls == 1  # called on EVERY need turn, not only on miss
+    assert res["diagnostics"]["category_source"] == "llm_primary"
+    assert res["diagnostics"]["ctx_category"] == "3"
+
+
+@pytest.mark.asyncio
+async def test_llm_primary_hard_guard_blocks_bad_override():
+    # Utterance clearly says buzdolabı; a hallucinating LLM claims phone (1).
+    # The hard lexical guard must keep it white-goods, not phone.
+    llm = _FakeLLM(code="1")
+    pipe = CampaignOnlyGuestPipeline(_MemState(), _Repo(), category_llm=llm, llm_primary=True)
+    res = await _run(pipe, "buzdolabı 30 bin")
+    assert res["diagnostics"]["ctx_category"] not in ("1", "MOBILE_PHONE")
+
+
+@pytest.mark.asyncio
+async def test_llm_primary_falls_back_to_deterministic_on_failure():
+    llm = _FakeLLM(raises=True)
+    pipe = CampaignOnlyGuestPipeline(_MemState(), _Repo(), category_llm=llm, llm_primary=True)
+    res = await _run(pipe, "cep telefonu 40 bin")  # deterministic → 1
+    assert res["diagnostics"]["ctx_category"] == "1"  # safety net kept it
+    assert res["diagnostics"]["category_source"] == "llm_primary_fallback_deterministic"
+
+
 def test_from_env_absent_returns_none():
     assert GuestCategoryResolverLLM.from_env({}) is None
 
