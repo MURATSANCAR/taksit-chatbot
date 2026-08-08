@@ -89,7 +89,7 @@ _CATALOG: tuple[_CatDef, ...] = (
         "blender", "mikser", "rondo", "mutfak robotu", "doğrayıcı", "tost makinesi",
         "su ısıtıcı", "kettle", "kahve makinesi", "espresso", "çay makinesi",
         "ütü", "utu", "robot süpürge", "robot supurge", "süpürge", "supurge",
-        "elektrikli süpürge", "ekmek kızartma", "waffle", "ızgara", "airfryer",
+        "elektrikli süpürge", "dik süpürge", "şarjlı süpürge", "el blenderı", "kıyma makinesi", "meyve sıkacağı", "sandviç makinesi", "buharlı temizleyici", "ekmek kızartma", "waffle", "ızgara", "airfryer",
     )),
     _CatDef("3", "Bilgisayar", "COMPUTER", (
         "bilgisayar", "laptop", "notebook", "dizüstü", "dizustu", "masaüstü", "masaustu",
@@ -118,11 +118,11 @@ _CATALOG: tuple[_CatDef, ...] = (
         "kişisel bakım", "kisisel bakim", "tıraş makinesi", "tiras makinesi",
         "epilasyon aleti", "epilasyon", "epilatör", "saç kurutma makinesi",
         "saç kurutma", "fön makinesi", "fon makinesi", "saç düzleştirici",
-        "düzleştirici", "saç maşası", "diş fırçası",
+        "düzleştirici", "saç maşası", "diş fırçası", "diş beyazlatma", "diş beyazlatma cihazı", "elektrikli diş fırçası", "ağız duşu", "cilt bakım cihazı",
     )),
     _CatDef("9", "Klima, Isıtma/Soğutma Ekipmanları", "AIR_CONDITIONER", (
         "klima", "split klima", "portatif klima", "ısıtıcı", "isitici", "soğutucu",
-        "vantilatör", "vantilator", "kombi", "radyatör", "şofben", "termosifon",
+        "vantilatör", "vantilator", "kombi", "radyatör", "şofben", "termosifon", "elektrikli battaniye", "nem alma cihazı", "hava temizleyici", "soba",
     )),
     _CatDef("10", "Mobil Aksesuar", "ACCESSORY", (
         "mobil aksesuar", "telefon kılıfı", "telefon kilifi", "kılıf", "kilif",
@@ -145,11 +145,11 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("14", "Fotoğraf Makinesi ve Kamera", "CAMERA", (
         "fotoğraf makinesi", "fotograf makinesi", "kamera", "dslr", "aynasız",
-        "mirrorless", "gopro", "aksiyon kamera", "drone", "dron", "objektif", "lens", "kompakt kamera",
+        "mirrorless", "gopro", "aksiyon kamera", "drone", "dron", "güvenlik kamerası", "ip kamera", "dürbün", "objektif", "lens", "kompakt kamera",
     )),
     _CatDef("15", "Mobilya", "FURNITURE", (
         "mobilya", "koltuk", "kanepe", "salon takımı", "oturma grubu", "yemek masası", "masa", "sandalye", "gardırop",
-        "dolap", "tv ünitesi", "komodin", "kitaplık", "vestiyer", "berjer", "puf",
+        "dolap", "tv ünitesi", "komodin", "kitaplık", "vestiyer", "berjer", "puf", "ofis koltuğu", "çalışma masası", "tv sehpası", "sehpa", "çekyat",
     )),
     _CatDef("16", "Yatak", "BED", (
         "yatak", "baza", "yatak seti", "ortopedik yatak", "visco", "yaylı yatak",
@@ -171,7 +171,7 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("22", "Sağlık", "HEALTH", (
         "sağlık", "saglik", "tansiyon aleti", "şeker ölçüm", "nebulizatör",
-        "termometre", "ateş ölçer", "medikal", "oksijen konsantratörü",
+        "termometre", "ateş ölçer", "medikal", "oksijen konsantratörü", "şeker ölçüm cihazı", "oksimetre", "işitme cihazı", "tekerlekli sandalye", "hasta yatağı",
     )),
     _CatDef("23", "Turizm/Seyahat", "TRAVEL", (
         "tatil", "seyahat", "tur paketi", "uçak bileti", "otel", "konaklama",
@@ -183,7 +183,7 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("25", "Otomotiv Yedek Parça", "AUTOPARTS", (
         "yedek parça", "yedek parca", "lastik", "akü", "aku", "jant", "fren balata",
-        "motor yağı", "oto aksesuar", "otomotiv",
+        "motor yağı", "oto aksesuar", "otomotiv", "silecek", "amortisör", "oto far", "buji", "triger seti",
     )),
     _CatDef("27", "Süpermarket", "SUPERMARKET", (
         "süpermarket", "supermarket", "market alışverişi", "market", "gıda", "bakkal",
@@ -199,7 +199,7 @@ _CATALOG: tuple[_CatDef, ...] = (
         "koşu bandı", "kosu bandi", "yürüyüş bandı", "yuruyus bandi", "kondisyon aleti",
         "kondisyon bisikleti", "spinning bisikleti", "eliptik bisiklet",
         "kürek çekme aleti", "ağırlık seti", "dambıl", "dumbbell", "fitness aleti",
-        "spor aleti", "masaj aleti", "masaj koltuğu", "masaj",
+        "spor aleti", "masaj aleti", "masaj koltuğu", "masaj", "bisiklet", "dağ bisikleti", "elektrikli bisiklet", "yoga matı", "halter", "kürek çekme",
     )),
     _CatDef("30", "Müzik Enstrümanı", "MUSIC", (
         "gitar", "elektro gitar", "akustik gitar", "akordeon", "akordiyon", "piyano",
@@ -208,7 +208,7 @@ _CATALOG: tuple[_CatDef, ...] = (
     )),
     _CatDef("31", "Giyim ve Ayakkabı", "APPAREL", (
         "manto", "kürk", "mont", "kaban", "elbise", "ayakkabı", "ayakkabi", "ceket",
-        "pantolon", "gömlek", "takım elbise", "spor ayakkabı", "sneaker", "çizme",
+        "pantolon", "gömlek", "takım elbise", "spor ayakkabı", "sneaker", "çizme", "tişört", "kot pantolon", "kazak", "topuklu ayakkabı", "çanta", "kemer",
     )),
     _CatDef("32", "Bebek ve Çocuk", "BABY", (
         "bebek arabası", "bebek arabasi", "puset", "mama sandalyesi", "oto koltuğu",
